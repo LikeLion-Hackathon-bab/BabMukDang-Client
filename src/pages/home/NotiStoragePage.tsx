@@ -14,25 +14,13 @@ import {
     LocalNewsList
 } from '@/components'
 import { LOCAL_NEWS_FILTER_LIST } from '@/constants/filters'
+import { useGetUncompletedPlans } from '@/query'
+import {
+    MeetingResponse,
+    PlanType,
+    LocalNewsNoti
+} from '@kimdaegyu/babmukdang-shared'
 
-type MatchingInviteNoti = {
-    id: number
-    type: 'invitation' | 'announcement'
-    title: string
-    time: string
-    message: string
-    period: string
-    imageUrl: string
-}
-interface LocalNewsNoti {
-    id: number
-    type: 'school' | 'restaurant' | 'area'
-    title: string
-    time: string
-    message: string
-    period: string
-    imageUrl?: string
-}
 export function NotiStoragePage() {
     const navigate = useNavigate()
 
@@ -51,10 +39,15 @@ export function NotiStoragePage() {
         }
     }, [])
 
-    const [matchingNotis, setMatchingNotis] = useState<MatchingInviteNoti[]>(
-        MockMatchingInviteNotis as MatchingInviteNoti[]
-    )
+    const [matchingNotis, setMatchingNotis] = useState<MeetingResponse[]>([])
 
+    const { data: uncompletedPlans } = useGetUncompletedPlans()
+    useEffect(() => {
+        if (uncompletedPlans) {
+            console.log(uncompletedPlans)
+            setMatchingNotis(uncompletedPlans)
+        }
+    }, [uncompletedPlans])
     const [localNewsNotis, setLocalNewsNotis] = useState<LocalNewsNoti[]>(
         MockLocalNewsNotis as LocalNewsNoti[]
     )
@@ -73,13 +66,11 @@ export function NotiStoragePage() {
         setLocalNewsNotis(prev => prev.filter(noti => noti.id !== id))
     }
 
-    const handleMatchingInviteNotiClick = (
-        type: 'invitation' | 'announcement'
-    ) => {
-        if (type === 'invitation') {
-            navigate(`/invitation/waiting/${Math.floor(Math.random() * 10)}`)
+    const handleMatchingInviteNotiClick = (type: PlanType) => {
+        if (type === PlanType.INVITATION) {
+            navigate(`/invitation/waiting/1`)
         } else {
-            navigate(`/announcement/waiting/${Math.floor(Math.random() * 10)}`)
+            navigate(`/announcement/waiting/1`)
         }
     }
 
