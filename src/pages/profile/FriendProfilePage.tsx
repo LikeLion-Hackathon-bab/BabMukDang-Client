@@ -11,18 +11,6 @@ import {
     FriendProfileSection
 } from '@/components'
 
-type MyProfileData = {
-    profileImgUrl: string
-    name: string
-    description: string
-    preferredMenus: string[]
-    cantEat: string[]
-    friends: number
-    completedMeetings: number
-    uncompletedMeetings: number
-    challengeCount: number
-}
-
 export function FriendProfilePage() {
     const navigate = useNavigate()
     return (

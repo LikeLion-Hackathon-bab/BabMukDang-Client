@@ -59,7 +59,7 @@ export function TestPage() {
             color: 'bg-indigo-500'
         },
         {
-            path: 'https://babmuckdang.site/oauth2/authorization/kakao',
+            path: 'http://localhost:3000/api/v1/auth/kakao',
             title: '로그인',
             description: '카카오 로그인',
             icon: '�',

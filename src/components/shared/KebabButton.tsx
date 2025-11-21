@@ -45,21 +45,24 @@ export function KebabButton({
                 aria-haspopup="menu"
                 aria-expanded={open}
                 onClick={() => setOpen(v => !v)}
-                onTouchStart={() => setOpen(v => !v)}
                 className={`flex flex-row items-center justify-center`}>
                 <KebabIcon />
             </button>
 
             {open && (
-                <div
+                <button
+                    type="button"
                     ref={menuRef}
                     role="menu"
-                    className="shadow-drop-1 rounded-8 absolute top-full right-0 z-50 mt-8 flex-shrink-0 bg-white px-12 py-6"
-                    onClick={onClick}>
+                    className="shadow-drop-1 rounded-8 absolute top-full right-0 z-1000 mt-8 flex-shrink-0 bg-white px-12 py-6"
+                    onClick={() => {
+                        onClick()
+                        setOpen(false)
+                    }}>
                     <span className="text-body2-medium text-gray-7 text-nowrap">
                         삭제하기
                     </span>
-                </div>
+                </button>
             )}
         </div>
     )

@@ -1,5 +1,6 @@
 import { ThumbImg } from '@/components'
 import { FriendProfileList } from './FriendProfileList'
+import { useEffect } from 'react'
 
 export const MenuCard = ({
     selectedUsers,
