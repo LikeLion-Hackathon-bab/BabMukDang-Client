@@ -1,16 +1,5 @@
 import { useState } from 'react'
-
-type Item = {
-    name: string
-    aspectRatio: number
-    placeholder: { blurhash: string; thumbhashDataURL: string }
-    images: {
-        src: string
-        avifSrcset: string
-        sizes?: string
-    }
-    priority?: boolean
-}
+import { Item } from '@kimdaegyu/babmukdang-shared'
 const withCdnSrcset = (srcset: string, cdn: string) =>
     srcset
         .split(',')

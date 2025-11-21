@@ -1,4 +1,7 @@
-import { ArticlePostRequest, RestaurantInfo } from '@/apis/dto'
+import {
+    ArticlePostRequestDto,
+    RestaurantInfo
+} from '@kimdaegyu/babmukdang-shared'
 import { create } from 'zustand'
 
 interface ArticleStore {
@@ -14,7 +17,7 @@ interface ArticleStore {
     setTaggedMemberIds: (taggedMemberIds: number[]) => void
     setMethod: (method: 'ALBUM' | 'CAMERA') => void
     setImage: (image: File) => void
-    buildRequest: ((cdnUrl: string) => ArticlePostRequest) | null
+    buildRequest: ((cdnUrl: string) => ArticlePostRequestDto) | null
 }
 
 export const useArticleStore = create<ArticleStore>(set => ({
@@ -24,7 +27,7 @@ export const useArticleStore = create<ArticleStore>(set => ({
     restaurant: null,
     taggedMemberIds: [],
     method: 'ALBUM',
-    buildRequest: (cdnUrl: string): ArticlePostRequest => {
+    buildRequest: (cdnUrl: string): ArticlePostRequestDto => {
         return {
             imageUrl: cdnUrl,
             method: useArticleStore.getState().method,
@@ -32,7 +35,7 @@ export const useArticleStore = create<ArticleStore>(set => ({
             mealTime: useArticleStore.getState().mealTime,
             restaurant: useArticleStore.getState().restaurant as RestaurantInfo,
             taggedMemberIds: useArticleStore.getState().taggedMemberIds
-        } as ArticlePostRequest
+        } as ArticlePostRequestDto
     },
     setImage: image => set({ image }),
     // setMealDate: mealDate => set({ mealDate }),

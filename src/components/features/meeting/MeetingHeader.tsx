@@ -1,16 +1,7 @@
 import { CalendarIcon, LocationWhiteIcon } from '@/assets/icons'
 import { TagPerson } from '@/components'
-
-type Meeting = {
-    id: number
-    participants: { name: string; userId: number }[]
-    location: string
-    time: string
-    restaurant: string
-    isCompleted: boolean
-    restaurantType: string
-}
-export function MeetingHeader({ meeting }: { meeting: Meeting }) {
+import { MeetingResponse } from '@kimdaegyu/babmukdang-shared'
+export function MeetingHeader({ meeting }: { meeting: MeetingResponse }) {
     return (
         <div className="absolute top-0 left-0 flex h-287 w-screen flex-col items-center justify-end gap-10 bg-gradient-to-b from-[#FFAE93] to-[#FF7546] px-20 pb-16">
             {/* 상단 섹션 */}
@@ -31,7 +22,7 @@ export function MeetingHeader({ meeting }: { meeting: Meeting }) {
                             {meeting.participants.map((participant, idx) => (
                                 <TagPerson
                                     key={idx}
-                                    name={participant.name}
+                                    name={participant.username}
                                     orange={true}
                                 />
                             ))}
@@ -56,7 +47,7 @@ export function MeetingHeader({ meeting }: { meeting: Meeting }) {
 
                         {/* 시간 정보 */}
                         <span className="text-caption-medium text-primary-200">
-                            {meeting.time}
+                            {meeting.meetingAt}
                         </span>
                     </div>
 

@@ -3,28 +3,19 @@ import { useAuthStore } from '@/store'
 import { FriendProfileList } from '../features/onboarding'
 import { Link } from 'react-router-dom'
 import { COLORS } from '@/constants/colors'
+import { KakaoRestaurantResponseDto } from '@kimdaegyu/babmukdang-shared'
 // import { Restaurant } from '@/types/restaurant'
 
-interface Restaurant {
-    id: string
-    place_name: string
-    category_name: string
-    category_group_name: string
-    distance: string
-    road_address_name: string
-    address_name: string
-    phone: string
-    selectUsers: string[]
-    place_url?: string
-}
 interface RestaurantCardProps {
-    restaurant: Restaurant
+    restaurant: KakaoRestaurantResponseDto
+    selectedUsers?: number[]
     gps?: any
-    onClick: (restaurant: Restaurant) => void
+    onClick: (restaurant: KakaoRestaurantResponseDto) => void
     className?: string
 }
 
 export function RestaurantCard({
+    selectedUsers,
     restaurant,
     onClick,
     className = '',
@@ -33,7 +24,7 @@ export function RestaurantCard({
     const { userId } = useAuthStore()
     return (
         <div
-            className={`shadow-drop-1 flex w-full justify-between rounded-lg p-12 ${className} ${restaurant?.selectUsers?.includes(userId!) ? 'border-primary-main bg-primary-100 border' : 'bg-white'}`}
+            className={`shadow-drop-1 flex w-full justify-between rounded-lg p-12 ${className} ${selectedUsers?.includes(Number(userId)) ? 'border-primary-main bg-primary-100 border' : 'bg-white'}`}
             onClick={() => onClick(restaurant)}>
             <div className="flex flex-col gap-11">
                 {/* 레스토랑 이름과 카테고리 */}
@@ -95,9 +86,7 @@ export function RestaurantCard({
                 </div>
             </div>
             <div className="flex items-center gap-2">
-                <FriendProfileList
-                    selectedUsers={restaurant.selectUsers || []}
-                />
+                <FriendProfileList selectedUsers={selectedUsers || []} />
             </div>
         </div>
     )

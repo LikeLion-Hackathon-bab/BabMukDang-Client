@@ -3,9 +3,9 @@ import {
     getMemberProfileDetail,
     getMyProfile,
     getMyProfileDetail,
-    updateMyProfile,
-    UpdateProfileRequest
+    updateMyProfile
 } from '@/apis/profile'
+import { UpdateProfileRequest } from '@kimdaegyu/babmukdang-shared'
 import { useMutation, useQuery } from '@tanstack/react-query'
 
 export const useGetMyProfile = () => {

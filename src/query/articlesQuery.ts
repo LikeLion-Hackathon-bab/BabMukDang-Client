@@ -15,17 +15,18 @@ import {
     postArticleComment
 } from '@/apis'
 import {
-    ArticlePostRequest,
-    CommentPostRequest,
-    LikePostResponse
-} from '@/apis/dto'
+    CommentPostRequestDto,
+    LikePostResponseDto,
+    UploadAndPostVars,
+    ArticlePostRequestDto
+} from '@kimdaegyu/babmukdang-shared'
 
 export const useGetArticle = (articleId: number) => {
-    const { data, isLoading, error } = useQuery({
+    const { data, isLoading, error, refetch } = useQuery({
         queryKey: ['article', articleId],
         queryFn: () => getArticle(articleId)
     })
-    return { data: data, isLoading, error }
+    return { data: data, isLoading, error, refetch }
 }
 
 export const useGetArticleComments = (articleId: number) => {
@@ -37,11 +38,11 @@ export const useGetArticleComments = (articleId: number) => {
 }
 
 export const useGetHomeArticles = () => {
-    const { data, isLoading, error } = useQuery({
+    const { data, isLoading, error, refetch } = useQuery({
         queryKey: ['homeArticles'],
         queryFn: getHomeArticles
     })
-    return { data: data, isLoading, error }
+    return { data: data, isLoading, error, refetch }
 }
 
 export const useGetArticlesByAuthor = (authorId: number) => {
@@ -50,13 +51,6 @@ export const useGetArticlesByAuthor = (authorId: number) => {
         queryFn: () => getArticlesByAuthor(authorId)
     })
     return { data: data, isLoading, error }
-}
-
-type UploadAndPostVars = {
-    currentUserId: string
-    file: File
-    // cdnUrl을 받아서 최종 ArticlePostRequest를 만드는 빌더
-    buildRequest: (cdnUrl: string) => ArticlePostRequest
 }
 
 export const useUploadArticle = (
@@ -110,7 +104,7 @@ export const useUploadArticle = (
 //   });
 
 export const useLikeArticle = (
-    onSuccess: (data: LikePostResponse) => void,
+    onSuccess: (data: LikePostResponseDto) => void,
     onError: (e: Error) => void
 ) => {
     const { mutate, isPending, error } = useMutation({
@@ -132,7 +126,7 @@ export const useCommentArticle = (
             comment
         }: {
             articleId: number
-            comment: CommentPostRequest
+            comment: CommentPostRequestDto
         }) => postArticleComment(articleId, comment),
         onSuccess,
         onError

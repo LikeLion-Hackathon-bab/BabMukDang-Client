@@ -1,6 +1,12 @@
-import { CommentResponse, RestaurantInfo } from '@/apis/dto'
-import { MeetingResponse } from '@/apis/meeting'
-import { PreferenceItem, ProfileDetailResponse } from '@/apis/profile'
+import {
+    CommentResponseDto,
+    Friend,
+    RestaurantInfo
+} from '@kimdaegyu/babmukdang-shared'
+import {
+    PreferenceItem,
+    ProfileDetailResponse
+} from '@kimdaegyu/babmukdang-shared'
 
 export const MockAnnouncements = [
     {
@@ -213,7 +219,7 @@ type Meeting = {
     restaurantType: string
 }
 
-export const MockMeetingList: MeetingResponse[] = [
+export const MockMeetingList = [
     {
         id: 1,
         participants: [
@@ -252,45 +258,39 @@ export const MockMeetingList: MeetingResponse[] = [
     }
 ]
 
-type Friend = {
-    userId: number
-    name: string
-    lastActive: string
-    isHungry: boolean
-}
-export const MockFriendList = [
+export const MockFriendList: Friend[] = [
     {
-        userId: 1,
+        userId: '1',
         name: '유가은',
         lastActive: '2025-01-01 12:00',
         isHungry: true
     },
     {
-        userId: 2,
+        userId: '2',
         name: '서은우',
         lastActive: '2025-01-01 12:00',
         isHungry: false
     },
     {
-        userId: 3,
+        userId: '3',
         name: '김대규',
         lastActive: '2025-01-01 12:00',
         isHungry: true
     },
     {
-        userId: 4,
+        userId: '4',
         name: '김성휘',
         lastActive: '2025-01-01 12:00',
         isHungry: false
     },
     {
-        userId: 5,
+        userId: '5',
         name: '이민수',
         lastActive: '2025-01-01 12:00',
         isHungry: true
     },
     {
-        userId: 6,
+        userId: '6',
         name: '박소영',
         lastActive: '2025-01-01 12:00',
         isHungry: false
@@ -305,7 +305,7 @@ export const MockPostList: {
     postImageUrl: string
     postType: string
     restaurantInfo: RestaurantInfo
-    comments: CommentResponse[]
+    comments: CommentResponseDto[]
 }[] = [
     {
         postId: 1,

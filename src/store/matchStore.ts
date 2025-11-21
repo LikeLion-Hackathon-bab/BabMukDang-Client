@@ -1,24 +1,18 @@
 import { create } from 'zustand'
+import { PhaseDataBroadcastDto, User } from '@kimdaegyu/babmukdang-shared'
 
-interface PhaseDataBroadcastPayload {
-    phase: number
-    data: any
-}
-
-interface UserInfo {
-    userId: string
-    username: string
-}
 interface MatchStore {
     roomInfo: {
         roomId: string
-        roomUsers: UserInfo[]
+        roomUsers: User[]
     }
     phase: number
-    phaseData: PhaseDataBroadcastPayload | null
-    setRoomInfo: (roomUsers: UserInfo[]) => void
+    phaseData: PhaseDataBroadcastDto | null
+    isSelfReady: boolean
+    setRoomInfo: (roomUsers: User[]) => void
     setPhase: (phase: number) => void
-    setPhaseData: (phaseData: PhaseDataBroadcastPayload) => void
+    setPhaseData: (phaseData: PhaseDataBroadcastDto) => void
+    setIsSelfReady: (isSelfReady: boolean) => void
 }
 
 export const useMatchStore = create<MatchStore>(set => ({
@@ -28,8 +22,10 @@ export const useMatchStore = create<MatchStore>(set => ({
     },
     phase: 0,
     phaseData: null,
+    isSelfReady: false,
     setRoomInfo: roomUsers =>
         set({ roomInfo: { ...useMatchStore.getState().roomInfo, roomUsers } }),
     setPhase: phase => set({ phase }),
-    setPhaseData: phaseData => set({ phaseData })
+    setPhaseData: phaseData => set({ phaseData }),
+    setIsSelfReady: isSelfReady => set({ isSelfReady })
 }))

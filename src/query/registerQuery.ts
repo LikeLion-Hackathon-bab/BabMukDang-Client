@@ -1,18 +1,6 @@
 import { presignProfile, uploadProfileS3 } from '@/apis'
 import { useMutation } from '@tanstack/react-query'
-
-type UploadAndRegisterVars = {
-    currentUserId: string
-    file: File
-    // cdnUrl을 받아서 최종 RegisterRequest를 만드는 빌더
-    buildRequest: (cdnUrl: string) => {
-        imageUrl: string
-        username: string
-        preferences: string[]
-        cantEat: string[]
-    }
-}
-
+import { UploadAndRegisterVars } from '@kimdaegyu/babmukdang-shared'
 export const useUploadProfile = (
     onSuccess: () => void,
     onError: (e: Error) => void

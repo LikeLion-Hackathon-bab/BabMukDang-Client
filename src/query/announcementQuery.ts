@@ -12,7 +12,7 @@ export const useGetAnnouncements = () => {
         queryKey: ['announcements'],
         queryFn: getAnnouncements
     })
-    return { data: data?.data, isLoading, error, refetch }
+    return { data: data, isLoading, error, refetch }
 }
 
 export const usePostAnnouncement = (

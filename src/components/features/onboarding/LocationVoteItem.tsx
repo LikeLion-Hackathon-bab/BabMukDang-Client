@@ -1,11 +1,12 @@
 import { HeartDefaultIcon, HeartFilledIcon } from '@/assets/icons'
+import { LocationCandidateAddUpdateResponseItem } from '@kimdaegyu/babmukdang-shared'
 
 export function LocationVoteItem({
     location,
     handleLocationSelect,
     isSelected
 }: {
-    location: any
+    location: LocationCandidateAddUpdateResponseItem
     handleLocationSelect: (id: string) => void
     isSelected: boolean
 }) {

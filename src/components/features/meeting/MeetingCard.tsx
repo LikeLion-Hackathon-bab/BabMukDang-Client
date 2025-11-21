@@ -2,21 +2,13 @@ import { useState } from 'react'
 import { TagPerson } from '@/components'
 import { MenuIcon, BackIcon, LocationGrayIcon } from '@/assets/icons'
 import { COLORS } from '@/constants/colors'
+import { MeetingResponse } from '@kimdaegyu/babmukdang-shared'
 
-type Meeting = {
-    id: number
-    participants: { name: string; userId: number }[]
-    location: string
-    time: string
-    restaurant: string
-    isCompleted: boolean
-    restaurantType: string
-}
 export function MeetingCard({
     meeting,
     onClick
 }: {
-    meeting: Meeting
+    meeting: MeetingResponse
     onClick: () => void
 }) {
     const [isOpen, setIsOpen] = useState(false)
@@ -36,10 +28,22 @@ export function MeetingCard({
                     <div className="rounded-12 border-gray-2 shadow-drop-1 w-fit flex-none flex-col justify-baseline overflow-hidden border-r-2 border-dashed bg-white p-16 whitespace-nowrap">
                         <div className="flex h-52 w-fit flex-col justify-between">
                             <span className="text-body2-semibold text-black">
-                                {meeting.time.split('일')[0]}
+                                {new Date(meeting.meetingAt).toLocaleString(
+                                    'ko-KR',
+                                    {
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    }
+                                )}
                             </span>
                             <span className="text-body2-semibold text-black">
-                                {meeting.time.split('일')[1]}
+                                {new Date(meeting.meetingAt).toLocaleString(
+                                    'ko-KR',
+                                    {
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    }
+                                )}
                             </span>
                         </div>
                     </div>
@@ -53,7 +57,7 @@ export function MeetingCard({
                                     (participant, idx) => (
                                         <TagPerson
                                             key={idx}
-                                            name={participant.name}
+                                            name={participant.username}
                                             orange={true}
                                         />
                                     )
