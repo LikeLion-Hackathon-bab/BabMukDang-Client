@@ -11,14 +11,14 @@ import {
     ProfileSection
 } from '@/components'
 import { useGetMyProfileDetail, useLogout } from '@/query'
-import { ProfileDetailResponse } from '@/apis/profile'
+import { ProfileDetailResponse } from '@kimdaegyu/babmukdang-shared'
 
 export function ProfilePage() {
     const { hideHeader, resetHeader } = useHeader()
     const { data: profileData } = useGetMyProfileDetail()
     const { mutate: logout } = useLogout()
     const [profile, setProfile] = useState<ProfileDetailResponse>(
-        profileData?.data ?? MockMyProfileData
+        profileData ?? MockMyProfileData
     )
     useEffect(() => {
         hideHeader()
@@ -29,14 +29,14 @@ export function ProfilePage() {
     useEffect(() => {
         if (profileData) {
             setProfile({
-                memberId: profileData.data.memberId,
-                profileImageUrl: profileData.data.profileImageUrl,
-                userName: profileData.data.userName,
-                bio: profileData.data.bio,
-                meetingCount: profileData.data.meetingCount,
-                likes: profileData.data.likes,
-                allergies: profileData.data.allergies,
-                dislikes: profileData.data.dislikes
+                memberId: profileData.memberId,
+                profileImageUrl: profileData.profileImageUrl,
+                userName: profileData.userName,
+                bio: profileData.bio,
+                meetingCount: profileData.meetingCount,
+                likes: profileData.likes,
+                allergies: profileData.allergies,
+                dislikes: profileData.dislikes
             })
         }
     }, [profileData])

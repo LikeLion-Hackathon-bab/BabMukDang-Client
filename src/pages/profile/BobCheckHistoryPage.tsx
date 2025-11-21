@@ -1,7 +1,7 @@
 import { useHeader } from '@/hooks'
 import { useEffect } from 'react'
 import { useGetMyArticles } from '@/query/articlesQuery'
-import { ArticleSummaryResponse } from '@/apis/dto'
+import { ArticleSummaryResponseDto } from '@kimdaegyu/babmukdang-shared'
 
 export function BobCheckHistoryPage() {
     const { setTitle, resetHeader } = useHeader()
@@ -14,13 +14,11 @@ export function BobCheckHistoryPage() {
     }, [])
     return (
         <div className="grid grid-cols-3 justify-items-center gap-12 pt-20">
-            {articles?.data.content.map((article, index) => {
+            {articles?.content.map((article, index) => {
                 const date = formatDate(article.createdAt)
                 const prevDate =
                     index > 0
-                        ? formatDate(
-                              articles?.data.content[index - 1].createdAt
-                          )
+                        ? formatDate(articles?.content[index - 1].createdAt)
                         : ''
                 return (
                     <BobCheckHistoryItem
@@ -38,7 +36,7 @@ function BobCheckHistoryItem({
     article,
     showDate
 }: {
-    article: ArticleSummaryResponse
+    article: ArticleSummaryResponseDto
     showDate: boolean
 }) {
     const date = formatDate(article.createdAt)

@@ -41,7 +41,6 @@ export function UploadPage() {
     useEffect(() => {
         hideBottomNav()
         setTitle('사진 업로드')
-        setTaggedMemberIds([1, 2])
         return () => {
             showBottomNav()
             resetHeader()

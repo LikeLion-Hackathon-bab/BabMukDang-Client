@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import { MockAnnouncements, MockFriendList } from '@/constants/mockData'
-import { Post, PostResponse } from '@/apis/dto'
+import { MockFriendList } from '@/constants/mockData'
+import { Friend, RecruitResponseDto } from '@kimdaegyu/babmukdang-shared'
 
 import { useHeader } from '@/hooks'
 import {
     TabHeader,
-    JoinCompleteModal,
     AnnouncementCarousel,
     InvitationToggleButton,
     RecieveInvitationList,
@@ -14,10 +13,9 @@ import {
     FriendListSection
 } from '@/components'
 import { BOTTOM_NAVIGATION_HEIGHT } from '@/constants/bottomNav'
-import { useGetAnnouncements, useSubscribeAnnouncement } from '@/query'
+import { useGetAnnouncements } from '@/query'
 import { useAuthStore } from '@/store'
 import { useGetInvitations } from '@/query/invitationQuery'
-import { useFriendMeals } from '@/query/friendsQuery'
 
 export function MatchingPage() {
     const [activeTab, setActiveTab] = useState<'announcement' | 'invitation'>(
@@ -58,22 +56,25 @@ export function MatchingPage() {
 }
 
 function AnnouncementTab() {
-    const [announcements, setAnnouncements] = useState<PostResponse[]>([])
+    const [announcements, setAnnouncements] = useState<RecruitResponseDto[]>([])
     const { userId } = useAuthStore()
-    const [myAnnouncements, setMyAnnouncements] = useState<PostResponse | null>(
-        null
-    )
+    const [myAnnouncements, setMyAnnouncements] =
+        useState<RecruitResponseDto | null>(null)
     const { data: announcementsData } = useGetAnnouncements()
     useEffect(() => {
         console.log('announcementsData', announcementsData)
         setMyAnnouncements(
             announcementsData?.find(
-                announcement => announcement.author.authorId === Number(userId)
+                announcement => announcement.author.userId === String(userId)
             ) || null
         )
-        console.log('myAnnouncements', myAnnouncements, userId)
-        setAnnouncements(announcementsData || [])
-    }, [])
+        console.log('myAnnouncements', myAnnouncements)
+        setAnnouncements(
+            announcementsData?.filter(
+                announcement => announcement.author.userId !== String(userId)
+            ) || []
+        )
+    }, [announcementsData, userId])
     return (
         <div className="bg-primary-100 flex h-full flex-col justify-center pb-90">
             <div className="flex flex-1 flex-col justify-center pb-90">
@@ -89,19 +90,17 @@ function AnnouncementTab() {
 
 function InvitationTab() {
     const { data: invitations } = useGetInvitations()
-    const { data: friendMeals } = useFriendMeals()
     console.log('invitations', invitations)
-    console.log('friendMeals', friendMeals)
     return (
         <div
             className={`flex flex-col gap-40 px-20 pt-18 pb-${BOTTOM_NAVIGATION_HEIGHT}`}>
             {/* 식사 상태 토글 버튼 */}
             <div className="flex flex-col gap-16">
                 <InvitationToggleButton />
-                <RecieveInvitationList invitations={invitations?.data || []} />
+                <RecieveInvitationList invitations={invitations || []} />
             </div>
             <div className="flex flex-col items-center justify-center pb-10">
-                <FriendListSection friendList={friendMeals?.data || []} />
+                <FriendListSection friendList={MockFriendList as Friend[]} />
             </div>
         </div>
     )

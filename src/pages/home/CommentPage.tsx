@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
-import { PostCard, CommentList, ChatInput } from '@/components'
+import { useEffect, useState } from 'react'
+import { CommentList, ChatInput } from '@/components'
 import { useHeader, useBottomNav } from '@/hooks'
-import { useLocation, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useCommentArticle, useGetArticleComments } from '@/query'
-import { CommentResponse } from '@/apis/dto'
 import { buildCommentTree } from '@/lib'
+
 type TreeComment = ReturnType<typeof buildCommentTree>[number]
 export function CommentPage() {
     const { resetHeader, setTitle } = useHeader()
