@@ -1,4 +1,9 @@
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import {
+    useLocation,
+    useNavigate,
+    useParams,
+    useSearchParams
+} from 'react-router-dom'
 import { useMatchStore } from '@/store/matchStore'
 import { useSocket } from '@/contexts/SocketContext'
 import {
@@ -7,31 +12,37 @@ import {
     ProfileDefaultIcon,
     TimeGrayIcon
 } from '@/assets/icons'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import {
+    AnnouncementStage,
+    InvitationStage,
+    Participant,
+    RoomInitialState,
+    WaitingInitialState
+} from '@kimdaegyu/babmukdang-shared'
 
 export function WaitingPage() {
     const navigate = useNavigate()
-    const {
-        matchType,
-        participants,
-        stage,
-        locationInitial,
-        meetingAtInitial
-    } = useSocket()
-    const matchedUser = {
-        id: '1',
-        name: '김사자',
-        profileImage: undefined
-    }
-
-    const meetingInfo = useMemo(
-        () => ({
-            location: locationInitial,
-            time: meetingAtInitial,
-            maxParticipants: participants.length
-        }),
-        [locationInitial, meetingAtInitial]
+    const matchType = useLocation().pathname.split('/')[0]
+    const service = useSocket()
+    const [participants, setParticipants] = useState<Participant[]>([])
+    const [stage, setStage] = useState<AnnouncementStage | InvitationStage>(
+        'waiting'
     )
+    const [waitingInitialState, setWaitingInitialState] =
+        useState<WaitingInitialState | null>(null)
+    useEffect(() => {
+        service?.roomInitialState$.subscribe(data => {
+            setParticipants(data.participants)
+        })
+        service?.stage$.subscribe(data => {
+            setStage(data.phase)
+        })
+        service?.waitingState$.subscribe(data => {
+            setWaitingInitialState(data)
+        })
+    }, [service])
+
     return (
         <div className="relative flex h-full w-full flex-col items-center justify-baseline pt-100">
             {/* 메인 컨텐츠 */}
@@ -55,9 +66,9 @@ export function WaitingPage() {
                             <div
                                 key={participant.userId}
                                 className="shadow-drop-1 mb-20 -ml-10 size-120 overflow-hidden rounded-full">
-                                {participant?.userProfileImageURL ? (
+                                {participant?.profileImageUrl ? (
                                     <img
-                                        src={participant.userProfileImageURL}
+                                        src={participant.profileImageUrl}
                                         alt={`${participant.username} 프로필`}
                                         className="bg-gray-3 h-full w-full object-cover"
                                     />
@@ -82,20 +93,20 @@ export function WaitingPage() {
                         <div className="flex items-center gap-4">
                             <TimeGrayIcon />
                             <span className="text-body2-semibold text-black">
-                                {meetingInfo.time &&
-                                    formatTime(meetingInfo.time)}
+                                {waitingInitialState?.meetingAt &&
+                                    formatTime(waitingInitialState.meetingAt)}
                             </span>
                         </div>
                         <div className="flex items-center gap-4">
                             <LocationGrayIcon />
                             <span className="text-body2-semibold text-black">
-                                {meetingInfo.location}
+                                {waitingInitialState?.locationInitial}
                             </span>
                         </div>
                         <div className="flex items-center gap-4">
                             <PeopleGrayIcon />
                             <span className="text-body2-semibold text-black">
-                                {meetingInfo.maxParticipants}명
+                                {participants.length}명
                             </span>
                         </div>
                     </div>

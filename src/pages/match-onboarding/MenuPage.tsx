@@ -3,77 +3,56 @@ import { useEffect, useState } from 'react'
 import { useSocket } from '@/contexts/SocketContext'
 import { MenuCard, OnboardingHeader } from '@/components'
 import { useAuthStore } from '@/store'
+import {
+    MenuInitialState,
+    MenuPickUpdateResponseDto
+} from '@kimdaegyu/babmukdang-shared'
 
-export interface MenuRecommendationDto {
-    code: number
-    label: string
+function isMenuPickInitialState(
+    x: MenuInitialState | MenuPickUpdateResponseDto
+): x is MenuInitialState {
+    return x != null && typeof x === 'object' && 'initialMenus' in x
 }
-interface initialState {
-    availableMenus: MenuRecommendationDto[]
-    menuPerUserSelections: Map<string, string[]>
-}
-interface MenuRecommendation extends MenuRecommendationDto {
-    selectedUsers?: string[]
-}
-
-type MenuPickUpdate = {
-    menuId: string
-    selectedUsers: string[]
-}[]
 export function MenuPage() {
-    const { initialState, categories, socket } = useSocket()
+    const service = useSocket()
     const { userId } = useAuthStore()
-    const [menuRecommendations, setMenuRecommendations] = useState<
-        MenuRecommendation[]
-    >([])
+    const [menuRecommendations, setMenuRecommendations] =
+        useState<MenuInitialState>({
+            initialMenus: [],
+            menuPick: []
+        })
     useEffect(() => {
-        if (initialState && initialState.stage === 'menu') {
-            setMenuRecommendations(
-                initialState.initialState
-                    .availableMenus as MenuRecommendationDto[]
-            )
-            const menuPerUserSelections =
-                initialState.initialState.menuPerUserSelections
-            setMenuPerUserSelections(menuPerUserSelections)
-        }
-    }, [initialState])
+        if (!service) return
+        service.menuInitialState$.subscribe(data => {
+            console.log('menuInitialState', data)
+            setMenuRecommendations(data)
+        })
+        service.menuUpdated$.subscribe(data => {
+            setMenuRecommendations(prev => ({
+                ...prev,
+                menuPick: data
+            }))
+        })
+    }, [service])
 
     const handleSelectPeople = (index: number) => {
-        socket?.emit('pick-menu', { menuId: menuRecommendations[index].label })
-    }
-
-    const setMenuPerUserSelections = (data: MenuPickUpdate) => {
-        setMenuRecommendations(prev =>
-            prev.map(item => {
-                const updateItem = data.find(
-                    update => update.menuId === item.label
-                )
-                if (updateItem) {
-                    return {
-                        ...item,
-                        selectedUsers: updateItem.selectedUsers
-                    }
-                }
-                return item
-            })
-        )
-    }
-
-    useEffect(() => {
-        socket?.on('menu-pick-updated', (data: MenuPickUpdate) => {
-            setMenuPerUserSelections(data)
+        console.log('menuRecommendations', menuRecommendations)
+        service?.emit('pick-menu', {
+            menuCode: menuRecommendations.initialMenus[index].code
         })
-    }, [socket])
+    }
     return (
         <>
             <div className="grid grid-cols-3 gap-10">
-                {menuRecommendations.map((menu, index) => (
+                {menuRecommendations.initialMenus.map((menu, index) => (
                     <MenuCard
                         key={index}
-                        selectedUsers={menu?.selectedUsers}
+                        selectedUsers={menuRecommendations
+                            .menuPick!.find(item => item.menuCode === menu.code)
+                            ?.selectedUsers.map(String)}
                         menuName={menu.label}
-                        category={categories.find(
-                            item => item.name === menu.label
+                        category={service!.menuManifest.find(
+                            item => item.id === menu.code
                         )}
                         onClick={() => handleSelectPeople(index)}
                         currentUser={userId}

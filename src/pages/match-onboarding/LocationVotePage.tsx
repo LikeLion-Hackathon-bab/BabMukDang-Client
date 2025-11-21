@@ -1,26 +1,48 @@
 import { LocationVoteItem } from '@/components'
 import { useSocket } from '@/contexts/SocketContext'
+import {
+    LocationCandidateVoteUpdateResponseDto,
+    LocationVoteInitialState
+} from '@kimdaegyu/babmukdang-shared'
 import { useEffect, useState } from 'react'
 
+function isLocationVoteInitialState(
+    x: LocationVoteInitialState | LocationCandidateVoteUpdateResponseDto
+): x is LocationVoteInitialState {
+    return x != null && typeof x === 'object' && 'locations' in x
+}
 export function LocationVotePage() {
-    const { initialState, socket } = useSocket()
-    const [locationCandidates, setLocationCandidates] = useState<any[]>([])
-    const [selectedLocation, setSelectedLocation] = useState<any>(null)
+    const service = useSocket()
+    const [locationCandidates, setLocationCandidates] =
+        useState<LocationVoteInitialState>({ locations: [], votes: [] })
+    const [selectedLocation, setSelectedLocation] = useState<string | null>(
+        null
+    )
     useEffect(() => {
-        if (initialState && initialState.stage === 'location-vote') {
-            setLocationCandidates(initialState.initialState.candidates)
+        if (!service) return
+        const sub = service.locationVoteInitialState$.subscribe(data => {
+            setLocationCandidates(data)
+        })
+        console.log('sub', sub)
+        const sub2 = service.locationVoteUpdated$.subscribe(data => {
+            setLocationCandidates(prev => ({
+                ...prev,
+                votes: data
+            }))
+        })
+        return () => {
+            sub.unsubscribe()
+            sub2.unsubscribe()
         }
-    }, [initialState])
+    }, [service])
     const handleLocationSelect = (id: string) => {
         setSelectedLocation(id)
-        socket?.emit('vote-location', {
-            candidateId: id
-        })
+        service?.emit('vote-location', { locationId: id })
     }
     return (
         <>
             <div className="mt-20 flex flex-col gap-13">
-                {locationCandidates.map(location => (
+                {locationCandidates.locations.map(location => (
                     <LocationVoteItem
                         key={location.id}
                         location={location}

@@ -29,7 +29,7 @@ const TimePicker = ({
     defaultSelected,
     onChange
 }: TimePickerProps) => {
-    const { socket } = useSocket()
+    const service = useSocket()
     const hours = endHour - startHour
     const totalSlots = hours * slotsPerHour
     const [selected, setSelected] = useState<boolean[]>(
@@ -104,7 +104,7 @@ const TimePicker = ({
             setIsDragging(false)
             // 드래그 종료 시 서버에 전송
             const times = ranges.map(r => `${r.start}–${r.end}`)
-            socket?.emit('pick-times', { times })
+            service?.emit('pick-times', { times })
         }
         window.addEventListener('mouseup', handleMouseUp)
         window.addEventListener('touchend', handleMouseUp)
@@ -112,7 +112,7 @@ const TimePicker = ({
             window.removeEventListener('mouseup', handleMouseUp)
             window.removeEventListener('touchend', handleMouseUp)
         }
-    }, [ranges, socket])
+    }, [ranges, service])
 
     // row 기준으로 slot 선택
     const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {

@@ -7,12 +7,34 @@ import {
     ProfileDefaultIcon,
     TimeGrayIcon
 } from '@/assets/icons'
-import { useMemo } from 'react'
+import { useEffect, useState } from 'react'
+import {
+    AnnouncementStage,
+    FinalState,
+    InvitationStage,
+    Participant
+} from '@kimdaegyu/babmukdang-shared'
 
 export function FinishPage() {
     const navigate = useNavigate()
-    const { matchType, participants, stage, finalState } = useSocket()
+    const service = useSocket()
+    const [participants, setParticipants] = useState<Participant[]>([])
+    const [stage, setStage] = useState<AnnouncementStage | InvitationStage>(
+        'finish'
+    )
+    const [finalState, setFinalState] = useState<FinalState | null>(null)
 
+    useEffect(() => {
+        service?.roomInitialState$.subscribe(data => {
+            setParticipants(data.participants)
+        })
+        service?.stage$.subscribe(data => {
+            setStage(data.phase)
+        })
+        service?.finalState$.subscribe(data => {
+            setFinalState(data)
+        })
+    }, [service])
     return (
         <>
             <div className="relative flex h-full w-full flex-col items-center justify-baseline pt-100">
@@ -24,31 +46,33 @@ export function FinishPage() {
                     </h1>
 
                     {/* 프로필 이미지 */}
-                    {/* <div className="ml-10 flex items-center justify-center">
-                        {participants?.map(participant => (
-                            <div
-                                key={participant.userId}
-                                className="shadow-drop-1 mb-20 -ml-10 size-120 overflow-hidden rounded-full">
-                                {participant?.userProfileImageURL ? (
-                                    <img
-                                        src={participant.userProfileImageURL}
-                                        alt={`${participant.username} 프로필`}
-                                        className="bg-gray-3 h-full w-full object-cover"
-                                    />
-                                ) : (
-                                    <ProfileDefaultIcon className="size-full" />
-                                )}
-                            </div>
-                        ))}
+                    <div className="ml-10 flex items-center justify-center">
+                        {stage === 'finish' &&
+                            participants?.map(participant => (
+                                <div
+                                    key={participant.userId}
+                                    className="shadow-drop-1 mb-20 -ml-10 size-120 overflow-hidden rounded-full">
+                                    {participant?.profileImageUrl ? (
+                                        <img
+                                            src={participant.profileImageUrl}
+                                            alt={`${participant.username} 프로필`}
+                                            className="bg-gray-3 h-full w-full object-cover"
+                                        />
+                                    ) : (
+                                        <ProfileDefaultIcon className="size-full" />
+                                    )}
+                                </div>
+                            ))}
                     </div>
 
                     {/* 사용자 이름 */}
-                    {/* <h2 className="text-title1-semibold mb-32 text-black"> 
-                        {participants
-                            .map(participant => participant.username)
-                            .join(', ')}{' '}
+                    <h2 className="text-title1-semibold mb-32 text-black">
+                        {stage === 'finish' &&
+                            participants
+                                .map(participant => participant.username)
+                                .join(', ')}{' '}
                         님
-                    </h2> */}
+                    </h2>
 
                     {/* Time and Location Info */}
                     <div className="rounded-12 border-primary-400 mb-14 border p-16">
@@ -63,7 +87,7 @@ export function FinishPage() {
                             <div className="flex items-center gap-4">
                                 <LocationGrayIcon />
                                 <span className="text-body2-semibold text-black">
-                                    {finalState?.location}
+                                    {finalState?.location?.placeName}
                                 </span>
                             </div>
                             <div className="flex items-center gap-4">
