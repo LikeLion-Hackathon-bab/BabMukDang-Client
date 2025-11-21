@@ -2,14 +2,7 @@ import { useState } from 'react'
 import { FriendCard } from './InvitationFriendCard'
 import { FilterList, SearchInput } from '@/components'
 import { INVITATION_FILTER_LIST } from '@/constants/filters'
-
-type Friend = {
-    memberId: number
-    userName: string
-    profileImageUrl: string
-    hungry: boolean
-    label: string
-}
+import { Friend } from '@kimdaegyu/babmukdang-shared'
 
 export function FriendListSection({ friendList }: { friendList: Friend[] }) {
     const [activeFilter, setActiveFilter] = useState<{
@@ -20,10 +13,9 @@ export function FriendListSection({ friendList }: { friendList: Friend[] }) {
         useState<Friend[]>(friendList)
     const handleSearch = (search: string) => {
         setFilteredFriendList(
-            friendList.filter(friend => friend.userName.includes(search))
+            friendList.filter(friend => friend.name.includes(search))
         )
     }
-    console.log('filteredFriendList', filteredFriendList)
     return (
         <div className="flex w-full flex-col gap-16">
             <div className="flex flex-col gap-16">
@@ -45,14 +37,11 @@ export function FriendListSection({ friendList }: { friendList: Friend[] }) {
                         .filter(friend =>
                             activeFilter.key === 'all'
                                 ? true
-                                : friend.hungry ===
+                                : friend.isHungry ===
                                   (activeFilter.key === 'hungry')
                         )
                         .map(friend => (
-                            <FriendCard
-                                friend={friend}
-                                key={friend.memberId}
-                            />
+                            <FriendCard friend={friend} />
                         ))}
                 </div>
             </div>

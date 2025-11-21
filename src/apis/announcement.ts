@@ -1,46 +1,56 @@
 import { client } from './client'
-import { BaseResponse, PostRequest, PostResponse } from './dto'
+import {
+    RecruitResponseDto,
+    RecruitRequestDto
+} from '@kimdaegyu/babmukdang-shared'
 
-export const getAnnouncements = async (): Promise<
-    BaseResponse<PostResponse[]>
-> => {
-    const res = await client.get(`${import.meta.env.VITE_BASE_API_URL}/posts`)
-    return res.data
+export const getAnnouncements = async (): Promise<RecruitResponseDto[]> => {
+    const res = await client.get(
+        `${import.meta.env.VITE_BASE_API_URL}/recruits`
+    )
+    return res.data.data as RecruitResponseDto[]
 }
 
 export const postAnnouncement = async (
-    data: PostRequest
-): Promise<BaseResponse<void>> => {
+    data: RecruitRequestDto
+): Promise<void> => {
     const res = await client.post(
-        `${import.meta.env.VITE_BASE_API_URL}/posts`,
+        `${import.meta.env.VITE_BASE_API_URL}/recruits`,
         data
     )
-    return res.data
+    return res.data.data as void
 }
 
 export const closeAnnouncement = async (
     announcementId: number
-): Promise<BaseResponse<void>> => {
+): Promise<void> => {
     const res = await client.post(
-        `${import.meta.env.VITE_BASE_API_URL}/posts/${announcementId}/close`
+        `${import.meta.env.VITE_BASE_API_URL}/recruits/${announcementId}/close`
     )
-    return res.data
+    return res.data.data as void
 }
 
 export const joinAnnouncement = async (
     announcementId: number
-): Promise<BaseResponse<void>> => {
+): Promise<void> => {
     const res = await client.post(
-        `${import.meta.env.VITE_BASE_API_URL}/participate/${announcementId}`
+        `${import.meta.env.VITE_BASE_API_URL}/recruits/${announcementId}/join`
     )
-    return res.data
+    return res.data.data as void
 }
 
 export const subscribeAnnouncement = async (
     announcementId: number
-): Promise<BaseResponse<void>> => {
-    const res = await client.post(
-        `${import.meta.env.VITE_BASE_API_URL}/subscribe/${announcementId}`
+): Promise<EventSource> => {
+    const es = new EventSource(
+        `${import.meta.env.VITE_SERVER_URL}${import.meta.env.VITE_BASE_API_URL}/sse/rooms/${announcementId}`
     )
-    return res.data
+
+    es.addEventListener('heartbeat', () => {
+        // keep-alive
+    })
+    es.onerror = event => {
+        console.error(event)
+    }
+    return es
 }

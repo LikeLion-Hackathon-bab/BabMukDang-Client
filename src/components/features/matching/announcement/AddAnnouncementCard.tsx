@@ -1,4 +1,4 @@
-import { Post } from '@/apis/dto'
+import { Recruit } from '@kimdaegyu/babmukdang-shared'
 import { DownIcon, UpIcon } from '@/assets/icons'
 import { useRef, useState } from 'react'
 
@@ -6,8 +6,8 @@ export function AddAnnouncementCard({
     announcementAddData,
     setAnnouncementAddData
 }: {
-    announcementAddData: Post
-    setAnnouncementAddData: (data: Post) => void
+    announcementAddData: Recruit
+    setAnnouncementAddData: (data: Recruit) => void
 }) {
     const [message, setMessage] = useState(announcementAddData.message)
     const [period, setPeriod] = useState<'오전' | '오후'>('오전')

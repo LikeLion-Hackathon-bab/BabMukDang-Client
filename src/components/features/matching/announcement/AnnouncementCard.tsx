@@ -1,4 +1,4 @@
-import { PostResponse } from '@/apis/dto'
+import { RecruitResponseDto } from '@kimdaegyu/babmukdang-shared'
 import {
     ProfileDefaultIcon,
     EmptyViewIcon,
@@ -15,7 +15,7 @@ export function AnnouncementCard({
     currentIndex,
     isActive
 }: {
-    announcement: PostResponse
+    announcement: RecruitResponseDto
     cardRef: React.RefObject<HTMLDivElement>
     index: number
     currentIndex: number
@@ -40,7 +40,7 @@ export function AnnouncementCard({
                         <ProfileDefaultIcon className="size-20" />
                     )}
                     <span className="text-body1-semibold">
-                        {announcement.author.name}
+                        {announcement.author.username}
                     </span>
                 </div>
                 <span className="text-caption-medium text-gray-5">
@@ -103,7 +103,7 @@ export function AnnouncementCard({
                                     <ProfileDefaultIcon className="size-20" />
                                 )}
                                 <span className="text-body2-medium">
-                                    {participant.name}
+                                    {participant.username}
                                 </span>
                             </div>
                         ))}

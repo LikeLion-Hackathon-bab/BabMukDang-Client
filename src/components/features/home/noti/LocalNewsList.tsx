@@ -1,14 +1,5 @@
 import { EmptyNotiView, LocalNewsNotiCard, SwipeableCard } from '@/components'
-
-interface LocalNewsNoti {
-    id: number
-    type: 'school' | 'restaurant' | 'area'
-    title: string
-    time: string
-    message: string
-    period: string
-    imageUrl?: string
-}
+import { LocalNewsNoti } from '@kimdaegyu/babmukdang-shared'
 export function LocalNewsList({
     localNewsNotis,
     handleDeleteLocalNewsNoti

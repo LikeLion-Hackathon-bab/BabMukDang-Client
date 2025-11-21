@@ -30,15 +30,15 @@ export function Layout() {
 
         if (!userId && !username) {
             if (myProfile) {
-                setUserId(myProfile.data.memberId.toString())
-                setUsername(myProfile.data.userName)
+                setUserId(myProfile.member.id.toString())
+                setUsername(myProfile.member.username)
                 setProfile({
-                    profileImageUrl: myProfile.data.profileImageUrl,
-                    userName: myProfile.data.userName,
-                    bio: myProfile.data.bio,
-                    meetingCount: myProfile.data.meetingCount
+                    profileImageUrl: myProfile.member.profileImageUrl,
+                    userName: myProfile.member.username,
+                    bio: myProfile.member.bio,
+                    meetingCount: myProfile.member.meetingCount
                 })
-                console.log(myProfile.data)
+                console.log(myProfile.member)
             } else {
                 refetch()
             }

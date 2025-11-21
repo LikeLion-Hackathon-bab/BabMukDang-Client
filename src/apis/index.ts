@@ -38,5 +38,4 @@ export {
     getPreferenceMeta,
     postOnboardingPreference
 } from './preference'
-export { getMeetings } from './meeting'
-export { getFriendMeals } from './friends'
+export { getUncompletedPlans, getCompletedPlans } from './plans'

@@ -1,12 +1,4 @@
-interface LocalNewsNoti {
-    id: number
-    type: 'school' | 'restaurant' | 'area'
-    title: string
-    time: string
-    message: string
-    period: string
-    imageUrl?: string
-}
+import { LocalNewsNoti } from '@kimdaegyu/babmukdang-shared'
 export function LocalNewsNotiCard({ noti }: { noti: LocalNewsNoti }) {
     return (
         <div className="flex w-full flex-col gap-10 px-20 py-16">

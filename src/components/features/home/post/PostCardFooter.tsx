@@ -1,18 +1,5 @@
 import { LocationGrayIcon } from '@/assets/icons'
-type RestaurantInfo = {
-    placeId: string
-    placeName: string
-    addressName: string
-    roadAddressName: string
-    phoneNumber: string
-    placeUrl?: string
-    distance?: string
-    categoryGroupCode: string
-    categoryGroupName: string
-    categoryName: string
-    x: number
-    y: number
-}
+import { RestaurantInfo } from '@kimdaegyu/babmukdang-shared'
 export const PostCardFooter = ({
     restaurantInfo
 }: {

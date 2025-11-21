@@ -9,7 +9,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { COLORS } from '@/constants/colors'
 import { mealTimeMapReverse, MealTimeText } from '@/constants/post'
-import { LikePostResponse } from '@/apis/dto'
+import { LikePostResponseDto } from '@kimdaegyu/babmukdang-shared'
 
 export const PostCardContent = ({
     postImageUrl,
@@ -29,7 +29,7 @@ export const PostCardContent = ({
     commentCount: number
 }) => {
     const [isLiked, setIsLiked] = useState(likedByMe)
-    const onSuccess = (data: LikePostResponse) => {
+    const onSuccess = (data: LikePostResponseDto) => {
         if (data.liked) {
             setIsLiked(true)
         } else {

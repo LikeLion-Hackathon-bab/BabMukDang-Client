@@ -1,52 +1,36 @@
 import { client } from './client'
-import { BaseResponse } from './dto'
+import {
+    InvitationPostRequest,
+    InvitationResponse
+} from '@kimdaegyu/babmukdang-shared'
 
-export interface InvitationPostRequest {
-    inviteeId: {
-        id: number
-    }
-    message: string
-}
-
-export interface InvitationResponse {
-    invitationId: number
-    inviterName: string
-    inviterProfileImageUrl?: string
-}
-
-export const rejectInvitation = async (
-    invitationId: number
-): Promise<BaseResponse<void>> => {
+export const rejectInvitation = async (invitationId: number): Promise<void> => {
     const response = await client.post(
         `${import.meta.env.VITE_BASE_API_URL}/invitations/${invitationId}/reject`
     )
-    return response.data
+    return response.data.data
 }
 
-export const acceptInvitation = async (
-    invitationId: number
-): Promise<BaseResponse<void>> => {
+export const acceptInvitation = async (invitationId: number): Promise<void> => {
     const response = await client.post(
         `${import.meta.env.VITE_BASE_API_URL}/invitations/${invitationId}/accept`
     )
-    return response.data
+    return response.data.data
 }
 
 export const sendInvitation = async (
     data: InvitationPostRequest
-): Promise<BaseResponse<void>> => {
+): Promise<void> => {
     const response = await client.post(
         `${import.meta.env.VITE_BASE_API_URL}/invitations/send`,
         data
     )
-    return response.data
+    return response.data.data
 }
 
-export const getInvitations = async (): Promise<
-    BaseResponse<InvitationResponse[]>
-> => {
+export const getInvitations = async (): Promise<InvitationResponse[]> => {
     const response = await client.get(
         `${import.meta.env.VITE_BASE_API_URL}/invitations`
     )
-    return response.data
+    return response.data.data
 }

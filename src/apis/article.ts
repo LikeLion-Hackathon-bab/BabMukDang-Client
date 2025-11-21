@@ -1,30 +1,29 @@
 import { client } from './client'
 import {
-    ArticleDetailResponse,
-    ArticlePostRequest,
-    CommentPostRequest,
-    CommentResponse,
-    LikePostResponse,
-    PageArticleSummaryResponse,
-    BaseResponse
-} from './dto'
+    ArticleGetResponseDto,
+    ArticlePostRequestDto,
+    CommentResponseDto,
+    CommentPostRequestDto,
+    LikePostResponseDto,
+    PageArticleSummaryResponse
+} from '@kimdaegyu/babmukdang-shared'
 
 export const getArticle = async (
     articleId: number
-): Promise<ArticleDetailResponse> => {
+): Promise<ArticleGetResponseDto> => {
     const res = await client.get(
         `${import.meta.env.VITE_BASE_API_URL}/articles/${articleId}`
     )
-    return res.data as ArticleDetailResponse
+    return res.data.data as ArticleGetResponseDto
 }
 
 export const getArticleComments = async (
     articleId: number
-): Promise<CommentResponse[]> => {
+): Promise<CommentResponseDto[]> => {
     const res = await client.get(
         `${import.meta.env.VITE_BASE_API_URL}/articles/${articleId}/comments`
     )
-    return res.data as CommentResponse[]
+    return res.data.data as CommentResponseDto[]
 }
 
 export const getHomeArticles =
@@ -32,7 +31,7 @@ export const getHomeArticles =
         const res = await client.get(
             `${import.meta.env.VITE_BASE_API_URL}/articles/home`
         )
-        return res.data as PageArticleSummaryResponse
+        return res.data.data as PageArticleSummaryResponse
     }
 
 export const getArticlesByAuthor = async (
@@ -41,43 +40,45 @@ export const getArticlesByAuthor = async (
     const res = await client.get(
         `${import.meta.env.VITE_BASE_API_URL}/articles/by-author/${authorId}`
     )
-    return res.data as PageArticleSummaryResponse
+    return res.data.data as PageArticleSummaryResponse
 }
 
-export const postArticle = async (data: ArticlePostRequest): Promise<void> => {
+export const postArticle = async (
+    data: ArticlePostRequestDto
+): Promise<void> => {
     console.log(data)
     const res = await client.post(
         `${import.meta.env.VITE_BASE_API_URL}/articles`,
         data
     )
-    return res.data as void
+    return res.data.data as void
 }
 
 export const likeArticle = async (
     articleId: number
-): Promise<LikePostResponse> => {
+): Promise<LikePostResponseDto> => {
     const res = await client.post(
         `${import.meta.env.VITE_BASE_API_URL}/articles/${articleId}/like`
     )
-    return res.data
+    return res.data.data
 }
 
 export const postArticleComment = async (
     articleId: number,
-    data: CommentPostRequest
+    data: CommentPostRequestDto
 ): Promise<void> => {
     const res = await client.post(
         `${import.meta.env.VITE_BASE_API_URL}/articles/${articleId}/comments`,
         data
     )
-    return res.data as void
+    return res.data.data as void
 }
 
 export const deleteArticle = async (articleId: number): Promise<void> => {
     const res = await client.delete(
         `${import.meta.env.VITE_BASE_API_URL}/articles/${articleId}`
     )
-    return res.data
+    return res.data.data
 }
 
 export const deleteArticleComment = async (
@@ -86,12 +87,12 @@ export const deleteArticleComment = async (
     const res = await client.delete(
         `${import.meta.env.VITE_BASE_API_URL}/articles/comments/${commentId}`
     )
-    return res.data as void
+    return res.data.data as void
 }
 
 export const getArticlesByMember = async (
     memberId: number
-): Promise<BaseResponse<PageArticleSummaryResponse>> => {
+): Promise<PageArticleSummaryResponse> => {
     const res = await client.get(
         `${import.meta.env.VITE_BASE_API_URL}/members/${memberId}/articles`,
         {
@@ -100,12 +101,10 @@ export const getArticlesByMember = async (
             }
         }
     )
-    return res.data as BaseResponse<PageArticleSummaryResponse>
+    return res.data.data as PageArticleSummaryResponse
 }
 
-export const getMyArticles = async (): Promise<
-    BaseResponse<PageArticleSummaryResponse>
-> => {
+export const getMyArticles = async (): Promise<PageArticleSummaryResponse> => {
     const res = await client.get(
         `${import.meta.env.VITE_BASE_API_URL}/members/me/articles`,
         {
@@ -114,5 +113,5 @@ export const getMyArticles = async (): Promise<
             }
         }
     )
-    return res.data as BaseResponse<PageArticleSummaryResponse>
+    return res.data.data as PageArticleSummaryResponse
 }

@@ -1,25 +1,20 @@
 import { CardChoice, NextButton, SearchInput } from '@/components'
 import { useNavigate } from 'react-router-dom'
 import { useMemo, useState } from 'react'
-
-type MenuOption = {
-    key: string
-    label: string
-}
-
+import { Menu } from '@kimdaegyu/babmukdang-shared'
 export function AllergicMenuPage() {
     const navigate = useNavigate()
-    const options: MenuOption[] = useMemo(
+    const options: Menu[] = useMemo(
         () => [
-            { key: 'korean', label: '한식' },
-            { key: 'chinese', label: '중식' },
-            { key: 'japanese', label: '일식' },
-            { key: 'western', label: '양식' },
-            { key: 'snack', label: '분식' },
-            { key: 'chicken', label: '치킨' },
-            { key: 'pizza', label: '피자' },
-            { key: 'burger', label: '버거' },
-            { key: 'dessert', label: '디저트' }
+            { code: 'korean', label: '한식' },
+            { code: 'chinese', label: '중식' },
+            { code: 'japanese', label: '일식' },
+            { code: 'western', label: '양식' },
+            { code: 'snack', label: '분식' },
+            { code: 'chicken', label: '치킨' },
+            { code: 'pizza', label: '피자' },
+            { code: 'burger', label: '버거' },
+            { code: 'dessert', label: '디저트' }
         ],
         []
     )
@@ -49,10 +44,10 @@ export function AllergicMenuPage() {
             <div className="grid grid-cols-3 justify-items-center gap-12">
                 {options.map(option => (
                     <CardChoice
-                        key={option.key}
+                        key={option.code}
                         label={option.label}
-                        selected={selectedKeys.has(option.key)}
-                        onToggle={() => toggle(option.key)}
+                        selected={selectedKeys.has(option.code)}
+                        onToggle={() => toggle(option.code)}
                     />
                 ))}
             </div>

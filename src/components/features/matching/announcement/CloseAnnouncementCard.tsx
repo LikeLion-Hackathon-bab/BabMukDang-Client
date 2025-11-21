@@ -1,4 +1,4 @@
-import { PostResponse } from '@/apis/dto'
+import { RecruitResponseDto } from '@kimdaegyu/babmukdang-shared'
 import {
     ProfileDefaultIcon,
     LocationWhiteIcon,
@@ -9,7 +9,7 @@ import {
 export function CloseAnnouncementCard({
     announcement
 }: {
-    announcement: PostResponse
+    announcement: RecruitResponseDto
 }) {
     return (
         <div
@@ -19,7 +19,7 @@ export function CloseAnnouncementCard({
                 <div className="flex items-center gap-8">
                     <ProfileDefaultIcon className="size-20" />
                     <span className="text-body1-semibold">
-                        {announcement.author.name}
+                        {announcement.author.username}
                     </span>
                 </div>
                 <span className="text-caption-medium text-gray-5">
@@ -73,7 +73,7 @@ export function CloseAnnouncementCard({
                             className="flex items-center gap-8">
                             <ProfileDefaultIcon className="size-20" />
                             <span className="text-body2-medium">
-                                {participant.name}
+                                {participant.username}
                             </span>
                         </div>
                     ))}

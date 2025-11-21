@@ -1,4 +1,4 @@
-import { PostResponse } from '@/apis/dto'
+import { RecruitResponseDto } from '@kimdaegyu/babmukdang-shared'
 import { ModalTrigger, MutalButtonSmall } from '@/components'
 import { useJoinAnnouncement } from '@/query'
 
@@ -8,8 +8,8 @@ export function JoinButton({
     setSelectedAnnouncement
 }: {
     disabled?: boolean
-    announcement: PostResponse
-    setSelectedAnnouncement: (announcement: PostResponse) => void
+    announcement: RecruitResponseDto
+    setSelectedAnnouncement: (announcement: RecruitResponseDto) => void
 }) {
     const { mutate: joinAnnouncement } = useJoinAnnouncement(
         () => {
@@ -20,7 +20,8 @@ export function JoinButton({
         }
     )
     const handleJoinAnnouncement = () => {
-        joinAnnouncement(announcement.postId)
+        console.log('handleJoinAnnouncement', announcement)
+        joinAnnouncement(announcement.id)
         setSelectedAnnouncement(announcement)
     }
     return (

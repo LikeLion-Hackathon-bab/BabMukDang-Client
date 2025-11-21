@@ -3,7 +3,7 @@ import {
     OnboardingPreferenceRequest,
     PreferenceMetaResponse,
     PreferenceSummaryResponse
-} from './dto'
+} from '@kimdaegyu/babmukdang-shared'
 
 export const postOnboardingPreference = async (
     data: OnboardingPreferenceRequest
@@ -12,19 +12,19 @@ export const postOnboardingPreference = async (
         `${import.meta.env.VITE_BASE_API_URL}/auth/onboarding/preference`,
         data
     )
-    return res.data
+    return res.data.data
 }
 export const getPreferenceSummary =
     async (): Promise<PreferenceSummaryResponse> => {
         const res = await client.get(
             `${import.meta.env.VITE_BASE_API_URL}/preferences/me`
         )
-        return res.data
+        return res.data.data
     }
 
 export const getPreferenceMeta = async (): Promise<PreferenceMetaResponse> => {
     const res = await client.get(
         `${import.meta.env.VITE_BASE_API_URL}/preferences/me/meta`
     )
-    return res.data
+    return res.data.data
 }

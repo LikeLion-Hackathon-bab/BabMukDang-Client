@@ -3,24 +3,16 @@ import {
     MatchingInviteNotiCard,
     EmptyNotiView
 } from '@/components'
+import { MeetingResponse, PlanType } from '@kimdaegyu/babmukdang-shared'
 
-type MatchingInviteNoti = {
-    id: number
-    type: 'invitation' | 'announcement'
-    title: string
-    time: string
-    message: string
-    period: string
-    imageUrl: string
-}
 export function MatchingInviteList({
     matchingNotis,
     handleDeleteMatchingNoti,
     handleMatchingInviteNotiClick
 }: {
-    matchingNotis: MatchingInviteNoti[]
+    matchingNotis: MeetingResponse[]
     handleDeleteMatchingNoti: (id: number) => void
-    handleMatchingInviteNotiClick: (type: 'invitation' | 'announcement') => void
+    handleMatchingInviteNotiClick: (type: PlanType) => void
 }) {
     if (matchingNotis.length === 0) {
         return <EmptyNotiView isMatching />

@@ -11,11 +11,11 @@ export const presignArticle = async (
     file: File
 ): Promise<{ key: string; putUrl: string; cdnUrl: string }> => {
     const { key, putUrl, cdnUrl } = await webSocketClient
-        .post('/uploads/presign-article', {
+        .post(`${import.meta.env.VITE_BASE_API_URL}/uploads/presign-article`, {
             userId: currentUserId,
             contentType: file.type
         })
-        .then(res => res.data)
+        .then(res => res.data.data)
     return { key, putUrl, cdnUrl }
 }
 
@@ -24,11 +24,11 @@ export const presignProfile = async (
     file: File
 ): Promise<{ key: string; putUrl: string; cdnUrl: string }> => {
     const { key, putUrl, cdnUrl } = await webSocketClient
-        .post('/uploads/presign-profile', {
+        .post(`${import.meta.env.VITE_BASE_API_URL}/uploads/presign-profile`, {
             userId: currentUserId,
             contentType: file.type
         })
-        .then(res => res.data)
+        .then(res => res.data.data)
     return { key, putUrl, cdnUrl }
 }
 

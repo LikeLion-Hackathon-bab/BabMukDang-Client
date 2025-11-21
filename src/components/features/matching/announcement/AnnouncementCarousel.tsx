@@ -1,5 +1,5 @@
 import { useCarousel } from '@/hooks'
-import { PostResponse } from '@/apis/dto'
+import { RecruitResponseDto } from '@kimdaegyu/babmukdang-shared'
 import { AnnouncementCard, EmptyAnnouncementCard } from './AnnouncementCard'
 import { JoinButton } from './AnnouncementJoinButton'
 import { useAuthStore } from '@/store'
@@ -10,7 +10,7 @@ import { useSubscribeAnnouncement } from '@/query'
 export function AnnouncementCarousel({
     announcements
 }: {
-    announcements: PostResponse[]
+    announcements: RecruitResponseDto[]
 }) {
     const {
         containerRef,
@@ -28,7 +28,7 @@ export function AnnouncementCarousel({
     })
     const { userId } = useAuthStore()
     const [selectedAnnouncement, setSelectedAnnouncement] =
-        useState<PostResponse | null>(null)
+        useState<RecruitResponseDto | null>(null)
     const { mutate: subscribeAnnouncement } = useSubscribeAnnouncement({
         onSuccess: () => {
             console.log('subscribeAnnouncement')
@@ -74,7 +74,7 @@ export function AnnouncementCarousel({
 
                             return (
                                 <div
-                                    key={announcement.postId}
+                                    key={announcement.id}
                                     className="z-100 flex w-280 flex-col gap-16 transition-all duration-300 ease-out"
                                     style={{
                                         transform: `scale(${scale}) rotate(${rotate}deg)`,
@@ -108,13 +108,12 @@ export function AnnouncementCarousel({
                                     )}
                                     <JoinCompleteModal
                                         announcementId={
-                                            selectedAnnouncement?.postId.toString() ||
+                                            selectedAnnouncement?.id.toString() ||
                                             ''
                                         }
                                         onAccept={() => {
                                             subscribeAnnouncement(
-                                                selectedAnnouncement?.postId ||
-                                                    0
+                                                selectedAnnouncement?.id || 0
                                             )
                                         }}
                                         id="join-complete-modal"

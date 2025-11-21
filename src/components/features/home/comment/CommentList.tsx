@@ -1,16 +1,5 @@
-import { CommentResponse } from '@/apis/dto'
+import { Comment } from '@kimdaegyu/babmukdang-shared'
 import { CommentItem, ReplyCommentItem } from '@/components'
-
-interface Comment {
-    commentId: number
-    authorId: number
-    authorUsername: string
-    parentCommentId: number | null
-    content: string
-    createdAt: string
-    profileImageUrl?: string
-    replies?: Comment[] // 트리 변환 후에만 생김
-}
 
 export function CommentList({
     comments,

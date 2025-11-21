@@ -4,17 +4,19 @@ import {
     useGetAnnouncements,
     usePostAnnouncement
 } from '@/query'
-import { Post } from '@/apis/dto'
-import { useNavigate } from 'react-router-dom'
+import { Recruit } from '@kimdaegyu/babmukdang-shared'
 
 export function AddAnnouncementButton({
-    announcementAddData
+    announcementAddData,
+    onSuccess
 }: {
-    announcementAddData: Post
+    announcementAddData: Recruit
+    onSuccess: () => void
 }) {
     const { mutate: postAnnouncement } = usePostAnnouncement(
         () => {
             console.log('Add announcement button clicked')
+            onSuccess()
             refetchAnnouncements()
         },
         error => {
@@ -36,7 +38,6 @@ export function CloseAnnouncementButton({
 }: {
     announcementId: number | undefined
 }) {
-    const navigate = useNavigate()
     const { mutate: closeAnnouncement } = useCloseAnnouncement(
         () => {
             console.log('Close announcement button clicked')
@@ -48,7 +49,6 @@ export function CloseAnnouncementButton({
     const handleCloseAnnouncement = () => {
         if (announcementId) {
             closeAnnouncement(announcementId)
-            navigate('/announcement/waiting')
         }
     }
 

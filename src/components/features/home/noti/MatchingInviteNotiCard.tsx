@@ -1,21 +1,12 @@
 import { MatchingIcon } from '@/assets/icons'
 import { COLORS } from '@/constants/colors'
-
-interface MatchingInviteNoti {
-    id: number
-    type: 'invitation' | 'announcement'
-    title: string
-    time: string
-    message: string
-    period: string
-    imageUrl?: string
-}
+import { MeetingResponse, PlanType } from '@kimdaegyu/babmukdang-shared'
 
 export function MatchingInviteNotiCard({
     noti,
     onClick
 }: {
-    noti: MatchingInviteNoti
+    noti: MeetingResponse
     onClick: () => void
 }) {
     return (
@@ -29,15 +20,27 @@ export function MatchingInviteNotiCard({
                         strokecolor={COLORS.primaryMain}
                     />
                     <span className="text-body1-semibold text-gray-7">
-                        {noti.title}
+                        {noti.type === PlanType.ANNOUNCEMENT
+                            ? '약속이 성사되었어요!'
+                            : '초대'}
                     </span>
                 </div>
                 <span className="text-caption-medium text-gray-3">
-                    {noti.time}
+                    {new Date(
+                        new Date().getTime() -
+                            new Date(noti.createdAt).getTimezoneOffset()
+                    ).toLocaleString('ko-KR', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    })}
+                    시간 전
                 </span>
             </div>
             <span className="text-caption-medium text-gray-5 w-full">
-                {noti.message}
+                {noti.type === PlanType.ANNOUNCEMENT
+                    ? `${noti.author.username}님과의 약속을 정해봐요!`
+                    : `${noti.author.username}님과의 약속을 정해봐요!`}
             </span>
         </div>
     )
