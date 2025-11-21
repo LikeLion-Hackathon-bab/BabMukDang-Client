@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useState } from 'react'
 import { Outlet, useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { SocketProvider, useSocket } from '@/contexts/SocketContext'
@@ -12,39 +12,21 @@ import {
     Header
 } from '@/components'
 import { useHeader, useBottomNav } from '@/hooks'
+import { useMatchStore } from '@/store/matchStore'
 
 export const OnboardingLayout = () => {
     const [isChatOpen, setIsChatOpen] = useState(false)
     const { hideHeader, resetHeader } = useHeader()
     const { hideBottomNav, resetBottomNav } = useBottomNav()
     const navigate = useNavigate()
-    const { matchType } = useParams<{
-        matchType: 'announcement' | 'invitation'
-    }>()
-
-    const [stage, setStage] = useState('waiting')
-    const isFirstStageEffect = useRef(true)
     useEffect(() => {
         hideHeader()
         hideBottomNav()
-        isFirstStageEffect.current = true
-        // navigate(`/${matchType}/${stage}`, {
-        //     replace: true
-        // })
         return () => {
             resetHeader()
             resetBottomNav()
         }
     }, [])
-    useLayoutEffect(() => {
-        // navigate(`/${matchType}/${stage}`, {
-        //     replace: true
-        // })
-        if (isFirstStageEffect.current) {
-            isFirstStageEffect.current = false
-            return
-        }
-    }, [stage])
     return (
         <SocketProvider>
             <ContentBlocker />
@@ -66,22 +48,23 @@ export const OnboardingLayout = () => {
                 roomId={undefined}
             />
             <ToastMessage />
-            <SocketInner setStage={setStage} />
+            <SocketInner />
         </SocketProvider>
     )
 }
 const ContentBlocker = () => {
-    const { isSelfReady, socket } = useSocket()
+    const service = useSocket()
     const { pathname } = useLocation()
     const isWaiting = pathname.split('/')[2] === 'waiting'
     const isFinish = pathname.split('/')[2] === 'finish'
     const navigate = useNavigate()
+    const { isSelfReady } = useMatchStore()
     return (
         <div className={isSelfReady ? 'pointer-events-none' : ''}>
             {!(isWaiting || isFinish) && (
                 <OnboardingHeader isSkipable={false} />
             )}
-            {socket ? (
+            {service ? (
                 <Outlet />
             ) : (
                 <div className="flex h-full w-full items-center justify-center">
@@ -92,18 +75,23 @@ const ContentBlocker = () => {
         </div>
     )
 }
-const SocketInner = ({ setStage }: { setStage: (stage: string) => void }) => {
-    const { socket } = useSocket()
+const SocketInner = () => {
+    const service = useSocket()
     const { matchType } = useParams<{
         matchType: 'announcement' | 'invitation'
     }>()
+    const [stage, setStage] = useState('waiting')
+    const navigate = useNavigate()
     useLayoutEffect(() => {
-        socket?.on('stage-changed', data => {
-            setStage(data.stage)
+        const subscription = service?.stage$.subscribe(data => {
+            console.log('SocketInner', data)
+            navigate(`/${matchType}/${data}/1`, {
+                replace: true
+            })
         })
         return () => {
-            socket?.off('stage-changed')
+            subscription?.unsubscribe()
         }
-    }, [matchType, socket])
+    }, [service])
     return <></>
 }

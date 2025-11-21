@@ -9,18 +9,13 @@ import { COLORS } from '@/constants/colors'
 import { useSocket } from '@/contexts/SocketContext'
 import { ChatInput } from '@/components/shared'
 import { useAuthStore } from '@/store'
-interface ChatMessageDto {
-    messageId: string
-    roomId: string
-    user: {
-        userId: string | null
-        username: string
-    }
-    text?: string
-    imageUrl?: string
-    createdAt: string
-}
+import { ChatMessage, RoomInitialState } from '@kimdaegyu/babmukdang-shared'
 
+function isRoomInitialState(
+    x: RoomInitialState | ChatMessage
+): x is RoomInitialState {
+    return x != null && typeof x === 'object' && 'chat' in x
+}
 interface ChatModalProps {
     isOpen: boolean
     onClose: () => void
@@ -32,13 +27,21 @@ export function ChatModal({
     onClose,
     roomId = 'default-room'
 }: ChatModalProps) {
-    const { socket, chatMessages } = useSocket()
+    const service = useSocket()
     const { userId } = useAuthStore()
-    const [messages, setMessages] = useState<ChatMessageDto[]>(
-        chatMessages || []
-    )
+    const [messages, setMessages] = useState<ChatMessage[]>([])
     const [newMessage, setNewMessage] = useState('')
     const messagesEndRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        service?.chat$.subscribe(data => {
+            if (isRoomInitialState(data)) {
+                setMessages(prev => [...prev, ...data.chat])
+            } else {
+                setMessages(prev => [...prev, data])
+            }
+        })
+    }, [service])
 
     const inputRef = useCallback(
         (node: HTMLInputElement | null) => {
@@ -53,19 +56,8 @@ export function ChatModal({
     // 메시지 전송
     const handleSendMessage = () => {
         if (newMessage.trim()) {
-            const message: ChatMessageDto = {
-                messageId: Date.now().toString(),
-                roomId: roomId,
-                user: {
-                    userId: userId,
-                    username: '나'
-                },
-                text: newMessage.trim(),
-                createdAt: new Date().toISOString()
-            }
-            setMessages(prev => [...prev, message])
             setNewMessage('')
-            socket?.emit('chat-message', message)
+            service?.emit('chat-message', { message: newMessage.trim() })
         }
     }
 
@@ -83,14 +75,6 @@ export function ChatModal({
             behavior: isSmooth ? 'smooth' : 'auto'
         })
     }
-    useEffect(() => {
-        socket?.on('chat-message', message => {
-            setMessages(prev => [...prev, message])
-        })
-        socket?.on('chat-messages', messages => {
-            setMessages(messages)
-        })
-    }, [socket])
     useEffect(() => {
         scrollToBottom()
     }, [messages])
@@ -150,7 +134,7 @@ const ChatHeader = ({ onClose }: { onClose: () => void }) => {
         </div>
     )
 }
-const ChatMessageMy = ({ message }: { message: ChatMessageDto }) => {
+const ChatMessageMy = ({ message }: { message: ChatMessage }) => {
     return (
         <div className={`flex justify-end`}>
             <div
@@ -162,7 +146,7 @@ const ChatMessageMy = ({ message }: { message: ChatMessageDto }) => {
         </div>
     )
 }
-const ChatMessageOther = ({ message }: { message: ChatMessageDto }) => {
+const ChatMessageOther = ({ message }: { message: ChatMessage }) => {
     return (
         <div className={`flex flex-col justify-start gap-12`}>
             <div className="text-caption-medium text-gray-5 mb-1">

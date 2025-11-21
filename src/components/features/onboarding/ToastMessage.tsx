@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSocket } from '../../../contexts/SocketContext'
 import { useLocation } from 'react-router-dom'
+import { FinalState } from '@kimdaegyu/babmukdang-shared'
 
 type ToastMessageProps = {
     isOpen: boolean
@@ -10,45 +11,45 @@ type ToastMessageProps = {
 }
 
 export function ToastMessage() {
-    const { finalStateMessage, finalState } = useSocket()
+    const service = useSocket()
     const [isOpen, setIsOpen] = useState(false)
     const [message, setMessage] = useState('')
     const pathname = useLocation()
+    const [finalState, setFinalState] = useState<FinalState>({} as FinalState)
 
     useEffect(() => {
         const currentStage = pathname.pathname.split('/')[2]
+        service?.finalState$.subscribe(data => {
+            setFinalState(data)
+        })
         switch (currentStage) {
             case 'location-vote':
-                if (finalStateMessage.location) {
-                    setMessage(`${finalStateMessage.location}에서 만나요!`)
+                if (finalState?.location) {
+                    setMessage(`${finalState.location}에서 만나요!`)
                 } else {
                     setMessage('만날 장소를 정해보아요!')
                 }
                 break
             case 'exclude-menu':
                 if (
-                    finalStateMessage['exclude-menu'] &&
-                    finalStateMessage['exclude-menu'].length > 0
+                    finalState?.excludeMenu &&
+                    finalState?.excludeMenu?.length > 0
                 ) {
-                    setMessage(
-                        `${finalStateMessage['exclude-menu']?.join(', ')} 제외`
-                    )
+                    setMessage(`${finalState.excludeMenu?.join(', ')} 제외`)
                 } else {
                     setMessage('메뉴 제외 없이 진행해요!')
                 }
                 break
             case 'menu':
-                if (finalStateMessage.menu) {
-                    setMessage(`${finalStateMessage.menu} 메뉴로 결정`)
+                if (finalState?.menu) {
+                    setMessage(`${finalState.menu} 메뉴로 결정`)
                 } else {
                     setMessage('메뉴를 고르지 않았어요!')
                 }
                 break
             case 'restaurant':
-                if (finalStateMessage.restaurant) {
-                    setMessage(
-                        `${finalStateMessage.restaurant} 식당에서 만나요!`
-                    )
+                if (finalState?.restaurant) {
+                    setMessage(`${finalState.restaurant} 식당에서 만나요!`)
                 } else {
                     setMessage('만남 장소 근처 맛집 중 골라보아요.')
                 }
@@ -58,7 +59,7 @@ export function ToastMessage() {
                 break
         }
         setIsOpen(true)
-    }, [finalState, pathname])
+    }, [service, pathname])
     useEffect(() => {
         if (!isOpen) return
 

@@ -1,5 +1,9 @@
 import { ProgressBar, TagPerson } from '@/components'
 import { useSocket } from '@/contexts/SocketContext'
+import {
+    AnnouncementStage,
+    InvitationStage
+} from '@kimdaegyu/babmukdang-shared'
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import {
@@ -18,23 +22,34 @@ export function OnboardingHeader({
     isSkipable?: boolean
     subTitle?: string
 }) {
-    const { participants, finalStateMessage, finalState, stage } = useSocket()
+    const service = useSocket()
     const [finalTags, setFinalTags] = useState<string[]>([])
     const pathname = useLocation()
+    const [stage, setStage] = useState<AnnouncementStage | InvitationStage>(
+        {} as AnnouncementStage | InvitationStage
+    )
     useEffect(() => {
-        setFinalTags(
-            Object.entries(finalStateMessage)
-                .filter(([key, value]) => value !== undefined)
-                .filter(
-                    ([key, value]) => key !== pathname.pathname.split('/')[2]
-                )
-                .map(([key, value]) => {
-                    if (key === 'exclude-menu') {
-                        return (value as string[]).join(', ') + ' 제외'
-                    }
-                    return value as string
-                })
-        )
+        service?.stage$.subscribe(data => {
+            setStage(data.phase)
+        })
+    }, [service])
+    useEffect(() => {
+        service?.finalState$.subscribe(data => {
+            // setFinalTags(
+            //     Object.entries(data)
+            //         .filter(([key, value]) => value !== undefined)
+            //         .filter(
+            //             ([key, value]) =>
+            //                 key !== pathname.pathname.split('/')[2]
+            //         )
+            //         .map(([key, value]) => {
+            //             if (key === 'excludeMenu') {
+            //                 return (value as string[]).join(', ') + ' 제외'
+            //             }
+            //             return value as string
+            //         })
+            // )
+        })
     }, [stage])
 
     const title = getByMatchType(
@@ -100,7 +115,8 @@ const getText = (map: any, pathname: string) => {
     return map[pathname.split('/')[2] as keyof typeof map]
 }
 const getByMatchType = (map1: any, map2: any) => {
-    const { matchType } = useSocket()
+    const matchType = useLocation().pathname.split('/')[0]
+    console.log(matchType)
     const { pathname } = useLocation()
     return matchType === 'announcement'
         ? getText(map1, pathname)

@@ -2,23 +2,46 @@ import { useEffect, useState } from 'react'
 import { useSocket } from '@/contexts/SocketContext'
 import { COLORS } from '@/constants/colors'
 import { useNavigate } from 'react-router-dom'
+import {
+    AnnouncementStage,
+    InvitationStage,
+    ReadyStateRequestDtoServer
+} from '@kimdaegyu/babmukdang-shared'
+import { useMatchStore } from '@/store/matchStore'
 
 export function OnboardingButton() {
-    const {
-        socket,
-        readyCount,
-        participantCount,
-        stage,
-        isSelfReady,
-        setIsSelfReady
-    } = useSocket()
+    const service = useSocket()
+    const [readyCount, setReadyCount] = useState(0)
+    const [participantCount, setParticipantCount] = useState(0)
+    const [stage, setStage] = useState<AnnouncementStage | InvitationStage>(
+        {} as AnnouncementStage | InvitationStage
+    )
+    const { isSelfReady, setIsSelfReady } = useMatchStore()
     const [countDown, setCountDown] = useState(3)
     const navigate = useNavigate()
     useEffect(() => {
-        if (!isSelfReady) {
+        service?.ready$.subscribe(data => {
+            setReadyCount(data.readyCount)
+            setParticipantCount(data.participantCount)
+        })
+        service?.stage$.subscribe(data => {
+            console.log(data)
+            setStage(data)
+        })
+    }, [service])
+
+    useEffect(() => {
+        setIsSelfReady(false)
+        setCountDown(3)
+    }, [stage])
+
+    useEffect(() => {
+        if (isSelfReady) {
             setCountDown(3)
-            return
         }
+    }, [isSelfReady])
+
+    useEffect(() => {
         if (readyCount !== participantCount) {
             return
         }
@@ -33,17 +56,19 @@ export function OnboardingButton() {
             }, 1000)
             return () => clearInterval(interval)
         }
-    }, [readyCount, participantCount, isSelfReady])
+    }, [readyCount, participantCount])
 
     const onClickReady = () => {
         const next = !isSelfReady
         // 새로운 상태 값으로 소켓 이벤트 발생
-        socket?.emit('ready-state', { isReady: next })
+        service?.emit('ready-state', {
+            isReady: next
+        } as ReadyStateRequestDtoServer)
 
         if (stage === 'finish') {
             navigate('/')
         }
-        setIsSelfReady(next)
+        setIsSelfReady(!isSelfReady)
     }
     return (
         <button
