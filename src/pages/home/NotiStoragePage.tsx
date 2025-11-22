@@ -77,9 +77,9 @@ export function NotiStoragePage() {
         type: 'invitation' | 'announcement'
     ) => {
         if (type === 'invitation') {
-            navigate(`/invitation/waiting/1`)
+            navigate(`/invitation/waiting/${Math.floor(Math.random() * 10)}`)
         } else {
-            navigate(`/announcement/waiting/1`)
+            navigate(`/announcement/waiting/${Math.floor(Math.random() * 10)}`)
         }
     }
 
