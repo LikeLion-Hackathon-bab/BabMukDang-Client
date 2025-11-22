@@ -5,6 +5,7 @@ import {
     usePostAnnouncement
 } from '@/query'
 import { Post } from '@/apis/dto'
+import { useNavigate } from 'react-router-dom'
 
 export function AddAnnouncementButton({
     announcementAddData
@@ -35,6 +36,7 @@ export function CloseAnnouncementButton({
 }: {
     announcementId: number | undefined
 }) {
+    const navigate = useNavigate()
     const { mutate: closeAnnouncement } = useCloseAnnouncement(
         () => {
             console.log('Close announcement button clicked')
@@ -46,6 +48,7 @@ export function CloseAnnouncementButton({
     const handleCloseAnnouncement = () => {
         if (announcementId) {
             closeAnnouncement(announcementId)
+            navigate('/announcement/waiting')
         }
     }
 
