@@ -1,6 +1,7 @@
 import { create } from 'zustand'
+import { persist, PersistOptions } from 'zustand/middleware'
 
-export const useAuthStore = create<{
+interface AuthState {
     accessToken: string | null
     refreshToken: string | null
     username: string | null
@@ -9,6 +10,7 @@ export const useAuthStore = create<{
         profileImageUrl: string | null
         userName: string | null
         bio: string | null
+        meetingCount: number | null
     }
     setTokens: ({
         accessToken,
@@ -26,41 +28,78 @@ export const useAuthStore = create<{
         bio: string | null
         meetingCount: number | null
     }) => void
-
     logout: () => void
-}>(set => ({
-    accessToken: null,
-    refreshToken: null,
-    username: null,
-    userId: null,
+}
+
+// localStorage에 저장될 상태만 정의 (함수 제외)
+interface PersistedAuthState {
+    accessToken: string | null
+    refreshToken: string | null
+    username: string | null
+    userId: string | null
     profile: {
-        profileImageUrl: null,
-        userName: null,
-        bio: null,
-        meetingCount: null
-    },
-    setTokens: ({
-        accessToken,
-        refreshToken
-    }: {
-        accessToken: string
-        refreshToken: string
-    }) => set({ accessToken, refreshToken }),
-    clearTokens: () => set({ accessToken: null, refreshToken: null }),
-    setUsername: (username: string) => set({ username }),
-    setUserId: (userId: string) => set({ userId }),
-    setProfile: (profile: {
         profileImageUrl: string | null
         userName: string | null
         bio: string | null
         meetingCount: number | null
-    }) => set({ profile }),
-    logout: () => {
-        set({
+    }
+}
+
+const persistConfig: PersistOptions<AuthState, PersistedAuthState> = {
+    name: 'auth-storage',
+    partialize: (state): PersistedAuthState => ({
+        accessToken: state.accessToken,
+        refreshToken: state.refreshToken,
+        username: state.username,
+        userId: state.userId,
+        profile: state.profile
+    })
+}
+
+export const useAuthStore = create<AuthState>()(
+    persist(
+        set => ({
             accessToken: null,
             refreshToken: null,
             username: null,
-            userId: null
-        })
-    }
-}))
+            userId: null,
+            profile: {
+                profileImageUrl: null,
+                userName: null,
+                bio: null,
+                meetingCount: null
+            },
+            setTokens: ({
+                accessToken,
+                refreshToken
+            }: {
+                accessToken: string
+                refreshToken: string
+            }) => set({ accessToken, refreshToken }),
+            clearTokens: () => set({ accessToken: null, refreshToken: null }),
+            setUsername: (username: string) => set({ username }),
+            setUserId: (userId: string) => set({ userId }),
+            setProfile: (profile: {
+                profileImageUrl: string | null
+                userName: string | null
+                bio: string | null
+                meetingCount: number | null
+            }) => set({ profile }),
+            logout: () => {
+                set({
+                    accessToken: null,
+                    refreshToken: null,
+                    username: null,
+                    userId: null,
+                    profile: {
+                        profileImageUrl: null,
+                        userName: null,
+                        bio: null,
+                        meetingCount: null
+                    }
+                })
+            }
+        }),
+        persistConfig
+    )
+)

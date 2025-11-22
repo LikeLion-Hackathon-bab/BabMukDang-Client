@@ -46,3 +46,19 @@ export const useUpdateMyProfile = (
         onError
     })
 }
+
+export const useGetProfiles = (memberIds: number[]) => {
+    return useQuery({
+        queryKey: ['memberProfiles', memberIds],
+        queryFn: async () => {
+            const profiles = await Promise.all(
+                memberIds.map(id => getMemberProfile(id))
+            )
+            return profiles.map(profile => ({
+                memberId: profile.data.memberId,
+                username: profile.data.userName
+            }))
+        },
+        enabled: memberIds.length > 0
+    })
+}

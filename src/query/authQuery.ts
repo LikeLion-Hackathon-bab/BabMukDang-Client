@@ -1,16 +1,17 @@
-import { logout } from '@/apis/auth'
-import { useAuthStore } from '@/store/authStore'
+import { refresh } from '@/apis'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 
-export const useLogout = () => {
+export const useRefreshToken = (
+    onSuccess: () => void,
+    onError: (error: Error) => void,
+    onSettled: () => void
+) => {
     const navigate = useNavigate()
-    const { logout: logoutToken } = useAuthStore()
     return useMutation({
-        mutationFn: logout,
-        onSuccess: () => {
-            logoutToken()
-            navigate('/start')
-        }
+        mutationFn: refresh,
+        onSuccess,
+        onError,
+        onSettled
     })
 }
