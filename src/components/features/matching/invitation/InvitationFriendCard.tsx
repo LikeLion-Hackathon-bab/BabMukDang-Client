@@ -2,30 +2,29 @@ import { HungryIcon, InviteIcon, NotHungryIcon } from '@/assets/icons'
 import { Link } from 'react-router-dom'
 
 type Friend = {
-    userId: number
-    name: string
-    lastActive: string
-    isHungry: boolean
+    memberId: number
+    userName: string
+    profileImageUrl: string
+    hungry: boolean
+    label: string
 }
 export function FriendCard({ friend }: { friend: Friend }) {
     return (
         <div className="rounded-12 flex flex-row items-center justify-between bg-white p-12">
             <div className="flex flex-row items-center gap-13">
-                {friend.isHungry ? <HungryIcon /> : <NotHungryIcon />}
+                {friend.hungry ? <HungryIcon /> : <NotHungryIcon />}
                 <div className="flex h-full flex-col gap-8">
-                    <span className="text-body1-bold">{friend.name}</span>
+                    <span className="text-body1-bold">{friend.userName}</span>
                     <span
                         className={`text-caption-medium ${
-                            friend.isHungry ? 'text-primary-500' : 'text-gray-4'
+                            friend.hungry ? 'text-primary-500' : 'text-gray-4'
                         }`}>
-                        {friend.isHungry
-                            ? `${calculateHungryTime(friend.lastActive)} 공복이에요`
-                            : '식사를 마친 상태예요'}
+                        {friend.hungry ? `공복이에요` : '식사를 마친 상태예요'}
                     </span>
                 </div>
             </div>
             {/* 초대장 아이콘 */}
-            <Link to="/send-invitation">
+            <Link to={`/send-invitation/${friend.memberId}`}>
                 <InviteIcon />
             </Link>
         </div>
