@@ -17,6 +17,7 @@ import { BOTTOM_NAVIGATION_HEIGHT } from '@/constants/bottomNav'
 import { useGetAnnouncements, useSubscribeAnnouncement } from '@/query'
 import { useAuthStore } from '@/store'
 import { useGetInvitations } from '@/query/invitationQuery'
+import { useFriendMeals } from '@/query/friendsQuery'
 
 export function MatchingPage() {
     const [activeTab, setActiveTab] = useState<'announcement' | 'invitation'>(
@@ -70,7 +71,7 @@ function AnnouncementTab() {
                 announcement => announcement.author.authorId === Number(userId)
             ) || null
         )
-        console.log('myAnnouncements', myAnnouncements)
+        console.log('myAnnouncements', myAnnouncements, userId)
         setAnnouncements(announcementsData || [])
     }, [])
     return (
@@ -88,7 +89,9 @@ function AnnouncementTab() {
 
 function InvitationTab() {
     const { data: invitations } = useGetInvitations()
+    const { data: friendMeals } = useFriendMeals()
     console.log('invitations', invitations)
+    console.log('friendMeals', friendMeals)
     return (
         <div
             className={`flex flex-col gap-40 px-20 pt-18 pb-${BOTTOM_NAVIGATION_HEIGHT}`}>
@@ -98,7 +101,7 @@ function InvitationTab() {
                 <RecieveInvitationList invitations={invitations?.data || []} />
             </div>
             <div className="flex flex-col items-center justify-center pb-10">
-                <FriendListSection friendList={MockFriendList} />
+                <FriendListSection friendList={friendMeals?.data || []} />
             </div>
         </div>
     )

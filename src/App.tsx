@@ -94,7 +94,7 @@ function App() {
 
                         {/* 매치 페이지 */}
                         <Route
-                            path="/send-invitation"
+                            path="/send-invitation/:userId"
                             element={<SendInvitationPage />}
                         />
                         <Route
@@ -139,7 +139,7 @@ function App() {
                                 element={<MakeProfilePage />}
                             />
                             <Route
-                                path="/start"
+                                path="/login"
                                 element={<StartRegisterPage />}
                             />
                             <Route

@@ -166,3 +166,19 @@ export interface PreferenceMetaResponse {
     lastUpdatedAt: string
     revision: number
 }
+
+// Friend Meal related DTOs
+export interface FriendMealResponse {
+    memberId: number
+    userName: string
+    profileImageUrl: string
+    hungry: boolean
+    label: string
+}
+
+export interface FriendMealFilter {
+    filter: 'ALL'
+}
+
+export interface FriendMealListResponse
+    extends BaseResponse<FriendMealResponse[]> {}
