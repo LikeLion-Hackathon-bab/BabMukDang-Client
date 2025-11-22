@@ -1,15 +1,33 @@
 import { useEffect, useMemo } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 
 import { Header, BottomNavigation } from '@/components'
 import { useAuthStore, useBottomNavStore } from '@/store'
-import { useGetMyProfile } from '@/query'
+import { useGetMyProfile, useRefreshToken } from '@/query'
 
 export function Layout() {
-    const { userId, username, setUserId, setUsername, setProfile } =
+    const { userId, username, setUserId, setUsername, setProfile, logout } =
         useAuthStore()
     const { data: myProfile, refetch } = useGetMyProfile()
+    const { accessToken, refreshToken } = useAuthStore()
+    const navigate = useNavigate()
+    const { mutate: refreshTokenMutation } = useRefreshToken(
+        () => {
+            console.log('refreshToken')
+        },
+        (error: Error) => {
+            console.log('error', error)
+        },
+        () => {
+            if (!accessToken) {
+                navigate('/login')
+            }
+        }
+    )
+
     useEffect(() => {
+        console.log('myProfile', myProfile, userId, username)
+
         if (!userId && !username) {
             if (myProfile) {
                 setUserId(myProfile.data.memberId.toString())
@@ -26,6 +44,9 @@ export function Layout() {
             }
         }
     }, [myProfile])
+    useEffect(() => {
+        refreshTokenMutation()
+    }, [])
     return (
         <div className="bg-gray-1 flex h-screen min-h-screen w-screen min-w-screen flex-col">
             {/* Header */}

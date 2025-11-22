@@ -176,13 +176,17 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
         })
         socket?.on('stage-changed', data => {
             setStage(data.stage)
+            navigate(`/${matchType}/${data.stage}/${roomId}`, {
+                replace: true
+            })
             setIsSelfReady(false)
         })
 
         socket?.on('initial-state-response', data => {
             setInitialState(data)
-            if (location.pathname.split('/')[2] === 'waiting') {
+            if (stage === 'waiting') {
                 console.log('initial-state-participants', data)
+
                 setParticipants(data.participants)
                 setLocationInitial(data.locationInitial)
                 setMeetingAtInitial(data.meetingAt)
