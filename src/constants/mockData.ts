@@ -1,4 +1,5 @@
 import { CommentResponse, RestaurantInfo } from '@/apis/dto'
+import { MeetingResponse } from '@/apis/meeting'
 import { PreferenceItem, ProfileDetailResponse } from '@/apis/profile'
 
 export const MockAnnouncements = [
@@ -212,7 +213,7 @@ type Meeting = {
     restaurantType: string
 }
 
-export const MockMeetingList = [
+export const MockMeetingList: MeetingResponse[] = [
     {
         id: 1,
         participants: [
