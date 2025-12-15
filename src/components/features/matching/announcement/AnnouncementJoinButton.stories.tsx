@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { JoinButton } from './AnnouncementJoinButton'
+import { PostResponse } from '@/apis/dto'
+import { MockAnnouncements } from '@/constants/mockData'
 
 const meta: Meta<typeof JoinButton> = {
     title: 'Features/Matching/Announcement/JoinButton',
@@ -19,15 +21,8 @@ const meta: Meta<typeof JoinButton> = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const mockAnnouncement = {
-    postId: 1,
-    author: { memberId: 1, name: '홍길동', profileImageUrl: '' },
-    message: '점심 같이 드실 분!',
-    location: '강남역 근처',
-    targetCount: 3,
-    meetingAt: '2024-12-15T12:00',
-    createdAt: new Date().toISOString(),
-    participants: []
+const mockAnnouncement: PostResponse = {
+    ...MockAnnouncements[0]
 }
 
 export const Default: Story = {

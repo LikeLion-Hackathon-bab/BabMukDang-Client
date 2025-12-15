@@ -24,6 +24,7 @@ export interface PostResponse extends Post {
     }
     createdAt: string
     participants: {
+        memberId?: number
         name: string
         profileImageUrl: string
     }[]

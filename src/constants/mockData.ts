@@ -1,71 +1,101 @@
-import { CommentResponse, RestaurantInfo } from '@/apis/dto'
+import { CommentResponse, PostResponse, RestaurantInfo } from '@/apis/dto'
 import { MeetingResponse } from '@/apis/meeting'
 import { PreferenceItem, ProfileDetailResponse } from '@/apis/profile'
 
-export const MockAnnouncements = [
+export const MockAnnouncements: PostResponse[] = [
     {
-        id: 1,
-        title: '7시 학교 앞에서\n밥 먹을 사람!',
-        time: '8월 7일 오후 7시',
-        location: '서울과학기술대학교 정문 앞',
-        participants: [{ name: '김대규' }, { name: '김성휘' }],
-        maxParticipants: 3,
-        timeLeft: '30분 후 종료',
-        creator: { name: '유가은' }
-    },
-    {
-        id: 2,
-        title: '같이 커피 마실 사람\n구해요!',
-        time: '8월 8일 오후 3시',
-        location: '홍대입구역 2번 출구',
-        participants: [{ name: '이민수' }],
-        maxParticipants: 4,
-        timeLeft: '1시간 후 종료',
-        creator: { name: '박소영' }
-    },
-    {
-        id: 3,
-        title: '밥 먹을 사람 구해요!',
-        time: '8월 8일 오후 8시',
-        location: '강남 CGV',
+        postId: 1,
+        author: {
+            authorId: 1,
+            name: '홍길동',
+            profileImageUrl: ''
+        },
+        message: '점심 같이 드실 분!\n맛있는 거 먹어요',
+        location: '강남역 근처',
+        targetCount: 3,
+        meetingAt: '2024-12-15T12:00',
+        createdAt: new Date().toISOString(),
         participants: [
-            { name: '최지훈' },
-            { name: '김하늘' },
-            { name: '정우진' }
-        ],
-        maxParticipants: 4,
-        timeLeft: '2시간 후 종료',
-        creator: { name: '이서연' }
+            { name: '김철수', profileImageUrl: '' },
+            { name: '이영희', profileImageUrl: '' }
+        ]
     },
     {
-        id: 4,
-        title: '배달 시켜먹을 사람 구해요!',
-        time: '8월 9일 오후 6시',
+        postId: 2,
+        author: {
+            authorId: 2,
+            name: '박소영',
+            profileImageUrl: ''
+        },
+        message: '같이 커피 마실 사람\n구해요!',
+        location: '홍대입구역 2번 출구',
+        targetCount: 4,
+        meetingAt: '2024-08-08T15:00',
+        createdAt: new Date().toISOString(),
+        participants: [{ name: '이민수', profileImageUrl: '' }]
+    },
+    {
+        postId: 3,
+        author: {
+            authorId: 3,
+            name: '이서연',
+            profileImageUrl: ''
+        },
+        message: '밥 먹을 사람 구해요!',
+        location: '강남 CGV',
+        targetCount: 4,
+        meetingAt: '2024-08-08T20:00',
+        createdAt: new Date().toISOString(),
+        participants: [
+            { name: '최지훈', profileImageUrl: '' },
+            { name: '김하늘', profileImageUrl: '' },
+            { name: '정우진', profileImageUrl: '' }
+        ]
+    },
+    {
+        postId: 4,
+        author: {
+            authorId: 4,
+            name: '윤성호',
+            profileImageUrl: ''
+        },
+        message: '배달 시켜먹을 사람 구해요!',
         location: '국립중앙도서관',
-        participants: [{ name: '강민지' }],
-        maxParticipants: 5,
-        timeLeft: '3시간 후 종료',
-        creator: { name: '윤성호' }
+        targetCount: 5,
+        meetingAt: '2024-08-09T18:00',
+        createdAt: new Date().toISOString(),
+        participants: [{ name: '강민지', profileImageUrl: '' }]
     },
     {
-        id: 5,
-        title: '고독한 미식가 구해요!',
-        time: '8월 10일 오전 7시',
+        postId: 5,
+        author: {
+            authorId: 5,
+            name: '이동현',
+            profileImageUrl: ''
+        },
+        message: '고독한 미식가 구해요!',
         location: '북한산 입구',
-        participants: [{ name: '조현우' }, { name: '김태영' }],
-        maxParticipants: 6,
-        timeLeft: '5시간 후 종료',
-        creator: { name: '이동현' }
+        targetCount: 6,
+        meetingAt: '2024-08-10T07:00',
+        createdAt: new Date().toISOString(),
+        participants: [
+            { name: '조현우', profileImageUrl: '' },
+            { name: '김태영', profileImageUrl: '' }
+        ]
     },
     {
-        id: 6,
-        title: '밥 먹을 사람 구해요!',
-        time: '8월 8일 오후 7시',
+        postId: 6,
+        author: {
+            authorId: 6,
+            name: '최은아',
+            profileImageUrl: ''
+        },
+        message: '밥 먹을 사람 구해요!',
         location: '홍대',
-        participants: [{ name: '박준혁' }],
-        maxParticipants: 4,
-        timeLeft: '4시간 후 종료',
-        creator: { name: '최은아' }
+        targetCount: 4,
+        meetingAt: '2024-08-08T19:00',
+        createdAt: new Date().toISOString(),
+        participants: [{ name: '박준혁', profileImageUrl: '' }]
     }
 ]
 

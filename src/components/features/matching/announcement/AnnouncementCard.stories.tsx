@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { AnnouncementCard } from './AnnouncementCard'
 import { useRef } from 'react'
+import { MockAnnouncements } from '@/constants/mockData'
 
 const meta: Meta<typeof AnnouncementCard> = {
     title: 'Features/Matching/Announcement/AnnouncementCard',
@@ -28,23 +29,7 @@ const meta: Meta<typeof AnnouncementCard> = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const mockAnnouncement = {
-    postId: 1,
-    author: {
-        memberId: 1,
-        name: '홍길동',
-        profileImageUrl: ''
-    },
-    message: '점심 같이 드실 분!\n맛있는 거 먹어요',
-    location: '강남역 근처',
-    targetCount: 3,
-    meetingAt: '2024-12-15T12:00',
-    createdAt: new Date().toISOString(),
-    participants: [
-        { memberId: 2, name: '김철수', profileImageUrl: '' },
-        { memberId: 3, name: '이영희', profileImageUrl: '' }
-    ]
-}
+const mockAnnouncement = { ...MockAnnouncements[0] }
 
 const AnnouncementCardWrapper = (props: any) => {
     const cardRef = useRef<HTMLDivElement>(null)
