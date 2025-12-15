@@ -45,3 +45,5 @@ node_modules/
 .taskmaster/**
 
 dev-dist/**
+ios
+android
