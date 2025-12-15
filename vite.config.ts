@@ -39,7 +39,8 @@ export default defineConfig({
                 navigateFallback: 'index.html'
             },
             workbox: {
-                disableDevLogs: true
+                disableDevLogs: true,
+                maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // 4194304 bytes
             },
             srcDir: './src',
             filename: 'service-worker.js',
