@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { CardChoice } from './CardChoice'
-import { within, userEvent, expect } from '@storybook/test'
 
 const meta: Meta<typeof CardChoice> = {
     title: 'Features/Register/CardChoice',
@@ -57,13 +56,6 @@ export const WithInteraction: Story = {
         label: '일식',
         selected: false
     },
-    play: async ({ canvasElement }) => {
-        const canvas = within(canvasElement)
-        const button = canvas.getByRole('button')
-
-        // 버튼 클릭
-        await userEvent.click(button)
-    }
 }
 
 // Multiple cards example
