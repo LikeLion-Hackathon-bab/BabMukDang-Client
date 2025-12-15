@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { fn } from '@storybook/test'
 import { useState } from 'react'
 
 import { SearchInput } from './SearchInput'
@@ -21,11 +20,7 @@ const meta: Meta<typeof SearchInput> = {
             control: 'text',
             description: '플레이스홀더 텍스트'
         }
-    },
-    args: {
-        handleSearch: fn()
-    },
-    decorators: [
+    },    decorators: [
         Story => (
             <div className="w-full max-w-400 p-20">
                 <Story />

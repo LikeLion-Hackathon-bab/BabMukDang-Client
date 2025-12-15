@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { fn } from '@storybook/test'
 import { useState } from 'react'
 
 import { ChatInput } from './ChatInput'
@@ -25,13 +24,7 @@ const meta: Meta<typeof ChatInput> = {
             action: 'handleSendMessage',
             description: '메시지 전송 핸들러'
         }
-    },
-    args: {
-        setNewMessage: fn(),
-        handleKeyPress: fn(),
-        handleSendMessage: fn()
-    },
-    decorators: [
+    },    decorators: [
         Story => (
             <div className="w-full max-w-400 p-20">
                 <Story />

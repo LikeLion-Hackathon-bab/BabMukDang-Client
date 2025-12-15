@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { InvitationCard } from './InvitationCard'
-import { fn } from '@storybook/test'
 import { useState } from 'react'
 
 // Mock Graphic component
@@ -40,12 +39,7 @@ const meta: Meta<typeof InvitationCard> = {
             control: 'text',
             description: '보내는 사람 이름'
         }
-    },
-    args: {
-        setEditText: fn(),
-        setIsEditing: fn()
-    }
-}
+    },}
 
 export default meta
 type Story = StoryObj<typeof meta>

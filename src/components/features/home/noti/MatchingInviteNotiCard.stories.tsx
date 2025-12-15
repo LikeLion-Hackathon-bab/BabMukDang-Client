@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { MatchingInviteNotiCard } from './MatchingInviteNotiCard'
-import { fn } from '@storybook/test'
 
 const meta: Meta<typeof MatchingInviteNotiCard> = {
     title: 'Features/Home/Noti/MatchingInviteNotiCard',
@@ -14,9 +13,6 @@ const meta: Meta<typeof MatchingInviteNotiCard> = {
             action: 'card clicked',
             description: '카드 클릭 핸들러'
         }
-    },
-    args: {
-        onClick: fn()
     }
 }
 

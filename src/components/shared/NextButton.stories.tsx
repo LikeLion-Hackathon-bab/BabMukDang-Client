@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { fn } from '@storybook/test'
 
 import { NextButton } from './NextButton'
 
@@ -17,9 +16,6 @@ const meta: Meta<typeof NextButton> = {
             description: '추가 CSS 클래스'
         }
     },
-    args: {
-        onClick: fn()
-    },
     parameters: {
         layout: 'fullscreen'
     },
@@ -35,9 +31,7 @@ const meta: Meta<typeof NextButton> = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {
-    args: {}
-}
+export const Default: Story = {}
 
 export const WithCustomClass: Story = {
     args: {

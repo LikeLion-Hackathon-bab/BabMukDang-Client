@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { SwipeableCard } from './SwipeableCard'
-import { fn } from '@storybook/test'
 
 const meta: Meta<typeof SwipeableCard> = {
     title: 'Features/Home/Noti/SwipeableCard',
@@ -34,9 +33,6 @@ const meta: Meta<typeof SwipeableCard> = {
             action: 'delete clicked',
             description: '삭제 핸들러'
         }
-    },
-    args: {
-        onDelete: fn()
     }
 }
 

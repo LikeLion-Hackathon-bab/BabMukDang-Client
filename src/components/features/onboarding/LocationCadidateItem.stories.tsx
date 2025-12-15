@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { LocationCadidateItem } from './LocationCadidateItem'
-import { fn } from '@storybook/test'
 
 const meta: Meta<typeof LocationCadidateItem> = {
     title: 'Features/Onboarding/LocationCadidateItem',
@@ -14,9 +13,6 @@ const meta: Meta<typeof LocationCadidateItem> = {
             action: 'item clicked',
             description: '아이템 클릭 핸들러'
         }
-    },
-    args: {
-        onClick: fn()
     }
 }
 

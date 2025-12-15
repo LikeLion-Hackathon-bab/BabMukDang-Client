@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { MenuCard } from './MenuCard'
-import { fn } from '@storybook/test'
 
 const meta: Meta<typeof MenuCard> = {
     title: 'Features/Onboarding/MenuCard',
@@ -22,9 +21,6 @@ const meta: Meta<typeof MenuCard> = {
             action: 'card clicked',
             description: '카드 클릭 핸들러'
         }
-    },
-    args: {
-        onClick: fn()
     }
 }
 

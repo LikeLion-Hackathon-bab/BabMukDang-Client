@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { LocalNewsList } from './LocalNewsList'
-import { fn } from '@storybook/test'
 
 const meta: Meta<typeof LocalNewsList> = {
     title: 'Features/Home/Noti/LocalNewsList',
@@ -14,9 +13,6 @@ const meta: Meta<typeof LocalNewsList> = {
             action: 'delete clicked',
             description: '삭제 핸들러'
         }
-    },
-    args: {
-        handleDeleteLocalNewsNoti: fn()
     }
 }
 

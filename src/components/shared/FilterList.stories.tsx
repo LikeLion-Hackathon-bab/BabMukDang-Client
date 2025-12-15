@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { fn } from '@storybook/test'
 import { useState } from 'react'
 
 import { FilterList } from './FilterList'
@@ -25,11 +24,7 @@ const meta: Meta<typeof FilterList> = {
             control: 'text',
             description: '추가 CSS 클래스'
         }
-    },
-    args: {
-        setActiveFilter: fn()
-    },
-    decorators: [
+    },    decorators: [
         Story => (
             <div className="p-20">
                 <Story />

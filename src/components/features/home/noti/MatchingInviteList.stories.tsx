@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { MatchingInviteList } from './MatchingInviteList'
-import { fn } from '@storybook/test'
 
 const meta: Meta<typeof MatchingInviteList> = {
     title: 'Features/Home/Noti/MatchingInviteList',
@@ -18,10 +17,6 @@ const meta: Meta<typeof MatchingInviteList> = {
             action: 'noti clicked',
             description: '알림 클릭 핸들러'
         }
-    },
-    args: {
-        handleDeleteMatchingNoti: fn(),
-        handleMatchingInviteNotiClick: fn()
     }
 }
 

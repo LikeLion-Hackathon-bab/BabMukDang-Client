@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { MeetingCard } from './MeetingCard'
-import { fn } from '@storybook/test'
 
 const meta: Meta<typeof MeetingCard> = {
     title: 'Features/Meeting/MeetingCard',
@@ -14,9 +13,6 @@ const meta: Meta<typeof MeetingCard> = {
             action: 'card clicked',
             description: '카드 클릭 핸들러'
         }
-    },
-    args: {
-        onClick: fn()
     }
 }
 

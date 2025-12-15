@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { KakaoMap } from './KakaoMap'
-import { fn } from '@storybook/test'
 
 const meta: Meta<typeof KakaoMap> = {
     title: 'Features/Onboarding/KakaoMap',
@@ -22,9 +21,6 @@ const meta: Meta<typeof KakaoMap> = {
             action: 'location selected',
             description: '위치 선택 핸들러'
         }
-    },
-    args: {
-        onLocationSelect: fn()
     }
 }
 

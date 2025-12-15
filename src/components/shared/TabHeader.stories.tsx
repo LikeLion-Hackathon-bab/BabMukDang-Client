@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { fn } from '@storybook/test'
 import { useState } from 'react'
 
 import { TabHeader } from './TabHeader'
@@ -21,11 +20,7 @@ const meta: Meta<typeof TabHeader> = {
             action: 'onTabChange',
             description: '탭 변경 핸들러'
         }
-    },
-    args: {
-        onTabChange: fn()
-    },
-    decorators: [
+    },    decorators: [
         Story => (
             <div className="w-full max-w-400">
                 <Story />

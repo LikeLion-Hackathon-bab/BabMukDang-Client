@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { CalendarWithMultiple } from './CalendarWithMultiple'
-import { fn } from '@storybook/test'
 
 const meta: Meta<typeof CalendarWithMultiple> = {
     title: 'Features/Onboarding/CalendarWithMultiple',
@@ -14,18 +13,13 @@ const meta: Meta<typeof CalendarWithMultiple> = {
             action: 'dates selected',
             description: '날짜 선택 핸들러'
         }
-    },
-    args: {
-        onSelectDates: fn()
     }
 }
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {
-    args: {}
-}
+export const Default: Story = {}
 
 export const WithServerSelections: Story = {
     args: {

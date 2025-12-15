@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { fn } from '@storybook/test'
 
 import { KebabButton } from './KebabButton'
 
@@ -17,9 +16,6 @@ const meta: Meta<typeof KebabButton> = {
             description: '추가 CSS 클래스'
         }
     },
-    args: {
-        onClick: fn()
-    },
     decorators: [
         Story => (
             <div className="flex h-200 items-start justify-end p-20">
@@ -32,9 +28,7 @@ const meta: Meta<typeof KebabButton> = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const Default: Story = {
-    args: {}
-}
+export const Default: Story = {}
 
 export const WithCustomClass: Story = {
     args: {

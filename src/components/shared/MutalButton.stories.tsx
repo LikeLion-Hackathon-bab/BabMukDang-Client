@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { fn } from '@storybook/test'
 
 import { MutalButton, MutalButtonSmall } from './MutalButton'
 
@@ -24,11 +23,7 @@ const meta: Meta<typeof MutalButton> = {
             control: 'boolean',
             description: '화살표 표시 여부'
         }
-    },
-    args: {
-        onClick: fn()
-    },
-    decorators: [
+    },    decorators: [
         Story => (
             <div className="w-full max-w-400 p-20">
                 <Story />

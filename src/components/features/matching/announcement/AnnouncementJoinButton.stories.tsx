@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { JoinButton } from './AnnouncementJoinButton'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { fn } from '@storybook/test'
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -32,9 +31,6 @@ const meta: Meta<typeof JoinButton> = {
             control: 'boolean',
             description: '비활성화 상태'
         }
-    },
-    args: {
-        setSelectedAnnouncement: fn()
     }
 }
 

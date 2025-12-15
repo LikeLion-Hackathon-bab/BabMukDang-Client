@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { ThumbImg } from './ThumbImg'
-import { fn } from '@storybook/test'
 
 const meta: Meta<typeof ThumbImg> = {
     title: 'Features/Onboarding/ThumbImg',
@@ -27,9 +26,6 @@ const meta: Meta<typeof ThumbImg> = {
             action: 'image clicked',
             description: '클릭 핸들러'
         }
-    },
-    args: {
-        onClick: fn()
     }
 }
 

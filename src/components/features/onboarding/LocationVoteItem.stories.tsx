@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { LocationVoteItem } from './LocationVoteItem'
-import { fn } from '@storybook/test'
 
 const meta: Meta<typeof LocationVoteItem> = {
     title: 'Features/Onboarding/LocationVoteItem',
@@ -18,9 +17,6 @@ const meta: Meta<typeof LocationVoteItem> = {
             action: 'location selected',
             description: '위치 선택 핸들러'
         }
-    },
-    args: {
-        handleLocationSelect: fn()
     }
 }
 

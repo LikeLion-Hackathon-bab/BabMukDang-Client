@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { AddAnnouncementCard } from './AddAnnouncementCard'
-import { fn } from '@storybook/test'
 import { useState } from 'react'
 import { Post } from '@/apis/dto'
 
@@ -42,7 +41,6 @@ export const WithInitialData: Story = {
             message: '점심 같이 드실 분!',
             targetCount: 3,
             meetingAt: '2024-12-15T12:00'
-        },
-        setAnnouncementAddData: fn()
+        }
     }
 }

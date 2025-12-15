@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { CardChoice } from './CardChoice'
-import { fn } from '@storybook/test'
 import { within, userEvent, expect } from '@storybook/test'
 
 const meta: Meta<typeof CardChoice> = {
@@ -27,11 +26,7 @@ const meta: Meta<typeof CardChoice> = {
             action: 'toggled',
             description: '토글 핸들러'
         }
-    },
-    args: {
-        onToggle: fn()
-    }
-}
+    },}
 
 export default meta
 type Story = StoryObj<typeof meta>

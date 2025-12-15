@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { CommentList } from './CommentList'
-import { fn } from '@storybook/test'
 
 const meta: Meta<typeof CommentList> = {
     title: 'Features/Home/Comment/CommentList',
@@ -18,9 +17,6 @@ const meta: Meta<typeof CommentList> = {
             action: 'reply clicked',
             description: '답글 버튼 클릭 핸들러'
         }
-    },
-    args: {
-        onClickReply: fn()
     }
 }
 

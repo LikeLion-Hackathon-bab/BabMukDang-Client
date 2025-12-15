@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { fn } from '@storybook/test'
 
 import { FriendInviteModal } from './FriendInviteModal'
 
@@ -20,10 +19,6 @@ const meta: Meta<typeof FriendInviteModal> = {
             action: 'onAccept',
             description: '모달 확인 시 호출되는 콜백'
         }
-    },
-    args: {
-        onClose: fn(),
-        onAccept: fn()
     },
     parameters: {
         layout: 'fullscreen'

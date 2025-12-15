@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { ReplyCommentItem } from './ReplyCommentItem'
-import { fn } from '@storybook/test'
 
 const meta: Meta<typeof ReplyCommentItem> = {
     title: 'Features/Home/Comment/ReplyCommentItem',
@@ -34,9 +33,6 @@ const meta: Meta<typeof ReplyCommentItem> = {
             action: 'reply clicked',
             description: '답글 버튼 클릭 핸들러'
         }
-    },
-    args: {
-        onClickReply: fn()
     }
 }
 
