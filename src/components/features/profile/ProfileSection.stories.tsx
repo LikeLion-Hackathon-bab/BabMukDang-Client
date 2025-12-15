@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { ProfileSection } from './ProfileSection'
-import { MemoryRouter } from 'react-router-dom'
 
 const meta: Meta<typeof ProfileSection> = {
     title: 'Features/Profile/ProfileSection',
@@ -9,13 +8,7 @@ const meta: Meta<typeof ProfileSection> = {
     parameters: {
         layout: 'fullscreen'
     },
-    decorators: [
-        Story => (
-            <MemoryRouter>
-                <Story />
-            </MemoryRouter>
-        )
-    ],
+    decorators: [],
     argTypes: {
         profileImgUrl: {
             control: 'text',

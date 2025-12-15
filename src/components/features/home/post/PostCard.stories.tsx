@@ -1,15 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { PostCard } from './PostCard'
-import { MemoryRouter } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            retry: false
-        }
-    }
-})
 
 const meta: Meta<typeof PostCard> = {
     title: 'Features/Home/Post/PostCard',
@@ -18,15 +8,6 @@ const meta: Meta<typeof PostCard> = {
     parameters: {
         layout: 'padded'
     },
-    decorators: [
-        Story => (
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <Story />
-                </MemoryRouter>
-            </QueryClientProvider>
-        )
-    ],
     argTypes: {
         isComment: {
             control: 'boolean',

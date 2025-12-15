@@ -1,36 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { MemoryRouter } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import { HomePage } from './HomePage'
-
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            retry: false,
-            staleTime: Infinity
-        }
-    }
-})
 
 const meta: Meta<typeof HomePage> = {
     title: 'Pages/Navigation/HomePage',
     component: HomePage,
     tags: ['autodocs'],
-    decorators: [
-        Story => (
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <Story />
-                </MemoryRouter>
-            </QueryClientProvider>
-        )
-    ],
     parameters: {
         layout: 'fullscreen',
         docs: {
             description: {
-                component: '메인 홈 페이지로 게시글 목록을 보여줍니다. 새 글 작성 버튼과 게시글 카드들이 표시됩니다.'
+                component:
+                    '메인 홈 페이지로 게시글 목록을 보여줍니다. 새 글 작성 버튼과 게시글 카드들이 표시됩니다.'
             }
         }
     }

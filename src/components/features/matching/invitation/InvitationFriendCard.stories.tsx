@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { FriendCard } from './InvitationFriendCard'
-import { MemoryRouter } from 'react-router-dom'
 
 const meta: Meta<typeof FriendCard> = {
     title: 'Features/Matching/Invitation/FriendCard',
@@ -8,14 +7,7 @@ const meta: Meta<typeof FriendCard> = {
     tags: ['autodocs'],
     parameters: {
         layout: 'padded'
-    },
-    decorators: [
-        Story => (
-            <MemoryRouter>
-                <Story />
-            </MemoryRouter>
-        )
-    ]
+    }
 }
 
 export default meta

@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { ChallengeButton } from './ChallengeButton'
-import { MemoryRouter } from 'react-router-dom'
 
 const meta: Meta<typeof ChallengeButton> = {
     title: 'Features/Profile/ChallengeButton',
@@ -9,13 +8,7 @@ const meta: Meta<typeof ChallengeButton> = {
     parameters: {
         layout: 'padded'
     },
-    decorators: [
-        Story => (
-            <MemoryRouter>
-                <Story />
-            </MemoryRouter>
-        )
-    ],
+    decorators: [],
     argTypes: {
         challengeCount: {
             control: { type: 'range', min: 0, max: 7, step: 1 },

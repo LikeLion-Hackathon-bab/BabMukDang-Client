@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { MemoryRouter } from 'react-router-dom'
 
 import { NotiStoragePage } from './NotiStoragePage'
 
@@ -7,18 +6,13 @@ const meta: Meta<typeof NotiStoragePage> = {
     title: 'Pages/Home/NotiStoragePage',
     component: NotiStoragePage,
     tags: ['autodocs'],
-    decorators: [
-        Story => (
-            <MemoryRouter>
-                <Story />
-            </MemoryRouter>
-        )
-    ],
+    decorators: [],
     parameters: {
         layout: 'fullscreen',
         docs: {
             description: {
-                component: '알림과 동네소식을 탭으로 전환하여 볼 수 있는 알림 보관함 페이지입니다.'
+                component:
+                    '알림과 동네소식을 탭으로 전환하여 볼 수 있는 알림 보관함 페이지입니다.'
             }
         }
     }

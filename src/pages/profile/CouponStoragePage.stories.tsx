@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { MemoryRouter } from 'react-router-dom'
 
 import { CouponStoragePage } from './CouponStoragePage'
 
@@ -7,18 +6,13 @@ const meta: Meta<typeof CouponStoragePage> = {
     title: 'Pages/Profile/CouponStoragePage',
     component: CouponStoragePage,
     tags: ['autodocs'],
-    decorators: [
-        Story => (
-            <MemoryRouter>
-                <Story />
-            </MemoryRouter>
-        )
-    ],
+    decorators: [],
     parameters: {
         layout: 'fullscreen',
         docs: {
             description: {
-                component: '보유한 쿠폰을 관리하는 페이지입니다. 사용 전/사용 후 필터로 쿠폰을 구분하여 볼 수 있습니다.'
+                component:
+                    '보유한 쿠폰을 관리하는 페이지입니다. 사용 전/사용 후 필터로 쿠폰을 구분하여 볼 수 있습니다.'
             }
         }
     }

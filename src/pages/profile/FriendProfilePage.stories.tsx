@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { MemoryRouter } from 'react-router-dom'
 
 import { FriendProfilePage } from './FriendProfilePage'
 
@@ -7,18 +6,13 @@ const meta: Meta<typeof FriendProfilePage> = {
     title: 'Pages/Profile/FriendProfilePage',
     component: FriendProfilePage,
     tags: ['autodocs'],
-    decorators: [
-        Story => (
-            <MemoryRouter>
-                <Story />
-            </MemoryRouter>
-        )
-    ],
+    decorators: [],
     parameters: {
         layout: 'fullscreen',
         docs: {
             description: {
-                component: '친구의 프로필 정보를 볼 수 있는 페이지입니다. 좋아하는 음식, 못먹는 음식, 알러지 정보가 표시됩니다.'
+                component:
+                    '친구의 프로필 정보를 볼 수 있는 페이지입니다. 좋아하는 음식, 못먹는 음식, 알러지 정보가 표시됩니다.'
             }
         }
     }

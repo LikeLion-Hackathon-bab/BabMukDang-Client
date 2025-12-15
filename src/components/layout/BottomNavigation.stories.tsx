@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { BottomNavigation } from './BottomNavigation'
-import { MemoryRouter } from 'react-router-dom'
 
 // Mock icons
 const MockHomeIcon = (props: any) => (
@@ -54,11 +53,9 @@ const meta: Meta<typeof BottomNavigation> = {
     },
     decorators: [
         Story => (
-            <MemoryRouter initialEntries={['/']}>
-                <div style={{ height: '200px', position: 'relative' }}>
-                    <Story />
-                </div>
-            </MemoryRouter>
+            <div style={{ height: '200px', position: 'relative' }}>
+                <Story />
+            </div>
         )
     ]
 }
@@ -79,30 +76,12 @@ export const Default: Story = {
 }
 
 export const ActiveMatch: Story = {
-    decorators: [
-        Story => (
-            <MemoryRouter initialEntries={['/match']}>
-                <div style={{ height: '200px', position: 'relative' }}>
-                    <Story />
-                </div>
-            </MemoryRouter>
-        )
-    ],
     args: {
         items: mockItems
     }
 }
 
 export const ActiveProfile: Story = {
-    decorators: [
-        Story => (
-            <MemoryRouter initialEntries={['/profile']}>
-                <div style={{ height: '200px', position: 'relative' }}>
-                    <Story />
-                </div>
-            </MemoryRouter>
-        )
-    ],
     args: {
         items: mockItems
     }

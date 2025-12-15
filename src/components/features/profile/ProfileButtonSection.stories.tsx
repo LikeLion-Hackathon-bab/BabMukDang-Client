@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { ProfileButtonSection } from './ProfileButtonSection'
-import { MemoryRouter } from 'react-router-dom'
 
 const meta: Meta<typeof ProfileButtonSection> = {
     title: 'Features/Profile/ProfileButtonSection',
@@ -9,13 +8,7 @@ const meta: Meta<typeof ProfileButtonSection> = {
     parameters: {
         layout: 'padded'
     },
-    decorators: [
-        Story => (
-            <MemoryRouter>
-                <Story />
-            </MemoryRouter>
-        )
-    ],
+    decorators: [],
     argTypes: {
         friends: {
             control: 'number',

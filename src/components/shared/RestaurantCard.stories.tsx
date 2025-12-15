@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { MemoryRouter } from 'react-router-dom'
 
 import { RestaurantCard } from './RestaurantCard'
 
@@ -24,16 +23,7 @@ const meta: Meta<typeof RestaurantCard> = {
             control: 'object',
             description: 'GPS 정보'
         }
-    },
-    decorators: [
-        Story => (
-            <MemoryRouter>
-                <div className="w-full max-w-400 p-20">
-                    <Story />
-                </div>
-            </MemoryRouter>
-        )
-    ]
+    }
 }
 
 export default meta

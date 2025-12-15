@@ -1,14 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { JoinButton } from './AnnouncementJoinButton'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            retry: false
-        }
-    }
-})
 
 const meta: Meta<typeof JoinButton> = {
     title: 'Features/Matching/Announcement/JoinButton',
@@ -17,15 +8,6 @@ const meta: Meta<typeof JoinButton> = {
     parameters: {
         layout: 'padded'
     },
-    decorators: [
-        Story => (
-            <QueryClientProvider client={queryClient}>
-                <div className="w-280">
-                    <Story />
-                </div>
-            </QueryClientProvider>
-        )
-    ],
     argTypes: {
         disabled: {
             control: 'boolean',

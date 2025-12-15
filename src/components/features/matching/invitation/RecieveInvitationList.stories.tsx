@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { RecieveInvitationList } from './RecieveInvitationList'
-import { MemoryRouter } from 'react-router-dom'
 
 const meta: Meta<typeof RecieveInvitationList> = {
     title: 'Features/Matching/Invitation/RecieveInvitationList',
@@ -8,14 +7,7 @@ const meta: Meta<typeof RecieveInvitationList> = {
     tags: ['autodocs'],
     parameters: {
         layout: 'padded'
-    },
-    decorators: [
-        Story => (
-            <MemoryRouter>
-                <Story />
-            </MemoryRouter>
-        )
-    ]
+    }
 }
 
 export default meta

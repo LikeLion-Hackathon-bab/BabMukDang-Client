@@ -1,6 +1,8 @@
 import type { Preview } from "@storybook/react-vite";
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
+import { MemoryRouter } from "react-router-dom";
+import { SocketProvider } from '@/contexts/SocketContext'
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "../src/main.css";
 import { INITIAL_VIEWPORTS } from 'storybook/viewport';
@@ -55,6 +57,17 @@ const preview: Preview = {
       test: "todo",
     },
   },
+  decorators: [
+    (Story) => (
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <SocketProvider>
+          <Story />
+          </SocketProvider>
+        </MemoryRouter>
+      </QueryClientProvider>
+    ),
+  ],
 };
 
 export default preview;

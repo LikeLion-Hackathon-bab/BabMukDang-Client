@@ -1,15 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { AnnouncementCarousel } from './AnnouncementCarousel'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { MemoryRouter } from 'react-router-dom'
-
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            retry: false
-        }
-    }
-})
 
 const meta: Meta<typeof AnnouncementCarousel> = {
     title: 'Features/Matching/Announcement/AnnouncementCarousel',
@@ -17,18 +7,7 @@ const meta: Meta<typeof AnnouncementCarousel> = {
     tags: ['autodocs'],
     parameters: {
         layout: 'fullscreen'
-    },
-    decorators: [
-        Story => (
-            <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <div style={{ padding: '20px 0' }}>
-                        <Story />
-                    </div>
-                </MemoryRouter>
-            </QueryClientProvider>
-        )
-    ]
+    }
 }
 
 export default meta

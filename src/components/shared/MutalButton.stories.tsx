@@ -66,7 +66,7 @@ export const Small: Story = {
     render: () => (
         <MutalButtonSmall
             text="확인"
-            onClick={fn()}
+            onClick={()=>{}}
         />
     )
 }
@@ -75,7 +75,7 @@ export const SmallLongText: Story = {
     render: () => (
         <MutalButtonSmall
             text="참여 신청 완료"
-            onClick={fn()}
+            onClick={()=>{}}
         />
     )
 }
@@ -85,16 +85,16 @@ export const AllVariants: Story = {
         <div className="flex flex-col gap-16">
             <MutalButton
                 text="기본 버튼"
-                onClick={fn()}
+                onClick={()=>{}}
             />
             <MutalButton
                 text="화살표 버튼"
                 hasArrow={true}
-                onClick={fn()}
+                onClick={()=>{}}
             />
             <MutalButtonSmall
                 text="작은 버튼"
-                onClick={fn()}
+                onClick={()=>{}}
             />
         </div>
     )

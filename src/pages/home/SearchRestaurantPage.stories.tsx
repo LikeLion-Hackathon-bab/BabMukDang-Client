@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { MemoryRouter } from 'react-router-dom'
 
 import { SearchRestaurantPage } from './SearchRestaurantPage'
 
@@ -7,13 +6,6 @@ const meta: Meta<typeof SearchRestaurantPage> = {
     title: 'Pages/Home/SearchRestaurantPage',
     component: SearchRestaurantPage,
     tags: ['autodocs'],
-    decorators: [
-        Story => (
-            <MemoryRouter>
-                <Story />
-            </MemoryRouter>
-        )
-    ],
     parameters: {
         layout: 'fullscreen',
         docs: {

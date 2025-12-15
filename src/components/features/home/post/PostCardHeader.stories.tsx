@@ -1,14 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { PostCardHeader } from './PostCardHeader'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            retry: false
-        }
-    }
-})
 
 const meta: Meta<typeof PostCardHeader> = {
     title: 'Features/Home/Post/PostCardHeader',
@@ -17,13 +8,6 @@ const meta: Meta<typeof PostCardHeader> = {
     parameters: {
         layout: 'padded'
     },
-    decorators: [
-        Story => (
-            <QueryClientProvider client={queryClient}>
-                <Story />
-            </QueryClientProvider>
-        )
-    ],
     argTypes: {
         authorId: {
             control: 'number',

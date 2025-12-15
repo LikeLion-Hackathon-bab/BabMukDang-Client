@@ -1,27 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { MemoryRouter } from 'react-router-dom'
 
 import { RestaurantPage } from './RestaurantPage'
-import { SocketProvider } from '@/contexts/SocketContext'
 
 const meta: Meta<typeof RestaurantPage> = {
     title: 'Pages/MatchOnboarding/RestaurantPage',
     component: RestaurantPage,
     tags: ['autodocs'],
-    decorators: [
-        Story => (
-            <MemoryRouter>
-                <SocketProvider>
-                    <Story />
-                </SocketProvider>
-            </MemoryRouter>
-        )
-    ],
     parameters: {
         layout: 'fullscreen',
         docs: {
             description: {
-                component: '추천된 식당 목록에서 선택하여 투표할 수 있는 페이지입니다.'
+                component:
+                    '추천된 식당 목록에서 선택하여 투표할 수 있는 페이지입니다.'
             }
         }
     }

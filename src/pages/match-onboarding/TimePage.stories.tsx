@@ -1,27 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { MemoryRouter } from 'react-router-dom'
 
 import { TimePage } from './TimePage'
-import { SocketProvider } from '@/contexts/SocketContext'
 
 const meta: Meta<typeof TimePage> = {
     title: 'Pages/MatchOnboarding/TimePage',
     component: TimePage,
     tags: ['autodocs'],
-    decorators: [
-        Story => (
-            <MemoryRouter>
-                <SocketProvider>
-                    <Story />
-                </SocketProvider>
-            </MemoryRouter>
-        )
-    ],
     parameters: {
         layout: 'fullscreen',
         docs: {
             description: {
-                component: '드래그하여 가능한 시간대를 선택할 수 있는 타임피커 페이지입니다. 8시부터 24시까지 30분 단위로 선택 가능합니다.'
+                component:
+                    '드래그하여 가능한 시간대를 선택할 수 있는 타임피커 페이지입니다. 8시부터 24시까지 30분 단위로 선택 가능합니다.'
             }
         }
     }

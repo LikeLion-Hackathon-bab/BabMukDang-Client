@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { Header } from './Header'
-import { MemoryRouter } from 'react-router-dom'
 
 const meta: Meta<typeof Header> = {
     title: 'Layout/Header',
@@ -9,13 +8,7 @@ const meta: Meta<typeof Header> = {
     parameters: {
         layout: 'fullscreen'
     },
-    decorators: [
-        Story => (
-            <MemoryRouter>
-                <Story />
-            </MemoryRouter>
-        )
-    ],
+    decorators: [],
     argTypes: {
         title: {
             control: 'text',

@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { MemoryRouter } from 'react-router-dom'
 
 import { ProfileEditPage } from './ProfileEditPage'
 
@@ -7,18 +6,13 @@ const meta: Meta<typeof ProfileEditPage> = {
     title: 'Pages/Profile/ProfileEditPage',
     component: ProfileEditPage,
     tags: ['autodocs'],
-    decorators: [
-        Story => (
-            <MemoryRouter>
-                <Story />
-            </MemoryRouter>
-        )
-    ],
+    decorators: [],
     parameters: {
         layout: 'fullscreen',
         docs: {
             description: {
-                component: '내 프로필 정보를 수정할 수 있는 페이지입니다. 이름, 소개글, 좋아하는 음식, 못먹는 음식, 알러지를 편집할 수 있습니다.'
+                component:
+                    '내 프로필 정보를 수정할 수 있는 페이지입니다. 이름, 소개글, 좋아하는 음식, 못먹는 음식, 알러지를 편집할 수 있습니다.'
             }
         }
     }

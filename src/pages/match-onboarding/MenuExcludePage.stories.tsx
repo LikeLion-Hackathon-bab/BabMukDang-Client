@@ -1,27 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { MemoryRouter } from 'react-router-dom'
 
 import { MenuExcludePage } from './MenuExcludePage'
-import { SocketProvider } from '@/contexts/SocketContext'
 
 const meta: Meta<typeof MenuExcludePage> = {
     title: 'Pages/MatchOnboarding/MenuExcludePage',
     component: MenuExcludePage,
     tags: ['autodocs'],
-    decorators: [
-        Story => (
-            <MemoryRouter>
-                <SocketProvider>
-                    <Story />
-                </SocketProvider>
-            </MemoryRouter>
-        )
-    ],
     parameters: {
         layout: 'fullscreen',
         docs: {
             description: {
-                component: '각 참여자의 최근 식사 메뉴 중 제외할 메뉴를 선택할 수 있는 페이지입니다.'
+                component:
+                    '각 참여자의 최근 식사 메뉴 중 제외할 메뉴를 선택할 수 있는 페이지입니다.'
             }
         }
     }
