@@ -6,6 +6,7 @@ import { useHeader } from '@/hooks'
 import { PostCard, PostEmptyView, UploadButton } from '@/components'
 import { useGetHomeArticles } from '@/query'
 import { COLORS } from '@/constants/colors'
+import { HomeBannerSection } from '../../components/features/home/banner/HomeBannerSection'
 
 export function HomePage() {
     const { setLeftElement, hideCenterElement, resetHeader, showRightButton } =
@@ -22,6 +23,7 @@ export function HomePage() {
     }, [])
     return (
         <>
+            <HomeBannerSection />
             {postList.length === 0 ? (
                 <PostEmptyView />
             ) : (
