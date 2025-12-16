@@ -14,7 +14,7 @@ export function HomePage() {
     const { data: postListData } = useGetHomeArticles()
     const postList = postListData?.content ?? MockPostList ?? []
     useEffect(() => {
-        setLeftElement(<LogoTextIcon fillcolor={COLORS.primaryMain} />)
+        setLeftElement(<LogoTextIcon fillcolor={COLORS.primary500} />)
         hideCenterElement()
         showRightButton()
         return () => {
