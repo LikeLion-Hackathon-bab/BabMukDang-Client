@@ -46,7 +46,7 @@ export const HomeMeetingBanner = () => {
                                     <h4 className="text-body1-semibold">
                                         {banner.name}
                                     </h4>
-                                    <p className="text-[#6E6E6E]">
+                                    <p className="text-body2-medium flex items-center text-[#6E6E6E]">
                                         <img
                                             src={locationIcon}
                                             alt="location icon"
