@@ -39,6 +39,7 @@ import { Layout, OnboardingLayout, RegisterLayout } from '@/components'
 import { register } from '@/lib/serviceWorkerRegistration'
 import { useEffect } from 'react'
 import WithMockServer from './mocks/WithMockServer'
+import { FriendPage } from './pages/navigation/FriendPage'
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -66,6 +67,10 @@ function App() {
                         <Route
                             path="/profile"
                             element={<ProfilePage />}
+                        />
+                        <Route
+                            path="/friend"
+                            element={<FriendPage />}
                         />
                         <Route
                             path="/meeting"
