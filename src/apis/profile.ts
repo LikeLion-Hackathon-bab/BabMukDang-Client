@@ -50,7 +50,7 @@ export const getMyProfile = async (): Promise<
     BaseResponse<ProfileResponse>
 > => {
     const res = await client.get(
-        `${import.meta.env.VITE_BASE_API_URL}/members/me`
+        `${import.meta.env.VITE_BASE_API_URL}/members/me/profile`
     )
     return res.data
 }

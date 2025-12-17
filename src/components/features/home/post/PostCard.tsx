@@ -57,7 +57,7 @@ export function PostCard({
                 mealTime={post.mealTime as MealTimeText}
                 isComment={isComment}
             />
-            <PostCardFooter restaurantInfo={post.restaurantName} />
+            {/* <PostCardFooter restaurantInfo={post.restaurantName} /> */}
         </div>
     )
 }

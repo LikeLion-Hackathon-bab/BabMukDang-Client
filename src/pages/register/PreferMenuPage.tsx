@@ -57,12 +57,12 @@ export function PreferMenuPage() {
                 ))}
             </div>
 
-            <div className="mb-30">
+            {/* <div className="mb-30">
                 <SearchInput
                     handleSearch={() => {}}
                     placeholder="직접 입력하기"
                 />
-            </div>
+            </div> */}
             <NextButton onClick={() => navigate('/allergic-menu')} />
         </div>
     )

@@ -11,7 +11,7 @@ import {
     CardPlateGraphic
 } from '@/assets/graphics'
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useSendInvitation } from '@/query/invitationQuery'
 
 export function SendInvitationPage() {
@@ -26,15 +26,17 @@ export function SendInvitationPage() {
     ]
 
     const [selectedCard, setSelectedCard] = useState<number>(0)
-    const [editText, setEditText] = useState<string>('')
+    const [editText, setEditText] = useState<string>('같이 밥 먹을래?')
     const [isEditing, setIsEditing] = useState<boolean>(false)
     const { mutate: sendInvitation } = useSendInvitation({
         onSuccess: () => {},
         onError: () => {}
     })
+    const { userId } = useParams()
+    console.log('userId', userId)
     const handleSendInvitation = () => {
         sendInvitation({
-            inviteeId: { id: 1 },
+            inviteeId: { id: Number(userId) },
             message: editText
         })
     }

@@ -21,7 +21,7 @@ export const postAnnouncement = async (
 export const closeAnnouncement = async (
     announcementId: number
 ): Promise<BaseResponse<void>> => {
-    const res = await client.put(
+    const res = await client.post(
         `${import.meta.env.VITE_BASE_API_URL}/posts/${announcementId}/close`
     )
     return res.data

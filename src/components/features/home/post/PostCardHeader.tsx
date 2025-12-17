@@ -1,6 +1,7 @@
 import { useAuthStore } from '@/store'
 import { KebabButton, TagPerson } from '@/components'
 import { ProfileDefaultIcon } from '@/assets/icons'
+import { useGetProfiles } from '@/query'
 
 export const PostCardHeader = ({
     authorId,
@@ -14,6 +15,8 @@ export const PostCardHeader = ({
     postedAt: string
 }) => {
     const { userId } = useAuthStore()
+    const { data: profiles } = useGetProfiles(tags || [])
+    console.log('profiles', profiles)
     return (
         <div className="flex w-full flex-row items-center justify-between">
             {/* 프로필 태그 */}
@@ -28,9 +31,9 @@ export const PostCardHeader = ({
                 {/* 태그 */}
                 <div className="flex flex-row flex-wrap items-center gap-8">
                     {tags &&
-                        moreTagged(tags).map(tag => (
-                            <TagPerson name={tag.toString()} />
-                        ))}
+                        profiles
+                            ?.map(profile => profile.username)
+                            .map(tag => <TagPerson name={tag} />)}
                 </div>
             </div>
             {/* 시간 케밥 */}

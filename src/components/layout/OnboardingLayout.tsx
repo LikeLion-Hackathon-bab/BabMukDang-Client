@@ -28,18 +28,18 @@ export const OnboardingLayout = () => {
         hideHeader()
         hideBottomNav()
         isFirstStageEffect.current = true
-        navigate(`/${matchType}/${stage}`, {
-            replace: true
-        })
+        // navigate(`/${matchType}/${stage}`, {
+        //     replace: true
+        // })
         return () => {
             resetHeader()
             resetBottomNav()
         }
     }, [])
     useLayoutEffect(() => {
-        navigate(`/${matchType}/${stage}`, {
-            replace: true
-        })
+        // navigate(`/${matchType}/${stage}`, {
+        //     replace: true
+        // })
         if (isFirstStageEffect.current) {
             isFirstStageEffect.current = false
             return

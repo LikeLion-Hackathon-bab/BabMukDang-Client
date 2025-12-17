@@ -11,27 +11,8 @@ import { useMemo } from 'react'
 
 export function FinishPage() {
     const navigate = useNavigate()
-    const {
-        matchType,
-        participants,
-        stage,
-        locationInitial,
-        meetingAtInitial
-    } = useSocket()
-    const matchedUser = {
-        id: '1',
-        name: '김사자',
-        profileImage: undefined
-    }
+    const { matchType, participants, stage, finalState } = useSocket()
 
-    const meetingInfo = useMemo(
-        () => ({
-            location: locationInitial,
-            time: meetingAtInitial,
-            maxParticipants: participants.length
-        }),
-        [locationInitial, meetingAtInitial]
-    )
     return (
         <>
             <div className="relative flex h-full w-full flex-col items-center justify-baseline pt-100">
@@ -43,7 +24,7 @@ export function FinishPage() {
                     </h1>
 
                     {/* 프로필 이미지 */}
-                    <div className="ml-10 flex items-center justify-center">
+                    {/* <div className="ml-10 flex items-center justify-center">
                         {participants?.map(participant => (
                             <div
                                 key={participant.userId}
@@ -62,12 +43,12 @@ export function FinishPage() {
                     </div>
 
                     {/* 사용자 이름 */}
-                    <h2 className="text-title1-semibold mb-32 text-black">
+                    {/* <h2 className="text-title1-semibold mb-32 text-black"> 
                         {participants
                             .map(participant => participant.username)
                             .join(', ')}{' '}
                         님
-                    </h2>
+                    </h2> */}
 
                     {/* Time and Location Info */}
                     <div className="rounded-12 border-primary-400 mb-14 border p-16">
@@ -75,20 +56,20 @@ export function FinishPage() {
                             <div className="flex items-center gap-4">
                                 <TimeGrayIcon />
                                 <span className="text-body2-semibold text-black">
-                                    {meetingInfo.time &&
-                                        formatTime(meetingInfo.time)}
+                                    {finalState?.time &&
+                                        formatTime(finalState.time)}
                                 </span>
                             </div>
                             <div className="flex items-center gap-4">
                                 <LocationGrayIcon />
                                 <span className="text-body2-semibold text-black">
-                                    {meetingInfo.location}
+                                    {finalState?.location}
                                 </span>
                             </div>
                             <div className="flex items-center gap-4">
                                 <PeopleGrayIcon />
                                 <span className="text-body2-semibold text-black">
-                                    {meetingInfo.maxParticipants}명
+                                    {participants.length}명
                                 </span>
                             </div>
                         </div>

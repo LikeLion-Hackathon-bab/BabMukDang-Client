@@ -39,3 +39,4 @@ export {
     postOnboardingPreference
 } from './preference'
 export { getMeetings } from './meeting'
+export { getFriendMeals } from './friends'
