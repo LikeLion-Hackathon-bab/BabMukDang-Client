@@ -36,12 +36,13 @@ export const HomeMeetingBanner = () => {
                         <div
                             key={banner.id}
                             ref={index === 0 ? cardRef : null}
-                            className="flex-shrink-0"
+                            className="flex flex-shrink-0 items-center justify-center"
                             style={{
-                                width: '80%'
+                                width: '80%',
+                                height: '90px'
                             }}>
                             <div
-                                className={`flex h-[74px] w-full items-center justify-between rounded-[16px] bg-white px-[16px] py-[12px] transition-transform duration-300`}>
+                                className={`flex h-[74px] w-full items-center justify-between rounded-[16px] bg-white px-[16px] py-[12px] shadow-[-2px_-2px_10px_0px_#99999914,_2px_2px_10px_0px_#99999914] transition-transform duration-300`}>
                                 <div className="flex flex-col gap-[5px]">
                                     <h4 className="text-body1-semibold">
                                         {banner.name}
