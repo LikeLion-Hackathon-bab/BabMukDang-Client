@@ -9,9 +9,9 @@ export function RecieveInvitationList({
     invitations: InvitationResponse[]
 }) {
     return (
-        <div className="rounded-12 shadow-drop-1 flex w-full flex-col gap-16 bg-white p-16">
+        <div className="rounded-12 shadow-drop-1 flex w-full flex-col gap-16 bg-white py-16">
             {/* 상단 */}
-            <div className="flex flex-row items-center justify-between">
+            <div className="flex flex-row items-center justify-between px-16">
                 <span className="text-body1-semibold text-gray-8">
                     받은 초대장
                 </span>
@@ -20,7 +20,7 @@ export function RecieveInvitationList({
                 </span> */}
             </div>
             {/* 하단 */}
-            <div className="flex flex-row justify-between gap-18 overflow-x-auto">
+            <div className="flex flex-row justify-start gap-20 overflow-x-auto px-16">
                 {invitations.map(invitation => (
                     <Link
                         to={`/read-invitation/${invitation.invitationId}`}
