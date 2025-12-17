@@ -10,9 +10,9 @@ import {
     UploadButton,
     HomeBannerSection
 } from '@/components'
-import { useGetHomeArticles } from '@/query'
-import { COLORS } from '@/constants/colors'
 
+import { COLORS } from '@/constants/colors'
+import { useGetHomeArticles } from '@/apis'
 
 export function HomePage() {
     const { setLeftElement, hideCenterElement, resetHeader, showRightButton } =
