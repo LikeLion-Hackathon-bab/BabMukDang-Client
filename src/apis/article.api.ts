@@ -24,6 +24,7 @@ import type {
     CommentPostRequest,
     CommentResponse,
     LikePostResponse,
+    MutationOptions,
     PageArticleSummaryResponse
 } from './types'
 
@@ -250,16 +251,6 @@ export const useGetMyArticles = () => {
 // ============================================================================
 
 /**
- * 뮤테이션 옵션 타입
- */
-interface MutationOptions<TData = void> {
-    /** 성공 시 콜백 */
-    onSuccess?: (data: TData) => void
-    /** 에러 시 콜백 */
-    onError?: (error: Error) => void
-}
-
-/**
  * 게시글 업로드 (S3 업로드 포함) 변수 타입
  */
 type UploadAndPostVars = {
@@ -305,7 +296,7 @@ export const useUploadArticle = (options: MutationOptions) => {
             buildRequest
         }: UploadAndPostVars) => {
             // 동적 import로 순환 참조 방지
-            const { uploadApi } = await import('./upload.api')
+            const { uploadApi } = await import('./upload.api.ts')
 
             // 1) presign
             const { putUrl, cdnUrl } = await uploadApi.presignArticle(

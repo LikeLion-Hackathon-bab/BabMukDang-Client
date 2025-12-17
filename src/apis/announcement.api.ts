@@ -17,7 +17,12 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { client } from './client'
 import { endpoints } from './endpoints'
 import { queryKeys } from './keys'
-import type { BaseResponse, PostRequest, PostResponse } from './types'
+import type {
+    BaseResponse,
+    MutationOptions,
+    PostRequest,
+    PostResponse
+} from './types'
 
 // ============================================================================
 // API 함수
@@ -103,16 +108,6 @@ export const useGetAnnouncements = () => {
 // ============================================================================
 // Mutation Hooks
 // ============================================================================
-
-/**
- * 뮤테이션 옵션 타입
- */
-interface MutationOptions {
-    /** 성공 시 콜백 */
-    onSuccess?: () => void
-    /** 에러 시 콜백 */
-    onError?: (error: Error) => void
-}
 
 /**
  * 모집글 작성 Hook

@@ -20,7 +20,8 @@ import { queryKeys } from './keys'
 import type {
     BaseResponse,
     InvitationPostRequest,
-    InvitationResponse
+    InvitationResponse,
+    MutationOptions
 } from './types'
 
 // ============================================================================
@@ -99,16 +100,6 @@ export const useGetInvitations = () => {
 // ============================================================================
 // Mutation Hooks
 // ============================================================================
-
-/**
- * 뮤테이션 옵션 타입
- */
-interface MutationOptions {
-    /** 성공 시 콜백 */
-    onSuccess?: () => void
-    /** 에러 시 콜백 */
-    onError?: () => void
-}
 
 /**
  * 초대 전송 Hook

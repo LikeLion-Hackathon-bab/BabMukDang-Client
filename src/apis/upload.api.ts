@@ -12,6 +12,7 @@
 
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
+import type { MutationOptions } from './types'
 
 // WebSocket 서버용 Axios 인스턴스 (S3 presign용)
 const webSocketClient = axios.create({
@@ -160,16 +161,6 @@ export const uploadProfileS3 = uploadApi.uploadProfileS3
 // ============================================================================
 // Mutation Hooks
 // ============================================================================
-
-/**
- * 뮤테이션 옵션 타입
- */
-interface MutationOptions {
-    /** 성공 시 콜백 */
-    onSuccess?: () => void
-    /** 에러 시 콜백 */
-    onError?: (error: Error) => void
-}
 
 /**
  * 프로필 이미지 업로드 변수 타입

@@ -13,7 +13,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { client } from './client'
 import { endpoints } from './endpoints'
-import type { BaseResponse, TokenResponse } from './types'
+import type { BaseResponse, MutationOptions, TokenResponse } from './types'
 
 // ============================================================================
 // API 함수
@@ -62,18 +62,6 @@ export const refresh = authApi.refresh
 // ============================================================================
 
 /**
- * 뮤테이션 옵션 타입
- */
-interface MutationOptions {
-    /** 성공 시 콜백 */
-    onSuccess?: () => void
-    /** 에러 시 콜백 */
-    onError?: (error: Error) => void
-    /** 완료 시 콜백 (성공/실패 무관) */
-    onSettled?: () => void
-}
-
-/**
  * 토큰 갱신 Hook
  * @param options - 성공/에러/완료 콜백
  *
@@ -88,7 +76,9 @@ interface MutationOptions {
  *   }
  * })
  */
-export const useRefreshToken = (options: MutationOptions = {}) => {
+export const useRefreshToken = (
+    options: MutationOptions<BaseResponse<TokenResponse>> = {}
+) => {
     return useMutation({
         mutationFn: authApi.refresh,
         onSuccess: options.onSuccess,
@@ -101,7 +91,9 @@ export const useRefreshToken = (options: MutationOptions = {}) => {
  * 로그아웃 Hook
  * @param options - 성공/에러 콜백
  */
-export const useLogout = (options: MutationOptions = {}) => {
+export const useLogout = (
+    options: MutationOptions<BaseResponse<void>> = {}
+) => {
     return useMutation({
         mutationFn: authApi.logout,
         onSuccess: options.onSuccess,

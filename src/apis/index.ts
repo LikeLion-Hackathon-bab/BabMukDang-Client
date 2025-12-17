@@ -30,6 +30,7 @@ export type {
     BaseResponse,
     Menu,
     LocalTime,
+    MutationOptions,
     // 인증
     TokenResponse,
     // 게시글
@@ -37,8 +38,11 @@ export type {
     ArticleDetailResponse,
     ArticlePostRequest,
     RestaurantInfo,
+    RestaurantRequest,
     PageArticleSummaryResponse,
     LikePostResponse,
+    ArticlePhotoResponse,
+    RecentMealsResponse,
     // 댓글
     CommentResponse,
     CommentPostRequest,
@@ -66,7 +70,22 @@ export type {
     // 친구
     FriendMealResponse,
     FriendMealFilter,
-    FriendMealListResponse
+    FriendMealListResponse,
+    // 식사 상태
+    MealStatusAction,
+    UpdateMealStatusRequest,
+    MealStatusResponse,
+    // 챌린지
+    WeekProgress,
+    MonthProgress,
+    ChallengeStatusResponse,
+    // 쿠폰
+    CouponType,
+    CouponResponse,
+    // 멤버
+    MemberSummaryResponse,
+    AuthorInfo,
+    ParticipantInfo
 } from './types'
 
 // ============================================================================

@@ -42,6 +42,29 @@ export interface LocalTime {
     nano: number
 }
 
+/**
+ * TanStack Query 뮤테이션 옵션 타입
+ * 모든 mutation hook에서 공통으로 사용됩니다.
+ *
+ * @template TData - 성공 시 반환되는 데이터 타입
+ *
+ * @example
+ * const { mutate } = useLikeArticle({
+ *   onSuccess: (data) => console.log('좋아요:', data.liked),
+ *   onError: (error) => console.error(error.message)
+ * })
+ */
+export interface MutationOptions<TData = void> {
+    /** 뮤테이션 함수 */
+    mutationFn?: () => Promise<TData>
+    /** 성공 시 콜백 */
+    onSuccess?: (data: TData) => void
+    /** 에러 시 콜백 */
+    onError?: (error: Error) => void
+    /** 완료 시 콜백 (성공/실패 무관) */
+    onSettled?: () => void
+}
+
 // ============================================================================
 // 인증 (Auth) 관련 타입
 // ============================================================================

@@ -19,6 +19,7 @@ import { endpoints } from './endpoints'
 import { queryKeys } from './keys'
 import type {
     BaseResponse,
+    MutationOptions,
     ProfileResponse,
     ProfileDetailResponse,
     UpdateProfileRequest
@@ -169,16 +170,6 @@ export const useGetProfiles = (memberIds: number[]) => {
 // ============================================================================
 // Mutation Hooks
 // ============================================================================
-
-/**
- * 뮤테이션 옵션 타입
- */
-interface MutationOptions {
-    /** 성공 시 콜백 */
-    onSuccess?: () => void
-    /** 에러 시 콜백 */
-    onError?: (error: Error) => void
-}
 
 /**
  * 내 프로필 수정 Hook
