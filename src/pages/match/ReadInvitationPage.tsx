@@ -3,10 +3,7 @@ import { CardBobGraphic } from '@/assets/graphics'
 import { useHeader } from '@/hooks'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import {
-    useAcceptInvitation,
-    useRejectInvitation
-} from '@/query/invitationQuery'
+import { useAcceptInvitation, useRejectInvitation } from '@/apis'
 
 export function ReadInvitationPage() {
     const { setTitle, resetHeader } = useHeader()

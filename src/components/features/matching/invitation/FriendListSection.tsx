@@ -4,11 +4,13 @@ import { FilterList, SearchInput } from '@/components'
 import { INVITATION_FILTER_LIST } from '@/constants/filters'
 
 type Friend = {
-    userId: number
-    name: string
-    lastActive: string
-    isHungry: boolean
+    memberId: number
+    userName: string
+    profileImageUrl: string
+    hungry: boolean
+    label: string
 }
+
 export function FriendListSection({ friendList }: { friendList: Friend[] }) {
     const [activeFilter, setActiveFilter] = useState<{
         key: string
@@ -18,9 +20,10 @@ export function FriendListSection({ friendList }: { friendList: Friend[] }) {
         useState<Friend[]>(friendList)
     const handleSearch = (search: string) => {
         setFilteredFriendList(
-            friendList.filter(friend => friend.name.includes(search))
+            friendList.filter(friend => friend.userName.includes(search))
         )
     }
+    console.log('filteredFriendList', filteredFriendList)
     return (
         <div className="flex w-full flex-col gap-16">
             <div className="flex flex-col gap-16">
@@ -42,11 +45,14 @@ export function FriendListSection({ friendList }: { friendList: Friend[] }) {
                         .filter(friend =>
                             activeFilter.key === 'all'
                                 ? true
-                                : friend.isHungry ===
+                                : friend.hungry ===
                                   (activeFilter.key === 'hungry')
                         )
                         .map(friend => (
-                            <FriendCard friend={friend} />
+                            <FriendCard
+                                friend={friend}
+                                key={friend.memberId}
+                            />
                         ))}
                 </div>
             </div>

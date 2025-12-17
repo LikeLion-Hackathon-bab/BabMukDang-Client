@@ -1,4 +1,4 @@
-import { PostResponse } from '@/apis/dto'
+import { PostResponse } from '@/apis'
 import {
     ProfileDefaultIcon,
     LocationWhiteIcon,
@@ -19,7 +19,7 @@ export function CloseAnnouncementCard({
                 <div className="flex items-center gap-8">
                     <ProfileDefaultIcon className="size-20" />
                     <span className="text-body1-semibold">
-                        {announcement.author.name}
+                        {announcement.author?.name}
                     </span>
                 </div>
                 <span className="text-caption-medium text-gray-5">
@@ -67,13 +67,13 @@ export function CloseAnnouncementCard({
 
             <div className="rounded-50 border-primary-200 border p-8">
                 <div className="flex flex-row gap-8">
-                    {announcement.participants.map((participant, index) => (
+                    {announcement?.participants?.map((participant, index) => (
                         <div
                             key={index}
                             className="flex items-center gap-8">
                             <ProfileDefaultIcon className="size-20" />
                             <span className="text-body2-medium">
-                                {participant.name}
+                                {participant?.name}
                             </span>
                         </div>
                     ))}

@@ -20,12 +20,39 @@ export function BottomNavigation({ items }: BottomNavigationProps) {
         return null
     }
 
-    const bgcolor = (path: string) =>
-        location.pathname === path ? '#FFE2D9' : 'white'
+    // 각 탭에 속하는 경로들 정의
+    const tabRoutes: Record<string, string[]> = {
+        '/': ['/', '/search-restaurant', '/noti', '/upload', '/post'],
+        '/matching': ['/matching', '/send-invitation', '/read-invitation'],
+        '/profile': [
+            '/profile',
+            '/coupon',
+            '/profile-edit',
+            '/bob-check-history',
+            '/challenge',
+            '/friend-profile'
+        ],
+        '/meeting': ['/meeting']
+    }
+
+    // 현재 경로가 해당 탭에 속하는지 확인
+    const isActive = (tabPath: string) => {
+        const routes = tabRoutes[tabPath]
+        if (!routes) return location.pathname === tabPath
+
+        return routes.some(route =>
+            route === '/'
+                ? location.pathname === '/'
+                : location.pathname === route ||
+                  location.pathname.startsWith(route + '/')
+        )
+    }
+
+    const bgcolor = (path: string) => (isActive(path) ? '#FFE2D9' : 'white')
     const strokecolor = (path: string) =>
-        location.pathname === path ? '#FF480B' : '#B7B7B7'
+        isActive(path) ? '#FF480B' : '#B7B7B7'
     const textColor = (path: string) =>
-        location.pathname === path ? 'text-primary-main' : 'text-gray-600'
+        isActive(path) ? 'text-primary-main' : 'text-gray-600'
 
     return (
         <nav

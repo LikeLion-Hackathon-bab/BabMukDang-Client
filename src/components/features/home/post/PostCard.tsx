@@ -1,5 +1,5 @@
 import { PostCardContent, PostCardHeader, PostCardFooter } from '@/components'
-import { useLikeArticle } from '@/query'
+import { useLikeArticle } from '@/apis'
 import { useNavigate } from 'react-router-dom'
 import { MealTimeText } from '@/constants/post'
 type Post = {
@@ -57,7 +57,7 @@ export function PostCard({
                 mealTime={post.mealTime as MealTimeText}
                 isComment={isComment}
             />
-            <PostCardFooter restaurantInfo={post.restaurantName} />
+            {/* <PostCardFooter restaurantInfo={post.restaurantName} /> */}
         </div>
     )
 }
