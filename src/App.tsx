@@ -38,7 +38,10 @@ import {
 import { Layout, OnboardingLayout, RegisterLayout } from '@/components'
 import { register } from '@/lib/serviceWorkerRegistration'
 import { useEffect } from 'react'
+import { IntroStart } from './pages/intro/IntroStart'
+import { IntroTutorial } from './pages/intro/IntroTutorial'
 import WithMockServer from './mocks/WithMockServer'
+
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -57,6 +60,14 @@ function App() {
             <WithMockServer />
             <Router>
                 <Routes>
+                    <Route
+                        path="/intro"
+                        element={<IntroStart />}
+                    />
+                    <Route
+                        path="/intro/tutorial"
+                        element={<IntroTutorial />}
+                    />
                     <Route element={<Layout />}>
                         {/* 네비게이션 페이지 */}
                         <Route

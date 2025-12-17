@@ -1,26 +1,41 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { LogoTextIcon } from '@/assets/icons'
 import { MockPostList } from '@/constants/mockData'
-import { useHeader } from '@/hooks'
-import { PostCard, PostEmptyView, UploadButton } from '@/components'
-import { useGetHomeArticles } from '@/apis'
+
+import { useHeader, usePullToRefresh } from '@/hooks'
+import {
+    PostCard,
+    PostEmptyView,
+    UploadButton,
+    HomeBannerSection
+} from '@/components'
+import { useGetHomeArticles } from '@/query'
+import { COLORS } from '@/constants/colors'
+
 
 export function HomePage() {
     const { setLeftElement, hideCenterElement, resetHeader, showRightButton } =
         useHeader()
     const { data: postListData } = useGetHomeArticles()
     const postList = postListData?.content ?? MockPostList ?? []
+
+    const { pullPosition, menu } = usePullToRefresh()
+
     useEffect(() => {
-        setLeftElement(<LogoTextIcon fillcolor="black" />)
+        setLeftElement(<LogoTextIcon fillcolor={COLORS.primary500} />)
         hideCenterElement()
         showRightButton()
         return () => {
             resetHeader()
         }
-    }, [])
+    }, [setLeftElement, hideCenterElement, showRightButton, resetHeader])
     return (
         <>
+            <HomeBannerSection
+                menu={menu}
+                pullPosition={pullPosition}
+            />
             {postList.length === 0 ? (
                 <PostEmptyView />
             ) : (
