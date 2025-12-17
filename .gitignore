@@ -47,5 +47,8 @@ node_modules/
 .taskmaster/**
 
 dev-dist/**
+
+ios/**/*
+android/**/*
 *storybook.log
 storybook-static
