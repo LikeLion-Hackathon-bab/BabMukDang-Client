@@ -1,61 +1,83 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 
 import { Header, BottomNavigation } from '@/components'
-import { useAuthStore, useBottomNavStore } from '@/store'
+import { useAuthStore } from '@/store'
 import { useGetMyProfile, useRefreshToken } from '@/query'
 
 export function Layout() {
-    const { userId, username, setUserId, setUsername, setProfile, logout } =
-        useAuthStore()
-    const { data: myProfile, refetch } = useGetMyProfile()
-    const { accessToken, refreshToken } = useAuthStore()
     const navigate = useNavigate()
-    const { mutate: refreshTokenMutation } = useRefreshToken(
-        () => {
-            console.log('refreshToken')
-        },
-        (error: Error) => {
-            console.log('error', error)
-        },
-        () => {
-            if (!accessToken) {
-                navigate('/login')
-            }
-        }
-    )
+    const {
+        userId,
+        username,
+        accessToken,
+        refreshToken,
+        setUserId,
+        setUsername,
+        setProfile
+    } = useAuthStore()
 
-    useEffect(() => {
-        console.log('myProfile', myProfile, userId, username)
+    const { data: myProfile, refetch } = useGetMyProfile()
 
-        if (!userId && !username) {
-            if (myProfile) {
-                setUserId(myProfile.data.memberId.toString())
-                setUsername(myProfile.data.userName)
-                setProfile({
-                    profileImageUrl: myProfile.data.profileImageUrl,
-                    userName: myProfile.data.userName,
-                    bio: myProfile.data.bio,
-                    meetingCount: myProfile.data.meetingCount
-                })
-                console.log(myProfile.data)
-            } else {
-                refetch()
+    // 토큰 갱신 mutation
+    const { mutate: refreshTokenMutation, isPending: isRefreshing } =
+        useRefreshToken(
+            // onSuccess: 토큰 갱신 성공
+            () => {
+                console.log('[Auth] Token refreshed successfully')
+            },
+            // onError: 토큰 갱신 실패
+            () => {
+                console.log('[Auth] Token refresh failed, redirecting to login')
+                navigate('/login', { replace: true })
             }
-        }
-    }, [myProfile])
+        )
+
+    // 초기 인증 상태 확인
     useEffect(() => {
-        refreshTokenMutation()
-    }, [])
+        // 토큰이 없으면 로그인 페이지로
+        if (!accessToken && !refreshToken) {
+            navigate('/login', { replace: true })
+            return
+        }
+
+        // accessToken이 없고 refreshToken만 있으면 갱신 시도
+        if (!accessToken && refreshToken) {
+            refreshTokenMutation()
+        }
+    }, [accessToken, refreshToken, navigate, refreshTokenMutation])
+
+    // 프로필 정보 동기화
+    useEffect(() => {
+        if (!myProfile?.data) {
+            refetch()
+            return
+        }
+
+        // 프로필 데이터가 있고, store에 아직 없으면 업데이트
+        if (!userId || !username) {
+            const { memberId, userName, profileImageUrl, bio, meetingCount } =
+                myProfile.data
+            setUserId(memberId.toString())
+            setUsername(userName)
+            setProfile({ profileImageUrl, userName, bio, meetingCount })
+        }
+    }, [
+        myProfile,
+        userId,
+        username,
+        setUserId,
+        setUsername,
+        setProfile,
+        refetch
+    ])
+
     return (
         <div className="bg-gray-1 flex h-screen min-h-screen w-screen min-w-screen flex-col">
-            {/* Header */}
             <Header />
-            {/* Main Content */}
             <main className="relative flex-1 overflow-x-hidden overflow-y-auto px-20 pb-90">
                 <Outlet />
             </main>
-            {/* Bottom Navigation */}
             <BottomNavigation />
         </div>
     )
