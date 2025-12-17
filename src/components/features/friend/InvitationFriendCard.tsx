@@ -1,13 +1,7 @@
 import { HungryIcon, InviteIcon, NotHungryIcon } from '@/assets/icons'
 import { Link } from 'react-router-dom'
+import { Friend } from './FriendListSection'
 
-type Friend = {
-    memberId: number
-    userName: string
-    profileImageUrl: string
-    hungry: boolean
-    label: string
-}
 export function FriendCard({ friend }: { friend: Friend }) {
     return (
         <div className="rounded-12 flex flex-row items-center justify-between bg-white p-12">

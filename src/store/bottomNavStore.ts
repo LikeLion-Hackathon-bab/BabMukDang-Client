@@ -1,6 +1,12 @@
 import { create } from 'zustand'
 
-import { HomeIcon, MatchingIcon, DishIcon, MeetingIcon } from '@/assets/icons'
+import {
+    HomeIcon,
+    MatchingIcon,
+    DishIcon,
+    MeetingIcon,
+    PeopleIcon
+} from '@/assets/icons'
 export interface BottomNavConfig {
     visible: boolean
     items?: Array<{
@@ -26,6 +32,7 @@ const defaultConfig: BottomNavConfig = {
     items: [
         { path: '/', label: '홈', icon: HomeIcon },
         { path: '/matching', label: '매칭', icon: MatchingIcon },
+        { path: '/friend', label: '친구', icon: PeopleIcon },
         { path: '/meeting', label: '밥약', icon: MeetingIcon },
         { path: '/profile', label: '내 밥그릇', icon: DishIcon }
     ]

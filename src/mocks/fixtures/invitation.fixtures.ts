@@ -21,7 +21,22 @@ export const mockInvitationResponses: InvitationResponse[] = [
         inviterProfileImageUrl: ''
     },
     {
-        invitationId: 3,
+        invitationId: 4,
+        inviterName: '이민수',
+        inviterProfileImageUrl: ''
+    },
+    {
+        invitationId: 5,
+        inviterName: '이민수',
+        inviterProfileImageUrl: ''
+    },
+    {
+        invitationId: 6,
+        inviterName: '이민수',
+        inviterProfileImageUrl: ''
+    },
+    {
+        invitationId: 7,
         inviterName: '이민수',
         inviterProfileImageUrl: ''
     }

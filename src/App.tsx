@@ -41,6 +41,7 @@ import { useEffect } from 'react'
 import { IntroStart } from './pages/intro/IntroStart'
 import { IntroTutorial } from './pages/intro/IntroTutorial'
 import WithMockServer from './mocks/WithMockServer'
+import { FriendPage } from './pages/navigation/FriendPage'
 
 
 const queryClient = new QueryClient({
@@ -77,6 +78,10 @@ function App() {
                         <Route
                             path="/profile"
                             element={<ProfilePage />}
+                        />
+                        <Route
+                            path="/friend"
+                            element={<FriendPage />}
                         />
                         <Route
                             path="/meeting"

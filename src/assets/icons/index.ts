@@ -38,6 +38,7 @@ import Invite from './icon_invite.svg?react'
 import Coupon from './icon_coupon.svg?react'
 import Album from './icon_album.svg?react'
 import Modify from './icon_modify.svg?react'
+import Add from './icon_add.svg?react'
 
 export const HomeIcon = withIconProps(Home)
 export const MatchingIcon = withIconProps(Matching)
@@ -78,7 +79,7 @@ export const InviteIcon = withIconProps(Invite)
 export const CouponIcon = withIconProps(Coupon)
 export const AlbumIcon = withIconProps(Album)
 export const ModifyIcon = withIconProps(Modify)
-
+export const AddIcon = withIconProps(Add)
 export { ChallengeFillIcon, ChallengeGrayIcon } from './challenge'
 export {
     ArrowForwardIcon,

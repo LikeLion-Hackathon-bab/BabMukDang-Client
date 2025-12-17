@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { FriendListSection } from './FriendListSection'
 
 const meta: Meta<typeof FriendListSection> = {
-    title: 'Features/Matching/Invitation/FriendListSection',
+    title: 'Features/Friend/FriendListSection',
     component: FriendListSection,
     tags: ['autodocs'],
     parameters: {

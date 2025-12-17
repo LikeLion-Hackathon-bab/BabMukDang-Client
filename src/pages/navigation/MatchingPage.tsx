@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import { MockAnnouncements, MockFriendList } from '@/constants/mockData'
 import { Post, PostResponse } from '@/apis'
 
 import { useHeader } from '@/hooks'
@@ -8,10 +7,10 @@ import {
     TabHeader,
     JoinCompleteModal,
     AnnouncementCarousel,
-    InvitationToggleButton,
     RecieveInvitationList,
     AnnouncementBottomSheet,
-    FriendListSection
+    InviteButton,
+    LongTimeNoSeeFriendList
 } from '@/components'
 import { BOTTOM_NAVIGATION_HEIGHT } from '@/constants/bottomNav'
 import {
@@ -21,6 +20,8 @@ import {
     useFriendMeals
 } from '@/apis'
 import { useAuthStore } from '@/store'
+import { HungryFriendList } from '@/components/features/matching/announcement/HungryFriendList'
+import { Friend } from '@/components/features/friend/FriendListSection'
 
 export function MatchingPage() {
     const [activeTab, setActiveTab] = useState<'announcement' | 'invitation'>(
@@ -59,6 +60,65 @@ export function MatchingPage() {
         </div>
     )
 }
+// TODO: fixture 제거
+const hungryFriendFixture: Friend[] = [
+    {
+        memberId: 1,
+        userName: '김철수',
+        profileImageUrl: 'https://via.placeholder.com/150',
+        hungry: true,
+        label: '밥먹고 싶어요'
+    },
+    {
+        memberId: 2,
+        userName: '이영희',
+        profileImageUrl: 'https://via.placeholder.com/150',
+        hungry: false,
+        label: '밥먹고 싶어요'
+    },
+    {
+        memberId: 3,
+        userName: '박민수',
+        profileImageUrl: 'https://via.placeholder.com/150',
+        hungry: false,
+        label: '밥먹고 싶어요'
+    },
+    {
+        memberId: 3,
+        userName: '박민수',
+        profileImageUrl: 'https://via.placeholder.com/150',
+        hungry: false,
+        label: '밥먹고 싶어요'
+    },
+    {
+        memberId: 3,
+        userName: '박민수',
+        profileImageUrl: 'https://via.placeholder.com/150',
+        hungry: false,
+        label: '밥먹고 싶어요'
+    },
+    {
+        memberId: 3,
+        userName: '박민수',
+        profileImageUrl: 'https://via.placeholder.com/150',
+        hungry: false,
+        label: '밥먹고 싶어요'
+    },
+    {
+        memberId: 3,
+        userName: '박민수',
+        profileImageUrl: 'https://via.placeholder.com/150',
+        hungry: false,
+        label: '밥먹고 싶어요'
+    },
+    {
+        memberId: 3,
+        userName: '박민수',
+        profileImageUrl: 'https://via.placeholder.com/150',
+        hungry: false,
+        label: '밥먹고 싶어요'
+    }
+]
 
 function AnnouncementTab() {
     const [announcements, setAnnouncements] = useState<PostResponse[]>([])
@@ -67,6 +127,8 @@ function AnnouncementTab() {
         null
     )
     const { data: announcementsData } = useGetAnnouncements()
+    const [hungryFriendList, setHungryFriendList] =
+        useState<Friend[]>(hungryFriendFixture)
     useEffect(() => {
         console.log('announcementsData', announcementsData)
         setMyAnnouncements(
@@ -76,10 +138,15 @@ function AnnouncementTab() {
         )
         console.log('myAnnouncements', myAnnouncements, userId)
         setAnnouncements(announcementsData || [])
-    }, [])
+    }, [announcementsData, userId])
     return (
         <div className="bg-primary-100 flex h-full flex-col justify-center pb-90">
-            <div className="flex flex-1 flex-col justify-center pb-90">
+            <div className="flex flex-1 flex-col gap-16 pt-20 pb-90">
+                {hungryFriendList.length > 0 && (
+                    <div className="px-20">
+                        <HungryFriendList hungryFriendList={hungryFriendList} />
+                    </div>
+                )}
                 <AnnouncementCarousel announcements={announcements} />
                 <AnnouncementBottomSheet
                     isAdd={myAnnouncements === null}
@@ -90,21 +157,41 @@ function AnnouncementTab() {
     )
 }
 
+// TODO: fixture 제거
+const longTimeNoSeeFriendFixture = [
+    {
+        memberId: 1,
+        userName: '김철수',
+        profileImageUrl: 'https://via.placeholder.com/150',
+        lastMeetingDate: '2025-12-18'
+    },
+    {
+        memberId: 2,
+        userName: '이영희',
+        profileImageUrl: 'https://via.placeholder.com/150',
+        lastMeetingDate: '2025-12-18'
+    },
+    {
+        memberId: 3,
+        userName: '박민수',
+        profileImageUrl: 'https://via.placeholder.com/150',
+        lastMeetingDate: '2025-12-18'
+    }
+]
 function InvitationTab() {
     const { data: invitations } = useGetInvitations()
     const { data: friendMeals } = useFriendMeals()
-    console.log('invitations', invitations)
-    console.log('friendMeals', friendMeals)
+    const longTimeNoSeeFriendList = longTimeNoSeeFriendFixture
     return (
         <div
             className={`flex flex-col gap-40 px-20 pt-18 pb-${BOTTOM_NAVIGATION_HEIGHT}`}>
             {/* 식사 상태 토글 버튼 */}
             <div className="flex flex-col gap-16">
-                <InvitationToggleButton />
+                <InviteButton />
                 <RecieveInvitationList invitations={invitations?.data || []} />
-            </div>
-            <div className="flex flex-col items-center justify-center pb-10">
-                <FriendListSection friendList={friendMeals?.data || []} />
+                <LongTimeNoSeeFriendList
+                    longTimeNoSeeFriendList={longTimeNoSeeFriendList}
+                />
             </div>
         </div>
     )
