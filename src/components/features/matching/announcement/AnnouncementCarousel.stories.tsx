@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { AnnouncementCarousel } from './AnnouncementCarousel'
-import { PostResponse } from '@/apis/dto'
+import { PostResponse } from '@/apis'
 import { MockAnnouncements } from '@/constants/mockData'
 
 const meta: Meta<typeof AnnouncementCarousel> = {

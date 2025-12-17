@@ -3,9 +3,8 @@ import { useEffect, useState } from 'react'
 import { useHeader } from '@/hooks'
 import { FilterList, MeetingCard, MeetingHeader } from '@/components'
 import { MEETING_FILTER_LIST } from '@/constants/filters'
-import { useGetMeetings } from '@/query/meetingQuery'
+import { useGetMeetings, MeetingResponse } from '@/apis'
 import { MockMeetingList } from '@/constants/mockData'
-import { MeetingResponse } from '@/apis/meeting'
 
 export function MeetingPage() {
     const { resetHeader, hideHeader } = useHeader()

@@ -4,7 +4,7 @@ import { LogoTextIcon } from '@/assets/icons'
 import { MockPostList } from '@/constants/mockData'
 import { useHeader } from '@/hooks'
 import { PostCard, PostEmptyView, UploadButton } from '@/components'
-import { useGetHomeArticles } from '@/query'
+import { useGetHomeArticles } from '@/apis'
 
 export function HomePage() {
     const { setLeftElement, hideCenterElement, resetHeader, showRightButton } =

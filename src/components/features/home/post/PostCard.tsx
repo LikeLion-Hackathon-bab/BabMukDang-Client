@@ -1,5 +1,5 @@
 import { PostCardContent, PostCardHeader, PostCardFooter } from '@/components'
-import { useLikeArticle } from '@/query'
+import { useLikeArticle } from '@/apis'
 import { useNavigate } from 'react-router-dom'
 import { MealTimeText } from '@/constants/post'
 type Post = {

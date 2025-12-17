@@ -5,9 +5,8 @@ import { Link } from 'react-router-dom'
 import { useArticleStore } from '@/store'
 import { RestaurantCard, MutalButton, SearchInput } from '@/components'
 import { useBottomNav, useKakaoMap } from '@/hooks'
-import { useUploadArticle } from '@/query'
+import { useUploadArticle, RestaurantInfo } from '@/apis'
 import { useAuthStore } from '@/store'
-import { RestaurantInfo } from '@/apis/dto'
 
 export function SearchRestaurantPage() {
     const { image, setRestaurant } = useArticleStore()
@@ -135,10 +134,10 @@ export function SearchRestaurantPage() {
 function UploadButton() {
     const { image, buildRequest } = useArticleStore()
     const { userId } = useAuthStore()
-    const { mutate: uploadAndPost, isPending } = useUploadArticle(
-        () => console.log('업로드 완료'),
-        e => console.error(e.message)
-    )
+    const { mutate: uploadAndPost, isPending } = useUploadArticle({
+        onSuccess: () => console.log('업로드 완료'),
+        onError: (e: Error) => console.error(e.message)
+    })
     const onClickUpload = () => {
         if (buildRequest) {
             uploadAndPost({

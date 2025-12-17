@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { AddAnnouncementCard } from './AddAnnouncementCard'
 import { useState } from 'react'
-import { Post } from '@/apis/dto'
+import { Post } from '@/apis'
 
 const meta: Meta<typeof AddAnnouncementCard> = {
     title: 'Features/Matching/Announcement/AddAnnouncementCard',

@@ -10,8 +10,7 @@ import {
     ProfileButtonSection,
     ProfileSection
 } from '@/components'
-import { useGetMyProfileDetail, } from '@/query'
-import { ProfileDetailResponse } from '@/apis/profile'
+import { useGetMyProfileDetail, ProfileDetailResponse } from '@/apis'
 
 export function ProfilePage() {
     const { hideHeader, resetHeader } = useHeader()

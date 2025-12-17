@@ -1,6 +1,6 @@
-import { CommentResponse } from '@/apis/dto'
+import { CommentResponse } from '@/apis'
 
-interface Comment {
+export interface Comment {
     commentId: number
     authorId: number
     authorUsername: string
@@ -11,7 +11,7 @@ interface Comment {
     replies?: Comment[] // 트리 변환 후에만 생김
 }
 
-export function buildCommentTree(comments: CommentResponse[]) {
+export function buildCommentTree(comments: CommentResponse[]): Comment[] {
     const map: Record<number, Comment> = {}
     const roots: Comment[] = []
 

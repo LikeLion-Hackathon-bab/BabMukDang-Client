@@ -1,11 +1,10 @@
 import { useCarousel } from '@/hooks'
-import { PostResponse } from '@/apis/dto'
+import { PostResponse, useSubscribeAnnouncement } from '@/apis'
 import { AnnouncementCard, EmptyAnnouncementCard } from './AnnouncementCard'
 import { JoinButton } from './AnnouncementJoinButton'
 import { useAuthStore } from '@/store'
 import { useState } from 'react'
 import { JoinCompleteModal } from '@/components'
-import { useSubscribeAnnouncement } from '@/query'
 
 export function AnnouncementCarousel({
     announcements

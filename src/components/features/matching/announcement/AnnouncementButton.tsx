@@ -1,10 +1,10 @@
-import { MutalButtonSmall } from '@/components'
 import {
     useCloseAnnouncement,
     useGetAnnouncements,
-    usePostAnnouncement
-} from '@/query'
-import { Post } from '@/apis/dto'
+    usePostAnnouncement,
+    Post
+} from '@/apis'
+import { MutalButtonSmall } from '@/components'
 import { useNavigate } from 'react-router-dom'
 
 export function AddAnnouncementButton({
@@ -12,15 +12,15 @@ export function AddAnnouncementButton({
 }: {
     announcementAddData: Post
 }) {
-    const { mutate: postAnnouncement } = usePostAnnouncement(
-        () => {
+    const { mutate: postAnnouncement } = usePostAnnouncement({
+        onSuccess: () => {
             console.log('Add announcement button clicked')
             refetchAnnouncements()
         },
-        error => {
+        onError: (error: Error) => {
             console.log(error)
         }
-    )
+    })
     const { refetch: refetchAnnouncements } = useGetAnnouncements()
     const handleAddAnnouncement = () => {
         postAnnouncement(announcementAddData)
@@ -37,14 +37,14 @@ export function CloseAnnouncementButton({
     announcementId: number | undefined
 }) {
     const navigate = useNavigate()
-    const { mutate: closeAnnouncement } = useCloseAnnouncement(
-        () => {
+    const { mutate: closeAnnouncement } = useCloseAnnouncement({
+        onSuccess: () => {
             console.log('Close announcement button clicked')
         },
-        error => {
+        onError: (error: Error) => {
             console.log(error)
         }
-    )
+    })
     const handleCloseAnnouncement = () => {
         if (announcementId) {
             closeAnnouncement(announcementId)

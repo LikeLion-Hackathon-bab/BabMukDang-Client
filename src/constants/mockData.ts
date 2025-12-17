@@ -1,6 +1,11 @@
-import { CommentResponse, PostResponse, RestaurantInfo } from '@/apis/dto'
-import { MeetingResponse } from '@/apis/meeting'
-import { PreferenceItem, ProfileDetailResponse } from '@/apis/profile'
+import {
+    CommentResponse,
+    PostResponse,
+    RestaurantInfo,
+    MeetingResponse,
+    PreferenceItem,
+    ProfileDetailResponse
+} from '@/apis'
 
 export const MockAnnouncements: PostResponse[] = [
     {
