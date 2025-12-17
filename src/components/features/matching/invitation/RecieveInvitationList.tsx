@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 
 import { ProfileDefaultIcon } from '@/assets/icons'
-import { InvitationResponse } from '@/apis/invitation'
+import { InvitationResponse } from '@/apis'
 
 export function RecieveInvitationList({
     invitations

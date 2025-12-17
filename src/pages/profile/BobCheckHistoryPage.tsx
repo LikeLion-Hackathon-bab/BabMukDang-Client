@@ -1,7 +1,6 @@
 import { useHeader } from '@/hooks'
 import { useEffect } from 'react'
-import { useGetMyArticles } from '@/query/articlesQuery'
-import { ArticleSummaryResponse } from '@/apis/dto'
+import { ArticleSummaryResponse, useGetMyArticles } from '@/apis'
 
 export function BobCheckHistoryPage() {
     const { setTitle, resetHeader } = useHeader()

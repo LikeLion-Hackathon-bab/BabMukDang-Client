@@ -4,12 +4,11 @@ import {
     HeartFilledIcon,
     HeartWhiteIcon
 } from '@/assets/icons'
-import { useLikeArticle } from '@/query'
+import { useLikeArticle, LikePostResponse } from '@/apis'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { COLORS } from '@/constants/colors'
 import { mealTimeMapReverse, MealTimeText } from '@/constants/post'
-import { LikePostResponse } from '@/apis/dto'
 
 export const PostCardContent = ({
     postImageUrl,
@@ -39,10 +38,10 @@ export const PostCardContent = ({
     const onError = (e: Error) => {
         setIsLiked(false)
     }
-    const { mutate: likeArticle, isPending: isLikePending } = useLikeArticle(
+    const { mutate: likeArticle, isPending: isLikePending } = useLikeArticle({
         onSuccess,
         onError
-    )
+    })
     const onClickLike = () => {
         likeArticle({ articleId: postId })
     }

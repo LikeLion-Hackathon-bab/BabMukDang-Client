@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 
 import { LogoTextIcon } from '@/assets/icons'
 import { MockPostList } from '@/constants/mockData'
+
 import { useHeader, usePullToRefresh } from '@/hooks'
 import {
     PostCard,
@@ -11,6 +12,7 @@ import {
 } from '@/components'
 import { useGetHomeArticles } from '@/query'
 import { COLORS } from '@/constants/colors'
+
 
 export function HomePage() {
     const { setLeftElement, hideCenterElement, resetHeader, showRightButton } =

@@ -1,66 +1,104 @@
 import { useAuthStore } from '@/store'
-import axios from 'axios'
+import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios'
 
+// Axios 클라이언트 인스턴스 생성
 export const client = axios.create({
     baseURL: import.meta.env.VITE_SERVER_URL,
-    withCredentials: true
+    withCredentials: true,
+    timeout: 10000
 })
 
+// 토큰 갱신 상태 관리
 let isRefreshing = false
-let refreshPromise: Promise<string> | null = null
+let refreshSubscribers: ((token: string) => void)[] = []
 
-// JWT access_token을 Authorization 헤더에 자동으로 추가하는 인터셉터
+// 대기 중인 요청들에게 새 토큰 전달
+const onRefreshed = (token: string) => {
+    refreshSubscribers.forEach(callback => callback(token))
+    refreshSubscribers = []
+}
+
+// 토큰 갱신 대기열에 추가
+const addRefreshSubscriber = (callback: (token: string) => void) => {
+    refreshSubscribers.push(callback)
+}
+
+// Request Interceptor: Authorization 헤더 자동 추가
 client.interceptors.request.use(
     config => {
         const { accessToken } = useAuthStore.getState()
         if (accessToken) {
-            config.headers = config.headers || {}
             config.headers.Authorization = `Bearer ${accessToken}`
         }
-        console.log(config.headers)
         return config
     },
     error => Promise.reject(error)
 )
 
+// Response Interceptor: 401 에러 시 토큰 갱신 처리
 client.interceptors.response.use(
     response => response,
-    async error => {
-        const originalRequest = error.config
-        if (error.response?.status === 401 && !originalRequest._retry) {
-            originalRequest._retry = true
-            const { logout, setTokens } = useAuthStore.getState()
-            logout()
-            // 발급 시도 프로미스, 이미 발급 중이면 대기
-            if (!isRefreshing) {
-                isRefreshing = true
-                refreshPromise = client
-                    .post(`${import.meta.env.VITE_BASE_API_URL}/auth/refresh`, {
-                        withCredentials: true
-                    })
-                    .then(res => {
-                        const { accessToken, refreshToken } = res.data.data
-                        setTokens({ accessToken, refreshToken })
-                        return accessToken
-                    })
-                    .catch(err => {
-                        logout()
-                        throw err
-                    })
-                    .finally(() => {
-                        isRefreshing = false
-                    })
-            }
-
-            // 발급 완료 후 요청 재시도
-            try {
-                const newAccessToken = await refreshPromise
-                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
-                return client(originalRequest)
-            } catch (refreshError) {
-                return Promise.reject(refreshError)
-            }
+    async (error: AxiosError) => {
+        const originalRequest = error.config as InternalAxiosRequestConfig & {
+            _retry?: boolean
         }
-        return Promise.reject(error)
+
+        // 401 에러가 아니거나 이미 재시도한 요청이면 에러 반환
+        if (error.response?.status !== 401 || originalRequest._retry) {
+            return Promise.reject(error)
+        }
+
+        originalRequest._retry = true
+        const { setTokens, logout, refreshToken } = useAuthStore.getState()
+
+        // refreshToken이 없으면 로그아웃
+        if (!refreshToken) {
+            logout()
+            return Promise.reject(error)
+        }
+
+        // 이미 갱신 중이면 대기열에 추가
+        if (isRefreshing) {
+            return new Promise(resolve => {
+                addRefreshSubscriber((token: string) => {
+                    originalRequest.headers.Authorization = `Bearer ${token}`
+                    resolve(client(originalRequest))
+                })
+            })
+        }
+
+        isRefreshing = true
+
+        try {
+            // 토큰 갱신 요청
+            const response = await axios.post(
+                `${import.meta.env.VITE_SERVER_URL}/auth/refresh`,
+                {},
+                { withCredentials: true }
+            )
+
+            const {
+                accessToken: newAccessToken,
+                refreshToken: newRefreshToken
+            } = response.data.data
+            setTokens({
+                accessToken: newAccessToken,
+                refreshToken: newRefreshToken
+            })
+
+            // 대기 중인 요청들 처리
+            onRefreshed(newAccessToken)
+
+            // 원래 요청 재시도
+            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
+            return client(originalRequest)
+        } catch (refreshError) {
+            // 갱신 실패 시 로그아웃
+            logout()
+            refreshSubscribers = []
+            return Promise.reject(refreshError)
+        } finally {
+            isRefreshing = false
+        }
     }
 )

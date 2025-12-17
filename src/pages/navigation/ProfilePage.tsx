@@ -10,13 +10,13 @@ import {
     ProfileButtonSection,
     ProfileSection
 } from '@/components'
-import { useGetMyProfileDetail, useLogout } from '@/query'
-import { ProfileDetailResponse } from '@/apis/profile'
+import { useGetMyProfileDetail, ProfileDetailResponse } from '@/apis'
 
 export function ProfilePage() {
     const { hideHeader, resetHeader } = useHeader()
     const { data: profileData } = useGetMyProfileDetail()
-    const { mutate: logout } = useLogout()
+    //TODO: Logout 구현
+    // const { mutate: logout } = useLogout()
     const [profile, setProfile] = useState<ProfileDetailResponse>(
         profileData?.data ?? MockMyProfileData
     )
@@ -61,7 +61,7 @@ export function ProfilePage() {
             <button
                 className={`text-caption-regular text-gray-3 absolute bottom-${BOTTOM_NAVIGATION_HEIGHT} right-0 left-0`}
                 onClick={() => {
-                    logout()
+                    // logout()
                 }}>
                 로그아웃
             </button>

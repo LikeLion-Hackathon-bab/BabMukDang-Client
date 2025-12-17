@@ -1,4 +1,4 @@
-import { ArticlePostRequest, RestaurantInfo } from '@/apis/dto'
+import { ArticlePostRequest, RestaurantInfo } from '@/apis'
 import { create } from 'zustand'
 
 interface ArticleStore {

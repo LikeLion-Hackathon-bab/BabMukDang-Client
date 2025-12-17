@@ -40,6 +40,8 @@ import { register } from '@/lib/serviceWorkerRegistration'
 import { useEffect } from 'react'
 import { IntroStart } from './pages/intro/IntroStart'
 import { IntroTutorial } from './pages/intro/IntroTutorial'
+import WithMockServer from './mocks/WithMockServer'
+
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -55,6 +57,7 @@ function App() {
     }, [])
     return (
         <QueryClientProvider client={queryClient}>
+            <WithMockServer />
             <Router>
                 <Routes>
                     <Route

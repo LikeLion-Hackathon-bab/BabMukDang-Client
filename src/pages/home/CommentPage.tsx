@@ -2,8 +2,11 @@ import { useEffect, useRef, useState } from 'react'
 import { PostCard, CommentList, ChatInput } from '@/components'
 import { useHeader, useBottomNav } from '@/hooks'
 import { useLocation, useParams } from 'react-router-dom'
-import { useCommentArticle, useGetArticleComments } from '@/query'
-import { CommentResponse } from '@/apis/dto'
+import {
+    useCommentArticle,
+    useGetArticleComments,
+    CommentResponse
+} from '@/apis'
 import { buildCommentTree } from '@/lib'
 type TreeComment = ReturnType<typeof buildCommentTree>[number]
 export function CommentPage() {
@@ -12,14 +15,14 @@ export function CommentPage() {
     const { postId } = useParams()
     const [newMessage, setNewMessage] = useState('')
     const [replyCommentId, setReplyCommentId] = useState<number | null>(null)
-    const { mutate: sendMessage } = useCommentArticle(
-        () => {
+    const { mutate: sendMessage } = useCommentArticle({
+        onSuccess: () => {
             refetch()
         },
-        e => {
+        onError: (e: Error) => {
             console.log('error', e)
         }
-    )
+    })
     useEffect(() => {
         setTitle('게시물')
         hideBottomNav()

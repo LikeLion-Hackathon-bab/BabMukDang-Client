@@ -35,7 +35,9 @@ dev-debug.log
 node_modules/
 # Environment variables
 .env
-.vscode
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
 # OS specific
 
 # Task files
@@ -45,5 +47,9 @@ node_modules/
 .taskmaster/**
 
 dev-dist/**
-ios
-android
+
+ios/**/*
+android/**/*
+*storybook.log
+storybook-static
+
