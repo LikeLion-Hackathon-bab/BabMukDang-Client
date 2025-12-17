@@ -1,42 +1,226 @@
+/**
+ * @fileoverview API 모듈 통합 진입점 (Barrel File)
+ *
+ * 이 파일에서 모든 API 함수와 Query hooks를 re-export합니다.
+ * 다른 컴포넌트에서는 이 파일을 통해 import하면 됩니다.
+ *
+ * @example
+ * import { useGetArticle, articleApi, queryKeys } from '@/apis'
+ */
+
+// ============================================================================
+// Core
+// ============================================================================
+
+/** Axios 클라이언트 인스턴스 */
+export { client } from './client'
+
+/** Query Key 중앙 관리 */
+export { queryKeys } from './keys'
+
+/** API 엔드포인트 중앙 관리 */
+export { endpoints } from './endpoints'
+
+// ============================================================================
+// 타입
+// ============================================================================
+
+export type {
+    // 공통
+    BaseResponse,
+    Menu,
+    LocalTime,
+    MutationOptions,
+    // 인증
+    TokenResponse,
+    // 게시글
+    ArticleSummaryResponse,
+    ArticleDetailResponse,
+    ArticlePostRequest,
+    RestaurantInfo,
+    RestaurantRequest,
+    PageArticleSummaryResponse,
+    LikePostResponse,
+    ArticlePhotoResponse,
+    RecentMealsResponse,
+    // 댓글
+    CommentResponse,
+    CommentPostRequest,
+    // 모집글
+    Post,
+    PostRequest,
+    PostResponse,
+    // 프로필
+    ProfileResponse,
+    ProfileDetailResponse,
+    UpdateProfileRequest,
+    PreferenceItem,
+    // 초대
+    InvitationPostRequest,
+    InvitationResponse,
+    // 모임
+    MeetingParticipant,
+    MeetingResponse,
+    // 선호도
+    Onboarding,
+    OnboardingPreferenceRequest,
+    OnboardingPreferenceResponse,
+    PreferenceSummaryResponse,
+    PreferenceMetaResponse,
+    // 친구
+    FriendMealResponse,
+    FriendMealFilter,
+    FriendMealListResponse,
+    // 식사 상태
+    MealStatusAction,
+    UpdateMealStatusRequest,
+    MealStatusResponse,
+    // 챌린지
+    WeekProgress,
+    MonthProgress,
+    ChallengeStatusResponse,
+    // 쿠폰
+    CouponType,
+    CouponResponse,
+    // 멤버
+    MemberSummaryResponse,
+    AuthorInfo,
+    ParticipantInfo
+} from './types'
+
+// ============================================================================
+// Article (게시글)
+// ============================================================================
+
 export {
+    articleApi,
+    // Query hooks
+    useGetArticle,
+    useGetArticleComments,
+    useGetHomeArticles,
+    useGetArticlesByAuthor,
+    useGetArticlesByMember,
+    useGetMyArticles,
+    // Mutation hooks
+    useUploadArticle,
+    useLikeArticle,
+    useCommentArticle,
+    useDeleteArticle,
+    useDeleteArticleComment
+} from './article.api'
+
+// ============================================================================
+// Auth (인증)
+// ============================================================================
+
+export {
+    authApi,
+    login,
+    logout,
+    refresh,
+    // Mutation hooks
+    useRefreshToken,
+    useLogout
+} from './auth.api'
+
+// ============================================================================
+// Profile (프로필)
+// ============================================================================
+
+export {
+    profileApi,
+    // Query hooks
+    useGetMyProfile,
+    useGetMyProfileDetail,
+    useGetMemberProfile,
+    useGetMemberProfileDetail,
+    useGetProfiles,
+    // Mutation hooks
+    useUpdateMyProfile
+} from './profile.api'
+
+// ============================================================================
+// Announcement (모집글/공지)
+// ============================================================================
+
+export {
+    announcementApi,
     getAnnouncements,
     postAnnouncement,
     closeAnnouncement,
     joinAnnouncement,
-    subscribeAnnouncement
-} from './announcement'
-export { client } from './client'
-export { login, logout, refresh } from './auth'
-export {
-    getArticle,
-    getArticleComments,
-    getHomeArticles,
-    getArticlesByAuthor,
-    postArticle,
-    getArticlesByMember,
-    getMyArticles,
-    deleteArticle,
-    deleteArticleComment,
-    likeArticle,
-    postArticleComment
-} from './article'
+    subscribeAnnouncement,
+    // Query hooks
+    useGetAnnouncements,
+    // Mutation hooks
+    usePostAnnouncement,
+    useCloseAnnouncement,
+    useJoinAnnouncement,
+    useSubscribeAnnouncement
+} from './announcement.api'
+
+// ============================================================================
+// Invitation (초대)
+// ============================================================================
 
 export {
-    presignArticle,
-    presignProfile,
-    uploadArticleS3,
-    uploadProfileS3
-} from './upload'
-export {
+    invitationApi,
     getInvitations,
     sendInvitation,
     acceptInvitation,
-    rejectInvitation
-} from './invitation'
+    rejectInvitation,
+    // Query hooks
+    useGetInvitations,
+    // Mutation hooks
+    useSendInvitation,
+    useAcceptInvitation,
+    useRejectInvitation
+} from './invitation.api'
+
+// ============================================================================
+// Meeting (모임)
+// ============================================================================
+
 export {
+    meetingApi,
+    getMeetings,
+    // Query hooks
+    useGetMeetings
+} from './meeting.api'
+
+// ============================================================================
+// Friends (친구)
+// ============================================================================
+
+export {
+    friendsApi,
+    getFriendMeals,
+    // Query hooks
+    useFriendMeals,
+    useAllFriendMeals
+} from './friends.api'
+
+// ============================================================================
+// Preference (선호도)
+// ============================================================================
+
+export {
+    preferenceApi,
+    postOnboardingPreference,
     getPreferenceSummary,
-    getPreferenceMeta,
-    postOnboardingPreference
-} from './preference'
-export { getMeetings } from './meeting'
-export { getFriendMeals } from './friends'
+    getPreferenceMeta
+} from './preference.api'
+
+// ============================================================================
+// Upload (파일 업로드)
+// ============================================================================
+
+export {
+    uploadApi,
+    presignArticle,
+    presignProfile,
+    uploadArticleS3,
+    uploadProfileS3,
+    // Mutation hooks
+    useUploadProfile
+} from './upload.api'

@@ -1,4 +1,4 @@
-import { Post } from '@/apis/dto'
+import { Post } from '@/apis'
 import { DownIcon, UpIcon } from '@/assets/icons'
 import { useRef, useState } from 'react'
 

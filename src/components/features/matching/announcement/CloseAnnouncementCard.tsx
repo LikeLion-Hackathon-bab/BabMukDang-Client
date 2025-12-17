@@ -1,4 +1,4 @@
-import { PostResponse } from '@/apis/dto'
+import { PostResponse } from '@/apis'
 import {
     ProfileDefaultIcon,
     LocationWhiteIcon,

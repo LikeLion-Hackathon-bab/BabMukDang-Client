@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { MockAnnouncements, MockFriendList } from '@/constants/mockData'
-import { Post, PostResponse } from '@/apis/dto'
+import { Post, PostResponse } from '@/apis'
 
 import { useHeader } from '@/hooks'
 import {
@@ -14,10 +14,13 @@ import {
     FriendListSection
 } from '@/components'
 import { BOTTOM_NAVIGATION_HEIGHT } from '@/constants/bottomNav'
-import { useGetAnnouncements, useSubscribeAnnouncement } from '@/query'
+import {
+    useGetAnnouncements,
+    useSubscribeAnnouncement,
+    useGetInvitations,
+    useFriendMeals
+} from '@/apis'
 import { useAuthStore } from '@/store'
-import { useGetInvitations } from '@/query/invitationQuery'
-import { useFriendMeals } from '@/query/friendsQuery'
 
 export function MatchingPage() {
     const [activeTab, setActiveTab] = useState<'announcement' | 'invitation'>(

@@ -3,7 +3,7 @@ import { Outlet, useNavigate } from 'react-router-dom'
 
 import { Header, BottomNavigation } from '@/components'
 import { useAuthStore } from '@/store'
-import { useGetMyProfile, useRefreshToken } from '@/query'
+import { useGetMyProfile, useRefreshToken } from '@/apis'
 
 export function Layout() {
     const navigate = useNavigate()
@@ -21,17 +21,15 @@ export function Layout() {
 
     // 토큰 갱신 mutation
     const { mutate: refreshTokenMutation, isPending: isRefreshing } =
-        useRefreshToken(
-            // onSuccess: 토큰 갱신 성공
-            () => {
+        useRefreshToken({
+            onSuccess: () => {
                 console.log('[Auth] Token refreshed successfully')
             },
-            // onError: 토큰 갱신 실패
-            () => {
+            onError: () => {
                 console.log('[Auth] Token refresh failed, redirecting to login')
                 navigate('/login', { replace: true })
             }
-        )
+        })
 
     // 초기 인증 상태 확인
     useEffect(() => {

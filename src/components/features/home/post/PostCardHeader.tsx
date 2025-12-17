@@ -1,7 +1,7 @@
 import { useAuthStore } from '@/store'
 import { KebabButton, TagPerson } from '@/components'
 import { ProfileDefaultIcon } from '@/assets/icons'
-import { useGetProfiles } from '@/query'
+import { useGetProfiles } from '@/apis'
 
 export const PostCardHeader = ({
     authorId,

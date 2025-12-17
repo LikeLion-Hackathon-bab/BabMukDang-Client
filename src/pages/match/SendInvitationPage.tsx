@@ -12,7 +12,7 @@ import {
 } from '@/assets/graphics'
 import React, { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useSendInvitation } from '@/query/invitationQuery'
+import { useSendInvitation } from '@/apis'
 
 export function SendInvitationPage() {
     const cardList = [
