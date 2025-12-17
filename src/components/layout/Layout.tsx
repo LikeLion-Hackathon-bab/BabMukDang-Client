@@ -33,6 +33,14 @@ export function Layout() {
 
     // 초기 인증 상태 확인
     useEffect(() => {
+        const isDev = import.meta.env.MODE === 'development'
+
+        // 개발 환경에서 토큰이 있으면 (mock 로그인) 인증 체크 스킵
+        if (isDev && accessToken) {
+            console.log('[Auth] 개발 모드 - mock 토큰으로 인증됨')
+            return
+        }
+
         // 토큰이 없으면 로그인 페이지로
         if (!accessToken && !refreshToken) {
             navigate('/login', { replace: true })
