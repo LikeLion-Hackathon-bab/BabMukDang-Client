@@ -18,8 +18,8 @@ export { client } from './client'
 /** Query Key 중앙 관리 */
 export { queryKeys } from './keys'
 
-/** API 엔드포인트 중앙 관리 */
-export { endpoints } from './endpoints'
+/** API 엔드포인트, 타입 중앙 관리 */
+export { endpoints, api } from './endpoints'
 
 // ============================================================================
 // 타입

@@ -38,6 +38,7 @@ import {
 import { Layout, OnboardingLayout, RegisterLayout } from '@/components'
 import { register } from '@/lib/serviceWorkerRegistration'
 import { useEffect } from 'react'
+import WithMockServer from './mocks/WithMockServer'
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -53,6 +54,7 @@ function App() {
     }, [])
     return (
         <QueryClientProvider client={queryClient}>
+            <WithMockServer />
             <Router>
                 <Routes>
                     <Route element={<Layout />}>
