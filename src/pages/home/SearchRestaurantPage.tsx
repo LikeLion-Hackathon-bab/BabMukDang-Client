@@ -139,10 +139,10 @@ function UploadButton() {
         onError: (e: Error) => console.error(e.message)
     })
     const onClickUpload = () => {
-        if (buildRequest) {
+        if (buildRequest && image) {
             uploadAndPost({
                 currentUserId: userId!,
-                file: image as File,
+                file: image,
                 buildRequest: buildRequest
             })
         }

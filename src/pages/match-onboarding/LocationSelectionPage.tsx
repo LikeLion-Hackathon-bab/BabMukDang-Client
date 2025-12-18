@@ -27,7 +27,7 @@ export function LocationSelectionPage() {
     }, [initialState])
 
     useEffect(() => {
-        socket?.on('location-candidate-added', (data: any) => {
+        const handleLocationAdded = (data: any) => {
             setLocationOptions(data)
             data.forEach((location: any) => {
                 console.log(location, mapRef.current)
@@ -40,8 +40,12 @@ export function LocationSelectionPage() {
                 })
                 marker.setMap(mapRef.current)
             })
-        })
-    }, [])
+        }
+        socket?.on('location-candidate-added', handleLocationAdded)
+        return () => {
+            socket?.off('location-candidate-added', handleLocationAdded)
+        }
+    }, [socket])
 
     const handleLocationSelect = (locationId: string) => {
         // setLocationOptions(prev =>

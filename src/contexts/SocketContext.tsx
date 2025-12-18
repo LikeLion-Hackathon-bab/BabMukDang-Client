@@ -32,7 +32,7 @@ type Category = {
     id: string
     name: string
     aspectRatio: number
-    placeholder: { blurhash: string; thumbhashDataURL: string }
+    placeholder: { blurhash?: string; thumbhashDataURL: string }
     images: {
         src: string
         avifSrcset: string

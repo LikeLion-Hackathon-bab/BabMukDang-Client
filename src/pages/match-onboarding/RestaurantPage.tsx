@@ -57,23 +57,23 @@ export function RestaurantPage() {
         socket?.emit('pick-restaurant', { restaurantId: restaurant.id })
     }
     useEffect(() => {
-        socket?.on(
-            'restaurant-pick-updated',
-            (data: RestaurantPickUpdatedDto) => {
-                setRestaurantList(prev =>
-                    prev.map(restaurant => ({
-                        ...restaurant,
-                        selectUsers: data
-                            .filter(
-                                (item: any) =>
-                                    item.restaurantId === restaurant.id
-                            )
-                            .map((item: any) => item.userId)
-                    }))
-                )
-            }
-        )
-    }, [])
+        const handlePickUpdated = (data: RestaurantPickUpdatedDto) => {
+            setRestaurantList(prev =>
+                prev.map(restaurant => ({
+                    ...restaurant,
+                    selectUsers: data
+                        .filter(
+                            (item: any) => item.restaurantId === restaurant.id
+                        )
+                        .map((item: any) => item.userId)
+                }))
+            )
+        }
+        socket?.on('restaurant-pick-updated', handlePickUpdated)
+        return () => {
+            socket?.off('restaurant-pick-updated', handlePickUpdated)
+        }
+    }, [socket])
     return (
         <>
             <div className="flex flex-col gap-10">

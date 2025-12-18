@@ -26,11 +26,11 @@ export function WaitingPage() {
 
     const meetingInfo = useMemo(
         () => ({
-            location: locationInitial,
-            time: meetingAtInitial,
-            maxParticipants: participants.length
+            location: locationInitial || '',
+            time: meetingAtInitial || '',
+            maxParticipants: participants?.length ?? 0
         }),
-        [locationInitial, meetingAtInitial]
+        [locationInitial, meetingAtInitial, participants]
     )
     return (
         <div className="relative flex h-full w-full flex-col items-center justify-baseline pt-100">
@@ -82,20 +82,20 @@ export function WaitingPage() {
                         <div className="flex items-center gap-4">
                             <TimeGrayIcon />
                             <span className="text-body2-semibold text-black">
-                                {meetingInfo.time &&
+                                {meetingInfo?.time &&
                                     formatTime(meetingInfo.time)}
                             </span>
                         </div>
                         <div className="flex items-center gap-4">
                             <LocationGrayIcon />
                             <span className="text-body2-semibold text-black">
-                                {meetingInfo.location}
+                                {meetingInfo?.location}
                             </span>
                         </div>
                         <div className="flex items-center gap-4">
                             <PeopleGrayIcon />
                             <span className="text-body2-semibold text-black">
-                                {meetingInfo.maxParticipants}명
+                                {meetingInfo?.maxParticipants}명
                             </span>
                         </div>
                     </div>

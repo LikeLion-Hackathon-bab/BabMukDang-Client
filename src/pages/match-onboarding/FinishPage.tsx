@@ -63,13 +63,14 @@ export function FinishPage() {
                             <div className="flex items-center gap-4">
                                 <LocationGrayIcon />
                                 <span className="text-body2-semibold text-black">
-                                    {finalState?.location}
+                                    {finalState?.location?.placeName ??
+                                        finalState?.location}
                                 </span>
                             </div>
                             <div className="flex items-center gap-4">
                                 <PeopleGrayIcon />
                                 <span className="text-body2-semibold text-black">
-                                    {participants.length}명
+                                    {participants?.length ?? 0}명
                                 </span>
                             </div>
                         </div>

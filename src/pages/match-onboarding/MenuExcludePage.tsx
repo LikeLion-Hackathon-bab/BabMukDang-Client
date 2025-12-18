@@ -104,7 +104,9 @@ const MenuExcludeList = ({
                                 )}
                                 size={120}
                                 onClick={() => handleClick(menu)}
-                                isExcluded={excludedMenuList?.includes(menu)}
+                                isExcluded={excludedMenuList?.some(
+                                    excluded => excluded.code === menu.code
+                                )}
                             />
                         </div>
                         <span className="text-caption-medium text-gray-8">
