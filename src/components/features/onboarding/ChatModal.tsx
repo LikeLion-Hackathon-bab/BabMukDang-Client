@@ -9,17 +9,7 @@ import { COLORS } from '@/constants/colors'
 import { useSocket } from '@/contexts/SocketContext'
 import { ChatInput } from '@/components/shared'
 import { useAuthStore } from '@/store'
-interface ChatMessageDto {
-    messageId: string
-    roomId: string
-    user: {
-        userId: string | null
-        username: string
-    }
-    text?: string
-    imageUrl?: string
-    createdAt: string
-}
+import type { ChatMessage } from '@kimdaegyu/babmukdang-shared'
 
 interface ChatModalProps {
     isOpen: boolean
@@ -33,10 +23,8 @@ export function ChatModal({
     roomId = 'default-room'
 }: ChatModalProps) {
     const { socket, chatMessages } = useSocket()
-    const { userId } = useAuthStore()
-    const [messages, setMessages] = useState<ChatMessageDto[]>(
-        chatMessages || []
-    )
+    const { userId, profile } = useAuthStore()
+    const [messages, setMessages] = useState<ChatMessage[]>(chatMessages)
     const [newMessage, setNewMessage] = useState('')
     const messagesEndRef = useRef<HTMLDivElement>(null)
 
@@ -53,19 +41,21 @@ export function ChatModal({
     // 메시지 전송
     const handleSendMessage = () => {
         if (newMessage.trim()) {
-            const message: ChatMessageDto = {
+            const text = newMessage.trim()
+            const message: ChatMessage = {
                 messageId: Date.now().toString(),
-                roomId: roomId,
                 user: {
-                    userId: userId,
-                    username: '나'
+                    userId: userId ?? '',
+                    username: '나',
+                    profileImageUrl: profile.profileImageUrl ?? ''
                 },
-                text: newMessage.trim(),
+                text,
                 createdAt: new Date().toISOString()
             }
             setMessages(prev => [...prev, message])
             setNewMessage('')
-            socket?.emit('chat-message', message)
+            // Backend는 ChatMessageRequestDto({ text })만 수신한다.
+            socket?.emit('chat-message', { text })
         }
     }
 
@@ -84,12 +74,14 @@ export function ChatModal({
         })
     }
     useEffect(() => {
-        socket?.on('chat-message', message => {
+        if (!socket) return
+        const handleChatMessage = (message: ChatMessage) => {
             setMessages(prev => [...prev, message])
-        })
-        socket?.on('chat-messages', messages => {
-            setMessages(messages)
-        })
+        }
+        socket.on('chat-message', handleChatMessage)
+        return () => {
+            socket.off('chat-message', handleChatMessage)
+        }
     }, [socket])
     useEffect(() => {
         scrollToBottom()
@@ -150,7 +142,7 @@ const ChatHeader = ({ onClose }: { onClose: () => void }) => {
         </div>
     )
 }
-const ChatMessageMy = ({ message }: { message: ChatMessageDto }) => {
+const ChatMessageMy = ({ message }: { message: ChatMessage }) => {
     return (
         <div className={`flex justify-end`}>
             <div
@@ -162,7 +154,7 @@ const ChatMessageMy = ({ message }: { message: ChatMessageDto }) => {
         </div>
     )
 }
-const ChatMessageOther = ({ message }: { message: ChatMessageDto }) => {
+const ChatMessageOther = ({ message }: { message: ChatMessage }) => {
     return (
         <div className={`flex flex-col justify-start gap-12`}>
             <div className="text-caption-medium text-gray-5 mb-1">
@@ -192,7 +184,7 @@ export function ChatButton({
     // const { socket, userId } = useSocket()
     // const [unreadCount, setUnreadCount] = useState(0)
     // useEffect(() => {
-    //     const handleChatMessage = (message: ChatMessageDto) => {
+    //     const handleChatMessage = (message: ChatMessage) => {
     //         console.log(message.user.userId !== userId, isOpen)
     //         if (message.user.userId !== userId && !isOpen) {
     //             setUnreadCount(prev => prev + 1)
