@@ -29,14 +29,10 @@ export const friendHandlers = [
 
         if (filter === 'HUNGRY') {
             data = mockHungryFriends
-        } else if (filter === 'FED') {
+        } else if (filter === 'NOT_HUNGRY') {
             data = mockFedFriends
         }
 
-        return HttpResponse.json({
-            code: 200,
-            message: 'success',
-            data
-        })
+        return HttpResponse.json(data)
     })
 ]

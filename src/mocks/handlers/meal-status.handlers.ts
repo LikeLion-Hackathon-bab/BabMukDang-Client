@@ -42,11 +42,7 @@ export const mealStatusHandlers = [
                 currentMealStatus = { ...mockMealStatus }
             }
 
-            return HttpResponse.json({
-                code: 200,
-                message: '식사 상태가 업데이트되었습니다.',
-                data: currentMealStatus
-            })
+            return HttpResponse.json(currentMealStatus)
         }
     )
 ]

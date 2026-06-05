@@ -5,6 +5,25 @@
  * 도메인별로 그룹화되어 있으며, 각 타입에는 필드 설명이 포함되어 있습니다.
  */
 
+import type {
+    ChallengeStatusResponse as SharedChallengeStatusResponse,
+    CouponResponse as SharedCouponResponse,
+    CouponType as SharedCouponType,
+    FriendMealFilter as SharedFriendMealFilter,
+    FriendMealItemResponse,
+    MealStatusAction as SharedMealStatusAction,
+    MealStatusResponse as SharedMealStatusResponse,
+    OnboardingPreferenceRequest as SharedOnboardingPreferenceRequest,
+    OnboardingPreferenceResponse as SharedOnboardingPreferenceResponse,
+    PreferenceItem as SharedPreferenceItem,
+    PreferenceMetaResponse as SharedPreferenceMetaResponse,
+    PreferenceSummaryResponse as SharedPreferenceSummaryResponse,
+    TokenResponse as SharedTokenResponse,
+    UpdateMealStatusRequest as SharedUpdateMealStatusRequest,
+    WeekProgress as SharedWeekProgress,
+    MonthProgress as SharedMonthProgress
+} from '@kimdaegyu/babmukdang-shared'
+
 // ============================================================================
 // 공통 타입
 // ============================================================================
@@ -69,17 +88,7 @@ export interface MutationOptions<TData = void> {
 // 인증 (Auth) 관련 타입
 // ============================================================================
 
-/**
- * 토큰 응답
- */
-export interface TokenResponse {
-    /** JWT 액세스 토큰 */
-    accessToken: string
-    /** JWT 리프레시 토큰 */
-    refreshToken: string
-    /** 액세스 토큰 만료 시간 (초) */
-    accessTokenMaxAge: number
-}
+export type TokenResponse = SharedTokenResponse
 
 // ============================================================================
 // 게시글 (Article) 관련 타입
@@ -349,15 +358,7 @@ export interface PostResponse extends Post {
 // 프로필 (Profile) 관련 타입
 // ============================================================================
 
-/**
- * 선호도 항목
- */
-export interface PreferenceItem {
-    /** 코드 */
-    code: string
-    /** 라벨 */
-    label: string
-}
+export type PreferenceItem = SharedPreferenceItem
 
 /**
  * 프로필 기본 응답
@@ -477,178 +478,43 @@ export interface Onboarding {
     allergyCodes: string[]
 }
 
-/**
- * 온보딩 선호도 요청
- */
-export interface OnboardingPreferenceRequest extends Onboarding {}
-
-/**
- * 온보딩 선호도 응답
- */
-export interface OnboardingPreferenceResponse extends Onboarding {}
-
-/**
- * 선호도 요약 응답
- */
-export interface PreferenceSummaryResponse {
-    /** 좋아하는 음식 목록 */
-    likes: Menu[]
-    /** 싫어하는 음식 목록 */
-    dislikes: Menu[]
-    /** 알레르기 목록 */
-    allergies: Menu[]
-}
-
-/**
- * 선호도 메타 정보 응답
- */
-export interface PreferenceMetaResponse {
-    /** 온보딩 완료 시간 */
-    onboardedAt: string
-    /** 마지막 수정 시간 */
-    lastUpdatedAt: string
-    /** 리비전 번호 */
-    revision: number
-}
+export type OnboardingPreferenceRequest = SharedOnboardingPreferenceRequest
+export type OnboardingPreferenceResponse = SharedOnboardingPreferenceResponse
+export type PreferenceSummaryResponse = SharedPreferenceSummaryResponse
+export type PreferenceMetaResponse = SharedPreferenceMetaResponse
 
 // ============================================================================
 // 친구 (Friends) 관련 타입
 // ============================================================================
 
-/**
- * 친구 식사 상태 응답
- */
-export interface FriendMealResponse {
-    /** 멤버 ID */
-    memberId: number
-    /** 사용자명 */
-    userName: string
-    /** 프로필 이미지 URL */
-    profileImageUrl: string
-    /** 배고픔 상태 */
-    hungry: boolean
-    /** 라벨 */
-    label: string
-}
-
-/**
- * 친구 식사 필터
- */
+export type FriendMealResponse = FriendMealItemResponse
 export interface FriendMealFilter {
-    /** 필터 타입 */
-    filter: 'ALL' | 'HUNGRY' | 'FED'
+    filter: SharedFriendMealFilter
 }
-
-/**
- * 친구 식사 목록 응답
- */
-export interface FriendMealListResponse extends BaseResponse<
-    FriendMealResponse[]
-> {}
+export type FriendMealListResponse = FriendMealItemResponse[]
 
 // ============================================================================
 // 식사 상태 (Meal Status) 관련 타입
 // ============================================================================
 
-/**
- * 식사 상태 업데이트 액션
- */
-export type MealStatusAction = 'ATE_NOW' | 'SET_OFF'
-
-/**
- * 식사 상태 업데이트 요청
- */
-export interface UpdateMealStatusRequest {
-    /** 액션: ATE_NOW(밥 먹음) / SET_OFF(공복 시작) */
-    action: MealStatusAction
-}
-
-/**
- * 식사 상태 응답
- */
-export interface MealStatusResponse {
-    /** 상태: FED(음식 섭취) / FASTING(공복) */
-    status: 'FED' | 'FASTING'
-    /** 마지막 식사 시간 */
-    lastMealAt: string | null
-    /** 공복 분 */
-    fastingMinutes: number
-    /** 공복 시간(내림) */
-    fastingHours: number
-    /** 자동 OFF까지 남은 초 */
-    secondsToAutoOff: number
-}
+export type MealStatusAction = SharedMealStatusAction
+export type UpdateMealStatusRequest = SharedUpdateMealStatusRequest
+export type MealStatusResponse = SharedMealStatusResponse
 
 // ============================================================================
 // 챌린지 (Challenge) 관련 타입
 // ============================================================================
 
-/**
- * 주간 진행 상황
- */
-export interface WeekProgress {
-    /** 이번 주 각 요일 완료 여부 (월~일) */
-    days: boolean[]
-    /** 완료한 일수 */
-    completed: number
-    /** 목표 일수 */
-    goal: number
-}
-
-/**
- * 월간 진행 상황
- */
-export interface MonthProgress {
-    /** 이번 달 게시한 일수 */
-    count: number
-    /** 이번 달 전체 일수 */
-    goal: number
-}
-
-/**
- * 챌린지 상태 응답
- */
-export interface ChallengeStatusResponse {
-    /** 주간 진행 상황 */
-    week: WeekProgress
-    /** 월간 진행 상황 */
-    month: MonthProgress
-    /** 주간 목표 달성 시 true */
-    weekRewardAvailable: boolean
-    /** 월간 목표 달성 시 true */
-    monthRewardAvailable: boolean
-}
+export type WeekProgress = SharedWeekProgress
+export type MonthProgress = SharedMonthProgress
+export type ChallengeStatusResponse = SharedChallengeStatusResponse
 
 // ============================================================================
 // 쿠폰 (Coupon) 관련 타입
 // ============================================================================
 
-/**
- * 쿠폰 타입
- */
-export type CouponType = 'DISCOUNT' | 'SERVICE'
-
-/**
- * 쿠폰 응답
- */
-export interface CouponResponse {
-    /** 쿠폰 ID */
-    couponId: number
-    /** 제목 */
-    title: string
-    /** 상점명 */
-    shopName: string
-    /** 쿠폰 타입 */
-    type: CouponType
-    /** 사용조건 요약 */
-    condition: string
-    /** 유효기간 */
-    expiresAt: string
-    /** 사용 여부 */
-    used: boolean
-    /** 썸네일 URL */
-    thumbnailUrl: string | null
-}
+export type CouponType = SharedCouponType
+export type CouponResponse = SharedCouponResponse
 
 // ============================================================================
 // 멤버 (Member) 관련 타입

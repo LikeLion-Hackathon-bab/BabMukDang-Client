@@ -251,7 +251,7 @@ export const api = {
     },
     coupons: {
         /** 쿠폰 목록 응답 */
-        ListResponse: {} as BaseResponse<CouponResponse[]>
+        ListResponse: {} as CouponResponse[]
     }
 } as const
 

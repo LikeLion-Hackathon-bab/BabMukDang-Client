@@ -21,11 +21,7 @@ export const couponHandlers = [
      * GET /coupons/me - 내 쿠폰 목록 조회
      */
     http.get(`${BASE_URL}${endpoints.coupons.my}`, () => {
-        const response: typeof api.coupons.ListResponse = {
-            code: 200,
-            message: 'success',
-            data: currentCoupons
-        }
+        const response: typeof api.coupons.ListResponse = currentCoupons
         return HttpResponse.json(response)
     }),
 
@@ -49,10 +45,6 @@ export const couponHandlers = [
             }
         }
 
-        return HttpResponse.json({
-            code: 200,
-            message: '쿠폰이 사용되었습니다.',
-            data: null
-        })
+        return HttpResponse.json({ used: true })
     })
 ]

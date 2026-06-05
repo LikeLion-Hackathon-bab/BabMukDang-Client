@@ -52,7 +52,7 @@ export const getFriendMeals = friendsApi.getMeals
  *
  * @example
  * const { data: friends } = useFriendMeals('ALL')
- * friends?.data.forEach(friend => {
+ * friends?.forEach(friend => {
  *   console.log(friend.userName, friend.hungry ? '배고픔' : '배부름')
  * })
  */
