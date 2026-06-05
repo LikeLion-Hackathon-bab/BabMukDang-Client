@@ -52,6 +52,7 @@ export type {
     CommentResponse,
     CommentPostRequest,
     // 모집글
+    RecruitDto,
     Post,
     PostRequest,
     PostResponse,

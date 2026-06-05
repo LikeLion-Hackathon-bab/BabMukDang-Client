@@ -188,7 +188,7 @@ function InvitationTab() {
             {/* 식사 상태 토글 버튼 */}
             <div className="flex flex-col gap-16">
                 <InviteButton />
-                <RecieveInvitationList invitations={invitations?.data || []} />
+                <RecieveInvitationList invitations={invitations || []} />
                 <LongTimeNoSeeFriendList
                     longTimeNoSeeFriendList={longTimeNoSeeFriendList}
                 />

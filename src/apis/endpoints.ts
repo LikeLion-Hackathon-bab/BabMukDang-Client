@@ -33,6 +33,7 @@ import type {
     PreferenceSummaryResponse,
     ProfileDetailResponse,
     ProfileResponse,
+    RecruitDto,
     TokenResponse,
     UpdateMealStatusRequest,
     UpdateProfileRequest
@@ -231,7 +232,7 @@ export const api = {
     },
     posts: {
         /** 모집글 목록 응답 */
-        ListResponse: {} as BaseResponse<PostResponse[]>,
+        ListResponse: {} as RecruitDto[],
         /** 모집글 생성 요청 */
         CreateRequest: {} as PostRequest
     },

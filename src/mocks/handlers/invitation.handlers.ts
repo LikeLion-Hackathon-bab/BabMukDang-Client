@@ -18,11 +18,7 @@ export const invitationHandlers = [
      * GET /invitations - 초대 목록 조회
      */
     http.get(`${BASE_URL}${endpoints.invitations.list}`, () => {
-        return HttpResponse.json({
-            code: 200,
-            message: 'success',
-            data: mockInvitationResponses
-        })
+        return HttpResponse.json(mockInvitationResponses)
     }),
 
     /**
@@ -34,11 +30,7 @@ export const invitationHandlers = [
             const body = await request.json()
             console.log('[MSW] 초대 전송:', body)
 
-            return HttpResponse.json({
-                code: 201,
-                message: '초대가 전송되었습니다.',
-                data: null
-            })
+            return HttpResponse.json({ sent: true }, { status: 201 })
         }
     ),
 
@@ -49,11 +41,7 @@ export const invitationHandlers = [
         const { id } = params
         console.log(`[MSW] 초대 수락: ${id}`)
 
-        return HttpResponse.json({
-            code: 200,
-            message: '초대를 수락했습니다.',
-            data: null
-        })
+        return HttpResponse.json({ accepted: true })
     }),
 
     /**
@@ -63,10 +51,6 @@ export const invitationHandlers = [
         const { id } = params
         console.log(`[MSW] 초대 거절: ${id}`)
 
-        return HttpResponse.json({
-            code: 200,
-            message: '초대를 거절했습니다.',
-            data: null
-        })
+        return HttpResponse.json({ rejected: true })
     })
 ]

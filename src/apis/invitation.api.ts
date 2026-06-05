@@ -18,7 +18,6 @@ import { client } from './client'
 import { endpoints } from './endpoints'
 import { queryKeys } from './keys'
 import type {
-    BaseResponse,
     InvitationPostRequest,
     InvitationResponse,
     MutationOptions
@@ -36,7 +35,7 @@ export const invitationApi = {
      * 초대 목록 조회
      * @returns 초대 목록
      */
-    getAll: async (): Promise<BaseResponse<InvitationResponse[]>> => {
+    getAll: async (): Promise<InvitationResponse[]> => {
         const response = await client.get(endpoints.invitations.list)
         return response.data
     },
@@ -45,7 +44,7 @@ export const invitationApi = {
      * 초대 전송
      * @param data - 초대 데이터 (대상자 ID, 메시지)
      */
-    send: async (data: InvitationPostRequest): Promise<BaseResponse<void>> => {
+    send: async (data: InvitationPostRequest): Promise<void> => {
         const response = await client.post(endpoints.invitations.send, data)
         return response.data
     },
@@ -54,7 +53,7 @@ export const invitationApi = {
      * 초대 수락
      * @param invitationId - 초대 ID
      */
-    accept: async (invitationId: number): Promise<BaseResponse<void>> => {
+    accept: async (invitationId: number): Promise<void> => {
         const response = await client.post(
             endpoints.invitations.accept(invitationId)
         )
@@ -65,7 +64,7 @@ export const invitationApi = {
      * 초대 거절
      * @param invitationId - 초대 ID
      */
-    reject: async (invitationId: number): Promise<BaseResponse<void>> => {
+    reject: async (invitationId: number): Promise<void> => {
         const response = await client.post(
             endpoints.invitations.reject(invitationId)
         )

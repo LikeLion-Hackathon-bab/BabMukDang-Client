@@ -46,7 +46,7 @@ export const mockInvitationResponses: InvitationResponse[] = [
  * 초대 요청 mock 데이터
  */
 export const mockInvitationRequest: InvitationPostRequest = {
-    inviteeId: { id: 2 },
+    inviteeId: 2,
     message: '같이 밥 먹어요!'
 }
 

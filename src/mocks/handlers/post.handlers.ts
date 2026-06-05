@@ -6,7 +6,7 @@
 
 import { http, HttpResponse } from 'msw'
 import { endpoints, api } from '@/apis'
-import { mockPostResponses } from '@/mocks/fixtures'
+import { mockRecruitResponses } from '@/mocks/fixtures'
 
 const BASE_URL = import.meta.env.VITE_SERVER_URL || ''
 
@@ -18,11 +18,7 @@ export const postHandlers = [
      * GET /posts - 모집글 목록 조회
      */
     http.get(`${BASE_URL}${endpoints.posts.list}`, () => {
-        const response: typeof api.posts.ListResponse = {
-            code: 200,
-            message: 'success',
-            data: mockPostResponses
-        }
+        const response: typeof api.posts.ListResponse = mockRecruitResponses
         return HttpResponse.json(response)
     }),
 
@@ -33,11 +29,7 @@ export const postHandlers = [
         const body = (await request.json()) as typeof api.posts.CreateRequest
         console.log('[MSW] 모집글 생성:', body)
 
-        return HttpResponse.json({
-            code: 201,
-            message: '모집글이 생성되었습니다.',
-            data: null
-        })
+        return HttpResponse.json({ created: true }, { status: 201 })
     }),
 
     /**
@@ -47,11 +39,7 @@ export const postHandlers = [
         const { id } = params
         console.log(`[MSW] 모집글 마감: ${id}`)
 
-        return HttpResponse.json({
-            code: 200,
-            message: '모집글이 마감되었습니다.',
-            data: null
-        })
+        return HttpResponse.json({ closed: true })
     }),
 
     /**
@@ -61,11 +49,7 @@ export const postHandlers = [
         const { id } = params
         console.log(`[MSW] 모집글 참여: ${id}`)
 
-        return HttpResponse.json({
-            code: 200,
-            message: '참여가 완료되었습니다.',
-            data: null
-        })
+        return HttpResponse.json({ joined: true })
     }),
 
     /**
@@ -75,10 +59,6 @@ export const postHandlers = [
         const { id } = params
         console.log(`[MSW] 모집글 구독: ${id}`)
 
-        return HttpResponse.json({
-            code: 200,
-            message: '구독이 완료되었습니다.',
-            data: null
-        })
+        return HttpResponse.json({ subscribed: true })
     })
 ]

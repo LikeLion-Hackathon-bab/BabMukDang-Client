@@ -16,6 +16,8 @@ import type {
     CouponType as SharedCouponType,
     FriendMealFilter as SharedFriendMealFilter,
     FriendMealItemResponse,
+    InvitationPostRequest as SharedInvitationPostRequest,
+    InvitationResponse as SharedInvitationResponse,
     KakaoRestaurantResponseDto as SharedKakaoRestaurantResponseDto,
     LikePostResponseDto as SharedLikePostResponseDto,
     MealStatusAction as SharedMealStatusAction,
@@ -26,6 +28,8 @@ import type {
     PreferenceItem as SharedPreferenceItem,
     PreferenceMetaResponse as SharedPreferenceMetaResponse,
     PreferenceSummaryResponse as SharedPreferenceSummaryResponse,
+    RecruitRequestDto as SharedRecruitRequestDto,
+    RecruitResponseDto as SharedRecruitResponseDto,
     TokenResponse as SharedTokenResponse,
     UpdateMealStatusRequest as SharedUpdateMealStatusRequest,
     WeekProgress as SharedWeekProgress,
@@ -305,10 +309,8 @@ export interface Post {
     message: string
 }
 
-/**
- * 모집글 작성 요청
- */
-export interface PostRequest extends Post {}
+export type RecruitDto = SharedRecruitResponseDto
+export type PostRequest = SharedRecruitRequestDto
 
 /**
  * 모집글 응답
@@ -382,29 +384,8 @@ export interface UpdateProfileRequest {
 // 초대 (Invitation) 관련 타입
 // ============================================================================
 
-/**
- * 초대 전송 요청
- */
-export interface InvitationPostRequest {
-    /** 초대 대상자 */
-    inviteeId: {
-        id: number
-    }
-    /** 초대 메시지 */
-    message: string
-}
-
-/**
- * 초대 응답
- */
-export interface InvitationResponse {
-    /** 초대 ID */
-    invitationId: number
-    /** 초대자 이름 */
-    inviterName: string
-    /** 초대자 프로필 이미지 URL */
-    inviterProfileImageUrl?: string
-}
+export type InvitationPostRequest = SharedInvitationPostRequest
+export type InvitationResponse = SharedInvitationResponse
 
 // ============================================================================
 // 모임 (Meeting) 관련 타입

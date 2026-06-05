@@ -17,12 +17,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { client } from './client'
 import { endpoints } from './endpoints'
 import { queryKeys } from './keys'
-import type {
-    BaseResponse,
-    MutationOptions,
-    PostRequest,
-    PostResponse
-} from './types'
+import { mapRecruit } from './mappers/recruit.mapper'
+import type { MutationOptions, PostRequest, PostResponse, RecruitDto } from './types'
 
 // ============================================================================
 // API 함수
@@ -36,16 +32,16 @@ export const announcementApi = {
      * 모집글 목록 조회
      * @returns 모집글 목록
      */
-    getAll: async (): Promise<BaseResponse<PostResponse[]>> => {
+    getAll: async (): Promise<PostResponse[]> => {
         const res = await client.get(endpoints.posts.list)
-        return res.data
+        return (res.data as RecruitDto[]).map(mapRecruit)
     },
 
     /**
      * 모집글 작성
      * @param data - 모집글 데이터
      */
-    create: async (data: PostRequest): Promise<BaseResponse<void>> => {
+    create: async (data: PostRequest): Promise<void> => {
         const res = await client.post(endpoints.posts.create, data)
         return res.data
     },
@@ -54,7 +50,7 @@ export const announcementApi = {
      * 모집글 마감
      * @param announcementId - 모집글 ID
      */
-    close: async (announcementId: number): Promise<BaseResponse<void>> => {
+    close: async (announcementId: number): Promise<void> => {
         const res = await client.post(endpoints.posts.close(announcementId))
         return res.data
     },
@@ -63,7 +59,7 @@ export const announcementApi = {
      * 모집글 참여
      * @param announcementId - 모집글 ID
      */
-    join: async (announcementId: number): Promise<BaseResponse<void>> => {
+    join: async (announcementId: number): Promise<void> => {
         const res = await client.post(endpoints.posts.join(announcementId))
         return res.data
     },
@@ -72,7 +68,7 @@ export const announcementApi = {
      * 모집글 구독
      * @param announcementId - 모집글 ID
      */
-    subscribe: async (announcementId: number): Promise<BaseResponse<void>> => {
+    subscribe: async (announcementId: number): Promise<void> => {
         const res = await client.post(endpoints.posts.subscribe(announcementId))
         return res.data
     }
@@ -91,7 +87,7 @@ export const subscribeAnnouncement = announcementApi.subscribe
 
 /**
  * 모집글 목록 조회 Hook
- * @returns Query 결과 (data?.data에 실제 목록 포함)
+ * @returns Query 결과
  *
  * @example
  * const { data: announcements, refetch } = useGetAnnouncements()
@@ -102,7 +98,7 @@ export const useGetAnnouncements = () => {
         queryKey: queryKeys.announcements.list,
         queryFn: announcementApi.getAll
     })
-    return { data: data?.data, isLoading, error, refetch }
+    return { data, isLoading, error, refetch }
 }
 
 // ============================================================================
