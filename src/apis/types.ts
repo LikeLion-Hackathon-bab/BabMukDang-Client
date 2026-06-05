@@ -6,15 +6,23 @@
  */
 
 import type {
+    ArticleDetailResponseDto as SharedArticleDetailResponseDto,
+    ArticlePostRequestDto as SharedArticlePostRequestDto,
+    ArticleSummaryResponseDto as SharedArticleSummaryResponseDto,
     ChallengeStatusResponse as SharedChallengeStatusResponse,
+    CommentPostRequestDto as SharedCommentPostRequestDto,
+    CommentResponseDto as SharedCommentResponseDto,
     CouponResponse as SharedCouponResponse,
     CouponType as SharedCouponType,
     FriendMealFilter as SharedFriendMealFilter,
     FriendMealItemResponse,
+    KakaoRestaurantResponseDto as SharedKakaoRestaurantResponseDto,
+    LikePostResponseDto as SharedLikePostResponseDto,
     MealStatusAction as SharedMealStatusAction,
     MealStatusResponse as SharedMealStatusResponse,
     OnboardingPreferenceRequest as SharedOnboardingPreferenceRequest,
     OnboardingPreferenceResponse as SharedOnboardingPreferenceResponse,
+    PageArticleSummaryResponse as SharedPageArticleSummaryResponse,
     PreferenceItem as SharedPreferenceItem,
     PreferenceMetaResponse as SharedPreferenceMetaResponse,
     PreferenceSummaryResponse as SharedPreferenceSummaryResponse,
@@ -93,6 +101,10 @@ export type TokenResponse = SharedTokenResponse
 // ============================================================================
 // 게시글 (Article) 관련 타입
 // ============================================================================
+
+export type ArticleSummaryDto = SharedArticleSummaryResponseDto
+export type ArticleDetailDto = SharedArticleDetailResponseDto
+export type PageArticleSummaryDto = SharedPageArticleSummaryResponse
 
 /**
  * 게시글 요약 정보 (목록용)
@@ -186,41 +198,15 @@ export interface ArticleDetailResponse {
     expiresAt: string
 }
 
-/**
- * 게시글 작성 요청
- */
-export interface ArticlePostRequest {
-    /** 이미지 URL */
-    imageUrl: string
-    /** 업로드 방식 */
-    method: 'ALBUM' | 'CAMERA'
-    /** 식사 날짜 (YYYY-MM-DD) */
-    mealDate: string
-    /** 식사 시간 (HH:mm) */
-    mealTime: string
-    /** 식당 정보 */
-    restaurant: RestaurantInfo
-    /** 태그된 멤버 ID 목록 */
-    taggedMemberIds: number[]
-    /** 카메라 사용 여부 */
-    camera: boolean
-    /** 앨범 사용 여부 */
-    album: boolean
-}
+export type ArticlePostRequest = SharedArticlePostRequestDto
 
-/**
- * 좋아요 응답
- */
-export interface LikePostResponse {
-    /** 현재 좋아요 상태 */
-    liked: boolean
-    /** 좋아요 수 */
-    likeCount: number
-}
+export type LikePostResponse = SharedLikePostResponseDto
 
 // ============================================================================
 // 댓글 (Comment) 관련 타입
 // ============================================================================
+
+export type CommentDto = SharedCommentResponseDto
 
 /**
  * 댓글 응답
@@ -233,7 +219,7 @@ export interface CommentResponse {
     /** 작성자 이름 */
     authorUsername: string
     /** 부모 댓글 ID (대댓글인 경우) */
-    parentCommentId: number
+    parentCommentId: number | null
     /** 댓글 내용 */
     content: string
     /** 작성 시간 */
@@ -246,15 +232,7 @@ export interface CommentResponse {
     replies?: CommentResponse[]
 }
 
-/**
- * 댓글 작성 요청
- */
-export interface CommentPostRequest {
-    /** 댓글 내용 */
-    content: string
-    /** 부모 댓글 ID (대댓글인 경우) */
-    parentCommentId?: number
-}
+export type CommentPostRequest = SharedCommentPostRequestDto
 
 // ============================================================================
 // 페이지네이션 관련 타입
@@ -622,3 +600,5 @@ export interface RestaurantRequest {
     /** 위도 */
     y?: number
 }
+
+export type KakaoRestaurantResponse = SharedKakaoRestaurantResponseDto

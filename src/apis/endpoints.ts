@@ -15,6 +15,7 @@
  */
 
 import type {
+    ArticleDetailDto,
     ArticleDetailResponse,
     ArticlePostRequest,
     BaseResponse,
@@ -24,6 +25,7 @@ import type {
     LikePostResponse,
     MealStatusResponse,
     OnboardingPreferenceRequest,
+    PageArticleSummaryDto,
     PageArticleSummaryResponse,
     PostRequest,
     PostResponse,
@@ -209,9 +211,9 @@ export const api = {
     },
     articles: {
         /** 게시글 목록 응답 */
-        ListResponse: {} as PageArticleSummaryResponse,
+        ListResponse: {} as PageArticleSummaryDto,
         /** 게시글 상세 응답 */
-        DetailResponse: {} as ArticleDetailResponse,
+        DetailResponse: {} as ArticleDetailDto,
         /** 게시글 생성 요청 */
         CreateRequest: {} as ArticlePostRequest,
         /** 좋아요 응답 */

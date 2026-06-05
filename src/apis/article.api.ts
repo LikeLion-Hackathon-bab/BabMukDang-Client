@@ -17,14 +17,21 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { client } from './client'
 import { endpoints } from './endpoints'
 import { queryKeys } from './keys'
+import {
+    mapArticleDetail,
+    mapArticlePage,
+    mapComment
+} from './mappers/article.mapper'
 import type {
+    ArticleDetailDto,
     ArticleDetailResponse,
     ArticlePostRequest,
-    BaseResponse,
     CommentPostRequest,
+    CommentDto,
     CommentResponse,
     LikePostResponse,
     MutationOptions,
+    PageArticleSummaryDto,
     PageArticleSummaryResponse
 } from './types'
 
@@ -47,7 +54,7 @@ export const articleApi = {
      */
     getById: async (articleId: number): Promise<ArticleDetailResponse> => {
         const res = await client.get(endpoints.articles.detail(articleId))
-        return res.data as ArticleDetailResponse
+        return mapArticleDetail(res.data as ArticleDetailDto)
     },
 
     /**
@@ -57,7 +64,7 @@ export const articleApi = {
      */
     getComments: async (articleId: number): Promise<CommentResponse[]> => {
         const res = await client.get(endpoints.articles.comments(articleId))
-        return res.data as CommentResponse[]
+        return (res.data as CommentDto[]).map(mapComment)
     },
 
     /**
@@ -66,7 +73,7 @@ export const articleApi = {
      */
     getHome: async (): Promise<PageArticleSummaryResponse> => {
         const res = await client.get(endpoints.articles.home)
-        return res.data as PageArticleSummaryResponse
+        return mapArticlePage(res.data as PageArticleSummaryDto)
     },
 
     /**
@@ -78,7 +85,7 @@ export const articleApi = {
         authorId: number
     ): Promise<PageArticleSummaryResponse> => {
         const res = await client.get(endpoints.articles.byAuthor(authorId))
-        return res.data as PageArticleSummaryResponse
+        return mapArticlePage(res.data as PageArticleSummaryDto)
     },
 
     /**
@@ -88,22 +95,22 @@ export const articleApi = {
      */
     getByMember: async (
         memberId: number
-    ): Promise<BaseResponse<PageArticleSummaryResponse>> => {
+    ): Promise<PageArticleSummaryResponse> => {
         const res = await client.get(endpoints.articles.byMember(memberId), {
             params: { page: 0 }
         })
-        return res.data as BaseResponse<PageArticleSummaryResponse>
+        return mapArticlePage(res.data as PageArticleSummaryDto)
     },
 
     /**
      * 내 게시글 조회
      * @returns 내 게시글 페이지
      */
-    getMy: async (): Promise<BaseResponse<PageArticleSummaryResponse>> => {
+    getMy: async (): Promise<PageArticleSummaryResponse> => {
         const res = await client.get(endpoints.articles.my, {
             params: { page: 0 }
         })
-        return res.data as BaseResponse<PageArticleSummaryResponse>
+        return mapArticlePage(res.data as PageArticleSummaryDto)
     },
 
     /**
@@ -307,7 +314,7 @@ export const useUploadArticle = (options: MutationOptions) => {
             // 2) S3 업로드
             await uploadApi.uploadArticleS3({ putUrl, file })
 
-            // 3) Spring에 게시물 생성
+            // 3) Backend에 게시물 생성
             const req = buildRequest(cdnUrl)
             return articleApi.create(req)
         },

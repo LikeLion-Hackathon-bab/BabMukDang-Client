@@ -87,11 +87,7 @@ export const articleHandlers = [
     http.get(`${BASE_URL}/articles/:id/comments`, ({ params }) => {
         const { id } = params
         console.log(`[MSW] 댓글 목록 조회: ${id}`)
-        return HttpResponse.json({
-            code: 200,
-            message: 'success',
-            data: articleFixtures.comments
-        })
+        return HttpResponse.json(articleFixtures.comments)
     }),
 
     /**
@@ -132,11 +128,7 @@ export const articleHandlers = [
      * GET /members/me/articles - 내 게시글 목록
      */
     http.get(`${BASE_URL}${endpoints.articles.my}`, () => {
-        return HttpResponse.json({
-            code: 200,
-            message: 'success',
-            data: articleFixtures.homeList.content
-        })
+        return HttpResponse.json(articleFixtures.homeList)
     }),
 
     /**
@@ -145,10 +137,6 @@ export const articleHandlers = [
     http.get(`${BASE_URL}/members/:memberId/articles`, ({ params }) => {
         const { memberId } = params
         console.log(`[MSW] 멤버 게시글 목록: ${memberId}`)
-        return HttpResponse.json({
-            code: 200,
-            message: 'success',
-            data: articleFixtures.homeList.content
-        })
+        return HttpResponse.json(articleFixtures.homeList)
     })
 ]

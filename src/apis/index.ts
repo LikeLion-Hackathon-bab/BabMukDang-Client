@@ -34,16 +34,21 @@ export type {
     // 인증
     TokenResponse,
     // 게시글
+    ArticleSummaryDto,
     ArticleSummaryResponse,
+    ArticleDetailDto,
     ArticleDetailResponse,
     ArticlePostRequest,
     RestaurantInfo,
     RestaurantRequest,
+    KakaoRestaurantResponse,
+    PageArticleSummaryDto,
     PageArticleSummaryResponse,
     LikePostResponse,
     ArticlePhotoResponse,
     RecentMealsResponse,
     // 댓글
+    CommentDto,
     CommentResponse,
     CommentPostRequest,
     // 모집글
