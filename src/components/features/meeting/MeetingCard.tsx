@@ -2,21 +2,13 @@ import { useState } from 'react'
 import { TagPerson } from '@/components'
 import { MenuIcon, BackIcon, LocationGrayIcon } from '@/assets/icons'
 import { COLORS } from '@/constants/colors'
+import type { MeetingCardView } from '@/viewModels'
 
-type Meeting = {
-    id: number
-    participants: { name: string; userId: number }[]
-    location: string
-    time: string
-    restaurant: string
-    isCompleted: boolean
-    restaurantType: string
-}
 export function MeetingCard({
     meeting,
     onClick
 }: {
-    meeting: Meeting
+    meeting: MeetingCardView
     onClick: () => void
 }) {
     const [isOpen, setIsOpen] = useState(false)

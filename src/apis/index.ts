@@ -40,7 +40,6 @@ export type {
     ArticleDetailResponse,
     ArticlePostRequest,
     RestaurantInfo,
-    RestaurantRequest,
     KakaoRestaurantResponse,
     PageArticleSummaryDto,
     PageArticleSummaryResponse,

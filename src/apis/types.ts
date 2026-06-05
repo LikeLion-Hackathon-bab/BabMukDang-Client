@@ -554,36 +554,7 @@ export interface RecentMealsResponse {
 }
 
 // ============================================================================
-// 식당 요청 타입
+// 식당 타입
 // ============================================================================
-
-/**
- * 식당 요청 정보 (요청용)
- * RestaurantInfo의 요청 버전 (nullable 필드들이 optional)
- */
-export interface RestaurantRequest {
-    /** 카카오 장소 ID (필수) */
-    placeId: string
-    /** 장소명 (필수) */
-    placeName: string
-    /** 지번 주소 */
-    addressName?: string
-    /** 도로명 주소 */
-    roadAddressName?: string
-    /** 전화번호 */
-    phoneNumber?: string
-    /** 카카오맵 URL */
-    placeUrl?: string
-    /** 카테고리 그룹 코드 */
-    categoryGroupCode?: string
-    /** 카테고리 그룹 이름 */
-    categoryGroupName?: string
-    /** 카테고리 이름 */
-    categoryName?: string
-    /** 경도 */
-    x?: number
-    /** 위도 */
-    y?: number
-}
 
 export type KakaoRestaurantResponse = SharedKakaoRestaurantResponseDto
