@@ -40,7 +40,8 @@
         "workbox-precaching": "^7.3.0",
         "workbox-routing": "^7.3.0",
         "workbox-window": "^7.3.0",
-        "zustand": "^5.0.7"
+        "zustand": "^5.0.7",
+        "@kimdaegyu/babmukdang-shared": "file:../BabMukDang-Shared"
     },
     "devDependencies": {
         "@capacitor/cli": "^7.4.3",

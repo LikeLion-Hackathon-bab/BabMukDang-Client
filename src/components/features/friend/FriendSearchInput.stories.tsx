@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { FriendSearchInput } from './FriendSearchInput'
-import { fn } from '@storybook/test'
 
 const meta: Meta<typeof FriendSearchInput> = {
     title: 'Features/Friend/FriendSearchInput',
@@ -8,9 +7,6 @@ const meta: Meta<typeof FriendSearchInput> = {
     tags: ['autodocs'],
     parameters: {
         layout: 'padded'
-    },
-    args: {
-        handleSearch: fn()
     }
 }
 

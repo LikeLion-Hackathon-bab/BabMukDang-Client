@@ -34,13 +34,15 @@ export function CouponStoragePage() {
             />
             {MockCouponList.filter(
                 coupon =>
-                    (coupon.isUsed && activeFilter.key === 'used') ||
-                    (!coupon.isUsed && activeFilter.key === 'unused')
+                    (coupon.used && activeFilter.key === 'used') ||
+                    (!coupon.used && activeFilter.key === 'unused')
             ).map((coupon, index) => (
-                <CouponCard
-                    key={index}
-                    {...coupon}
-                />
+                <></>
+                // TODO: 백엔드 타입 정의 후 수정 필요
+                // <CouponCard
+                //     key={index}
+                //     {...coupon}
+                // />
             ))}
         </div>
     )

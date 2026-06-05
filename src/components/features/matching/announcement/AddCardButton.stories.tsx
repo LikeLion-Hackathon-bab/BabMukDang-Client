@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { AddCardButton } from './AddCardButton'
-import { fn } from '@storybook/test'
 
 const meta: Meta<typeof AddCardButton> = {
     title: 'Features/Matching/Announcement/AddCardButton',
@@ -8,9 +7,6 @@ const meta: Meta<typeof AddCardButton> = {
     tags: ['autodocs'],
     parameters: {
         layout: 'centered'
-    },
-    args: {
-        onClick: fn()
     }
 }
 

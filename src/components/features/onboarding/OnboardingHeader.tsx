@@ -111,7 +111,6 @@ const finalTag = (text: string) => {
         <div
             className={cn('box-border rounded-full bg-white px-6 py-5')}
             style={{
-                // @ts-expect-error: Non-standard CSS property used for text-box trimming support
                 textBox: 'trim-both cap alphabetic'
             }}>
             <span className="text-caption-medium text-gray-700">{text}</span>

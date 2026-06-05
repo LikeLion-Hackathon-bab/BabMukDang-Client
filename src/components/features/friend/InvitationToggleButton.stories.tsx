@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { InvitationToggleButton } from './InvitationToggleButton'
+import { InvitationToggleButton } from './HungryToggleButton'
 
 const meta: Meta<typeof InvitationToggleButton> = {
     title: 'Features/Matching/Invitation/InvitationToggleButton',
