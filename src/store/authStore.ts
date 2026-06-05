@@ -20,6 +20,7 @@ interface AuthState {
         refreshToken: string
     }) => void
     clearTokens: () => void
+    refresh: () => Promise<void>
     setUsername: (username: string) => void
     setUserId: (userId: string) => void
     setProfile: (profile: {
@@ -77,6 +78,17 @@ export const useAuthStore = create<AuthState>()(
                 refreshToken: string
             }) => set({ accessToken, refreshToken }),
             clearTokens: () => set({ accessToken: null, refreshToken: null }),
+            // 토큰 갱신 단일 진입점. SocketProvider 등에서 갱신 로직을 중복
+            // 구현하지 않고 이 액션만 호출한다.
+            // (apis는 client→authStore 순환을 피하려고 동적 import)
+            refresh: async () => {
+                const { refresh: refreshApi } = await import('@/apis')
+                const res = await refreshApi()
+                set({
+                    accessToken: res.data.accessToken,
+                    refreshToken: res.data.refreshToken
+                })
+            },
             setUsername: (username: string) => set({ username }),
             setUserId: (userId: string) => set({ userId }),
             setProfile: (profile: {
