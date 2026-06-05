@@ -17,9 +17,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { client } from './client'
 import { endpoints } from './endpoints'
 import { queryKeys } from './keys'
+import { mapProfile } from './mappers/profile.mapper'
 import type {
-    BaseResponse,
     MutationOptions,
+    ProfileDto,
     ProfileResponse,
     ProfileDetailResponse,
     UpdateProfileRequest
@@ -35,34 +36,30 @@ import type {
 export const profileApi = {
     /**
      * 내 프로필 조회
-     * @returns 프로필 정보
+     * @returns 프로필 정보 (화면 view model)
      */
-    getMyProfile: async (): Promise<BaseResponse<ProfileResponse>> => {
+    getMyProfile: async (): Promise<ProfileResponse> => {
         const res = await client.get(endpoints.members.myProfile)
-        return res.data
+        return mapProfile(res.data as ProfileDto)
     },
 
     /**
      * 내 프로필 상세 조회
      * @returns 프로필 상세 정보 (선호도 포함)
      */
-    getMyProfileDetail: async (): Promise<
-        BaseResponse<ProfileDetailResponse>
-    > => {
+    getMyProfileDetail: async (): Promise<ProfileDetailResponse> => {
         const res = await client.get(endpoints.members.myProfileDetail)
-        return res.data
+        return res.data as ProfileDetailResponse
     },
 
     /**
      * 특정 멤버 프로필 조회
      * @param memberId - 멤버 ID
-     * @returns 프로필 정보
+     * @returns 프로필 정보 (화면 view model)
      */
-    getMemberProfile: async (
-        memberId: number
-    ): Promise<BaseResponse<ProfileResponse>> => {
+    getMemberProfile: async (memberId: number): Promise<ProfileResponse> => {
         const res = await client.get(endpoints.members.profile(memberId))
-        return res.data
+        return mapProfile(res.data as ProfileDto)
     },
 
     /**
@@ -72,21 +69,21 @@ export const profileApi = {
      */
     getMemberProfileDetail: async (
         memberId: number
-    ): Promise<BaseResponse<ProfileDetailResponse>> => {
+    ): Promise<ProfileDetailResponse> => {
         const res = await client.get(endpoints.members.profileDetail(memberId))
-        return res.data
+        return res.data as ProfileDetailResponse
     },
 
     /**
      * 내 프로필 수정
      * @param data - 수정할 프로필 데이터
-     * @returns 수정된 프로필 정보
+     * @returns 수정된 프로필 정보 (화면 view model)
      */
     updateMyProfile: async (
         data: UpdateProfileRequest
-    ): Promise<BaseResponse<ProfileResponse>> => {
+    ): Promise<ProfileResponse> => {
         const res = await client.patch(endpoints.members.updateProfile, data)
-        return res.data
+        return mapProfile(res.data as ProfileDto)
     }
 }
 
@@ -159,8 +156,8 @@ export const useGetProfiles = (memberIds: number[]) => {
                 memberIds.map(id => profileApi.getMemberProfile(id))
             )
             return profiles.map(profile => ({
-                memberId: profile.data.memberId,
-                username: profile.data.userName
+                memberId: profile.memberId,
+                username: profile.userName
             }))
         },
         enabled: memberIds.length > 0

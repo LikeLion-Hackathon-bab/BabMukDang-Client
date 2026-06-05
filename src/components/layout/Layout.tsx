@@ -55,7 +55,7 @@ export function Layout() {
 
     // 프로필 정보 동기화
     useEffect(() => {
-        if (!myProfile?.data) {
+        if (!myProfile) {
             refetch()
             return
         }
@@ -63,7 +63,7 @@ export function Layout() {
         // 프로필 데이터가 있고, store에 아직 없으면 업데이트
         if (!userId || !username) {
             const { memberId, userName, profileImageUrl, bio, meetingCount } =
-                myProfile.data
+                myProfile
             setUserId(memberId.toString())
             setUsername(userName)
             setProfile({ profileImageUrl, userName, bio, meetingCount })

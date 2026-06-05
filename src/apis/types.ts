@@ -22,16 +22,20 @@ import type {
     LikePostResponseDto as SharedLikePostResponseDto,
     MealStatusAction as SharedMealStatusAction,
     MealStatusResponse as SharedMealStatusResponse,
+    MeetingResponse as SharedMeetingResponse,
     OnboardingPreferenceRequest as SharedOnboardingPreferenceRequest,
     OnboardingPreferenceResponse as SharedOnboardingPreferenceResponse,
     PageArticleSummaryResponse as SharedPageArticleSummaryResponse,
     PreferenceItem as SharedPreferenceItem,
     PreferenceMetaResponse as SharedPreferenceMetaResponse,
     PreferenceSummaryResponse as SharedPreferenceSummaryResponse,
+    ProfileDetailResponse as SharedProfileDetailResponse,
+    ProfileResponse as SharedProfileResponse,
     RecruitRequestDto as SharedRecruitRequestDto,
     RecruitResponseDto as SharedRecruitResponseDto,
     TokenResponse as SharedTokenResponse,
     UpdateMealStatusRequest as SharedUpdateMealStatusRequest,
+    UpdateProfileRequest as SharedUpdateProfileRequest,
     WeekProgress as SharedWeekProgress,
     MonthProgress as SharedMonthProgress
 } from '@kimdaegyu/babmukdang-shared'
@@ -341,7 +345,15 @@ export interface PostResponse extends Post {
 export type PreferenceItem = SharedPreferenceItem
 
 /**
- * 프로필 기본 응답
+ * Backend 프로필 응답 DTO (API 경계 수신용)
+ * `member` 래퍼와 `mealStatus`를 포함한 Shared 계약을 그대로 수신한 뒤
+ * `mapProfile`로 화면 view model(`ProfileResponse`)로 변환한다.
+ */
+export type ProfileDto = SharedProfileResponse
+
+/**
+ * 프로필 기본 응답 (화면 view model)
+ * Shared `ProfileDto`를 flatten한 결과를 화면에서 사용한다.
  */
 export interface ProfileResponse {
     /** 멤버 ID */
@@ -357,28 +369,14 @@ export interface ProfileResponse {
 }
 
 /**
- * 프로필 상세 응답
+ * 프로필 상세 응답 (Shared 계약과 동일 shape, 그대로 수신)
  */
-export interface ProfileDetailResponse extends ProfileResponse {
-    /** 좋아하는 음식 목록 */
-    likes: PreferenceItem[]
-    /** 싫어하는 음식 목록 */
-    dislikes: PreferenceItem[]
-    /** 알레르기 목록 */
-    allergies: PreferenceItem[]
-}
+export type ProfileDetailResponse = SharedProfileDetailResponse
 
 /**
  * 프로필 수정 요청
  */
-export interface UpdateProfileRequest {
-    /** 사용자명 */
-    userName: string
-    /** 프로필 이미지 URL */
-    profileImageUrl: string
-    /** 자기소개 */
-    bio: string
-}
+export type UpdateProfileRequest = SharedUpdateProfileRequest
 
 // ============================================================================
 // 초대 (Invitation) 관련 타입
@@ -392,7 +390,13 @@ export type InvitationResponse = SharedInvitationResponse
 // ============================================================================
 
 /**
- * 모임 참여자 정보
+ * Backend 모임(Plan) 응답 DTO (API 경계 수신용)
+ * Shared 계약을 그대로 수신한 뒤 `mapMeeting`으로 화면 view model로 변환한다.
+ */
+export type MeetingDto = SharedMeetingResponse
+
+/**
+ * 모임 참여자 정보 (화면 view model)
  */
 export interface MeetingParticipant {
     /** 사용자 ID */
@@ -402,7 +406,7 @@ export interface MeetingParticipant {
 }
 
 /**
- * 모임 응답
+ * 모임 응답 (화면 view model)
  */
 export interface MeetingResponse {
     /** 모임 ID */

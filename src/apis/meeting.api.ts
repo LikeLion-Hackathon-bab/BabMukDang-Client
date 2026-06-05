@@ -12,7 +12,8 @@ import { useQuery } from '@tanstack/react-query'
 import { client } from './client'
 import { endpoints } from './endpoints'
 import { queryKeys } from './keys'
-import type { BaseResponse, MeetingResponse } from './types'
+import { mapMeeting } from './mappers/meeting.mapper'
+import type { MeetingDto, MeetingResponse } from './types'
 
 // ============================================================================
 // API 함수
@@ -24,11 +25,11 @@ import type { BaseResponse, MeetingResponse } from './types'
 export const meetingApi = {
     /**
      * 모임 목록 조회
-     * @returns 모임 목록
+     * @returns 모임 목록 (화면 view model)
      */
-    getAll: async (): Promise<BaseResponse<MeetingResponse[]>> => {
+    getAll: async (): Promise<MeetingResponse[]> => {
         const res = await client.get(endpoints.meetings.list)
-        return res.data
+        return (res.data as MeetingDto[]).map(mapMeeting)
     }
 }
 
@@ -54,5 +55,5 @@ export const useGetMeetings = () => {
         queryKey: queryKeys.meetings.list,
         queryFn: meetingApi.getAll
     })
-    return { data: data?.data, isLoading, error, refetch }
+    return { data, isLoading, error, refetch }
 }

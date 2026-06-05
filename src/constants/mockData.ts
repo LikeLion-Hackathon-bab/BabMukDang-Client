@@ -22,8 +22,8 @@ export { mockPostResponses as MockAnnouncements } from '@/mocks/fixtures/post.fi
 // Coupon (쿠폰)
 export { mockCouponResponses as MockCouponList } from '@/mocks/fixtures/coupon.fixtures'
 
-// Meeting (모임)
-export { mockMeetingResponses as MockMeetingList } from '@/mocks/fixtures/meeting.fixtures'
+// Meeting (모임) - 화면 view model (mapper 결과)
+export { MockMeetingList } from '@/mocks/fixtures/meeting.fixtures'
 
 // Friend (친구)
 export { mockFriendMealResponses as MockFriendList } from '@/mocks/fixtures/friend.fixtures'

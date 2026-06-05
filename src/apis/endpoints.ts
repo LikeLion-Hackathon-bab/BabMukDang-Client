@@ -32,7 +32,7 @@ import type {
     PreferenceMetaResponse,
     PreferenceSummaryResponse,
     ProfileDetailResponse,
-    ProfileResponse,
+    ProfileDto,
     RecruitDto,
     TokenResponse,
     UpdateMealStatusRequest,
@@ -223,10 +223,10 @@ export const api = {
         CommentRequest: {} as CommentPostRequest
     },
     members: {
-        /** 프로필 응답 */
-        ProfileResponse: {} as BaseResponse<ProfileResponse>,
-        /** 프로필 상세 응답 */
-        ProfileDetailResponse: {} as BaseResponse<ProfileDetailResponse>,
+        /** 프로필 응답 (Backend DTO) */
+        ProfileResponse: {} as ProfileDto,
+        /** 프로필 상세 응답 (Backend DTO) */
+        ProfileDetailResponse: {} as ProfileDetailResponse,
         /** 프로필 수정 요청 */
         UpdateRequest: {} as UpdateProfileRequest
     },

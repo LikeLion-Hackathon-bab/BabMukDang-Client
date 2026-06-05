@@ -19,11 +19,8 @@ export const profileHandlers = [
      * GET /members/me/profile - 내 프로필 조회
      */
     http.get(`${BASE_URL}${endpoints.members.myProfile}`, () => {
-        const response: typeof api.members.ProfileResponse = {
-            code: 200,
-            message: 'success',
-            data: profileFixtures.myProfile
-        }
+        const response: typeof api.members.ProfileResponse =
+            profileFixtures.myProfile
         return HttpResponse.json(response)
     }),
 
@@ -31,11 +28,8 @@ export const profileHandlers = [
      * GET /members/me/profile/detail - 내 프로필 상세 조회
      */
     http.get(`${BASE_URL}${endpoints.members.myProfileDetail}`, () => {
-        const response: typeof api.members.ProfileDetailResponse = {
-            code: 200,
-            message: 'success',
-            data: profileFixtures.myProfileDetail
-        }
+        const response: typeof api.members.ProfileDetailResponse =
+            profileFixtures.myProfileDetail
         return HttpResponse.json(response)
     }),
 
@@ -45,14 +39,14 @@ export const profileHandlers = [
     http.get(`${BASE_URL}/members/:id/profile`, ({ params }) => {
         const { id } = params
         console.log(`[MSW] 멤버 프로필 조회: ${id}`)
-        return HttpResponse.json({
-            code: 200,
-            message: 'success',
-            data: {
-                ...profileFixtures.myProfile,
-                memberId: Number(id)
+        const response: typeof api.members.ProfileResponse = {
+            ...profileFixtures.myProfile,
+            member: {
+                ...profileFixtures.myProfile.member,
+                id: Number(id)
             }
-        })
+        }
+        return HttpResponse.json(response)
     }),
 
     /**
@@ -61,14 +55,11 @@ export const profileHandlers = [
     http.get(`${BASE_URL}/members/:id/profile/detail`, ({ params }) => {
         const { id } = params
         console.log(`[MSW] 멤버 프로필 상세 조회: ${id}`)
-        return HttpResponse.json({
-            code: 200,
-            message: 'success',
-            data: {
-                ...profileFixtures.myProfileDetail,
-                memberId: Number(id)
-            }
-        })
+        const response: typeof api.members.ProfileDetailResponse = {
+            ...profileFixtures.myProfileDetail,
+            memberId: Number(id)
+        }
+        return HttpResponse.json(response)
     }),
 
     /**
@@ -80,14 +71,16 @@ export const profileHandlers = [
             const body =
                 (await request.json()) as typeof api.members.UpdateRequest
             console.log('[MSW] 프로필 수정:', body)
-            return HttpResponse.json({
-                code: 200,
-                message: '프로필이 수정되었습니다.',
-                data: {
-                    ...profileFixtures.myProfile,
-                    ...body
+            const response: typeof api.members.ProfileResponse = {
+                ...profileFixtures.myProfile,
+                member: {
+                    ...profileFixtures.myProfile.member,
+                    username: body.userName,
+                    profileImageUrl: body.profileImageUrl,
+                    bio: body.bio
                 }
-            })
+            }
+            return HttpResponse.json(response)
         }
     )
 ]

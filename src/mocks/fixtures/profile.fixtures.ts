@@ -4,22 +4,32 @@
  * 테스트 및 개발용 프로필 mock 데이터를 정의합니다.
  */
 
-import type { ProfileResponse, ProfileDetailResponse } from '@/apis'
+import type { ProfileDto, ProfileDetailResponse } from '@/apis'
 
 /**
  * Profile mock 데이터
  */
 export const profileFixtures = {
     /**
-     * 내 프로필 mock
+     * 내 프로필 mock (Backend DTO shape)
      */
     myProfile: {
-        memberId: 1,
-        userName: 'testUser',
-        profileImageUrl: 'https://picsum.photos/100/100',
-        bio: '맛있는 음식을 좋아하는 개발자입니다.',
-        meetingCount: 10
-    } satisfies ProfileResponse,
+        member: {
+            id: 1,
+            username: 'testUser',
+            profileImageUrl: 'https://picsum.photos/100/100',
+            bio: '맛있는 음식을 좋아하는 개발자입니다.',
+            meetingCount: 10,
+            createdAt: '2025-01-01T00:00:00.000Z',
+            updatedAt: '2025-01-01T00:00:00.000Z',
+            email: 'test@babmukdang.com',
+            age: 25,
+            role: 'USER',
+            preferredMenus: ['한식', '일식'],
+            dislikedMenus: ['매운 음식']
+        },
+        mealStatus: false
+    } satisfies ProfileDto,
 
     /**
      * 내 프로필 상세 mock (선호도 포함)

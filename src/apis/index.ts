@@ -57,6 +57,7 @@ export type {
     PostRequest,
     PostResponse,
     // 프로필
+    ProfileDto,
     ProfileResponse,
     ProfileDetailResponse,
     UpdateProfileRequest,
@@ -65,6 +66,7 @@ export type {
     InvitationPostRequest,
     InvitationResponse,
     // 모임
+    MeetingDto,
     MeetingParticipant,
     MeetingResponse,
     // 선호도
