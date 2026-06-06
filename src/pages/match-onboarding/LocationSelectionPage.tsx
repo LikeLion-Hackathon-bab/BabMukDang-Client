@@ -1,36 +1,52 @@
 import { useState, useEffect, useRef } from 'react'
+import type {
+    LocationAddInitialState,
+    LocationCandidateAddUpdateResponseDto
+} from '@kimdaegyu/babmukdang-shared'
 
 import { useSocket } from '@/contexts/SocketContext'
 import { KakaoMap, LocationCadidateItem } from '@/components'
 
-interface LocationCandidateDto {
+interface LocationOption {
+    id: string
     placeName: string
     lat: number
     lng: number
     address?: string
-}
-
-interface LocationOption extends LocationCandidateDto {
-    id: string
     isSelected: boolean
 }
 
+const toOptions = (
+    candidates: LocationCandidateAddUpdateResponseDto
+): LocationOption[] =>
+    candidates.map(candidate => ({
+        id: candidate.id,
+        placeName: candidate.placeName,
+        lat: candidate.lat,
+        lng: candidate.lng,
+        address: candidate.address,
+        isSelected: false
+    }))
+
 export function LocationSelectionPage() {
-    const { socket, initialState, matchType } = useSocket()
+    const { socket, phaseData } = useSocket()
 
     const [locationOptions, setLocationOptions] = useState<LocationOption[]>([])
     const mapRef = useRef<HTMLDivElement>(null)
     useEffect(() => {
-        if (initialState && initialState.stage === 'location') {
-            setLocationOptions(initialState.initialState.candidates)
+        if (phaseData && phaseData.phase === 'location') {
+            setLocationOptions(
+                toOptions(phaseData.data as LocationAddInitialState)
+            )
         }
-    }, [initialState])
+    }, [phaseData])
 
     useEffect(() => {
-        const handleLocationAdded = (data: any) => {
-            setLocationOptions(data)
-            data.forEach((location: any) => {
-                console.log(location, mapRef.current)
+        const handleLocationAdded = (
+            data: LocationCandidateAddUpdateResponseDto
+        ) => {
+            setLocationOptions(toOptions(data))
+            data.forEach(location => {
                 const latlng = new window.kakao.maps.LatLng(
                     location.lat,
                     location.lng
@@ -41,9 +57,9 @@ export function LocationSelectionPage() {
                 marker.setMap(mapRef.current)
             })
         }
-        socket?.on('location-candidate-added', handleLocationAdded)
+        socket?.on('location-add-updated', handleLocationAdded)
         return () => {
-            socket?.off('location-candidate-added', handleLocationAdded)
+            socket?.off('location-add-updated', handleLocationAdded)
         }
     }, [socket])
 
@@ -66,28 +82,15 @@ export function LocationSelectionPage() {
         lng: number,
         address: string
     ) => {
-        // 새로운 위치 옵션 추가
-        const newLocation: LocationOption = {
-            id: Date.now().toString(),
-            placeName: `새로운 위치 (${lat.toFixed(4)}, ${lng.toFixed(4)})`,
-            address: address,
-            isSelected: true,
-            lat,
-            lng
-        }
-
-        // 서버에 위치 데이터 전송
+        // 서버에 위치 후보 전송 (LocationCandidateAddRequestDto: id 필수)
         try {
-            const locationData: LocationCandidateDto = {
+            socket?.emit('add-location-candidate', {
+                id: Date.now().toString(),
+                placeName: `새로운 위치 (${lat.toFixed(4)}, ${lng.toFixed(4)})`,
+                address,
                 lat,
-                lng,
-                placeName: newLocation.placeName,
-                address: newLocation.address
-            }
-
-            socket?.emit('add-location-candidate', locationData)
-            // await locationApi.sendLocationSelection(locationData)
-            console.log('위치 데이터가 서버에 전송되었습니다:', locationData)
+                lng
+            })
         } catch (error) {
             console.error('위치 데이터 전송 실패:', error)
         }

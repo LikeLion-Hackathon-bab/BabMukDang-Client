@@ -3,41 +3,45 @@ import { useEffect, useState } from 'react'
 import { useSocket } from '@/contexts/SocketContext'
 import { TagPerson, OnboardingHeader, ThumbImg } from '@/components'
 import { useAuthStore } from '@/store'
+import type {
+    ExcludeMenuInitialState,
+    ExcludeMenuUpdateResponseDto,
+    Menu
+} from '@kimdaegyu/babmukdang-shared'
 
-interface Menu {
-    code: string
-    label: string
-}
-interface ExcludeMenuUpdateItem {
-    userId: string
-    exclusions: Menu[]
-}
-type ExcludeMenuUpdate = ExcludeMenuUpdateItem[]
-
-type InitialState = UserRecentMenus[]
 interface UserRecentMenus {
     userId: string
     menuList: Menu[]
     excludedMenuList?: Menu[]
 }
 export function MenuExcludePage() {
-    const [userRecentMenus, setUserRecentMenus] = useState<InitialState>([])
-    const { initialState, socket } = useSocket()
+    const [userRecentMenus, setUserRecentMenus] = useState<UserRecentMenus[]>(
+        []
+    )
+    const { phaseData, socket } = useSocket()
     useEffect(() => {
-        if (initialState && initialState.stage === 'exclude-menu') {
-            setUserRecentMenus(initialState.initialState)
-            console.log('categories', initialState.initialState)
+        if (phaseData && phaseData.phase === 'exclude-menu') {
+            const data = phaseData.data as ExcludeMenuInitialState
+            const excluded = data.excludedMenuList ?? []
+            setUserRecentMenus(
+                data.recentMenus.map(recent => ({
+                    userId: recent.userId,
+                    menuList: recent.menuList,
+                    excludedMenuList: excluded.find(
+                        item => item.userId === recent.userId
+                    )?.exclusions
+                }))
+            )
         }
-    }, [initialState])
+    }, [phaseData])
 
     useEffect(() => {
-        socket?.on('menu-exclusion-updated', (data: ExcludeMenuUpdate) => {
+        const handleExcludeUpdated = (data: ExcludeMenuUpdateResponseDto) => {
             setUserRecentMenus(prev =>
                 prev.map(item => {
                     const updateItem = data.find(
                         update => update.userId === item.userId
                     )
-                    console.log('updateItem', updateItem)
                     if (updateItem) {
                         return {
                             ...item,
@@ -47,7 +51,11 @@ export function MenuExcludePage() {
                     return item
                 })
             )
-        })
+        }
+        socket?.on('exclude-menu-updated', handleExcludeUpdated)
+        return () => {
+            socket?.off('exclude-menu-updated', handleExcludeUpdated)
+        }
     }, [socket])
     return (
         <>
@@ -79,9 +87,8 @@ const MenuExcludeList = ({
     const { categories, socket } = useSocket()
     const { userId: currentUserId } = useAuthStore()
     const handleClick = (menu: Menu) => {
-        console.log('menu', menu, excludedMenuList)
         // if (userId === currentUserId) {
-        socket?.emit('exclude-menu', menu)
+        socket?.emit('exclude-menu', { menu })
         // }
     }
     return (

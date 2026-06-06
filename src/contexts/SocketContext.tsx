@@ -11,7 +11,6 @@ import React, {
     useRef,
     useState
 } from 'react'
-import type { Socket } from 'socket.io-client'
 import { io } from 'socket.io-client'
 import { useNavigate, useParams } from 'react-router-dom'
 import type {
@@ -34,23 +33,6 @@ import { useRoomSchedule } from './socket/useRoomSchedule'
 import { useRoomMenu } from './socket/useRoomMenu'
 import type { AppSocket } from './socket/types'
 
-/**
- * @deprecated Phase 7에서 제거 예정.
- *
- * 기존 match-onboarding 페이지들은 단계별 초기 상태를
- * `initialState.stage` / `initialState.initialState.*`(ad-hoc shape)로 읽는다.
- * Backend는 `stage-changed`(PhaseDataBroadcastDto)로 phase별 data를 보내므로
- * 여기서 `{ stage, initialState }` 호환 envelope로 감싸 노출한다.
- * 페이지들을 Shared phase 타입으로 재배선하기 전까지의 shim이며 그때까지
- * `initialState`는 any로 남는다.
- * (docs/todo/2026-06-06-socket-phase3-pending.md)
- */
-interface LegacyPhaseInitialState {
-    stage: string
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    initialState: any
-}
-
 interface FinalStateMessage {
     location?: string
     'exclude-menu'?: string[]
@@ -59,15 +41,17 @@ interface FinalStateMessage {
 }
 
 interface SocketContextValue {
-    // 노출 socket은 아직 stale 이벤트명을 쓰는 페이지 호환을 위해 느슨한
-    // 기본 Socket 타입으로 둔다(Provider/훅 내부는 AppSocket으로 타입 고정).
-    socket: Socket | null
+    // 노출 socket은 Backend gateway 계약(Shared)으로 타입 고정된 AppSocket.
+    // 페이지의 emit/on이 Shared 이벤트명/payload와 어긋나면 컴파일 에러로 강제된다.
+    socket: AppSocket | null
     roomId: string | undefined
     matchType: 'announcement' | 'invitation'
     categories: Category[]
     participants: Participant[]
     stage: string
-    initialState: LegacyPhaseInitialState | null
+    // Backend `stage-changed`의 phase별 초기 상태(PhaseDataBroadcastDto). 페이지는
+    // `phaseData.phase`로 좁히고 `phaseData.data`를 해당 phase 타입으로 사용한다.
+    phaseData: PhaseDataBroadcastDto | null
     finalState: FinalState | null
     finalStateMessage: FinalStateMessage
     locationInitial: string | undefined
@@ -108,8 +92,9 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     const [categories, setCategories] = useState<Category[]>([])
     const [participants, setParticipants] = useState<Participant[]>([])
     const [stage, setStage] = useState('waiting')
-    const [initialState, setInitialState] =
-        useState<LegacyPhaseInitialState | null>(null)
+    const [phaseData, setPhaseData] = useState<PhaseDataBroadcastDto | null>(
+        null
+    )
     const [finalState, setFinalState] = useState<FinalState | null>(null)
     const [finalStateMessage, setFinalStateMessage] =
         useState<FinalStateMessage>({})
@@ -185,7 +170,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
         }
         const handleStageChanged = (data: PhaseDataBroadcastDto) => {
             setStage(data.phase)
-            setInitialState({ stage: data.phase, initialState: data.data })
+            setPhaseData(data)
             if (data.phase === 'waiting') {
                 const waiting = data.data as WaitingInitialState
                 setLocationInitial(waiting.locationInitial)
@@ -219,13 +204,13 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     return (
         <SocketContext.Provider
             value={{
-                socket: socket as unknown as Socket | null,
+                socket,
                 roomId,
                 matchType: matchType as 'announcement' | 'invitation',
                 categories,
                 participants,
                 stage,
-                initialState,
+                phaseData,
                 finalState,
                 finalStateMessage,
                 locationInitial,

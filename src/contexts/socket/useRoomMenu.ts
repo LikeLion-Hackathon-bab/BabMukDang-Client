@@ -10,9 +10,7 @@ import type { AppSocket } from './types'
  * - `menu-pick-updated`: 메뉴 픽 집계
  * - `restaurant-pick-updated`: 식당 픽 집계
  *
- * NOTE: MenuPage/RestaurantPage는 아직 각자 socket 구독을 직접 들고 있다.
- * Phase 7에서 두 페이지를 이 훅(컨텍스트의 menuPicks/restaurantPicks)으로
- * 재배선한다. (docs/todo/2026-06-06-socket-phase3-pending.md)
+ * MenuPage/RestaurantPage는 컨텍스트의 menuPicks/restaurantPicks를 소비한다.
  */
 export function useRoomMenu(socket: AppSocket | null) {
     const [menuPicks, setMenuPicks] = useState<MenuPickUpdateResponseDto>([])

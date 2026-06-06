@@ -1,20 +1,28 @@
 import { LocationVoteItem } from '@/components'
 import { useSocket } from '@/contexts/SocketContext'
 import { useEffect, useState } from 'react'
+import type {
+    LocationVoteInitialState,
+    LocationCandidateAddUpdateResponseDto
+} from '@kimdaegyu/babmukdang-shared'
 
 export function LocationVotePage() {
-    const { initialState, socket } = useSocket()
-    const [locationCandidates, setLocationCandidates] = useState<any[]>([])
-    const [selectedLocation, setSelectedLocation] = useState<any>(null)
+    const { phaseData, socket } = useSocket()
+    const [locationCandidates, setLocationCandidates] =
+        useState<LocationCandidateAddUpdateResponseDto>([])
+    const [selectedLocation, setSelectedLocation] = useState<string | null>(
+        null
+    )
     useEffect(() => {
-        if (initialState && initialState.stage === 'location-vote') {
-            setLocationCandidates(initialState.initialState.candidates)
+        if (phaseData && phaseData.phase === 'location-vote') {
+            const data = phaseData.data as LocationVoteInitialState
+            setLocationCandidates(data.locations)
         }
-    }, [initialState])
+    }, [phaseData])
     const handleLocationSelect = (id: string) => {
         setSelectedLocation(id)
         socket?.emit('vote-location', {
-            candidateId: id
+            locationId: id
         })
     }
     return (

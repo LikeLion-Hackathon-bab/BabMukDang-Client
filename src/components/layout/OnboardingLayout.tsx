@@ -99,7 +99,7 @@ const SocketInner = ({ setStage }: { setStage: (stage: string) => void }) => {
     }>()
     useLayoutEffect(() => {
         socket?.on('stage-changed', data => {
-            setStage(data.stage)
+            setStage(data.phase)
         })
         return () => {
             socket?.off('stage-changed')

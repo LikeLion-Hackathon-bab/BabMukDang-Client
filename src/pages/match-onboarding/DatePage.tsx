@@ -8,7 +8,7 @@ export function DatePage() {
             <CalendarWithMultiple
                 serverDateSelections={dateSelections}
                 onSelectDates={dates => {
-                    socket?.emit('pick-dates', { dates })
+                    socket?.emit('pick-date', { dates })
                 }}
             />
         </div>
