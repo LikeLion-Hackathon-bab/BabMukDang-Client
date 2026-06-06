@@ -48,8 +48,8 @@ jobs:
         working-directory: BabMukDang-Client
         run: npm run build
 
-  e2e:
-    name: E2E (Playwright)
+  e2e-msw:
+    name: E2E — MSW 모드 (빠른 피드백)
     runs-on: ubuntu-latest
     needs: lint-build
 
@@ -82,10 +82,9 @@ jobs:
         working-directory: BabMukDang-Client
         run: npx playwright install --with-deps chromium
 
-      - name: E2E 테스트 (MSW 모드)
+      - name: E2E 스모크 테스트 (MSW + dev 서버)
         working-directory: BabMukDang-Client
         env:
-          VITE_USE_MSW: "true"
           VITE_SERVER_URL: http://localhost:3000
           VITE_WEBSOCKET_URL: http://localhost:3000
         run: npm run test:e2e
@@ -94,6 +93,125 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-msw-report
+          path: BabMukDang-Client/playwright-report/
+          retention-days: 7
+
+  e2e-integration:
+    name: E2E — 실 백엔드 통합 (docker compose)
+    runs-on: ubuntu-latest
+    needs: lint-build
+    # 통합 E2E는 main 브랜치 push 시에만 실행 (PR은 MSW 모드로 충분)
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+
+    env:
+      DB_PASSWORD: testpass
+      DB_NAME: babmukdang
+      JWT_SECRET: ci-integration-secret
+      KAKAO_CLIENT_ID: ci-placeholder
+      KAKAO_CLIENT_SECRET: ci-placeholder
+      KAKAO_CALLBACK_URL: http://localhost:3000/api/v1/auth/kakao/callback
+      KAKAO_REST_KEY: ci-placeholder
+      AWS_REGION: ap-northeast-2
+      AWS_ACCESS_KEY_ID: ci-placeholder
+      AWS_SECRET_ACCESS_KEY: ci-placeholder
+      S3_ARTICLE_BUCKET: ci-placeholder
+      S3_PROFILE_BUCKET: ci-placeholder
+      CLOUDFRONT_DOMAIN: ci.cloudfront.net
+      CORS_ORIGINS: http://localhost:3001
+      LOGIN_REDIRECT_URL: http://localhost:3001/
+      ONBOARDING_REDIRECT_URL: http://localhost:3001/onboarding
+      APP_RABBITMQ_ENABLED: "false"
+      DB_SYNC: "true"
+      VITE_SERVER_URL: http://localhost:3000
+      VITE_WEBSOCKET_URL: http://localhost:3000
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: BabMukDang-Client
+
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/BabMukDang-Backend
+          path: BabMukDang-Backend
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/BabMukDang-Shared
+          path: BabMukDang-Shared
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: .env 생성 (Backend용)
+        working-directory: BabMukDang-Backend
+        run: |
+          cat > .env << 'EOF'
+          PORT=3000
+          DB_HOST=db
+          DB_PORT=3306
+          DB_USERNAME=root
+          DB_PASSWORD=${{ env.DB_PASSWORD }}
+          DB_NAME=${{ env.DB_NAME }}
+          DB_SYNC=${{ env.DB_SYNC }}
+          JWT_SECRET=${{ env.JWT_SECRET }}
+          KAKAO_CLIENT_ID=${{ env.KAKAO_CLIENT_ID }}
+          KAKAO_CLIENT_SECRET=${{ env.KAKAO_CLIENT_SECRET }}
+          KAKAO_CALLBACK_URL=${{ env.KAKAO_CALLBACK_URL }}
+          KAKAO_REST_KEY=${{ env.KAKAO_REST_KEY }}
+          APP_RABBITMQ_ENABLED=${{ env.APP_RABBITMQ_ENABLED }}
+          AWS_REGION=${{ env.AWS_REGION }}
+          AWS_ACCESS_KEY_ID=${{ env.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY=${{ env.AWS_SECRET_ACCESS_KEY }}
+          S3_ARTICLE_BUCKET=${{ env.S3_ARTICLE_BUCKET }}
+          S3_PROFILE_BUCKET=${{ env.S3_PROFILE_BUCKET }}
+          CLOUDFRONT_DOMAIN=${{ env.CLOUDFRONT_DOMAIN }}
+          CORS_ORIGINS=${{ env.CORS_ORIGINS }}
+          LOGIN_REDIRECT_URL=${{ env.LOGIN_REDIRECT_URL }}
+          ONBOARDING_REDIRECT_URL=${{ env.ONBOARDING_REDIRECT_URL }}
+          EOF
+
+      - name: docker compose로 전체 스택 시작
+        working-directory: BabMukDang-Backend
+        run: |
+          docker compose -f docker-compose.yml \
+            --project-directory .. \
+            --env-file .env \
+            up -d --build
+          # Backend 헬스체크 대기 (최대 2분)
+          timeout 120 bash -c \
+            'until curl -sf http://localhost:3000/api/v1; do sleep 5; done'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: BabMukDang-Client/package-lock.json
+
+      - name: Client 의존성 설치
+        working-directory: BabMukDang-Client
+        run: npm ci
+
+      - name: Playwright 브라우저 설치
+        working-directory: BabMukDang-Client
+        run: npx playwright install --with-deps chromium
+
+      - name: 통합 E2E 테스트 (실 백엔드)
+        working-directory: BabMukDang-Client
+        env:
+          BACKEND_URL: http://localhost:3000
+          CLIENT_URL: http://localhost:3001
+        run: npm run test:e2e:integration
+
+      - name: docker compose 정리
+        if: always()
+        working-directory: BabMukDang-Backend
+        run: docker compose -f docker-compose.yml --project-directory .. down -v
+
+      - name: 통합 E2E 리포트 업로드
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-integration-report
           path: BabMukDang-Client/playwright-report/
           retention-days: 7
