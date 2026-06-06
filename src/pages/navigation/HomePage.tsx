@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 
 import { LogoTextIcon } from '@/assets/icons'
-import { MockPostList } from '@/constants/mockData'
 
 import { useHeader, usePullToRefresh } from '@/hooks'
 import {
@@ -13,12 +12,13 @@ import {
 
 import { COLORS } from '@/constants/colors'
 import { useGetHomeArticles } from '@/apis'
+import { toPostCardView } from '@/viewModels'
 
 export function HomePage() {
     const { setLeftElement, hideCenterElement, resetHeader, showRightButton } =
         useHeader()
     const { data: postListData } = useGetHomeArticles()
-    const postList = postListData?.content ?? MockPostList ?? []
+    const postList = (postListData?.content ?? []).map(toPostCardView)
 
     const { pullPosition, menu } = usePullToRefresh()
 
@@ -43,8 +43,7 @@ export function HomePage() {
                     {postList.map((post, index) => (
                         <PostCard
                             key={index}
-                            // @ts-ignore: MockPostList may not strictly match Post type; safe for UI mock rendering
-                            post={post as any}
+                            post={post}
                             isComment={false}
                         />
                     ))}

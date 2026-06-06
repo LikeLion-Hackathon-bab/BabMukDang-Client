@@ -22,3 +22,26 @@ export type PostCardView = Pick<
 > & {
     mealTime: MealTimeText
 }
+
+const pad = (n: number) => String(n).padStart(2, '0')
+
+/**
+ * Article 요약 API view model을 PostCard view model로 변환한다.
+ * `mealTime`(LocalTime)을 칩 표시용 `HH:mm:ss` 문자열로 포맷한다.
+ * (식사 시간대 카테고리 매핑이 붙기 전까지의 표현)
+ */
+export const toPostCardView = (
+    article: ArticleSummaryResponse
+): PostCardView => ({
+    articleId: article.articleId,
+    authorId: article.authorId,
+    authorUsername: article.authorUsername,
+    imageUrl: article.imageUrl,
+    likeCount: article.likeCount,
+    commentCount: article.commentCount,
+    likedByMe: article.likedByMe,
+    createdAt: article.createdAt,
+    taggedMemberIds: article.taggedMemberIds,
+    mealTime:
+        `${pad(article.mealTime.hour)}:${pad(article.mealTime.minute)}:${pad(article.mealTime.second)}` as MealTimeText
+})
