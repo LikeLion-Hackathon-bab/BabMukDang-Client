@@ -15,7 +15,7 @@ export const profileFixtures = {
      */
     myProfile: {
         member: {
-            id: 1,
+            userId: 1,
             username: 'testUser',
             profileImageUrl: 'https://picsum.photos/100/100',
             bio: '맛있는 음식을 좋아하는 개발자입니다.',

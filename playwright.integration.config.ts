@@ -17,7 +17,11 @@ const CLIENT_URL = process.env.CLIENT_URL ?? 'http://localhost:3001'
 
 export default defineConfig({
     testDir: './src/e2e_tests',
-    testMatch: '**/integration.spec.ts',
+    testMatch: [
+        '**/integration.spec.ts',
+        '**/backend-api.spec.ts',
+        '**/backend-socket.spec.ts'
+    ],
     timeout: 60_000,
     retries: 2,
     workers: 1,

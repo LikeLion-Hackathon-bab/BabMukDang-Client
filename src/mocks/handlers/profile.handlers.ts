@@ -43,7 +43,7 @@ export const profileHandlers = [
             ...profileFixtures.myProfile,
             member: {
                 ...profileFixtures.myProfile.member,
-                id: Number(id)
+                userId: Number(id)
             }
         }
         return HttpResponse.json(response)
