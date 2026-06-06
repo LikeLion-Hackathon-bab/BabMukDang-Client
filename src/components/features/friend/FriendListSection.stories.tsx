@@ -44,32 +44,40 @@ const mockFriendList = [
     }
 ]
 
+const allFilter = { key: 'all', label: '전체' }
+const hungryFilter = { key: 'hungry', label: '배고픈' }
+
 export const Default: Story = {
     args: {
-        friendList: mockFriendList
+        friendList: mockFriendList,
+        activeFilter: allFilter
     }
 }
 
 export const AllHungry: Story = {
     args: {
-        friendList: mockFriendList.map(f => ({ ...f, hungry: true }))
+        friendList: mockFriendList.map(f => ({ ...f, hungry: true })),
+        activeFilter: hungryFilter
     }
 }
 
 export const NoneHungry: Story = {
     args: {
-        friendList: mockFriendList.map(f => ({ ...f, hungry: false }))
+        friendList: mockFriendList.map(f => ({ ...f, hungry: false })),
+        activeFilter: { key: 'not_hungry', label: '배부른' }
     }
 }
 
 export const Empty: Story = {
     args: {
-        friendList: []
+        friendList: [],
+        activeFilter: allFilter
     }
 }
 
 export const SingleFriend: Story = {
     args: {
-        friendList: [mockFriendList[0]]
+        friendList: [mockFriendList[0]],
+        activeFilter: allFilter
     }
 }
