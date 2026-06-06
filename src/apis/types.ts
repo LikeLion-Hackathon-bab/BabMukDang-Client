@@ -45,16 +45,6 @@ import type {
 // ============================================================================
 
 /**
- * 메뉴/카테고리 항목
- */
-export interface Menu {
-    /** 메뉴 코드 */
-    code: string
-    /** 표시 라벨 */
-    label: string
-}
-
-/**
  * 시간 정보 (Java LocalTime 형식)
  */
 export interface LocalTime {
@@ -416,18 +406,6 @@ export interface MeetingResponse {
 // 선호도/온보딩 (Preference/Onboarding) 관련 타입
 // ============================================================================
 
-/**
- * 온보딩 선호도 정보
- */
-export interface Onboarding {
-    /** 좋아하는 음식 코드 목록 */
-    likedCodes: string[]
-    /** 싫어하는 음식 코드 목록 */
-    dislikedCodes: string[]
-    /** 알레르기 코드 목록 */
-    allergyCodes: string[]
-}
-
 export type OnboardingPreferenceRequest = SharedOnboardingPreferenceRequest
 export type OnboardingPreferenceResponse = SharedOnboardingPreferenceResponse
 export type PreferenceSummaryResponse = SharedPreferenceSummaryResponse
@@ -465,80 +443,6 @@ export type ChallengeStatusResponse = SharedChallengeStatusResponse
 
 export type CouponType = SharedCouponType
 export type CouponResponse = SharedCouponResponse
-
-// ============================================================================
-// 멤버 (Member) 관련 타입
-// ============================================================================
-
-/**
- * 멤버 요약 응답
- */
-export interface MemberSummaryResponse {
-    /** 멤버 ID */
-    memberId: number
-    /** 사용자명 */
-    userName: string
-    /** 프로필 이미지 URL */
-    profileImageUrl: string | null
-}
-
-/**
- * 작성자 정보
- */
-export interface AuthorInfo {
-    /** 작성자 ID */
-    authorId: number
-    /** 이름 */
-    name: string
-    /** 프로필 이미지 URL */
-    profileImageUrl: string
-}
-
-/**
- * 참여자 정보
- */
-export interface ParticipantInfo {
-    /** 참여자 ID */
-    authorId: number
-    /** 이름 */
-    name: string
-    /** 프로필 이미지 URL */
-    profileImageUrl: string
-}
-
-// ============================================================================
-// 최근 식사/게시글 사진 관련 타입
-// ============================================================================
-
-/**
- * 게시글 사진 응답
- */
-export interface ArticlePhotoResponse {
-    /** 게시글 ID */
-    articleId: number
-    /** 이미지 URL */
-    imageUrl: string
-    /** 생성 시간 */
-    createdAt: string
-}
-
-/**
- * 최근 식사 응답
- */
-export interface RecentMealsResponse {
-    /** 게시글 ID */
-    articleId: number
-    /** 이미지 URL */
-    imageUrl: string
-    /** 식사 날짜 */
-    mealDate: string
-    /** 식사 시간 */
-    mealTime: string
-    /** 식당 이름 */
-    restaurantName: string | null
-    /** 생성 시간 */
-    createdAt: string
-}
 
 // ============================================================================
 // 식당 타입

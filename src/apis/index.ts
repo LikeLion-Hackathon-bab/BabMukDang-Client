@@ -27,7 +27,6 @@ export { endpoints, api } from './endpoints'
 
 export type {
     // 공통
-    Menu,
     LocalTime,
     MutationOptions,
     // 인증
@@ -43,8 +42,6 @@ export type {
     PageArticleSummaryDto,
     PageArticleSummaryResponse,
     LikePostResponse,
-    ArticlePhotoResponse,
-    RecentMealsResponse,
     // 댓글
     CommentDto,
     CommentResponse,
@@ -68,7 +65,6 @@ export type {
     MeetingParticipant,
     MeetingResponse,
     // 선호도
-    Onboarding,
     OnboardingPreferenceRequest,
     OnboardingPreferenceResponse,
     PreferenceSummaryResponse,
@@ -87,11 +83,7 @@ export type {
     ChallengeStatusResponse,
     // 쿠폰
     CouponType,
-    CouponResponse,
-    // 멤버
-    MemberSummaryResponse,
-    AuthorInfo,
-    ParticipantInfo
+    CouponResponse
 } from './types'
 
 // ============================================================================
