@@ -36,7 +36,7 @@ export function SendInvitationPage() {
     console.log('userId', userId)
     const handleSendInvitation = () => {
         sendInvitation({
-            inviteeId: { id: Number(userId) },
+            inviteeId: Number(userId),
             message: editText
         })
     }
