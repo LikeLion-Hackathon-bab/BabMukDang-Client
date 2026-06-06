@@ -1,5 +1,6 @@
 import { useAuthStore } from '@/store'
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios'
+import { toAppError } from './errors'
 
 // Axios 클라이언트 인스턴스 생성
 export const client = axios.create({
@@ -43,9 +44,9 @@ client.interceptors.response.use(
             _retry?: boolean
         }
 
-        // 401 에러가 아니거나 이미 재시도한 요청이면 에러 반환
+        // 401 에러가 아니거나 이미 재시도한 요청이면 변환된 에러 반환
         if (error.response?.status !== 401 || originalRequest._retry) {
-            return Promise.reject(error)
+            return Promise.reject(toAppError(error))
         }
 
         originalRequest._retry = true
@@ -54,7 +55,7 @@ client.interceptors.response.use(
         // refreshToken이 없으면 로그아웃
         if (!refreshToken) {
             logout()
-            return Promise.reject(error)
+            return Promise.reject(toAppError(error))
         }
 
         // 이미 갱신 중이면 대기열에 추가
@@ -92,11 +93,11 @@ client.interceptors.response.use(
             // 원래 요청 재시도
             originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
             return client(originalRequest)
-        } catch (refreshError) {
-            // 갱신 실패 시 로그아웃
+        } catch {
+            // 갱신 실패 시 로그아웃하고 원본 401을 변환해 반환
             logout()
             refreshSubscribers = []
-            return Promise.reject(refreshError)
+            return Promise.reject(toAppError(error))
         } finally {
             isRefreshing = false
         }
