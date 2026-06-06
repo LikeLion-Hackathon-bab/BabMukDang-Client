@@ -19,11 +19,7 @@ export const authHandlers = [
      * POST /auth/refresh - 토큰 갱신
      */
     http.post(`${BASE_URL}${endpoints.auth.refresh}`, () => {
-        const response: typeof api.auth.RefreshResponse = {
-            code: 200,
-            message: 'success',
-            data: mockTokenResponse
-        }
+        const response: typeof api.auth.RefreshResponse = mockTokenResponse
         return HttpResponse.json(response)
     }),
 
@@ -32,40 +28,28 @@ export const authHandlers = [
      */
     http.post(`${BASE_URL}${endpoints.auth.logout}`, () => {
         console.log('[MSW] 로그아웃')
-        return HttpResponse.json({
-            code: 200,
-            message: '로그아웃 되었습니다.',
-            data: null
-        })
+        return new HttpResponse(null, { status: 204 })
     }),
 
     /**
-     * POST /auth/onboarding/preference - 온보딩 선호도 저장
+     * POST /preferences/onboarding - 온보딩 선호도 저장
      */
     http.post(
-        `${BASE_URL}${endpoints.auth.onboardingPreference}`,
+        `${BASE_URL}${endpoints.preferences.onboarding}`,
         async ({ request }) => {
             const body =
                 (await request.json()) as typeof api.auth.OnboardingRequest
             console.log('[MSW] 온보딩 선호도 저장:', body)
-            return HttpResponse.json({
-                code: 200,
-                message: '선호도가 저장되었습니다.',
-                data: null
-            })
+            return new HttpResponse(null, { status: 204 })
         }
     ),
 
     /**
-     * GET /auth/login/kakao - 카카오 로그인 (리다이렉트)
+     * GET /auth/kakao - 카카오 로그인 (리다이렉트)
      * 실제로는 OAuth 리다이렉트하지만, mock에서는 토큰 직접 반환
      */
     http.get(`${BASE_URL}${endpoints.auth.kakaoLogin}`, () => {
         console.log('[MSW] 카카오 로그인 요청')
-        return HttpResponse.json({
-            code: 200,
-            message: 'success',
-            data: mockTokenResponse
-        })
+        return HttpResponse.json(mockTokenResponse)
     })
 ]

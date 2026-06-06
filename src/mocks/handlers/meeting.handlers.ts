@@ -15,9 +15,9 @@ const BASE_URL = import.meta.env.VITE_SERVER_URL || ''
  */
 export const meetingHandlers = [
     /**
-     * GET /meetings - 모임 목록 조회 (Backend DTO 직접 반환)
+     * GET /plans - 모임 목록 조회 (Backend DTO 직접 반환)
      */
-    http.get(`${BASE_URL}${endpoints.meetings.list}`, () => {
+    http.get(`${BASE_URL}${endpoints.plans.list}`, () => {
         return HttpResponse.json(mockMeetingResponses)
     })
 ]

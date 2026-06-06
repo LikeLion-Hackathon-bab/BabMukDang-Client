@@ -45,19 +45,6 @@ import type {
 // ============================================================================
 
 /**
- * API 응답의 기본 래퍼 타입
- * @template T - 실제 응답 데이터 타입
- */
-export interface BaseResponse<T> {
-    /** HTTP 상태 코드 */
-    code: number
-    /** 응답 메시지 */
-    message: string
-    /** 실제 데이터 */
-    data: T
-}
-
-/**
  * 메뉴/카테고리 항목
  */
 export interface Menu {

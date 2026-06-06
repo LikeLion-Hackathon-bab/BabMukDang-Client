@@ -35,7 +35,7 @@ export const preferenceApi = {
     postOnboarding: async (
         data: OnboardingPreferenceRequest
     ): Promise<void> => {
-        const res = await client.post(endpoints.auth.onboardingPreference, data)
+        const res = await client.post(endpoints.preferences.onboarding, data)
         return res.data
     },
 

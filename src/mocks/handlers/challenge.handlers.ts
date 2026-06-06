@@ -15,10 +15,10 @@ const BASE_URL = import.meta.env.VITE_SERVER_URL || ''
  */
 export const challengeHandlers = [
     /**
-     * GET /challenge/status - 챌린지 상태 조회
+     * GET /challenges/me - 챌린지 상태 조회
      */
-    http.get(`${BASE_URL}${endpoints.challenge.status}`, () => {
-        const response: typeof api.challenge.StatusResponse =
+    http.get(`${BASE_URL}${endpoints.challenges.me}`, () => {
+        const response: typeof api.challenges.StatusResponse =
             mockChallengeStatus
         return HttpResponse.json(response)
     })

@@ -83,10 +83,10 @@ export const useAuthStore = create<AuthState>()(
             // (apis는 client→authStore 순환을 피하려고 동적 import)
             refresh: async () => {
                 const { refresh: refreshApi } = await import('@/apis')
-                const res = await refreshApi()
+                const token = await refreshApi()
                 set({
-                    accessToken: res.data.accessToken,
-                    refreshToken: res.data.refreshToken
+                    accessToken: token.accessToken,
+                    refreshToken: token.refreshToken
                 })
             },
             setUsername: (username: string) => set({ username }),

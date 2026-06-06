@@ -11,14 +11,8 @@
  */
 
 import { useMutation } from '@tanstack/react-query'
-import axios from 'axios'
+import { client } from './client'
 import type { MutationOptions } from './types'
-
-// WebSocket 서버용 Axios 인스턴스 (S3 presign용)
-const webSocketClient = axios.create({
-    baseURL: import.meta.env.VITE_WEBSOCKET_URL,
-    withCredentials: false
-})
 
 // ============================================================================
 // 유틸리티 함수
@@ -75,7 +69,7 @@ export const uploadApi = {
         currentUserId: string,
         file: File
     ): Promise<PresignResponse> => {
-        const { key, putUrl, cdnUrl } = await webSocketClient
+        const { key, putUrl, cdnUrl } = await client
             .post('/uploads/presign-article', {
                 userId: currentUserId,
                 contentType: file.type
@@ -94,7 +88,7 @@ export const uploadApi = {
         currentUserId: string,
         file: File
     ): Promise<PresignResponse> => {
-        const { key, putUrl, cdnUrl } = await webSocketClient
+        const { key, putUrl, cdnUrl } = await client
             .post('/uploads/presign-profile', {
                 userId: currentUserId,
                 contentType: file.type

@@ -13,7 +13,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { client } from './client'
 import { endpoints } from './endpoints'
-import type { BaseResponse, MutationOptions, TokenResponse } from './types'
+import type { MutationOptions, TokenResponse } from './types'
 
 // ============================================================================
 // API 함수
@@ -27,9 +27,8 @@ export const authApi = {
      * 카카오 로그인 시작
      * @returns 토큰 응답
      */
-    login: async (): Promise<BaseResponse<TokenResponse>> => {
+    login: async (): Promise<TokenResponse> => {
         const res = await client.get(endpoints.auth.kakaoLogin)
-        console.log(res.data)
         return res.data
     },
 
@@ -37,16 +36,16 @@ export const authApi = {
      * 로그아웃
      * @returns 성공 응답
      */
-    logout: async (): Promise<BaseResponse<void>> => {
+    logout: async (): Promise<void> => {
         const res = await client.post(endpoints.auth.logout)
         return res.data
     },
 
     /**
      * 토큰 갱신
-     * @returns 새로운 토큰 응답
+     * @returns 새로운 토큰 응답 (Backend DTO 직접 반환)
      */
-    refresh: async (): Promise<BaseResponse<TokenResponse>> => {
+    refresh: async (): Promise<TokenResponse> => {
         const res = await client.post(endpoints.auth.refresh)
         return res.data
     }
@@ -77,7 +76,7 @@ export const refresh = authApi.refresh
  * })
  */
 export const useRefreshToken = (
-    options: MutationOptions<BaseResponse<TokenResponse>> = {}
+    options: MutationOptions<TokenResponse> = {}
 ) => {
     return useMutation({
         mutationFn: authApi.refresh,
@@ -91,9 +90,7 @@ export const useRefreshToken = (
  * 로그아웃 Hook
  * @param options - 성공/에러 콜백
  */
-export const useLogout = (
-    options: MutationOptions<BaseResponse<void>> = {}
-) => {
+export const useLogout = (options: MutationOptions<void> = {}) => {
     return useMutation({
         mutationFn: authApi.logout,
         onSuccess: options.onSuccess,

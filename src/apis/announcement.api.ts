@@ -33,7 +33,7 @@ export const announcementApi = {
      * @returns 모집글 목록
      */
     getAll: async (): Promise<PostResponse[]> => {
-        const res = await client.get(endpoints.posts.list)
+        const res = await client.get(endpoints.recruits.list)
         return (res.data as RecruitDto[]).map(mapRecruit)
     },
 
@@ -42,7 +42,7 @@ export const announcementApi = {
      * @param data - 모집글 데이터
      */
     create: async (data: PostRequest): Promise<void> => {
-        const res = await client.post(endpoints.posts.create, data)
+        const res = await client.post(endpoints.recruits.create, data)
         return res.data
     },
 
@@ -51,7 +51,7 @@ export const announcementApi = {
      * @param announcementId - 모집글 ID
      */
     close: async (announcementId: number): Promise<void> => {
-        const res = await client.post(endpoints.posts.close(announcementId))
+        const res = await client.post(endpoints.recruits.close(announcementId))
         return res.data
     },
 
@@ -60,7 +60,7 @@ export const announcementApi = {
      * @param announcementId - 모집글 ID
      */
     join: async (announcementId: number): Promise<void> => {
-        const res = await client.post(endpoints.posts.join(announcementId))
+        const res = await client.post(endpoints.recruits.join(announcementId))
         return res.data
     },
 
@@ -69,7 +69,9 @@ export const announcementApi = {
      * @param announcementId - 모집글 ID
      */
     subscribe: async (announcementId: number): Promise<void> => {
-        const res = await client.post(endpoints.posts.subscribe(announcementId))
+        const res = await client.post(
+            endpoints.subscriptions.recruit(announcementId)
+        )
         return res.data
     }
 }

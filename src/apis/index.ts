@@ -27,7 +27,6 @@ export { endpoints, api } from './endpoints'
 
 export type {
     // 공통
-    BaseResponse,
     Menu,
     LocalTime,
     MutationOptions,

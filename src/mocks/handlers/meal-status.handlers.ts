@@ -18,7 +18,7 @@ let currentMealStatus = { ...mockMealStatus }
  */
 export const mealStatusHandlers = [
     /**
-     * GET /meal-status/me - 내 식사 상태 조회
+     * GET /members/me/meal-status - 내 식사 상태 조회
      */
     http.get(`${BASE_URL}${endpoints.mealStatus.my}`, () => {
         const response: typeof api.mealStatus.Response = currentMealStatus
@@ -26,7 +26,7 @@ export const mealStatusHandlers = [
     }),
 
     /**
-     * POST /meal-status/me - 식사 상태 업데이트
+     * POST /members/me/meal-status - 식사 상태 업데이트
      */
     http.post(
         `${BASE_URL}${endpoints.mealStatus.update}`,

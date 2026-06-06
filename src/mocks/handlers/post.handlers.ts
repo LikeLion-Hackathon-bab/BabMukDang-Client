@@ -15,27 +15,31 @@ const BASE_URL = import.meta.env.VITE_SERVER_URL || ''
  */
 export const postHandlers = [
     /**
-     * GET /posts - 모집글 목록 조회
+     * GET /recruits - 모집글 목록 조회
      */
-    http.get(`${BASE_URL}${endpoints.posts.list}`, () => {
-        const response: typeof api.posts.ListResponse = mockRecruitResponses
+    http.get(`${BASE_URL}${endpoints.recruits.list}`, () => {
+        const response: typeof api.recruits.ListResponse = mockRecruitResponses
         return HttpResponse.json(response)
     }),
 
     /**
-     * POST /posts - 모집글 생성
+     * POST /recruits - 모집글 생성
      */
-    http.post(`${BASE_URL}${endpoints.posts.create}`, async ({ request }) => {
-        const body = (await request.json()) as typeof api.posts.CreateRequest
-        console.log('[MSW] 모집글 생성:', body)
+    http.post(
+        `${BASE_URL}${endpoints.recruits.create}`,
+        async ({ request }) => {
+            const body =
+                (await request.json()) as typeof api.recruits.CreateRequest
+            console.log('[MSW] 모집글 생성:', body)
 
-        return HttpResponse.json({ created: true }, { status: 201 })
-    }),
+            return HttpResponse.json({ created: true }, { status: 201 })
+        }
+    ),
 
     /**
-     * POST /posts/:id/close - 모집글 마감
+     * POST /recruits/:id/close - 모집글 마감
      */
-    http.post(`${BASE_URL}/posts/:id/close`, ({ params }) => {
+    http.post(`${BASE_URL}/recruits/:id/close`, ({ params }) => {
         const { id } = params
         console.log(`[MSW] 모집글 마감: ${id}`)
 
@@ -43,9 +47,9 @@ export const postHandlers = [
     }),
 
     /**
-     * POST /posts/:id/join - 모집글 참여
+     * POST /recruits/:id/join - 모집글 참여
      */
-    http.post(`${BASE_URL}/posts/:id/join`, ({ params }) => {
+    http.post(`${BASE_URL}/recruits/:id/join`, ({ params }) => {
         const { id } = params
         console.log(`[MSW] 모집글 참여: ${id}`)
 
@@ -53,9 +57,9 @@ export const postHandlers = [
     }),
 
     /**
-     * POST /posts/:id/subscribe - 모집글 구독
+     * POST /subscriptions/recruits/:id - 모집글 구독
      */
-    http.post(`${BASE_URL}/posts/:id/subscribe`, ({ params }) => {
+    http.post(`${BASE_URL}/subscriptions/recruits/:id`, ({ params }) => {
         const { id } = params
         console.log(`[MSW] 모집글 구독: ${id}`)
 

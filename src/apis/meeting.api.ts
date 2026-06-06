@@ -28,7 +28,7 @@ export const meetingApi = {
      * @returns 모임 목록 (화면 view model)
      */
     getAll: async (): Promise<MeetingResponse[]> => {
-        const res = await client.get(endpoints.meetings.list)
+        const res = await client.get(endpoints.plans.list)
         return (res.data as MeetingDto[]).map(mapMeeting)
     }
 }

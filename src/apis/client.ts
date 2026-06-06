@@ -80,7 +80,7 @@ client.interceptors.response.use(
             const {
                 accessToken: newAccessToken,
                 refreshToken: newRefreshToken
-            } = response.data.data
+            } = response.data
             setTokens({
                 accessToken: newAccessToken,
                 refreshToken: newRefreshToken

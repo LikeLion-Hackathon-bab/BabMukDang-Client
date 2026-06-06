@@ -18,7 +18,6 @@ import type {
     ArticleDetailDto,
     ArticleDetailResponse,
     ArticlePostRequest,
-    BaseResponse,
     CommentPostRequest,
     ChallengeStatusResponse,
     CouponResponse,
@@ -54,14 +53,12 @@ export const endpoints = {
     // Auth (인증)
     // =========================================================================
     auth: {
-        /** 카카오 로그인 */
-        kakaoLogin: '/auth/login/kakao',
+        /** 카카오 로그인 진입 */
+        kakaoLogin: '/auth/kakao',
         /** 로그아웃 */
         logout: '/auth/logout',
         /** 토큰 갱신 */
-        refresh: '/auth/refresh',
-        /** 온보딩 선호도 저장 */
-        onboardingPreference: '/auth/onboarding/preference'
+        refresh: '/auth/refresh'
     },
 
     // =========================================================================
@@ -83,7 +80,7 @@ export const endpoints = {
         /** 댓글 삭제 */
         deleteComment: (commentId: number) => `/articles/comments/${commentId}`,
         /** 특정 작성자의 게시글 */
-        byAuthor: (authorId: number) => `/articles?authorId=${authorId}`,
+        byAuthor: (authorId: number) => `/articles/by-author/${authorId}`,
         /** 특정 멤버의 게시글 */
         byMember: (memberId: number) => `/members/${memberId}/articles`,
         /** 내 게시글 */
@@ -107,19 +104,26 @@ export const endpoints = {
     },
 
     // =========================================================================
-    // Posts (모집글/공지)
+    // Recruits (모집글/공지)
     // =========================================================================
-    posts: {
+    recruits: {
         /** 모집글 목록 */
-        list: '/posts',
+        list: '/recruits',
         /** 모집글 생성 */
-        create: '/posts',
+        create: '/recruits',
         /** 모집글 마감 */
-        close: (id: number) => `/posts/${id}/close`,
+        close: (id: number) => `/recruits/${id}/close`,
         /** 모집글 참여 */
-        join: (id: number) => `/posts/${id}/join`,
+        join: (id: number) => `/recruits/${id}/join`
+    },
+
+    // =========================================================================
+    // Subscriptions (구독)
+    // =========================================================================
+    subscriptions: {
         /** 모집글 구독 (알림) */
-        subscribe: (id: number) => `/posts/${id}/subscribe`
+        recruit: (recruitId: number) =>
+            `/subscriptions/recruits/${recruitId}`
     },
 
     // =========================================================================
@@ -137,11 +141,11 @@ export const endpoints = {
     },
 
     // =========================================================================
-    // Meetings (모임)
+    // Plans (모임)
     // =========================================================================
-    meetings: {
+    plans: {
         /** 모임 목록 */
-        list: '/meetings'
+        list: '/plans'
     },
 
     // =========================================================================
@@ -156,6 +160,8 @@ export const endpoints = {
     // Preferences (선호도)
     // =========================================================================
     preferences: {
+        /** 온보딩 선호도 저장 */
+        onboarding: '/preferences/onboarding',
         /** 내 선호도 요약 */
         mySummary: '/preferences/me',
         /** 내 선호도 메타 정보 */
@@ -167,17 +173,17 @@ export const endpoints = {
     // =========================================================================
     mealStatus: {
         /** 내 식사 상태 조회 */
-        my: '/meal-status/me',
+        my: '/members/me/meal-status',
         /** 식사 상태 업데이트 */
-        update: '/meal-status/me'
+        update: '/members/me/meal-status'
     },
 
     // =========================================================================
-    // Challenge (챌린지)
+    // Challenges (챌린지)
     // =========================================================================
-    challenge: {
+    challenges: {
         /** 챌린지 상태 조회 */
-        status: '/challenge/status'
+        me: '/challenges/me'
     },
 
     // =========================================================================
@@ -205,8 +211,8 @@ export const endpoints = {
  */
 export const api = {
     auth: {
-        /** 토큰 갱신 응답 */
-        RefreshResponse: {} as BaseResponse<TokenResponse>,
+        /** 토큰 갱신 응답 (Backend DTO) */
+        RefreshResponse: {} as TokenResponse,
         /** 온보딩 선호도 요청 */
         OnboardingRequest: {} as OnboardingPreferenceRequest
     },
@@ -230,7 +236,7 @@ export const api = {
         /** 프로필 수정 요청 */
         UpdateRequest: {} as UpdateProfileRequest
     },
-    posts: {
+    recruits: {
         /** 모집글 목록 응답 */
         ListResponse: {} as RecruitDto[],
         /** 모집글 생성 요청 */
@@ -248,7 +254,7 @@ export const api = {
         /** 식사 상태 업데이트 요청 */
         UpdateRequest: {} as UpdateMealStatusRequest
     },
-    challenge: {
+    challenges: {
         /** 챌린지 상태 응답 */
         StatusResponse: {} as ChallengeStatusResponse
     },
