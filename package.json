@@ -6,8 +6,14 @@
     "scripts": {
         "dev": "vite",
         "build": "tsc -b && vite build",
+        "type-check": "tsc -b --noEmit",
         "lint": "eslint .",
         "preview": "vite preview",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage",
+        "test:e2e": "playwright test",
+        "test:e2e:headed": "playwright test --headed",
         "storybook": "storybook dev -p 6006",
         "build-storybook": "storybook build"
     },

@@ -1,0 +1,99 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-build:
+    name: Lint & Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: BabMukDang-Client
+
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/BabMukDang-Shared
+          path: BabMukDang-Shared
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: BabMukDang-Client/package-lock.json
+
+      - name: Shared 패키지 빌드
+        working-directory: BabMukDang-Shared
+        run: npm ci && npm run build
+
+      - name: Client 의존성 설치
+        working-directory: BabMukDang-Client
+        run: npm ci
+
+      - name: Type check
+        working-directory: BabMukDang-Client
+        run: npm run type-check
+
+      - name: Lint
+        working-directory: BabMukDang-Client
+        run: npm run lint
+
+      - name: Build
+        working-directory: BabMukDang-Client
+        run: npm run build
+
+  e2e:
+    name: E2E (Playwright)
+    runs-on: ubuntu-latest
+    needs: lint-build
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: BabMukDang-Client
+
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/BabMukDang-Shared
+          path: BabMukDang-Shared
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: BabMukDang-Client/package-lock.json
+
+      - name: Shared 패키지 빌드
+        working-directory: BabMukDang-Shared
+        run: npm ci && npm run build
+
+      - name: Client 의존성 설치
+        working-directory: BabMukDang-Client
+        run: npm ci
+
+      - name: Playwright 브라우저 설치
+        working-directory: BabMukDang-Client
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E 테스트 (MSW 모드)
+        working-directory: BabMukDang-Client
+        env:
+          VITE_USE_MSW: "true"
+          VITE_SERVER_URL: http://localhost:3000
+          VITE_WEBSOCKET_URL: http://localhost:3000
+        run: npm run test:e2e
+
+      - name: Playwright 리포트 업로드
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: BabMukDang-Client/playwright-report/
+          retention-days: 7
