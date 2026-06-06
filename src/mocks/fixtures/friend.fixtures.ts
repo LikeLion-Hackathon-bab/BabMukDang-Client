@@ -5,7 +5,12 @@
  * mockData.ts에서 마이그레이션됨
  */
 
-import type { FriendMealResponse } from '@/apis'
+import type {
+    FriendBlockItemResponse,
+    FriendListItemResponse,
+    FriendMealResponse,
+    FriendRequestItemResponse
+} from '@/apis'
 
 /**
  * 친구 식사 상태 응답 mock 데이터 목록
@@ -67,3 +72,52 @@ export const mockFedFriends = mockFriendMealResponses.filter(f => !f.hungry)
 
 // 하위 호환성을 위한 별칭
 export const MockFriendList = mockFriendMealResponses
+
+/**
+ * 내 친구 목록 mock (GET /friends/me)
+ */
+export const mockFriendListItems: FriendListItemResponse[] =
+    mockFriendMealResponses.map((friend, index) => ({
+        memberId: friend.memberId,
+        userName: friend.userName,
+        profileImageUrl: friend.profileImageUrl,
+        friendSince: `2025-0${(index % 9) + 1}-01T00:00:00.000Z`
+    }))
+
+/**
+ * 차단 목록 mock (GET /friends/blocks/me)
+ */
+export const mockFriendBlocks: FriendBlockItemResponse[] = [
+    {
+        memberId: 99,
+        userName: '차단된사용자',
+        profileImageUrl: '',
+        blockedAt: '2025-05-01T00:00:00.000Z'
+    }
+]
+
+/**
+ * 받은 친구 요청 mock (GET /friends/requests/incoming)
+ */
+export const mockIncomingFriendRequests: FriendRequestItemResponse[] = [
+    {
+        requestId: 1001,
+        requester: {
+            memberId: 7,
+            userName: '정우진',
+            profileImageUrl: ''
+        },
+        recipient: {
+            memberId: 1,
+            userName: '유가은',
+            profileImageUrl: ''
+        },
+        status: 'PENDING',
+        requestedAt: '2025-06-01T09:00:00.000Z'
+    }
+]
+
+/**
+ * 보낸 친구 요청 mock (GET /friends/requests/outgoing)
+ */
+export const mockOutgoingFriendRequests: FriendRequestItemResponse[] = []

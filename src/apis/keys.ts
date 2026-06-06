@@ -96,7 +96,17 @@ export const queryKeys = {
         /** 모든 친구 쿼리의 기본 키 */
         all: ['friends'] as const,
         /** 친구들의 식사 상태 */
-        meals: (filter: string) => ['friends', 'meals', filter] as const
+        meals: (filter: string) => ['friends', 'meals', filter] as const,
+        /** 내 친구 목록 */
+        list: ['friends', 'list'] as const,
+        /** 친구 검색 */
+        search: (keyword: string) => ['friends', 'search', keyword] as const,
+        /** 차단 목록 */
+        blocks: ['friends', 'blocks'] as const,
+        /** 받은 친구 요청 */
+        requestsIncoming: ['friends', 'requests', 'incoming'] as const,
+        /** 보낸 친구 요청 */
+        requestsOutgoing: ['friends', 'requests', 'outgoing'] as const
     },
 
     /**

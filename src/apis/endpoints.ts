@@ -153,7 +153,33 @@ export const endpoints = {
     // =========================================================================
     friends: {
         /** 친구들의 식사 상태 */
-        meals: '/friends/me/meals'
+        meals: '/friends/me/meals',
+        /** 내 친구 목록 */
+        list: '/friends/me',
+        /** 내 친구 검색 */
+        search: '/friends/search',
+        /** 친구 삭제 */
+        remove: (memberId: number) => `/friends/${memberId}`,
+        /** 차단 목록 */
+        blocks: '/friends/blocks/me',
+        /** 차단 */
+        block: (memberId: number) => `/friends/blocks/${memberId}`,
+        /** 차단 해제 */
+        unblock: (memberId: number) => `/friends/blocks/${memberId}`,
+        /** 받은 친구 요청 */
+        requestsIncoming: '/friends/requests/incoming',
+        /** 보낸 친구 요청 */
+        requestsOutgoing: '/friends/requests/outgoing',
+        /** 친구 요청 생성 */
+        sendRequest: (memberId: number) => `/friends/requests/${memberId}`,
+        /** 친구 요청 수락 */
+        acceptRequest: (requestId: number) =>
+            `/friends/requests/${requestId}/accept`,
+        /** 친구 요청 거절 */
+        rejectRequest: (requestId: number) =>
+            `/friends/requests/${requestId}/reject`,
+        /** 친구 요청 취소 */
+        cancelRequest: (requestId: number) => `/friends/requests/${requestId}`
     },
 
     // =========================================================================

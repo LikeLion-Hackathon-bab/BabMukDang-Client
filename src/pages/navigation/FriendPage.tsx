@@ -8,40 +8,9 @@ import { FriendInviteButton } from '@/components/features/friend/FriendInviteBut
 import { useEffect, useState } from 'react'
 import { useHeaderStore } from '@/store/headerStore'
 import { INVITATION_FILTER_LIST } from '@/constants/filters'
-import { Friend } from '@/components/features/friend/FriendListSection'
 import { FriendSearchInput } from '@/components/features/friend/FriendSearchInput'
+import { useAllFriendMeals } from '@/apis'
 
-// TODO: fixture 제거
-const friendFixture: Friend[] = [
-    {
-        memberId: 1,
-        userName: '김철수',
-        profileImageUrl: '',
-        hungry: true,
-        label: '밥이 먹고싶어요'
-    },
-    {
-        memberId: 2,
-        userName: '김영희',
-        profileImageUrl: '',
-        hungry: false,
-        label: '밥이 먹고싶어요'
-    },
-    {
-        memberId: 3,
-        userName: '김민수',
-        profileImageUrl: '',
-        hungry: true,
-        label: '밥이 먹고싶어요'
-    },
-    {
-        memberId: 4,
-        userName: '김민희',
-        profileImageUrl: '',
-        hungry: false,
-        label: '밥이 먹고싶어요'
-    }
-]
 export function FriendPage() {
     /**
      * Header Store
@@ -57,15 +26,14 @@ export function FriendPage() {
     }, [])
 
     /**
-     * Friend List
+     * Friend List (식사 상태 기준 친구 목록: GET /friends/me/meals)
      */
-    // TODO: Friend List API Call
-    const [friendList, setFriendList] = useState<Friend[]>(friendFixture)
-    const handleSearch = (search: string) => {
-        setFriendList(
-            friendList.filter(friend => friend.userName.includes(search))
-        )
-    }
+    const { data: friendMeals } = useAllFriendMeals()
+    const [keyword, setKeyword] = useState('')
+    const friendList = (friendMeals ?? []).filter(friend =>
+        friend.userName.includes(keyword)
+    )
+    const handleSearch = (search: string) => setKeyword(search)
 
     const [activeFilter, setActiveFilter] = useState<{
         key: string

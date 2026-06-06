@@ -14,8 +14,12 @@ import type {
     CommentResponseDto as SharedCommentResponseDto,
     CouponResponse as SharedCouponResponse,
     CouponType as SharedCouponType,
+    FriendBlockItemResponse as SharedFriendBlockItemResponse,
+    FriendListItemResponse as SharedFriendListItemResponse,
     FriendMealFilter as SharedFriendMealFilter,
     FriendMealItemResponse,
+    FriendRequestItemResponse as SharedFriendRequestItemResponse,
+    FriendRequestStatus as SharedFriendRequestStatus,
     InvitationPostRequest as SharedInvitationPostRequest,
     InvitationResponse as SharedInvitationResponse,
     KakaoRestaurantResponseDto as SharedKakaoRestaurantResponseDto,
@@ -420,6 +424,11 @@ export interface FriendMealFilter {
     filter: SharedFriendMealFilter
 }
 export type FriendMealListResponse = FriendMealItemResponse[]
+
+export type FriendListItemResponse = SharedFriendListItemResponse
+export type FriendBlockItemResponse = SharedFriendBlockItemResponse
+export type FriendRequestItemResponse = SharedFriendRequestItemResponse
+export type FriendRequestStatus = SharedFriendRequestStatus
 
 // ============================================================================
 // 식사 상태 (Meal Status) 관련 타입

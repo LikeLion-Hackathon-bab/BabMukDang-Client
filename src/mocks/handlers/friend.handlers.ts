@@ -6,13 +6,29 @@
 
 import { http, HttpResponse } from 'msw'
 import { endpoints } from '@/apis'
+import type { FriendRequestItemResponse } from '@/apis'
 import {
     mockFriendMealResponses,
     mockHungryFriends,
-    mockFedFriends
+    mockFedFriends,
+    mockFriendListItems,
+    mockFriendBlocks,
+    mockIncomingFriendRequests,
+    mockOutgoingFriendRequests
 } from '@/mocks/fixtures'
 
 const BASE_URL = import.meta.env.VITE_SERVER_URL || ''
+
+const makeRequest = (
+    requestId: number,
+    status: FriendRequestItemResponse['status']
+): FriendRequestItemResponse => ({
+    requestId,
+    requester: { memberId: 1, userName: '유가은', profileImageUrl: '' },
+    recipient: { memberId: 2, userName: '서은우', profileImageUrl: '' },
+    status,
+    requestedAt: new Date().toISOString()
+})
 
 /**
  * Friend 관련 MSW request handlers
@@ -34,5 +50,102 @@ export const friendHandlers = [
         }
 
         return HttpResponse.json(data)
+    }),
+
+    /**
+     * GET /friends/me - 내 친구 목록
+     */
+    http.get(`${BASE_URL}${endpoints.friends.list}`, () => {
+        return HttpResponse.json(mockFriendListItems)
+    }),
+
+    /**
+     * GET /friends/search - 친구 검색
+     */
+    http.get(`${BASE_URL}${endpoints.friends.search}`, ({ request }) => {
+        const keyword = new URL(request.url).searchParams.get('keyword') ?? ''
+        const data = mockFriendListItems.filter(friend =>
+            friend.userName.includes(keyword)
+        )
+        return HttpResponse.json(data)
+    }),
+
+    /**
+     * GET /friends/blocks/me - 차단 목록
+     */
+    http.get(`${BASE_URL}${endpoints.friends.blocks}`, () => {
+        return HttpResponse.json(mockFriendBlocks)
+    }),
+
+    /**
+     * GET /friends/requests/incoming - 받은 친구 요청
+     */
+    http.get(`${BASE_URL}${endpoints.friends.requestsIncoming}`, () => {
+        return HttpResponse.json(mockIncomingFriendRequests)
+    }),
+
+    /**
+     * GET /friends/requests/outgoing - 보낸 친구 요청
+     */
+    http.get(`${BASE_URL}${endpoints.friends.requestsOutgoing}`, () => {
+        return HttpResponse.json(mockOutgoingFriendRequests)
+    }),
+
+    /**
+     * POST /friends/requests/:memberId - 친구 요청 생성
+     */
+    http.post(`${BASE_URL}/friends/requests/:memberId`, ({ params }) => {
+        console.log('[MSW] 친구 요청 생성:', params.memberId)
+        return HttpResponse.json(makeRequest(Date.now(), 'PENDING'))
+    }),
+
+    /**
+     * POST /friends/requests/:requestId/accept - 친구 요청 수락
+     */
+    http.post(
+        `${BASE_URL}/friends/requests/:requestId/accept`,
+        ({ params }) => {
+            const requestId = Number(params.requestId)
+            return HttpResponse.json(makeRequest(requestId, 'ACCEPTED'))
+        }
+    ),
+
+    /**
+     * POST /friends/requests/:requestId/reject - 친구 요청 거절
+     */
+    http.post(
+        `${BASE_URL}/friends/requests/:requestId/reject`,
+        ({ params }) => {
+            const requestId = Number(params.requestId)
+            return HttpResponse.json(makeRequest(requestId, 'REJECTED'))
+        }
+    ),
+
+    /**
+     * DELETE /friends/requests/:requestId - 친구 요청 취소
+     */
+    http.delete(`${BASE_URL}/friends/requests/:requestId`, () => {
+        return new HttpResponse(null, { status: 204 })
+    }),
+
+    /**
+     * POST /friends/blocks/:memberId - 멤버 차단
+     */
+    http.post(`${BASE_URL}/friends/blocks/:memberId`, () => {
+        return new HttpResponse(null, { status: 204 })
+    }),
+
+    /**
+     * DELETE /friends/blocks/:memberId - 차단 해제
+     */
+    http.delete(`${BASE_URL}/friends/blocks/:memberId`, () => {
+        return new HttpResponse(null, { status: 204 })
+    }),
+
+    /**
+     * DELETE /friends/:memberId - 친구 삭제
+     */
+    http.delete(`${BASE_URL}/friends/:memberId`, () => {
+        return new HttpResponse(null, { status: 204 })
     })
 ]

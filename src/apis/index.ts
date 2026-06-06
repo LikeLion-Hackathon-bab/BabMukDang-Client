@@ -73,6 +73,10 @@ export type {
     FriendMealResponse,
     FriendMealFilter,
     FriendMealListResponse,
+    FriendListItemResponse,
+    FriendBlockItemResponse,
+    FriendRequestItemResponse,
+    FriendRequestStatus,
     // 식사 상태
     MealStatusAction,
     UpdateMealStatusRequest,
@@ -195,7 +199,20 @@ export {
     getFriendMeals,
     // Query hooks
     useFriendMeals,
-    useAllFriendMeals
+    useAllFriendMeals,
+    useFriends,
+    useSearchFriends,
+    useBlockedMembers,
+    useIncomingFriendRequests,
+    useOutgoingFriendRequests,
+    // Mutation hooks
+    useSendFriendRequest,
+    useAcceptFriendRequest,
+    useRejectFriendRequest,
+    useCancelFriendRequest,
+    useBlockMember,
+    useUnblockMember,
+    useRemoveFriend
 } from './friends.api'
 
 // ============================================================================
