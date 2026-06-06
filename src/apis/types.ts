@@ -14,6 +14,7 @@ import type {
     CommentResponseDto as SharedCommentResponseDto,
     CouponResponse as SharedCouponResponse,
     CouponType as SharedCouponType,
+    FoodAnalysisResultDto as SharedFoodAnalysisResultDto,
     FriendBlockItemResponse as SharedFriendBlockItemResponse,
     FriendListItemResponse as SharedFriendListItemResponse,
     FriendMealFilter as SharedFriendMealFilter,
@@ -188,6 +189,9 @@ export interface ArticleDetailResponse {
 }
 
 export type ArticlePostRequest = SharedArticlePostRequestDto
+
+/** 디바이스 음식 분석 결과 (ArticlePostRequest의 optional foodAnalysis) */
+export type FoodAnalysisResultDto = SharedFoodAnalysisResultDto
 
 export type LikePostResponse = SharedLikePostResponseDto
 

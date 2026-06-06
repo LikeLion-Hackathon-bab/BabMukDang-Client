@@ -37,6 +37,7 @@ export type {
     ArticleDetailDto,
     ArticleDetailResponse,
     ArticlePostRequest,
+    FoodAnalysisResultDto,
     RestaurantInfo,
     KakaoRestaurantResponse,
     PageArticleSummaryDto,
