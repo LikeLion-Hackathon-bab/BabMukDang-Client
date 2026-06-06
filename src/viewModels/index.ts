@@ -6,3 +6,4 @@
  */
 
 export type { MeetingCardView, MeetingHeaderView } from './meeting'
+export type { PostCardView } from './post'

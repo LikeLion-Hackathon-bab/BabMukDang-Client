@@ -1,43 +1,11 @@
-import { PostCardContent, PostCardHeader, PostCardFooter } from '@/components'
-import { useLikeArticle } from '@/apis'
-import { useNavigate } from 'react-router-dom'
-import { MealTimeText } from '@/constants/post'
-type Post = {
-    articleId: number
-    authorId: number
-    authorUsername: string
-    imageUrl: string
-    mealDate: string
-    mealTime: string
-    restaurantName: RestaurantInfo
-    likeCount: number
-    commentCount: number
-    likedByMe: boolean
-    createdAt: string
-    expiresAt: string
-    taggedMemberIds: number[]
-}
-
-type RestaurantInfo = {
-    placeId: string
-    placeName: string
-    addressName: string
-    roadAddressName: string
-    phoneNumber: string
-    placeUrl: string
-    distance?: string
-    categoryGroupCode: string
-    categoryGroupName: string
-    categoryName: string
-    x: number
-    y: number
-}
+import { PostCardContent, PostCardHeader } from '@/components'
+import type { PostCardView } from '@/viewModels'
 
 export function PostCard({
     post,
     isComment = false
 }: {
-    post: Post
+    post: PostCardView
     isComment?: boolean
 }) {
     return (
@@ -54,10 +22,9 @@ export function PostCard({
                 likedByMe={post.likedByMe}
                 likeCount={post.likeCount}
                 commentCount={post.commentCount}
-                mealTime={post.mealTime as MealTimeText}
+                mealTime={post.mealTime}
                 isComment={isComment}
             />
-            {/* <PostCardFooter restaurantInfo={post.restaurantName} /> */}
         </div>
     )
 }
