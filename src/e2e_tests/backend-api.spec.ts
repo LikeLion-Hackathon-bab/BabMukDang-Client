@@ -86,6 +86,70 @@ function track<T extends object>(value: T, prefix = ''): T {
 
 const ep = track(endpoints)
 
+// endpoint leaf의 접근 경로를 문자열로 표현한 타입입니다.
+// 예: 'auth.login', 'members.me', 'articles.detail'
+type LeafPath = string
+
+/**
+ * 객체를 재귀적으로 순회하면서 leaf endpoint의 경로를 수집합니다.
+ *
+ * 여기서 leaf는 더 이상 내부를 순회할 객체가 아닌 값을 의미합니다.
+ * endpoints 구조에서는 보통 문자열 endpoint 또는 함수 endpoint가 leaf입니다.
+ *
+ * 예:
+ * {
+ *   members: {
+ *     me: '/members/me',
+ *     byId: (id: number) => `/members/${id}`
+ *   }
+ * }
+ *
+ * 결과:
+ * ['members.me', 'members.byId']
+ */
+function collectLeafPaths(value: unknown, prefix = ''): LeafPath[] {
+    // 객체가 아니거나 null이면 leaf로 판단합니다.
+    // 단, 최상위 값 자체가 leaf인 경우 prefix가 비어 있을 수 있으므로
+    // prefix가 있을 때만 경로로 반환합니다.
+    if (typeof value !== 'object' || value === null) {
+        return prefix ? [prefix] : []
+    }
+
+    // 객체의 각 key/value를 순회하면서 leaf 경로를 모읍니다.
+    return Object.entries(value).flatMap(([key, v]) => {
+        // 현재 위치의 전체 경로를 만듭니다.
+        // 예: prefix가 'members'이고 key가 'me'이면 'members.me'
+        const path = prefix ? `${prefix}.${key}` : key
+
+        // value가 객체라면 아직 leaf가 아니므로 더 깊이 순회합니다.
+        if (typeof v === 'object' && v !== null) {
+            return collectLeafPaths(v, path)
+        }
+
+        // value가 문자열, 함수 등 객체가 아닌 값이면 leaf로 판단하고
+        // 현재까지 만든 경로를 반환합니다.
+        return [path]
+    })
+}
+
+/**
+ * 전체 endpoints leaf 경로 중에서 아직 사용되지 않은 경로만 반환합니다.
+ *
+ * usedEndpointPaths에는 track(endpoints)를 통해 실제로 접근된 leaf 경로가 들어 있습니다.
+ * 따라서 전체 leaf 경로에서 usedEndpointPaths에 없는 것만 필터링하면
+ * "정의되어 있지만 테스트나 코드에서 참조되지 않은 endpoint"를 찾을 수 있습니다.
+ */
+function getUnusedEndpointPaths(
+    endpoints: unknown,
+    usedEndpointPaths: Set<string>
+): string[] {
+    // 1. endpoints 전체에서 가능한 모든 leaf 경로를 수집합니다.
+    // 2. usedEndpointPaths에 없는 경로만 남깁니다.
+    return collectLeafPaths(endpoints).filter(
+        path => !usedEndpointPaths.has(path)
+    )
+}
+
 // ─── 응답 타입 레지스트리 + 헬퍼 ──────────────────────────────────────────
 //
 // `(await res.json()) as BaseResponse<Foo>` 캐스팅을 호출부마다 반복하는 대신,
@@ -1077,7 +1141,11 @@ test('POST /auth/logout → 200 또는 204', async ({ request }) => {
 test.describe('엔드포인트 커버리지', () => {
     test('endpoints.ts의 leaf 개수와 e2e에서 사용한 고유 엔드포인트 개수가 일치한다', () => {
         const totalDefined = countLeaves(endpoints)
-        console.log(usedEndpointPaths)
+        const unusedEndpointPaths = getUnusedEndpointPaths(
+            endpoints,
+            usedEndpointPaths
+        )
+        console.log(unusedEndpointPaths)
         expect(usedEndpointPaths.size).toBe(totalDefined)
     })
 })
