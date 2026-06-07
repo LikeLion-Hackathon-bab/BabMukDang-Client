@@ -58,7 +58,41 @@ export const endpoints = {
         /** 로그아웃 */
         logout: '/auth/logout',
         /** 토큰 갱신 */
-        refresh: '/auth/refresh'
+        refresh: '/auth/refresh',
+        /** 이메일 회원가입 (테스트 계정 발급용) */
+        signup: '/auth/signup',
+        /** 이메일 로그인 (테스트 계정 발급용) */
+        login: '/auth/login',
+        /** 테스트용 JWT 발급 */
+        test: '/auth/test'
+    },
+
+    // =========================================================================
+    // App (루트)
+    // =========================================================================
+    app: {
+        /** 헬스체크/루트 */
+        root: ''
+    },
+
+    // =========================================================================
+    // Onboarding (온보딩)
+    // =========================================================================
+    onboarding: {
+        /** 온보딩 정보 등록 */
+        create: '/onboarding'
+    },
+
+    // =========================================================================
+    // Referrals (추천인)
+    // =========================================================================
+    referrals: {
+        /** 추천 코드 발급 */
+        create: '/referrals',
+        /** 내 추천 코드 목록 */
+        me: '/referrals/me',
+        /** 추천 코드 사용 */
+        redeem: '/referrals/redeem'
     },
 
     // =========================================================================
@@ -67,6 +101,8 @@ export const endpoints = {
     articles: {
         /** 게시글 목록 (홈 피드) */
         home: '/articles/home',
+        /** 최근 식사 게시글 */
+        recentMeals: '/articles/meals/recent',
         /** 게시글 상세 */
         detail: (id: number) => `/articles/${id}`,
         /** 게시글 생성 */
@@ -91,6 +127,12 @@ export const endpoints = {
     // Members (프로필)
     // =========================================================================
     members: {
+        /** 내 정보 */
+        me: '/members/me',
+        /** 내 활동 요약 */
+        summary: '/members/me/summary',
+        /** 특정 멤버 정보 */
+        byId: (id: number) => `/members/${id}`,
         /** 내 프로필 */
         myProfile: '/members/me/profile',
         /** 내 프로필 상세 */
@@ -123,7 +165,9 @@ export const endpoints = {
     subscriptions: {
         /** 모집글 구독 (알림) */
         recruit: (recruitId: number) =>
-            `/subscriptions/recruits/${recruitId}`
+            `/subscriptions/recruits/${recruitId}`,
+        /** 게시물(모집글) 직접 구독 */
+        direct: (postId: number) => `/subscribe/${postId}`
     },
 
     // =========================================================================
@@ -132,6 +176,8 @@ export const endpoints = {
     invitations: {
         /** 초대 목록 */
         list: '/invitations',
+        /** 내가 받은 초대 목록 */
+        me: '/invitations/me',
         /** 초대 전송 */
         send: '/invitations/send',
         /** 초대 수락 */
@@ -145,7 +191,13 @@ export const endpoints = {
     // =========================================================================
     plans: {
         /** 모임 목록 */
-        list: '/plans'
+        list: '/plans',
+        /** 모임 생성 */
+        create: '/plans',
+        /** 진행 예정 모임 목록 */
+        uncompleted: '/plans/uncompleted',
+        /** 완료된 모임 목록 */
+        completed: '/plans/completed'
     },
 
     // =========================================================================
@@ -191,7 +243,9 @@ export const endpoints = {
         /** 내 선호도 요약 */
         mySummary: '/preferences/me',
         /** 내 선호도 메타 정보 */
-        myMeta: '/preferences/me/meta'
+        myMeta: '/preferences/me/meta',
+        /** 특정 멤버의 선호도 기반 게시글 */
+        byMember: (memberId: number) => `/preferences/members/${memberId}`
     },
 
     // =========================================================================
@@ -209,7 +263,9 @@ export const endpoints = {
     // =========================================================================
     challenges: {
         /** 챌린지 상태 조회 */
-        me: '/challenges/me'
+        me: '/challenges/me',
+        /** 챌린지 보상 수령 */
+        reward: '/challenges/me/reward'
     },
 
     // =========================================================================
