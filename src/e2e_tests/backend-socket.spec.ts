@@ -18,6 +18,7 @@
 import { expect, test } from '@playwright/test'
 import { io, type Socket } from 'socket.io-client'
 import type {
+    BaseResponse,
     ChatMessageRequestDto,
     ChatMessageResponseItem,
     ClientToServerEvents,
@@ -25,6 +26,8 @@ import type {
     DatePicksUpdateResponseDto,
     ExcludeMenuRequestDto,
     ExcludeMenuUpdateResponseDto,
+    InvitationPostRequest,
+    InvitationResponse,
     LocationCandidateAddRequestDto,
     LocationCandidateAddUpdateResponseDto,
     LocationCandidateVoteRequestDto,
@@ -76,7 +79,11 @@ function waitForEvent<K extends keyof ServerToClientEvents>(
     return new Promise((resolve, reject) => {
         const timer = setTimeout(() => {
             socket.off(event as any, handler as any)
-            reject(new Error(`[e2e] '${String(event)}' 이벤트 대기 타임아웃 (${timeoutMs}ms)`))
+            reject(
+                new Error(
+                    `[e2e] '${String(event)}' 이벤트 대기 타임아웃 (${timeoutMs}ms)`
+                )
+            )
         }, timeoutMs)
         const handler = (data: any) => {
             clearTimeout(timer)
@@ -86,10 +93,16 @@ function waitForEvent<K extends keyof ServerToClientEvents>(
     })
 }
 
-function waitForDisconnect(socket: AppSocket, timeoutMs = 10_000): Promise<void> {
+function waitForDisconnect(
+    socket: AppSocket,
+    timeoutMs = 10_000
+): Promise<void> {
     return new Promise((resolve, reject) => {
         const timer = setTimeout(
-            () => reject(new Error(`[e2e] disconnect 대기 타임아웃 (${timeoutMs}ms)`)),
+            () =>
+                reject(
+                    new Error(`[e2e] disconnect 대기 타임아웃 (${timeoutMs}ms)`)
+                ),
             timeoutMs
         )
         socket.once('disconnect', () => {
@@ -114,12 +127,16 @@ async function connectAndWaitForRoom(
     for (let i = 0; i < attempts; i++) {
         const socket = connectSocket(token)
         try {
-            const roomAssigned = await waitForEvent(socket, 'room-assigned', perAttemptTimeoutMs)
+            const roomAssigned = await waitForEvent(
+                socket,
+                'room-assigned',
+                perAttemptTimeoutMs
+            )
             return { socket, roomAssigned }
         } catch (err) {
             lastError = err
             socket.disconnect()
-            await new Promise((r) => setTimeout(r, 1_000))
+            await new Promise(r => setTimeout(r, 1_000))
         }
     }
     throw new Error(
@@ -152,22 +169,37 @@ test.beforeAll(async ({ request }) => {
     // `RoomSeedFlowService.seedInvitation`을 호출하고 매칭방이 생성된다.
     const sendRes = await request.post(url(endpoints.invitations.send), {
         headers: auth(tokenA),
-        data: { inviteeId: Number(memberIdB), message: 'E2E 소켓 테스트 초대장' }
+        data: {
+            inviteeId: Number(memberIdB),
+            message: 'E2E 소켓 테스트 초대장'
+        }
     })
     const sendBody = await readBody(sendRes)
+
     // turn-001 todo 기록(docs/todo/backend-api-e2e-response-dto-gaps.md)에 따르면
     // `POST /invitations/send` 응답은 `id`가 아니라 `invitationId` 필드를 사용한다.
-    const id = sendBody?.data?.invitationId ?? sendBody?.invitationId
+    const id = sendBody?.data ?? sendBody?.invitationId
     if (typeof id !== 'number') {
         throw new Error(
             `[e2e] POST /invitations/send 실패: status=${sendRes.status()}, body=${JSON.stringify(sendBody)}`
         )
     }
     invitationId = id
+    function decodeJwtPayload(token: string) {
+        const payload = token.split('.')[1]
+        return JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'))
+    }
 
-    const acceptRes = await request.patch(url(endpoints.invitations.accept(invitationId)), {
-        headers: auth(tokenB)
-    })
+    console.log('[e2e] tokenA payload', decodeJwtPayload(tokenA))
+    console.log('[e2e] tokenB payload', decodeJwtPayload(tokenB))
+    console.log('[e2e] memberIdA/memberIdB', memberIdA, memberIdB)
+    const acceptRes = await request.patch(
+        url(endpoints.invitations.accept(invitationId)),
+        {
+            headers: auth(tokenB)
+        }
+    )
+    console.log(acceptRes, await readBody(acceptRes))
     expect([200, 201]).toContain(acceptRes.status())
 
     // 두 사용자 모두 같은 매칭방에 접속한다 (roomId 쿼리 없이 자동 탐색).
@@ -175,6 +207,7 @@ test.beforeAll(async ({ request }) => {
         connectAndWaitForRoom(tokenA),
         connectAndWaitForRoom(tokenB)
     ])
+    console.log('접속 완료', a, b)
     socketA = a.socket
     socketB = b.socket
     roomId = a.roomAssigned.roomId
@@ -239,7 +272,7 @@ async function emitAndExpectBroadcast<
     payload: Parameters<ClientToServerEvents[ServerEvent]>[0],
     clientEvent: ClientEvent
 ): Promise<Array<Parameters<ServerToClientEvents[ClientEvent]>[0]>> {
-    const waiters = listeners.map((s) => waitForEvent(s, clientEvent))
+    const waiters = listeners.map(s => waitForEvent(s, clientEvent))
     emitter.emit(serverEvent as any, payload as any)
     return Promise.all(waiters)
 }
@@ -247,7 +280,10 @@ async function emitAndExpectBroadcast<
 test.describe('양방향 이벤트 — SocketServerEventMap 9종', () => {
     test('1) ready-state → ready-state-changed', async () => {
         const payload: ReadyStateRequestDto = { isReady: true }
-        const [resA, resB] = await emitAndExpectBroadcast<'ready-state', 'ready-state-changed'>(
+        const [resA, resB] = await emitAndExpectBroadcast<
+            'ready-state',
+            'ready-state-changed'
+        >(
             socketA,
             [socketA, socketB],
             'ready-state',
@@ -264,13 +300,10 @@ test.describe('양방향 이벤트 — SocketServerEventMap 9종', () => {
     test('2) chat-message → chat-message', async () => {
         const text = `E2E 소켓 채팅 ${Date.now()}`
         const payload: ChatMessageRequestDto = { text }
-        const [resA, resB] = await emitAndExpectBroadcast<'chat-message', 'chat-message'>(
-            socketA,
-            [socketA, socketB],
+        const [resA, resB] = await emitAndExpectBroadcast<
             'chat-message',
-            payload,
             'chat-message'
-        )
+        >(socketA, [socketA, socketB], 'chat-message', payload, 'chat-message')
         const a = resA as ChatMessageResponseItem
         const b = resB as ChatMessageResponseItem
         expect(a.text).toBe(text)
@@ -280,16 +313,13 @@ test.describe('양방향 이벤트 — SocketServerEventMap 9종', () => {
 
     test('3) pick-date → date-updated', async () => {
         const payload: DatePicksRequestDto = { dates: ['2099-12-31'] }
-        const [resA, resB] = await emitAndExpectBroadcast<'pick-date', 'date-updated'>(
-            socketA,
-            [socketA, socketB],
+        const [resA, resB] = await emitAndExpectBroadcast<
             'pick-date',
-            payload,
             'date-updated'
-        )
+        >(socketA, [socketA, socketB], 'pick-date', payload, 'date-updated')
         const a = resA as DatePicksUpdateResponseDto
         expect(Array.isArray(a)).toBe(true)
-        const mine = a.find((item) => item.userId === memberIdA)
+        const mine = a.find(item => item.userId === memberIdA)
         expect(mine?.dates).toEqual(payload.dates)
         expect(resB).toEqual(resA)
     })
@@ -305,10 +335,16 @@ test.describe('양방향 이벤트 — SocketServerEventMap 9종', () => {
         const [resA, resB] = await emitAndExpectBroadcast<
             'add-location-candidate',
             'location-add-updated'
-        >(socketA, [socketA, socketB], 'add-location-candidate', payload, 'location-add-updated')
+        >(
+            socketA,
+            [socketA, socketB],
+            'add-location-candidate',
+            payload,
+            'location-add-updated'
+        )
         const a = resA as LocationCandidateAddUpdateResponseDto
         expect(Array.isArray(a)).toBe(true)
-        const added = a.find((item) => item.id === payload.id)
+        const added = a.find(item => item.id === payload.id)
         expect(added?.placeName).toBe(payload.placeName)
         expect(added?.author).toBe(memberIdA)
         expect(resB).toEqual(resA)
@@ -325,7 +361,10 @@ test.describe('양방향 이벤트 — SocketServerEventMap 9종', () => {
             lat: 37.5,
             lng: 127.0
         }
-        await emitAndExpectBroadcast<'add-location-candidate', 'location-add-updated'>(
+        await emitAndExpectBroadcast<
+            'add-location-candidate',
+            'location-add-updated'
+        >(
             socketA,
             [socketA],
             'add-location-candidate',
@@ -336,46 +375,62 @@ test.describe('양방향 이벤트 — SocketServerEventMap 9종', () => {
         const [resA, resB] = await emitAndExpectBroadcast<
             'vote-location',
             'location-vote-updated'
-        >(socketB, [socketA, socketB], 'vote-location', payload, 'location-vote-updated')
+        >(
+            socketB,
+            [socketA, socketB],
+            'vote-location',
+            payload,
+            'location-vote-updated'
+        )
         const a = resA as LocationCandidateVoteUpdateResponseDto
         expect(Array.isArray(a)).toBe(true)
-        const voted = a.find((item) => item.locationId === payload.locationId)
+        const voted = a.find(item => item.locationId === payload.locationId)
         expect(voted?.votes).toContain(memberIdB)
         expect(resB).toEqual(resA)
     })
 
     test('6) pick-times → time-updated', async () => {
         const payload: TimePicksRequestDto = { times: ['12:00', '13:00'] }
-        const [resA, resB] = await emitAndExpectBroadcast<'pick-times', 'time-updated'>(
-            socketA,
-            [socketA, socketB],
+        const [resA, resB] = await emitAndExpectBroadcast<
             'pick-times',
-            payload,
             'time-updated'
-        )
+        >(socketA, [socketA, socketB], 'pick-times', payload, 'time-updated')
         const a = resA as TimePicksUpdateResponseDto
         expect(Array.isArray(a)).toBe(true)
-        const mine = a.find((item) => item.userId === memberIdA)
+        const mine = a.find(item => item.userId === memberIdA)
         expect(mine?.times).toEqual(payload.times)
         expect(resB).toEqual(resA)
     })
 
     test('7) exclude-menu → exclude-menu-updated', async () => {
-        const payload: ExcludeMenuRequestDto = { menu: { code: 'KOREAN', label: '한식' } }
+        const payload: ExcludeMenuRequestDto = {
+            menu: { code: 'KOREAN', label: '한식' }
+        }
         const [resA, resB] = await emitAndExpectBroadcast<
             'exclude-menu',
             'exclude-menu-updated'
-        >(socketA, [socketA, socketB], 'exclude-menu', payload, 'exclude-menu-updated')
+        >(
+            socketA,
+            [socketA, socketB],
+            'exclude-menu',
+            payload,
+            'exclude-menu-updated'
+        )
         const a = resA as ExcludeMenuUpdateResponseDto
         expect(Array.isArray(a)).toBe(true)
-        const mine = a.find((item) => item.userId === memberIdA)
-        expect(mine?.exclusions.some((m) => m.code === payload.menu.code)).toBe(true)
+        const mine = a.find(item => item.userId === memberIdA)
+        expect(mine?.exclusions.some(m => m.code === payload.menu.code)).toBe(
+            true
+        )
         expect(resB).toEqual(resA)
     })
 
     test('8) pick-menu → menu-pick-updated', async () => {
         const payload: MenuPickRequestDto = { menuCode: 'KOREAN' }
-        const [resA, resB] = await emitAndExpectBroadcast<'pick-menu', 'menu-pick-updated'>(
+        const [resA, resB] = await emitAndExpectBroadcast<
+            'pick-menu',
+            'menu-pick-updated'
+        >(
             socketA,
             [socketA, socketB],
             'pick-menu',
@@ -384,20 +439,30 @@ test.describe('양방향 이벤트 — SocketServerEventMap 9종', () => {
         )
         const a = resA as MenuPickUpdateResponseDto
         expect(Array.isArray(a)).toBe(true)
-        const picked = a.find((item) => item.menuCode === payload.menuCode)
+        const picked = a.find(item => item.menuCode === payload.menuCode)
         expect(picked?.selectedUsers).toContain(memberIdA)
         expect(resB).toEqual(resA)
     })
 
     test('9) pick-restaurant → restaurant-pick-updated', async () => {
-        const payload: RestaurantPickRequestDto = { restaurantId: 'e2e-restaurant-1' }
+        const payload: RestaurantPickRequestDto = {
+            restaurantId: 'e2e-restaurant-1'
+        }
         const [resA, resB] = await emitAndExpectBroadcast<
             'pick-restaurant',
             'restaurant-pick-updated'
-        >(socketA, [socketA, socketB], 'pick-restaurant', payload, 'restaurant-pick-updated')
+        >(
+            socketA,
+            [socketA, socketB],
+            'pick-restaurant',
+            payload,
+            'restaurant-pick-updated'
+        )
         const a = resA as RestaurantPickUpdateResponseDto
         expect(Array.isArray(a)).toBe(true)
-        const picked = a.find((item) => item.restaurantId === payload.restaurantId)
+        const picked = a.find(
+            item => item.restaurantId === payload.restaurantId
+        )
         expect(picked?.selectedUsers).toContain(memberIdA)
         expect(resB).toEqual(resA)
     })
