@@ -164,8 +164,7 @@ export const endpoints = {
     // =========================================================================
     subscriptions: {
         /** 모집글 구독 (알림) */
-        recruit: (recruitId: number) =>
-            `/subscriptions/recruits/${recruitId}`,
+        recruit: (recruitId: number) => `/subscriptions/recruits/${recruitId}`,
         /** 게시물(모집글) 직접 구독 */
         direct: (postId: number) => `/subscribe/${postId}`
     },
@@ -276,6 +275,14 @@ export const endpoints = {
         my: '/coupons/me',
         /** 쿠폰 사용 */
         use: (id: number) => `/coupons/${id}/use`
+    },
+
+    // =========================================================================
+    // Upload (업로드)
+    // =========================================================================
+    upload: {
+        presignArticle: '/uploads/presign-article',
+        presignProfile: '/uploads/presign-profile'
     }
 } as const
 

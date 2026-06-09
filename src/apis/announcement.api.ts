@@ -18,7 +18,13 @@ import { client } from './client'
 import { endpoints } from './endpoints'
 import { queryKeys } from './keys'
 import { mapRecruit } from './mappers/recruit.mapper'
-import type { MutationOptions, PostRequest, PostResponse, RecruitDto } from './types'
+import type {
+    MutationOptions,
+    PostRequest,
+    PostResponse,
+    RecruitDto
+} from './types'
+import { responses } from './responses'
 
 // ============================================================================
 // API 함수
@@ -32,56 +38,40 @@ export const announcementApi = {
      * 모집글 목록 조회
      * @returns 모집글 목록
      */
-    getAll: async (): Promise<PostResponse[]> => {
-        const res = await client.get(endpoints.recruits.list)
-        return (res.data as RecruitDto[]).map(mapRecruit)
+    getAnnouncements: async () => {
+        const data = await client.get(responses.announcements.list)
+        return data.map(mapRecruit)
     },
 
     /**
      * 모집글 작성
      * @param data - 모집글 데이터
      */
-    create: async (data: PostRequest): Promise<void> => {
-        const res = await client.post(endpoints.recruits.create, data)
-        return res.data
+    createAnnouncement: async (body: PostRequest) => {
+        return client.post(responses.announcements.create, body)
     },
-
     /**
      * 모집글 마감
      * @param announcementId - 모집글 ID
      */
-    close: async (announcementId: number): Promise<void> => {
-        const res = await client.post(endpoints.recruits.close(announcementId))
-        return res.data
+    closeAnnouncement: async (id: number) => {
+        return client.post(responses.announcements.close(id))
     },
 
     /**
      * 모집글 참여
      * @param announcementId - 모집글 ID
      */
-    join: async (announcementId: number): Promise<void> => {
-        const res = await client.post(endpoints.recruits.join(announcementId))
-        return res.data
-    },
-
-    /**
-     * 모집글 구독
-     * @param announcementId - 모집글 ID
-     */
-    subscribe: async (announcementId: number): Promise<void> => {
-        const res = await client.post(
-            endpoints.subscriptions.recruit(announcementId)
-        )
-        return res.data
+    joinAnnouncement: async (id: number) => {
+        return client.post(responses.announcements.join(id))
     }
 }
 
 // 하위 호환성을 위한 기존 함수 export
-export const getAnnouncements = announcementApi.getAll
-export const postAnnouncement = announcementApi.create
-export const closeAnnouncement = announcementApi.close
-export const joinAnnouncement = announcementApi.join
-export const subscribeAnnouncement = announcementApi.subscribe
+export const getAnnouncements = announcementApi.getAnnouncements
+export const postAnnouncement = announcementApi.createAnnouncement
+export const closeAnnouncement = announcementApi.closeAnnouncement
+export const joinAnnouncement = announcementApi.joinAnnouncement
 
 // ============================================================================
 // Query Hooks
@@ -98,7 +88,7 @@ export const subscribeAnnouncement = announcementApi.subscribe
 export const useGetAnnouncements = () => {
     const { data, isLoading, error, refetch } = useQuery({
         queryKey: queryKeys.announcements.list,
-        queryFn: announcementApi.getAll
+        queryFn: announcementApi.getAnnouncements
     })
     return { data, isLoading, error, refetch }
 }
@@ -114,7 +104,7 @@ export const useGetAnnouncements = () => {
 export const usePostAnnouncement = (options: MutationOptions = {}) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
-        mutationFn: announcementApi.create,
+        mutationFn: announcementApi.createAnnouncement,
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.announcements.all
@@ -159,25 +149,6 @@ export const useJoinAnnouncement = (options: MutationOptions = {}) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: joinAnnouncement,
-        onSuccess: () => {
-            queryClient.invalidateQueries({
-                queryKey: queryKeys.announcements.all
-            })
-            options.onSuccess?.()
-        },
-        onError: options.onError
-    })
-    return { mutate, isPending, error }
-}
-
-/**
- * 모집글 구독 Hook
- * @param options - 성공/에러 콜백
- */
-export const useSubscribeAnnouncement = (options: MutationOptions = {}) => {
-    const queryClient = useQueryClient()
-    const { mutate, isPending, error } = useMutation({
-        mutationFn: subscribeAnnouncement,
         onSuccess: () => {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.announcements.all

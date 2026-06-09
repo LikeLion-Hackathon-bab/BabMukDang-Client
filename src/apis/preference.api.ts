@@ -13,7 +13,7 @@
  */
 
 import { client } from './client'
-import { endpoints } from './endpoints'
+import { responses } from './responses'
 import type {
     OnboardingPreferenceRequest,
     PreferenceMetaResponse,
@@ -35,8 +35,7 @@ export const preferenceApi = {
     postOnboarding: async (
         data: OnboardingPreferenceRequest
     ): Promise<void> => {
-        const res = await client.post(endpoints.preferences.onboarding, data)
-        return res.data
+        return client.post(responses.preferences.onboarding, data)
     },
 
     /**
@@ -44,8 +43,7 @@ export const preferenceApi = {
      * @returns 선호도 요약 (좋아하는 음식, 싫어하는 음식, 알레르기 목록)
      */
     getSummary: async (): Promise<PreferenceSummaryResponse> => {
-        const res = await client.get(endpoints.preferences.mySummary)
-        return res.data
+        return client.get(responses.preferences.mySummary)
     },
 
     /**
@@ -53,8 +51,7 @@ export const preferenceApi = {
      * @returns 온보딩 완료 시간, 마지막 수정 시간, 리비전 번호
      */
     getMeta: async (): Promise<PreferenceMetaResponse> => {
-        const res = await client.get(endpoints.preferences.myMeta)
-        return res.data
+        return client.get(responses.preferences.myMeta)
     }
 }
 

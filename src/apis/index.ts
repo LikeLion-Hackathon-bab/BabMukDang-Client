@@ -123,7 +123,9 @@ export {
     refresh,
     // Mutation hooks
     useRefreshToken,
-    useLogout
+    useLogout,
+    useEmailLogin,
+    useEmailSignup
 } from './auth.api'
 
 // ============================================================================
@@ -152,14 +154,12 @@ export {
     postAnnouncement,
     closeAnnouncement,
     joinAnnouncement,
-    subscribeAnnouncement,
     // Query hooks
     useGetAnnouncements,
     // Mutation hooks
     usePostAnnouncement,
     useCloseAnnouncement,
-    useJoinAnnouncement,
-    useSubscribeAnnouncement
+    useJoinAnnouncement
 } from './announcement.api'
 
 // ============================================================================

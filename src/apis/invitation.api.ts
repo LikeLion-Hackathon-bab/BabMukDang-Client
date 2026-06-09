@@ -15,7 +15,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { client } from './client'
-import { endpoints } from './endpoints'
+import { responses } from './responses'
 import { queryKeys } from './keys'
 import type {
     InvitationPostRequest,
@@ -36,28 +36,23 @@ export const invitationApi = {
      * @returns 초대 목록
      */
     getAll: async (): Promise<InvitationResponse[]> => {
-        const response = await client.get(endpoints.invitations.list)
-        return response.data
+        return client.get(responses.invitations.list)
     },
 
     /**
      * 초대 전송
      * @param data - 초대 데이터 (대상자 ID, 메시지)
      */
-    send: async (data: InvitationPostRequest): Promise<void> => {
-        const response = await client.post(endpoints.invitations.send, data)
-        return response.data
+    send: async (data: InvitationPostRequest): Promise<number> => {
+        return client.post(responses.invitations.send, data)
     },
 
     /**
      * 초대 수락
      * @param invitationId - 초대 ID
      */
-    accept: async (invitationId: number): Promise<void> => {
-        const response = await client.post(
-            endpoints.invitations.accept(invitationId)
-        )
-        return response.data
+    accept: async (invitationId: number): Promise<InvitationResponse> => {
+        return client.post(responses.invitations.accept(invitationId))
     },
 
     /**
@@ -65,10 +60,7 @@ export const invitationApi = {
      * @param invitationId - 초대 ID
      */
     reject: async (invitationId: number): Promise<void> => {
-        const response = await client.post(
-            endpoints.invitations.reject(invitationId)
-        )
-        return response.data
+        return client.post(responses.invitations.reject(invitationId))
     }
 }
 

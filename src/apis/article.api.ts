@@ -15,7 +15,7 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { client } from './client'
-import { endpoints } from './endpoints'
+import { responses } from './responses'
 import { queryKeys } from './keys'
 import {
     mapArticleDetail,
@@ -23,15 +23,12 @@ import {
     mapComment
 } from './mappers/article.mapper'
 import type {
-    ArticleDetailDto,
     ArticleDetailResponse,
     ArticlePostRequest,
     CommentPostRequest,
-    CommentDto,
     CommentResponse,
     LikePostResponse,
     MutationOptions,
-    PageArticleSummaryDto,
     PageArticleSummaryResponse
 } from './types'
 
@@ -53,8 +50,8 @@ export const articleApi = {
      * @returns 게시글 상세 정보
      */
     getById: async (articleId: number): Promise<ArticleDetailResponse> => {
-        const res = await client.get(endpoints.articles.detail(articleId))
-        return mapArticleDetail(res.data as ArticleDetailDto)
+        const data = await client.get(responses.articles.detail(articleId))
+        return mapArticleDetail(data)
     },
 
     /**
@@ -63,8 +60,8 @@ export const articleApi = {
      * @returns 댓글 목록
      */
     getComments: async (articleId: number): Promise<CommentResponse[]> => {
-        const res = await client.get(endpoints.articles.comments(articleId))
-        return (res.data as CommentDto[]).map(mapComment)
+        const data = await client.get(responses.articles.comments(articleId))
+        return data.map(mapComment)
     },
 
     /**
@@ -72,8 +69,8 @@ export const articleApi = {
      * @returns 홈 피드 게시글 페이지
      */
     getHome: async (): Promise<PageArticleSummaryResponse> => {
-        const res = await client.get(endpoints.articles.home)
-        return mapArticlePage(res.data as PageArticleSummaryDto)
+        const data = await client.get(responses.articles.home)
+        return mapArticlePage(data)
     },
 
     /**
@@ -84,8 +81,8 @@ export const articleApi = {
     getByAuthor: async (
         authorId: number
     ): Promise<PageArticleSummaryResponse> => {
-        const res = await client.get(endpoints.articles.byAuthor(authorId))
-        return mapArticlePage(res.data as PageArticleSummaryDto)
+        const data = await client.get(responses.articles.byAuthor(authorId))
+        return mapArticlePage(data)
     },
 
     /**
@@ -96,10 +93,10 @@ export const articleApi = {
     getByMember: async (
         memberId: number
     ): Promise<PageArticleSummaryResponse> => {
-        const res = await client.get(endpoints.articles.byMember(memberId), {
+        const data = await client.get(responses.articles.byMember(memberId), {
             params: { page: 0 }
         })
-        return mapArticlePage(res.data as PageArticleSummaryDto)
+        return mapArticlePage(data)
     },
 
     /**
@@ -107,20 +104,18 @@ export const articleApi = {
      * @returns 내 게시글 페이지
      */
     getMy: async (): Promise<PageArticleSummaryResponse> => {
-        const res = await client.get(endpoints.articles.my, {
+        const data = await client.get(responses.articles.my, {
             params: { page: 0 }
         })
-        return mapArticlePage(res.data as PageArticleSummaryDto)
+        return mapArticlePage(data)
     },
 
     /**
      * 게시글 생성
      * @param data - 게시글 작성 데이터
      */
-    create: async (data: ArticlePostRequest): Promise<void> => {
-        console.log(data)
-        const res = await client.post(endpoints.articles.create, data)
-        return res.data as void
+    create: async (data: ArticlePostRequest): Promise<{ id: number }> => {
+        return client.post(responses.articles.create, data)
     },
 
     /**
@@ -129,8 +124,7 @@ export const articleApi = {
      * @returns 좋아요 상태
      */
     like: async (articleId: number): Promise<LikePostResponse> => {
-        const res = await client.post(endpoints.articles.like(articleId))
-        return res.data
+        return client.post(responses.articles.like(articleId))
     },
 
     /**
@@ -141,12 +135,8 @@ export const articleApi = {
     createComment: async (
         articleId: number,
         data: CommentPostRequest
-    ): Promise<void> => {
-        const res = await client.post(
-            endpoints.articles.comments(articleId),
-            data
-        )
-        return res.data as void
+    ): Promise<{ id: number }> => {
+        return client.post(responses.articles.createComment(articleId), data)
     },
 
     /**
@@ -154,8 +144,7 @@ export const articleApi = {
      * @param articleId - 게시글 ID
      */
     delete: async (articleId: number): Promise<void> => {
-        const res = await client.delete(endpoints.articles.delete(articleId))
-        return res.data
+        return client.delete(responses.articles.delete(articleId))
     },
 
     /**
@@ -163,10 +152,7 @@ export const articleApi = {
      * @param commentId - 댓글 ID
      */
     deleteComment: async (commentId: number): Promise<void> => {
-        const res = await client.delete(
-            `/articles/comments/${commentId}` // TODO: endpoints에 추가
-        )
-        return res.data as void
+        return client.delete(responses.articles.deleteComment(commentId))
     }
 }
 

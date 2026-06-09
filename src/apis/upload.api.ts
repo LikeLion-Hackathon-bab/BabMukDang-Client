@@ -12,6 +12,7 @@
 
 import { useMutation } from '@tanstack/react-query'
 import { client } from './client'
+import { responses } from './responses'
 import type { MutationOptions } from './types'
 
 // ============================================================================
@@ -69,12 +70,13 @@ export const uploadApi = {
         currentUserId: string,
         file: File
     ): Promise<PresignResponse> => {
-        const { key, putUrl, cdnUrl } = await client
-            .post('/uploads/presign-article', {
+        const { key, putUrl, cdnUrl } = await client.post(
+            responses.upload.presignArticle,
+            {
                 userId: currentUserId,
                 contentType: file.type
-            })
-            .then(res => res.data)
+            }
+        )
         return { key, putUrl, cdnUrl }
     },
 
@@ -88,12 +90,13 @@ export const uploadApi = {
         currentUserId: string,
         file: File
     ): Promise<PresignResponse> => {
-        const { key, putUrl, cdnUrl } = await client
-            .post('/uploads/presign-profile', {
+        const { key, putUrl, cdnUrl } = await client.post(
+            responses.upload.presignProfile,
+            {
                 userId: currentUserId,
                 contentType: file.type
-            })
-            .then(res => res.data)
+            }
+        )
         return { key, putUrl, cdnUrl }
     },
 

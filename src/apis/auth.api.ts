@@ -14,6 +14,17 @@ import { useMutation } from '@tanstack/react-query'
 import { client } from './client'
 import { endpoints } from './endpoints'
 import type { MutationOptions, TokenResponse } from './types'
+import { responses } from './responses'
+import { useAuthStore } from '@/store'
+
+import axios from 'axios'
+import { unwrapBaseResponse } from './client'
+import { BaseResponse } from '@kimdaegyu/babmukdang-shared'
+
+type EmailAuthRequest = {
+    email: string
+    password: string
+}
 
 // ============================================================================
 // API 함수
@@ -27,9 +38,23 @@ export const authApi = {
      * 카카오 로그인 시작
      * @returns 토큰 응답
      */
-    login: async (): Promise<TokenResponse> => {
-        const res = await client.get(endpoints.auth.kakaoLogin)
-        return res.data
+    login: async () => {
+        // const res = await client.get(endpoints.auth.kakaoLogin)
+        // return res.data
+        window.location.href = 'http://localhost:3000/api/v1/auth/kakao'
+    },
+
+    emailLogin: async ({ email }: EmailAuthRequest): Promise<TokenResponse> => {
+        return client.post(responses.auth.login, { email })
+    },
+
+    emailSignup: async ({
+        email,
+        password
+    }: EmailAuthRequest): Promise<TokenResponse> => {
+        const username = email.split('@')[0] || email
+        await client.post(responses.auth.signup, { email, username, password })
+        return authApi.emailLogin({ email, password })
     },
 
     /**
@@ -37,8 +62,7 @@ export const authApi = {
      * @returns 성공 응답
      */
     logout: async (): Promise<void> => {
-        const res = await client.post(endpoints.auth.logout)
-        return res.data
+        return client.post(responses.auth.logout)
     },
 
     /**
@@ -46,13 +70,20 @@ export const authApi = {
      * @returns 새로운 토큰 응답 (Backend DTO 직접 반환)
      */
     refresh: async (): Promise<TokenResponse> => {
-        const res = await client.post(endpoints.auth.refresh)
-        return res.data
+        // 무한 루프 방지를 위해 인터셉터가 없는 axios 직접 사용
+        const res = await axios.post<BaseResponse<TokenResponse>>(
+            `${import.meta.env.VITE_SERVER_URL}${endpoints.auth.refresh}`,
+            {},
+            { withCredentials: true }
+        )
+        return unwrapBaseResponse(res.data)
     }
 }
 
 // 기존 함수 export 유지 (하위 호환성)
 export const login = authApi.login
+export const emailLogin = authApi.emailLogin
+export const emailSignup = authApi.emailSignup
 export const logout = authApi.logout
 export const refresh = authApi.refresh
 
@@ -75,14 +106,64 @@ export const refresh = authApi.refresh
  *   }
  * })
  */
-export const useRefreshToken = (
-    options: MutationOptions<TokenResponse> = {}
-) => {
+export const useRefreshToken = (options?: MutationOptions<TokenResponse>) => {
+    const { setTokens, clearTokens, accessToken } = useAuthStore()
+
     return useMutation({
         mutationFn: authApi.refresh,
-        onSuccess: options.onSuccess,
-        onError: options.onError,
-        onSettled: options.onSettled
+        onSuccess: data => {
+            setTokens(data)
+            console.log('Token Saved ', accessToken)
+            options?.onSuccess?.(data)
+        },
+        onError: error => {
+            clearTokens()
+            console.log(error)
+            options?.onError?.(
+                error instanceof Error
+                    ? error
+                    : new Error('Token refresh failed')
+            )
+        },
+        onSettled: options?.onSettled
+    })
+}
+
+export const useEmailLogin = (options?: MutationOptions<TokenResponse>) => {
+    const { setTokens, clearTokens } = useAuthStore()
+
+    return useMutation({
+        mutationFn: authApi.emailLogin,
+        onSuccess: data => {
+            setTokens(data)
+            options?.onSuccess?.(data)
+        },
+        onError: error => {
+            clearTokens()
+            options?.onError?.(
+                error instanceof Error ? error : new Error('Email login failed')
+            )
+        },
+        onSettled: options?.onSettled
+    })
+}
+
+export const useEmailSignup = (options?: MutationOptions<TokenResponse>) => {
+    const { setTokens, clearTokens } = useAuthStore()
+
+    return useMutation({
+        mutationFn: authApi.emailSignup,
+        onSuccess: data => {
+            setTokens(data)
+            options?.onSuccess?.(data)
+        },
+        onError: error => {
+            clearTokens()
+            options?.onError?.(
+                error instanceof Error ? error : new Error('Email signup failed')
+            )
+        },
+        onSettled: options?.onSettled
     })
 }
 
@@ -91,9 +172,14 @@ export const useRefreshToken = (
  * @param options - 성공/에러 콜백
  */
 export const useLogout = (options: MutationOptions<void> = {}) => {
+    const { logout: clearAuthState } = useAuthStore()
+
     return useMutation({
         mutationFn: authApi.logout,
-        onSuccess: options.onSuccess,
+        onSuccess: data => {
+            clearAuthState()
+            options.onSuccess?.(data)
+        },
         onError: options.onError
     })
 }

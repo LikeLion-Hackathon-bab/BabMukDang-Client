@@ -15,12 +15,11 @@
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { client } from './client'
-import { endpoints } from './endpoints'
+import { responses } from './responses'
 import { queryKeys } from './keys'
 import { mapProfile } from './mappers/profile.mapper'
 import type {
     MutationOptions,
-    ProfileDto,
     ProfileResponse,
     ProfileDetailResponse,
     UpdateProfileRequest
@@ -39,8 +38,8 @@ export const profileApi = {
      * @returns 프로필 정보 (화면 view model)
      */
     getMyProfile: async (): Promise<ProfileResponse> => {
-        const res = await client.get(endpoints.members.myProfile)
-        return mapProfile(res.data as ProfileDto)
+        const data = await client.get(responses.profile.myProfile)
+        return mapProfile(data)
     },
 
     /**
@@ -48,8 +47,7 @@ export const profileApi = {
      * @returns 프로필 상세 정보 (선호도 포함)
      */
     getMyProfileDetail: async (): Promise<ProfileDetailResponse> => {
-        const res = await client.get(endpoints.members.myProfileDetail)
-        return res.data as ProfileDetailResponse
+        return client.get(responses.profile.myProfileDetail)
     },
 
     /**
@@ -58,8 +56,8 @@ export const profileApi = {
      * @returns 프로필 정보 (화면 view model)
      */
     getMemberProfile: async (memberId: number): Promise<ProfileResponse> => {
-        const res = await client.get(endpoints.members.profile(memberId))
-        return mapProfile(res.data as ProfileDto)
+        const data = await client.get(responses.profile.member(memberId))
+        return mapProfile(data)
     },
 
     /**
@@ -70,8 +68,7 @@ export const profileApi = {
     getMemberProfileDetail: async (
         memberId: number
     ): Promise<ProfileDetailResponse> => {
-        const res = await client.get(endpoints.members.profileDetail(memberId))
-        return res.data as ProfileDetailResponse
+        return client.get(responses.profile.memberDetail(memberId))
     },
 
     /**
@@ -82,8 +79,11 @@ export const profileApi = {
     updateMyProfile: async (
         data: UpdateProfileRequest
     ): Promise<ProfileResponse> => {
-        const res = await client.patch(endpoints.members.updateProfile, data)
-        return mapProfile(res.data as ProfileDto)
+        const profile = await client.patch(
+            responses.profile.updateProfile,
+            data
+        )
+        return mapProfile(profile)
     }
 }
 
@@ -99,10 +99,11 @@ export const profileApi = {
  * const { data: profile } = useGetMyProfile()
  * console.log(profile?.data.userName)
  */
-export const useGetMyProfile = () => {
+export const useGetMyProfile = (options?: { enabled?: boolean }) => {
     return useQuery({
         queryKey: queryKeys.profile.my,
-        queryFn: profileApi.getMyProfile
+        queryFn: profileApi.getMyProfile,
+        enabled: options?.enabled ?? true
     })
 }
 

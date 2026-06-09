@@ -24,6 +24,7 @@ import type {
     FriendRequestItemResponse,
     MutationOptions
 } from './types'
+import { responses } from './responses'
 
 // ============================================================================
 // API 함수
@@ -32,145 +33,62 @@ import type {
 /**
  * Friends API 함수 모음
  */
+
 export const friendsApi = {
-    /**
-     * 친구들의 식사 상태 조회
-     * @param filter - 필터 옵션 (기본값: 'ALL')
-     * @returns 친구들의 식사 상태 목록
-     */
-    getMeals: async (
-        filter: FriendMealFilter['filter'] = 'ALL'
-    ): Promise<FriendMealListResponse> => {
-        const response = await client.get<FriendMealListResponse>(
-            endpoints.friends.meals,
-            { params: { filter } }
-        )
-        return response.data
+    getMeals: async (filter: FriendMealFilter['filter'] = 'ALL') => {
+        return client.get(responses.friends.meals, {
+            params: { filter }
+        })
     },
 
-    /**
-     * 내 친구 목록 조회
-     */
-    getFriends: async (): Promise<FriendListItemResponse[]> => {
-        const res = await client.get<FriendListItemResponse[]>(
-            endpoints.friends.list
-        )
-        return res.data
+    getFriends: async () => {
+        return client.get(responses.friends.list)
     },
 
-    /**
-     * 내 친구 검색
-     * @param keyword - 검색 키워드
-     */
-    searchFriends: async (
-        keyword: string
-    ): Promise<FriendListItemResponse[]> => {
-        const res = await client.get<FriendListItemResponse[]>(
-            endpoints.friends.search,
-            { params: { keyword } }
-        )
-        return res.data
+    searchFriends: async (keyword: string) => {
+        return client.get(responses.friends.search, {
+            params: { keyword }
+        })
     },
 
-    /**
-     * 친구 삭제
-     * @param memberId - 멤버 ID
-     */
-    removeFriend: async (memberId: number): Promise<void> => {
-        await client.delete(endpoints.friends.remove(memberId))
+    removeFriend: async (memberId: number) => {
+        return client.delete(responses.friends.remove(memberId))
     },
 
-    /**
-     * 차단 목록 조회
-     */
-    getBlocks: async (): Promise<FriendBlockItemResponse[]> => {
-        const res = await client.get<FriendBlockItemResponse[]>(
-            endpoints.friends.blocks
-        )
-        return res.data
+    getBlocks: async () => {
+        return client.get(responses.friends.blocks)
     },
 
-    /**
-     * 멤버 차단
-     * @param memberId - 멤버 ID
-     */
-    blockMember: async (memberId: number): Promise<void> => {
-        await client.post(endpoints.friends.block(memberId))
+    blockMember: async (memberId: number) => {
+        return client.post(responses.friends.block(memberId))
     },
 
-    /**
-     * 멤버 차단 해제
-     * @param memberId - 멤버 ID
-     */
     unblockMember: async (memberId: number): Promise<void> => {
-        await client.delete(endpoints.friends.unblock(memberId))
+        await client.delete(responses.friends.unblock(memberId))
     },
 
-    /**
-     * 받은 친구 요청 목록
-     */
-    getIncomingRequests: async (): Promise<FriendRequestItemResponse[]> => {
-        const res = await client.get<FriendRequestItemResponse[]>(
-            endpoints.friends.requestsIncoming
-        )
-        return res.data
+    getIncomingRequests: async () => {
+        return client.get(responses.friends.requestsIncoming)
     },
 
-    /**
-     * 보낸 친구 요청 목록
-     */
-    getOutgoingRequests: async (): Promise<FriendRequestItemResponse[]> => {
-        const res = await client.get<FriendRequestItemResponse[]>(
-            endpoints.friends.requestsOutgoing
-        )
-        return res.data
+    getOutgoingRequests: async () => {
+        return client.get(responses.friends.requestsOutgoing)
     },
 
-    /**
-     * 친구 요청 생성
-     * @param memberId - 요청 대상 멤버 ID
-     */
-    sendRequest: async (
-        memberId: number
-    ): Promise<FriendRequestItemResponse> => {
-        const res = await client.post<FriendRequestItemResponse>(
-            endpoints.friends.sendRequest(memberId)
-        )
-        return res.data
+    sendRequest: async (memberId: number) => {
+        return client.post(responses.friends.sendRequest(memberId))
     },
 
-    /**
-     * 친구 요청 수락
-     * @param requestId - 요청 ID
-     */
-    acceptRequest: async (
-        requestId: number
-    ): Promise<FriendRequestItemResponse> => {
-        const res = await client.post<FriendRequestItemResponse>(
-            endpoints.friends.acceptRequest(requestId)
-        )
-        return res.data
+    acceptRequest: async (requestId: number) => {
+        return client.post(responses.friends.acceptRequest(requestId))
     },
 
-    /**
-     * 친구 요청 거절
-     * @param requestId - 요청 ID
-     */
-    rejectRequest: async (
-        requestId: number
-    ): Promise<FriendRequestItemResponse> => {
-        const res = await client.post<FriendRequestItemResponse>(
-            endpoints.friends.rejectRequest(requestId)
-        )
-        return res.data
+    rejectRequest: async (requestId: number) => {
+        return client.post(responses.friends.rejectRequest(requestId))
     },
 
-    /**
-     * 친구 요청 취소
-     * @param requestId - 요청 ID
-     */
-    cancelRequest: async (requestId: number): Promise<void> => {
-        await client.delete(endpoints.friends.cancelRequest(requestId))
+    cancelRequest: async (requestId: number) => {
+        return client.delete(responses.friends.cancelRequest(requestId))
     }
 }
 

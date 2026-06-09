@@ -42,7 +42,10 @@ import type {
     UpdateMealStatusRequest as SharedUpdateMealStatusRequest,
     UpdateProfileRequest as SharedUpdateProfileRequest,
     WeekProgress as SharedWeekProgress,
-    MonthProgress as SharedMonthProgress
+    MonthProgress as SharedMonthProgress,
+    PlanResponseDto,
+    PresignArticleResponse as PresignArticle,
+    PresignProfileResponse as PresignProfile
 } from '@kimdaegyu/babmukdang-shared'
 
 // ============================================================================
@@ -456,6 +459,18 @@ export type ChallengeStatusResponse = SharedChallengeStatusResponse
 
 export type CouponType = SharedCouponType
 export type CouponResponse = SharedCouponResponse
+
+// ============================================================================
+// 약속 (Plan) 관련 타입
+// ============================================================================
+export type PlanResponse = PlanResponseDto
+
+// ============================================================================
+// 업로드 (Upload) 관련 타입
+// ============================================================================
+export type PresignArticleResponse = PresignArticle
+
+export type PresignProfileResponse = PresignProfile
 
 // ============================================================================
 // 식당 타입

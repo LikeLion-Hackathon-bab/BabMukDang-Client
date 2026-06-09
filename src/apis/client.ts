@@ -1,9 +1,15 @@
 import { useAuthStore } from '@/store'
-import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios'
+import axios, {
+    AxiosError,
+    AxiosRequestConfig,
+    InternalAxiosRequestConfig
+} from 'axios'
 import { toAppError } from './errors'
+import { BaseResponse, TokenResponse } from '@kimdaegyu/babmukdang-shared'
+import { ResponseOf, TypedEndpoint } from './responses'
 
 // Axios 클라이언트 인스턴스 생성
-export const client = axios.create({
+const axiosClient = axios.create({
     baseURL: import.meta.env.VITE_SERVER_URL,
     withCredentials: true,
     timeout: 10000
@@ -24,46 +30,49 @@ const addRefreshSubscriber = (callback: (token: string) => void) => {
     refreshSubscribers.push(callback)
 }
 
+export function unwrapBaseResponse<T>(body: BaseResponse<T>): T {
+    if (typeof body.code === 'number' && body.code >= 400) {
+        throw body
+    }
+
+    return body.data
+}
+
 // Request Interceptor: Authorization 헤더 자동 추가
-client.interceptors.request.use(
+axiosClient.interceptors.request.use(
     config => {
         const { accessToken } = useAuthStore.getState()
+
         if (accessToken) {
             config.headers.Authorization = `Bearer ${accessToken}`
         }
+
         return config
     },
     error => Promise.reject(error)
 )
 
 // Response Interceptor: 401 에러 시 토큰 갱신 처리
-client.interceptors.response.use(
+axiosClient.interceptors.response.use(
     response => response,
     async (error: AxiosError) => {
         const originalRequest = error.config as InternalAxiosRequestConfig & {
             _retry?: boolean
         }
 
-        // 401 에러가 아니거나 이미 재시도한 요청이면 변환된 에러 반환
         if (error.response?.status !== 401 || originalRequest._retry) {
             return Promise.reject(toAppError(error))
         }
 
         originalRequest._retry = true
-        const { setTokens, logout, refreshToken } = useAuthStore.getState()
 
-        // refreshToken이 없으면 로그아웃
-        if (!refreshToken) {
-            logout()
-            return Promise.reject(toAppError(error))
-        }
+        const { setTokens, logout } = useAuthStore.getState()
 
-        // 이미 갱신 중이면 대기열에 추가
         if (isRefreshing) {
             return new Promise(resolve => {
                 addRefreshSubscriber((token: string) => {
                     originalRequest.headers.Authorization = `Bearer ${token}`
-                    resolve(client(originalRequest))
+                    resolve(axiosClient(originalRequest))
                 })
             })
         }
@@ -71,30 +80,26 @@ client.interceptors.response.use(
         isRefreshing = true
 
         try {
-            // 토큰 갱신 요청
-            const response = await axios.post(
+            const refreshResponse = await axios.post<
+                BaseResponse<TokenResponse>
+            >(
                 `${import.meta.env.VITE_SERVER_URL}/auth/refresh`,
                 {},
                 { withCredentials: true }
             )
 
-            const {
-                accessToken: newAccessToken,
-                refreshToken: newRefreshToken
-            } = response.data
+            const tokenData = unwrapBaseResponse(refreshResponse.data)
+
             setTokens({
-                accessToken: newAccessToken,
-                refreshToken: newRefreshToken
+                accessToken: tokenData.accessToken
             })
 
-            // 대기 중인 요청들 처리
-            onRefreshed(newAccessToken)
+            onRefreshed(tokenData.accessToken)
 
-            // 원래 요청 재시도
-            originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
-            return client(originalRequest)
+            originalRequest.headers.Authorization = `Bearer ${tokenData.accessToken}`
+
+            return axiosClient(originalRequest)
         } catch {
-            // 갱신 실패 시 로그아웃하고 원본 401을 변환해 반환
             logout()
             refreshSubscribers = []
             return Promise.reject(toAppError(error))
@@ -103,3 +108,57 @@ client.interceptors.response.use(
         }
     }
 )
+
+export const client = {
+    async get<E extends TypedEndpoint<unknown>>(
+        endpoint: E,
+        config?: AxiosRequestConfig
+    ): Promise<ResponseOf<E>> {
+        const res = await axiosClient.get<BaseResponse<ResponseOf<E>>>(
+            endpoint,
+            config
+        )
+
+        return unwrapBaseResponse(res.data)
+    },
+
+    async post<E extends TypedEndpoint<unknown>, TBody = unknown>(
+        endpoint: E,
+        data?: TBody,
+        config?: AxiosRequestConfig
+    ): Promise<ResponseOf<E>> {
+        const res = await axiosClient.post<BaseResponse<ResponseOf<E>>>(
+            endpoint,
+            data,
+            config
+        )
+
+        return unwrapBaseResponse(res.data)
+    },
+
+    async patch<E extends TypedEndpoint<unknown>, TBody = unknown>(
+        endpoint: E,
+        data?: TBody,
+        config?: AxiosRequestConfig
+    ): Promise<ResponseOf<E>> {
+        const res = await axiosClient.patch<BaseResponse<ResponseOf<E>>>(
+            endpoint,
+            data,
+            config
+        )
+
+        return unwrapBaseResponse(res.data)
+    },
+
+    async delete<E extends TypedEndpoint<unknown>>(
+        endpoint: E,
+        config?: AxiosRequestConfig
+    ): Promise<ResponseOf<E>> {
+        const res = await axiosClient.delete<BaseResponse<ResponseOf<E>>>(
+            endpoint,
+            config
+        )
+
+        return unwrapBaseResponse(res.data)
+    }
+}
