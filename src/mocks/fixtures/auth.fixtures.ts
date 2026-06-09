@@ -11,7 +11,6 @@ import type { TokenResponse, OnboardingPreferenceRequest } from '@/apis'
  */
 export const mockTokenResponse: TokenResponse = {
     accessToken: 'mock-access-token-jwt-string',
-    refreshToken: 'mock-refresh-token-jwt-string',
     accessTokenMaxAge: 3600 // 1시간
 }
 

@@ -2,9 +2,9 @@ import exifr from 'exifr'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import { useArticleStore } from '@/store'
+import { useArticleStore, useBottomNavStore } from '@/store'
 import { RestaurantCard, MutalButton, SearchInput } from '@/components'
-import { useBottomNav, useKakaoMap } from '@/hooks'
+import { useKakaoMap } from '@/hooks'
 import { useUploadArticle, RestaurantInfo } from '@/apis'
 import { useAuthStore } from '@/store'
 
@@ -93,7 +93,7 @@ export function SearchRestaurantPage() {
         })
     }
 
-    const { showBottomNav, hideBottomNav } = useBottomNav()
+    const { showBottomNav, hideBottomNav } = useBottomNavStore()
     useEffect(() => {
         hideBottomNav()
         return () => {

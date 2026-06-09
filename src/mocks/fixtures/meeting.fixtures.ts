@@ -6,8 +6,9 @@
  */
 
 import { PlanStatus, PlanType } from '@kimdaegyu/babmukdang-shared'
-import type { MeetingDto } from '@/apis'
+import type { KakaoRestaurantResponse, MeetingDto } from '@/apis'
 import { mapMeeting } from '@/apis/mappers/meeting.mapper'
+import { PlanResponse } from '@/apis/types'
 
 const now = '2025-08-20T09:00:00.000Z'
 
@@ -25,7 +26,7 @@ const createMeeting = ({
     restaurant: string
     restaurantType: string
     isCompleted: boolean
-}): MeetingDto => ({
+}): PlanResponse => ({
     id,
     author: {
         userId: '1',
@@ -36,11 +37,28 @@ const createMeeting = ({
         { userId: '1', username: '서은우', profileImageUrl: '' },
         { userId: '2', username: '유가은', profileImageUrl: '' }
     ],
-    location,
+    // Backend PlanResponse expects location as LocationCandidate; provide minimal compatible object
+    location: {
+        id: String(id),
+        placeName: restaurant,
+        address: '주소',
+        lat: 0,
+        lng: 0
+    },
+    restaurant: {
+        id: String(id),
+        place_name: 'restaurant',
+        category_name: '식당',
+        category_group_name: '',
+        distance: '200',
+        road_address_name: '',
+        address_name: '',
+        phone: '',
+        place_url: '',
+        lat: 0,
+        lng: 0
+    },
     meetingAt,
-    restaurant,
-    isCompleted,
-    restaurantType,
     status: isCompleted ? PlanStatus.COMPLETED : PlanStatus.PLANNING,
     type: PlanType.ANNOUNCEMENT,
     createdAt: now,
@@ -50,7 +68,7 @@ const createMeeting = ({
 /**
  * 모임 응답 DTO mock 데이터 목록 (Backend DTO shape)
  */
-export const mockMeetingResponses: MeetingDto[] = [
+export const mockMeetingResponses: PlanResponse[] = [
     createMeeting({
         id: 1,
         location: '서울과학기술대학교 정문 앞',
@@ -80,7 +98,7 @@ export const mockMeetingResponses: MeetingDto[] = [
 /**
  * 단일 모임 응답 mock (Backend DTO shape)
  */
-export const mockSingleMeetingResponse: MeetingDto = mockMeetingResponses[0]
+export const mockSingleMeetingResponse: PlanResponse = mockMeetingResponses[0]
 
 /**
  * 화면 모델 하위 호환 export (mapper 결과)

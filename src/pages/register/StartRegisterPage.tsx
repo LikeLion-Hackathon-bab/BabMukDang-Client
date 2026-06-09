@@ -1,34 +1,59 @@
 import { CardBobGraphic } from '@/assets/graphics'
 import { KakaoIcon, LogoTextIcon } from '@/assets/icons'
 import SplashImg from '@/assets/images/SplashImg.png'
-import { login } from '@/apis'
+import { login, useEmailLogin, useEmailSignup } from '@/apis'
 import { useAuthStore } from '@/store'
 import { useNavigate } from 'react-router-dom'
 import { mockTokenResponse } from '@/mocks/fixtures'
+import { useState } from 'react'
 
 /**
  * 개발 환경에서 Mock 로그인 수행
  * fixture 데이터를 사용하여 즉시 로그인 처리
  */
 function useMockLogin() {
-    const navigate = useNavigate()
     const { setTokens } = useAuthStore()
 
     const mockLogin = () => {
         console.log('[Mock] 개발 환경 로그인 - fixture 데이터 사용')
         setTokens({
-            accessToken: mockTokenResponse.accessToken,
-            refreshToken: mockTokenResponse.refreshToken
+            accessToken: mockTokenResponse.accessToken
         })
-        navigate('/', { replace: true })
     }
 
     return mockLogin
 }
 
 export function StartRegisterPage() {
-    const isDev = import.meta.env.MODE === 'development'
+    const isDev = false
     const mockLogin = useMockLogin()
+    const navigate = useNavigate()
+
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [authError, setAuthError] = useState<string | null>(null)
+
+    const { mutate: emailLogin, isPending: isEmailLoginPending } =
+        useEmailLogin({
+            onSuccess: () => {
+                setAuthError(null)
+                navigate('/', { replace: true })
+            },
+            onError: error => {
+                setAuthError(error.message)
+            }
+        })
+
+    const { mutate: emailSignup, isPending: isEmailSignupPending } =
+        useEmailSignup({
+            onSuccess: () => {
+                setAuthError(null)
+                navigate('/', { replace: true })
+            },
+            onError: error => {
+                setAuthError(error.message)
+            }
+        })
 
     const handleLogin = () => {
         if (isDev) {
@@ -37,6 +62,18 @@ export function StartRegisterPage() {
             login()
         }
     }
+
+    const handleEmailLogin = () => {
+        setAuthError(null)
+        emailLogin({ email, password })
+    }
+
+    const handleEmailSignup = () => {
+        setAuthError(null)
+        emailSignup({ email, password })
+    }
+
+    const isEmailAuthPending = isEmailLoginPending || isEmailSignupPending
 
     return (
         <div className="fixed inset-0 z-2000 flex h-screen w-screen flex-col items-center justify-center">
@@ -56,6 +93,45 @@ export function StartRegisterPage() {
                     <LogoTextIcon fillcolor="#fff" />
                 </div>
                 <div className="flex w-full flex-col items-center gap-20">
+                    <div className="flex w-full flex-col gap-10 rounded-24 bg-white/90 p-16 backdrop-blur-sm">
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={event => setEmail(event.target.value)}
+                            placeholder="이메일"
+                            autoComplete="email"
+                            className="text-body2-medium text-gray-8 placeholder:text-gray-4 rounded-12 border border-gray-2 bg-white px-14 py-12 outline-none focus:border-primary-500"
+                        />
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={event => setPassword(event.target.value)}
+                            placeholder="비밀번호"
+                            autoComplete="current-password"
+                            className="text-body2-medium text-gray-8 placeholder:text-gray-4 rounded-12 border border-gray-2 bg-white px-14 py-12 outline-none focus:border-primary-500"
+                        />
+                        {authError && (
+                            <p className="text-caption-medium text-red-500">
+                                {authError}
+                            </p>
+                        )}
+                        <div className="grid grid-cols-2 gap-8">
+                            <button
+                                type="button"
+                                disabled={isEmailAuthPending}
+                                onClick={handleEmailLogin}
+                                className="bg-primary-500 text-body2-semibold rounded-full py-12 text-white disabled:opacity-50">
+                                이메일 로그인
+                            </button>
+                            <button
+                                type="button"
+                                disabled={isEmailAuthPending}
+                                onClick={handleEmailSignup}
+                                className="text-primary-500 border-primary-500 text-body2-semibold rounded-full border py-12 disabled:opacity-50">
+                                회원가입
+                            </button>
+                        </div>
+                    </div>
                     <KakaoLoginButton handleLogin={handleLogin} />
                     <span className="text-caption-medium text-primary-100">
                         {isDev

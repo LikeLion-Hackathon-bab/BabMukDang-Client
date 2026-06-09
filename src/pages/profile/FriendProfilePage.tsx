@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import { BOTTOM_NAVIGATION_HEIGHT } from '@/constants/bottomNav'
 import { MockMyProfileData } from '@/constants/mockData'
 
-import { useHeader } from '@/hooks'
 import {
     ProfileModal,
     ProfileSection,

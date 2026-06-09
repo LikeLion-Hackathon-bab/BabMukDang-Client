@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { PostCard, CommentList, ChatInput } from '@/components'
-import { useHeader, useBottomNav } from '@/hooks'
 import { useLocation, useParams } from 'react-router-dom'
 import {
     useCommentArticle,
@@ -8,10 +7,11 @@ import {
     CommentResponse
 } from '@/apis'
 import { buildCommentTree } from '@/lib'
+import { useBottomNavStore, useHeaderStore } from '@/store'
 type TreeComment = ReturnType<typeof buildCommentTree>[number]
 export function CommentPage() {
-    const { resetHeader, setTitle } = useHeader()
-    const { hideBottomNav, resetBottomNav } = useBottomNav()
+    const { resetHeader, setTitle } = useHeaderStore()
+    const { hideBottomNav, resetBottomNav } = useBottomNavStore()
     const { postId } = useParams()
     const [newMessage, setNewMessage] = useState('')
     const [replyCommentId, setReplyCommentId] = useState<number | null>(null)

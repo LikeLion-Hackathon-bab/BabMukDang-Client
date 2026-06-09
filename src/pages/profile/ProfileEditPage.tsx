@@ -1,6 +1,6 @@
 import { ModifyIcon } from '@/assets/icons'
 import { GoodBadChip } from '@/components'
-import { useHeader } from '@/hooks'
+import { useHeaderStore } from '@/store'
 import { useEffect, useMemo, useState } from 'react'
 
 type ChipVariant = 'good' | 'bad'
@@ -90,7 +90,7 @@ export function ProfileEditPage() {
     const [favoriteFoods, setFavoriteFoods] = useState('')
     const [dislikedFoods, setDislikedFoods] = useState('')
     const [allergies, setAllergies] = useState('')
-    const { setTitle, resetHeader, setRightElement } = useHeader()
+    const { setTitle, resetHeader, setRightElement } = useHeaderStore()
 
     useEffect(() => {
         setTitle('내 정보 수정')

@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { BarcodeIcon, ChallengeFillIcon } from '@/assets/icons'
 import { MockCouponList } from '@/constants/mockData'
 
-import { useHeader } from '@/hooks'
 import {
     CouponModal,
     FilterList,
@@ -11,9 +10,10 @@ import {
     GoodBadChip
 } from '@/components'
 import { COUPON_FILTER_LIST } from '@/constants/filters'
+import { useHeaderStore } from '@/store'
 
 export function CouponStoragePage() {
-    const { setTitle } = useHeader()
+    const { setTitle } = useHeaderStore()
     const [activeFilter, setActiveFilter] = useState<{
         key: string
         label: string

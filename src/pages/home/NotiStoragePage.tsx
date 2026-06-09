@@ -6,7 +6,6 @@ import {
     MockMatchingInviteNotis
 } from '@/constants/mockData'
 
-import { useHeader } from '@/hooks'
 import {
     TabHeader,
     FilterList,
@@ -14,6 +13,7 @@ import {
     LocalNewsList
 } from '@/components'
 import { LOCAL_NEWS_FILTER_LIST } from '@/constants/filters'
+import { useHeaderStore } from '@/store'
 
 type MatchingInviteNoti = {
     id: number
@@ -37,7 +37,7 @@ export function NotiStoragePage() {
     const navigate = useNavigate()
 
     // 헤더 관련
-    const { resetHeader, setTitle, showCenterElement } = useHeader()
+    const { resetHeader, setTitle, showCenterElement } = useHeaderStore()
     const [tab, setTab] = useState<'noti' | 'local'>('noti')
     const tabs = [
         { key: 'noti', label: '알림' },

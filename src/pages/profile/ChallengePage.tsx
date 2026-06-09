@@ -10,11 +10,11 @@ import {
     RandomCouponGraphic
 } from '@/assets/graphics'
 import { MutalButton } from '@/components'
-import { useHeader } from '@/hooks'
+import { useHeaderStore } from '@/store'
 import { useEffect, useState } from 'react'
 
 export function ChallengePage() {
-    const { setTitle, resetHeader } = useHeader()
+    const { setTitle, resetHeader } = useHeaderStore()
     useEffect(() => {
         setTitle('챌린지')
         return () => {

@@ -1,5 +1,5 @@
 import { useCarousel } from '@/hooks'
-import { PostResponse, useSubscribeAnnouncement } from '@/apis'
+import { PostResponse, useJoinAnnouncement } from '@/apis'
 import { AnnouncementCard, EmptyAnnouncementCard } from './AnnouncementCard'
 import { JoinButton } from './AnnouncementJoinButton'
 import { useAuthStore } from '@/store'
@@ -47,12 +47,12 @@ function AnnouncementCarouselContent({
     const { userId } = useAuthStore()
     const [selectedAnnouncement, setSelectedAnnouncement] =
         useState<PostResponse | null>(null)
-    const { mutate: subscribeAnnouncement } = useSubscribeAnnouncement({
+    const { mutate: joinAnnouncement } = useJoinAnnouncement({
         onSuccess: () => {
-            console.log('subscribeAnnouncement')
+            console.log('announcemnet 참여하기가 완료되었습니다')
         },
         onError: () => {
-            console.log('subscribeAnnouncement error')
+            console.log('Announcement join error')
         }
     })
 
@@ -124,7 +124,7 @@ function AnnouncementCarouselContent({
                                         ''
                                     }
                                     onAccept={() => {
-                                        subscribeAnnouncement(
+                                        joinAnnouncement(
                                             selectedAnnouncement?.postId || 0
                                         )
                                     }}

@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import { useArticleStore } from '@/store'
-import { useBottomNav, useHeader } from '@/hooks'
+import { useArticleStore, useBottomNavStore, useHeaderStore } from '@/store'
 import { MutalButton } from '@/components'
 import { mealTimeMap, mealTimeTextArr } from '@/constants/post'
 
@@ -15,8 +14,8 @@ export function UploadPage() {
         setTaggedMemberIds
     } = useArticleStore()
     const [image, setImage] = useState<string | null>(null)
-    const { showBottomNav, hideBottomNav } = useBottomNav()
-    const { setTitle, resetHeader } = useHeader()
+    const { showBottomNav, hideBottomNav } = useBottomNavStore()
+    const { setTitle, resetHeader } = useHeaderStore()
     const [tagPerson, setTagPerson] = useState<string[]>(['태그+', '태그+'])
     useEffect(() => {
         if (!imageFile) return

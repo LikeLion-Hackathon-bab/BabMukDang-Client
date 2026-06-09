@@ -1,9 +1,9 @@
-import { useHeader } from '@/hooks'
 import { useEffect } from 'react'
 import { ArticleSummaryResponse, useGetMyArticles } from '@/apis'
+import { useHeaderStore } from '@/store'
 
 export function BobCheckHistoryPage() {
-    const { setTitle, resetHeader } = useHeader()
+    const { setTitle, resetHeader } = useHeaderStore()
     const { data: articles } = useGetMyArticles()
     useEffect(() => {
         setTitle('지난 밥 인증 내역')
