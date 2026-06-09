@@ -1,4 +1,10 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    useNavigate,
+    Navigate
+} from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
     TestPage,
@@ -42,7 +48,13 @@ import { IntroStart } from './pages/intro/IntroStart'
 import { IntroTutorial } from './pages/intro/IntroTutorial'
 import WithMockServer from './mocks/WithMockServer'
 import { FriendPage } from './pages/navigation/FriendPage'
-
+import { isAuthorized } from './lib/utils'
+import { HomeIcon } from 'lucide-react'
+import { useAuthStore } from './store'
+import { useRefreshToken } from './apis'
+import { AuthGate } from './pages/AuthGate'
+import { PublicOnlyRoute } from './pages/PublicOnlyRoute'
+import { ProtectedRoute } from './pages/ProtectedRoute'
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -54,213 +66,233 @@ const queryClient = new QueryClient({
 })
 function App() {
     useEffect(() => {
-        register()
+        // register()
     }, [])
     return (
         <QueryClientProvider client={queryClient}>
-            <WithMockServer />
+            {/* <WithMockServer /> */}
             <Router>
                 <Routes>
                     <Route
-                        path="/intro"
-                        element={<IntroStart />}
+                        path="/"
+                        element={<AuthGate />}
                     />
-                    <Route
-                        path="/intro/tutorial"
-                        element={<IntroTutorial />}
-                    />
-                    <Route element={<Layout />}>
-                        {/* 네비게이션 페이지 */}
-                        <Route
-                            path="/"
-                            element={<HomePage />}
-                        />
-                        <Route
-                            path="/profile"
-                            element={<ProfilePage />}
-                        />
-                        <Route
-                            path="/friend"
-                            element={<FriendPage />}
-                        />
-                        <Route
-                            path="/meeting"
-                            element={<MeetingPage />}
-                        />
-                        <Route
-                            path="/matching"
-                            element={<MatchingPage />}
-                        />
-
-                        {/* 홈 페이지 */}
-                        <Route
-                            path="/search-restaurant"
-                            element={<SearchRestaurantPage />}
-                        />
-                        <Route
-                            path="/noti"
-                            element={<NotiStoragePage />}
-                        />
-                        <Route
-                            path="/upload"
-                            element={<UploadPage />}
-                        />
-                        <Route
-                            path="/post/:postId"
-                            element={<CommentPage />}
-                        />
-
-                        {/* 매치 페이지 */}
-                        <Route
-                            path="/send-invitation/:userId"
-                            element={<SendInvitationPage />}
-                        />
-                        <Route
-                            path="/read-invitation/:invitationId"
-                            element={<ReadInvitationPage />}
-                        />
-
-                        {/* 프로필 페이지 */}
-                        <Route
-                            path="/coupon"
-                            element={<CouponStoragePage />}
-                        />
-                        <Route
-                            path="/profile-edit"
-                            element={<ProfileEditPage />}
-                        />
-                        <Route
-                            path="/bob-check-history"
-                            element={<BobCheckHistoryPage />}
-                        />
-                        <Route
-                            path="/challenge"
-                            element={<ChallengePage />}
-                        />
-                        <Route
-                            path="/friend-profile"
-                            element={<FriendProfilePage />}
-                        />
-
-                        {/* 회원가입 온보딩 페이지 */}
+                    <Route element={<PublicOnlyRoute />}>
                         <Route element={<RegisterLayout />}>
-                            <Route
-                                path="/allergic-menu"
-                                element={<AllergicMenuPage />}
-                            />
-                            <Route
-                                path="/prefer-menu"
-                                element={<PreferMenuPage />}
-                            />
-                            <Route
-                                path="/onboarding"
-                                element={<MakeProfilePage />}
-                            />
                             <Route
                                 path="/login"
                                 element={<StartRegisterPage />}
                             />
-                            <Route
-                                path="/finish-register"
-                                element={<FinishRegisterPage />}
-                            />
                         </Route>
-
-                        {/* 매칭 온보딩 페이지 */}
-                        <Route element={<OnboardingLayout />}>
-                            {/* Auto-join routes without explicit roomId */}
-                            <Route
-                                path="/:matchType/waiting"
-                                element={<WaitingPage />}
-                            />
-                            <Route
-                                path="/:matchType/location"
-                                element={<LocationSelectionPage />}
-                            />
-                            <Route
-                                path="/:matchType/menu"
-                                element={<MenuPage />}
-                            />
-                            <Route
-                                path="/:matchType/restaurant"
-                                element={<RestaurantPage />}
-                            />
-                            <Route
-                                path="/:matchType/exclude-menu"
-                                element={<MenuExcludePage />}
-                            />
-                            <Route
-                                path="/:matchType/location-vote"
-                                element={<LocationVotePage />}
-                            />
-                            <Route
-                                path="/:matchType/finish"
-                                element={<FinishPage />}
-                            />
-                            <Route
-                                path="/:matchType/time"
-                                element={<TimePage />}
-                            />
-                            <Route
-                                path="/:matchType/date"
-                                element={<DatePage />}
-                            />
-                            <Route
-                                path="/:matchType/waiting/:roomId"
-                                element={<WaitingPage />}
-                            />
-                            <Route
-                                path="/:matchType/location/:roomId"
-                                element={<LocationSelectionPage />}
-                            />
-                            <Route
-                                path="/:matchType/menu/:roomId"
-                                element={<MenuPage />}
-                            />
-                            <Route
-                                path="/:matchType/restaurant/:roomId"
-                                element={<RestaurantPage />}
-                            />
-                            <Route
-                                path="/:matchType/exclude-menu/:roomId"
-                                element={<MenuExcludePage />}
-                            />
-                            <Route
-                                path="/:matchType/location-vote/:roomId"
-                                element={<LocationVotePage />}
-                            />
-                            <Route
-                                path="/:matchType/finish/:roomId"
-                                element={<FinishPage />}
-                            />
-                            <Route
-                                path="/:matchType/time/:roomId"
-                                element={<TimePage />}
-                            />
-                            <Route
-                                path="/:matchType/date/:roomId"
-                                element={<DatePage />}
-                            />
-                        </Route>
-
-                        {/* 테스트 페이지 */}
                         <Route
-                            path="/gps"
-                            element={<GPSPage />}
+                            path="/intro"
+                            element={<IntroStart />}
                         />
                         <Route
-                            path="/notifications"
-                            element={<NotificationPage />}
-                        />
-                        <Route
-                            path="/push"
-                            element={<PushNotificationPage />}
-                        />
-                        <Route
-                            path="/test"
-                            element={<TestPage />}
+                            path="/intro/tutorial"
+                            element={<IntroTutorial />}
                         />
                     </Route>
+
+                    <Route element={<ProtectedRoute />}>
+                        <Route element={<Layout />}>
+                            {/* 네비게이션 페이지 */}
+                            <Route
+                                path="/home"
+                                element={<HomePage />}
+                            />
+                            <Route
+                                path="/profile"
+                                element={<ProfilePage />}
+                            />
+                            <Route
+                                path="/friend"
+                                element={<FriendPage />}
+                            />
+                            <Route
+                                path="/meeting"
+                                element={<MeetingPage />}
+                            />
+                            <Route
+                                path="/matching"
+                                element={<MatchingPage />}
+                            />
+
+                            {/* 홈 페이지 */}
+                            <Route
+                                path="/search-restaurant"
+                                element={<SearchRestaurantPage />}
+                            />
+                            <Route
+                                path="/noti"
+                                element={<NotiStoragePage />}
+                            />
+                            <Route
+                                path="/upload"
+                                element={<UploadPage />}
+                            />
+                            <Route
+                                path="/post/:postId"
+                                element={<CommentPage />}
+                            />
+
+                            {/* 매치 페이지 */}
+                            <Route
+                                path="/send-invitation/:userId"
+                                element={<SendInvitationPage />}
+                            />
+                            <Route
+                                path="/read-invitation/:invitationId"
+                                element={<ReadInvitationPage />}
+                            />
+
+                            {/* 프로필 페이지 */}
+                            <Route
+                                path="/coupon"
+                                element={<CouponStoragePage />}
+                            />
+                            <Route
+                                path="/profile-edit"
+                                element={<ProfileEditPage />}
+                            />
+                            <Route
+                                path="/bob-check-history"
+                                element={<BobCheckHistoryPage />}
+                            />
+                            <Route
+                                path="/challenge"
+                                element={<ChallengePage />}
+                            />
+                            <Route
+                                path="/friend-profile"
+                                element={<FriendProfilePage />}
+                            />
+
+                            {/* 회원가입 온보딩 페이지 */}
+                            <Route element={<RegisterLayout />}>
+                                <Route
+                                    path="/allergic-menu"
+                                    element={<AllergicMenuPage />}
+                                />
+                                <Route
+                                    path="/prefer-menu"
+                                    element={<PreferMenuPage />}
+                                />
+                                <Route
+                                    path="/onboarding"
+                                    element={<MakeProfilePage />}
+                                />
+                                <Route
+                                    path="/finish-register"
+                                    element={<FinishRegisterPage />}
+                                />
+                            </Route>
+
+                            {/* 매칭 온보딩 페이지 */}
+                            <Route element={<OnboardingLayout />}>
+                                {/* Auto-join routes without explicit roomId */}
+                                <Route
+                                    path="/:matchType/waiting"
+                                    element={<WaitingPage />}
+                                />
+                                <Route
+                                    path="/:matchType/location"
+                                    element={<LocationSelectionPage />}
+                                />
+                                <Route
+                                    path="/:matchType/menu"
+                                    element={<MenuPage />}
+                                />
+                                <Route
+                                    path="/:matchType/restaurant"
+                                    element={<RestaurantPage />}
+                                />
+                                <Route
+                                    path="/:matchType/exclude-menu"
+                                    element={<MenuExcludePage />}
+                                />
+                                <Route
+                                    path="/:matchType/location-vote"
+                                    element={<LocationVotePage />}
+                                />
+                                <Route
+                                    path="/:matchType/finish"
+                                    element={<FinishPage />}
+                                />
+                                <Route
+                                    path="/:matchType/time"
+                                    element={<TimePage />}
+                                />
+                                <Route
+                                    path="/:matchType/date"
+                                    element={<DatePage />}
+                                />
+                                <Route
+                                    path="/:matchType/waiting/:roomId"
+                                    element={<WaitingPage />}
+                                />
+                                <Route
+                                    path="/:matchType/location/:roomId"
+                                    element={<LocationSelectionPage />}
+                                />
+                                <Route
+                                    path="/:matchType/menu/:roomId"
+                                    element={<MenuPage />}
+                                />
+                                <Route
+                                    path="/:matchType/restaurant/:roomId"
+                                    element={<RestaurantPage />}
+                                />
+                                <Route
+                                    path="/:matchType/exclude-menu/:roomId"
+                                    element={<MenuExcludePage />}
+                                />
+                                <Route
+                                    path="/:matchType/location-vote/:roomId"
+                                    element={<LocationVotePage />}
+                                />
+                                <Route
+                                    path="/:matchType/finish/:roomId"
+                                    element={<FinishPage />}
+                                />
+                                <Route
+                                    path="/:matchType/time/:roomId"
+                                    element={<TimePage />}
+                                />
+                                <Route
+                                    path="/:matchType/date/:roomId"
+                                    element={<DatePage />}
+                                />
+                            </Route>
+
+                            {/* 테스트 페이지 */}
+                            <Route
+                                path="/gps"
+                                element={<GPSPage />}
+                            />
+                            <Route
+                                path="/notifications"
+                                element={<NotificationPage />}
+                            />
+                            <Route
+                                path="/push"
+                                element={<PushNotificationPage />}
+                            />
+                            <Route
+                                path="/test"
+                                element={<TestPage />}
+                            />
+                        </Route>
+                    </Route>
+                    <Route
+                        path="*"
+                        element={
+                            <Navigate
+                                to="/"
+                                replace
+                            />
+                        }
+                    />
                 </Routes>
             </Router>
         </QueryClientProvider>

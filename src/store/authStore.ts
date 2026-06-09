@@ -3,7 +3,6 @@ import { persist, PersistOptions } from 'zustand/middleware'
 
 interface AuthState {
     accessToken: string | null
-    refreshToken: string | null
     username: string | null
     userId: string | null
     profile: {
@@ -12,13 +11,7 @@ interface AuthState {
         bio: string | null
         meetingCount: number | null
     }
-    setTokens: ({
-        accessToken,
-        refreshToken
-    }: {
-        accessToken: string
-        refreshToken: string
-    }) => void
+    setTokens: ({ accessToken }: { accessToken: string }) => void
     clearTokens: () => void
     refresh: () => Promise<void>
     setUsername: (username: string) => void
@@ -35,7 +28,6 @@ interface AuthState {
 // localStorage에 저장될 상태만 정의 (함수 제외)
 interface PersistedAuthState {
     accessToken: string | null
-    refreshToken: string | null
     username: string | null
     userId: string | null
     profile: {
@@ -50,7 +42,6 @@ const persistConfig: PersistOptions<AuthState, PersistedAuthState> = {
     name: 'auth-storage',
     partialize: (state): PersistedAuthState => ({
         accessToken: state.accessToken,
-        refreshToken: state.refreshToken,
         username: state.username,
         userId: state.userId,
         profile: state.profile
@@ -70,14 +61,9 @@ export const useAuthStore = create<AuthState>()(
                 bio: null,
                 meetingCount: null
             },
-            setTokens: ({
-                accessToken,
-                refreshToken
-            }: {
-                accessToken: string
-                refreshToken: string
-            }) => set({ accessToken, refreshToken }),
-            clearTokens: () => set({ accessToken: null, refreshToken: null }),
+            setTokens: ({ accessToken }: { accessToken: string }) =>
+                set({ accessToken }),
+            clearTokens: () => set({ accessToken: null }),
             // 토큰 갱신 단일 진입점. SocketProvider 등에서 갱신 로직을 중복
             // 구현하지 않고 이 액션만 호출한다.
             // (apis는 client→authStore 순환을 피하려고 동적 import)
@@ -85,8 +71,7 @@ export const useAuthStore = create<AuthState>()(
                 const { refresh: refreshApi } = await import('@/apis')
                 const token = await refreshApi()
                 set({
-                    accessToken: token.accessToken,
-                    refreshToken: token.refreshToken
+                    accessToken: token.accessToken
                 })
             },
             setUsername: (username: string) => set({ username }),
@@ -100,7 +85,6 @@ export const useAuthStore = create<AuthState>()(
             logout: () => {
                 set({
                     accessToken: null,
-                    refreshToken: null,
                     username: null,
                     userId: null,
                     profile: {
