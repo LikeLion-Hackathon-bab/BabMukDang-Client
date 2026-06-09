@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 import { LogoTextIcon } from '@/assets/icons'
 
-import { useHeader, usePullToRefresh } from '@/hooks'
+import { usePullToRefresh } from '@/hooks'
 import {
     PostCard,
     PostEmptyView,
@@ -13,10 +13,11 @@ import {
 import { COLORS } from '@/constants/colors'
 import { useGetHomeArticles } from '@/apis'
 import { toPostCardView } from '@/viewModels'
+import { useHeaderStore } from '@/store'
 
 export function HomePage() {
     const { setLeftElement, hideCenterElement, resetHeader, showRightButton } =
-        useHeader()
+        useHeaderStore()
     const { data: postListData } = useGetHomeArticles()
     const postList = (postListData?.content ?? []).map(toPostCardView)
 

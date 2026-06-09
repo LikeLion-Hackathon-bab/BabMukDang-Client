@@ -1,7 +1,8 @@
 import { useNavigate, Link } from 'react-router-dom'
 import { BackIcon, AlarmIcon } from '@/assets/icons'
-import { useHeader } from '@/hooks'
+
 import { COLORS } from '@/constants/colors'
+import { useHeaderStore } from '@/store'
 
 interface HeaderProps {
     title?: string
@@ -10,7 +11,7 @@ interface HeaderProps {
 
 export function Header({ title, config }: HeaderProps) {
     const navigate = useNavigate()
-    const headerConfig = useHeader().config
+    const headerConfig = useHeaderStore().config
 
     // config prop이 제공되면 우선 사용, 아니면 Zustand 스토어의 config 사용
     const finalConfig = config || headerConfig

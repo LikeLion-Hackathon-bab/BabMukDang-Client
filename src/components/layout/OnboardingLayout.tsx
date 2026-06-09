@@ -11,12 +11,12 @@ import {
     OnboardingHeader,
     Header
 } from '@/components'
-import { useHeader, useBottomNav } from '@/hooks'
+import { useBottomNavStore, useHeaderStore } from '@/store'
 
 export const OnboardingLayout = () => {
     const [isChatOpen, setIsChatOpen] = useState(false)
-    const { hideHeader, resetHeader } = useHeader()
-    const { hideBottomNav, resetBottomNav } = useBottomNav()
+    const { hideHeader, resetHeader } = useHeaderStore()
+    const { hideBottomNav, resetBottomNav } = useBottomNavStore()
     const navigate = useNavigate()
     const { matchType } = useParams<{
         matchType: 'announcement' | 'invitation'

@@ -30,11 +30,11 @@ interface BottomNavStore {
 const defaultConfig: BottomNavConfig = {
     visible: true,
     items: [
-        { path: '/', label: '홈', icon: HomeIcon },
-        { path: '/matching', label: '매칭', icon: MatchingIcon },
-        { path: '/friend', label: '친구', icon: PeopleIcon },
-        { path: '/meeting', label: '밥약', icon: MeetingIcon },
-        { path: '/profile', label: '내 밥그릇', icon: DishIcon }
+        { path: '/', label: '홈', icon: 'i' },
+        { path: '/matching', label: '매칭', icon: 'i' },
+        { path: '/friend', label: '친구', icon: 'i' },
+        { path: '/meeting', label: '밥약', icon: 'i' },
+        { path: '/profile', label: '내 밥그릇', icon: 'i' }
     ]
 }
 

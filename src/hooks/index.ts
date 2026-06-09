@@ -1,6 +1,4 @@
 export { useCarousel } from './useCarousel'
 export { useBottomSheet } from './useBottomSheet'
-export { useBottomNav } from './useBottomNav'
-export { useHeader } from './useHeader'
 export { useKakaoMap } from './useKakaoMap'
 export { usePullToRefresh } from './usePullToRefresh'

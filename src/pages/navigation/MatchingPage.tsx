@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 
 import { Post, PostResponse } from '@/apis'
 
-import { useHeader } from '@/hooks'
 import {
     TabHeader,
     JoinCompleteModal,
@@ -13,13 +12,8 @@ import {
     LongTimeNoSeeFriendList
 } from '@/components'
 import { BOTTOM_NAVIGATION_HEIGHT } from '@/constants/bottomNav'
-import {
-    useGetAnnouncements,
-    useSubscribeAnnouncement,
-    useGetInvitations,
-    useFriendMeals
-} from '@/apis'
-import { useAuthStore } from '@/store'
+import { useGetAnnouncements, useGetInvitations, useFriendMeals } from '@/apis'
+import { useAuthStore, useHeaderStore } from '@/store'
 import { HungryFriendList } from '@/components/features/matching/announcement/HungryFriendList'
 import { Friend } from '@/components/features/friend/FriendListSection'
 
@@ -28,7 +22,7 @@ export function MatchingPage() {
         'announcement'
     )
     const { resetHeader, setTitle, showCenterElement, hideLeftButton } =
-        useHeader()
+        useHeaderStore()
 
     const tabs = [
         { key: 'announcement', label: '공고' },

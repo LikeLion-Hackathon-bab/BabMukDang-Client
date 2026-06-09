@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react'
 
-import { useHeader } from '@/hooks'
 import { FilterList, MeetingCard, MeetingHeader } from '@/components'
 import { MEETING_FILTER_LIST } from '@/constants/filters'
 import { useGetMeetings, MeetingResponse } from '@/apis'
 import { MockMeetingList } from '@/constants/mockData'
+import { useHeaderStore } from '@/store'
 
 export function MeetingPage() {
-    const { resetHeader, hideHeader } = useHeader()
+    const { resetHeader, hideHeader } = useHeaderStore()
     const { data: meetings, isLoading } = useGetMeetings()
     const [activeFilter, setActiveFilter] = useState<{
         key: string

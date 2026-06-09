@@ -3,20 +3,25 @@ import { useEffect, useState } from 'react'
 import { BOTTOM_NAVIGATION_HEIGHT } from '@/constants/bottomNav'
 import { MockMyProfileData } from '@/constants/mockData'
 
-import { useHeader } from '@/hooks'
 import {
     FriendInviteModal,
     ProfileModal,
     ProfileButtonSection,
     ProfileSection
 } from '@/components'
-import { useGetMyProfileDetail, ProfileDetailResponse } from '@/apis'
+import { useGetMyProfileDetail, ProfileDetailResponse, useLogout } from '@/apis'
+import { useHeaderStore } from '@/store'
+import { useNavigate } from 'react-router-dom'
 
 export function ProfilePage() {
-    const { hideHeader, resetHeader } = useHeader()
+    const { hideHeader, resetHeader } = useHeaderStore()
+    const navigate = useNavigate()
     const { data: profileData } = useGetMyProfileDetail()
-    //TODO: Logout 구현
-    // const { mutate: logout } = useLogout()
+    const { mutate: logout, isPending: isLogoutPending } = useLogout({
+        onSuccess: () => {
+            navigate('/login', { replace: true })
+        }
+    })
     const [profile, setProfile] = useState<ProfileDetailResponse>(
         profileData ?? MockMyProfileData
     )
@@ -42,6 +47,14 @@ export function ProfilePage() {
     }, [profileData])
     return (
         <main className="relative h-full min-h-full">
+            <button
+                className={`text-caption-regular text-black`}
+                disabled={isLogoutPending}
+                onClick={() => {
+                    logout()
+                }}>
+                {isLogoutPending ? '로그아웃 중입니다' : '로그아웃'}
+            </button>
             {/* 프로필 섹션 */}
             <ProfileSection
                 profileImgUrl={profile.profileImageUrl}
@@ -58,13 +71,6 @@ export function ProfilePage() {
                 uncompletedMeetings={profile.meetingCount}
                 challengeCount={profile.meetingCount}
             />
-            <button
-                className={`text-caption-regular text-gray-3 absolute bottom-${BOTTOM_NAVIGATION_HEIGHT} right-0 left-0`}
-                onClick={() => {
-                    // logout()
-                }}>
-                로그아웃
-            </button>
             <FriendInviteModal id="friend-invite-notify-modal" />
             <ProfileModal
                 id="profile-notify-modal"
