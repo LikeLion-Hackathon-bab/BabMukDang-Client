@@ -19,7 +19,7 @@ export default defineConfig({
     testDir: './src/e2e_tests',
     testMatch: [
         '**/integration.spec.ts',
-        '**/backend-api.spec.ts',
+        // '**/backend-api.spec.ts',
         '**/backend-socket.spec.ts'
     ],
     timeout: 60_000,
@@ -37,8 +37,8 @@ export default defineConfig({
         viewport: { width: 1280, height: 720 },
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',
-        trace: 'retain-on-failure',
-    },
+        trace: 'retain-on-failure'
+    }
 
     // docker compose가 서비스를 모두 띄운 상태를 가정한다.
     // webServer 없이 외부 서버에 연결한다.

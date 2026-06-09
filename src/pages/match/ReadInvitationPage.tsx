@@ -1,12 +1,13 @@
 import { InvitationCard } from '@/components'
 import { CardBobGraphic } from '@/assets/graphics'
-import { useHeader } from '@/hooks'
+
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useAcceptInvitation, useRejectInvitation } from '@/apis'
+import { useHeaderStore } from '@/store'
 
 export function ReadInvitationPage() {
-    const { setTitle, resetHeader } = useHeader()
+    const { setTitle, resetHeader } = useHeaderStore()
     const { invitationId } = useParams()
     const [invitationText, setInvitationText] = useState('')
     const navigate = useNavigate()

@@ -32,6 +32,7 @@ import { useRoomChat } from './socket/useRoomChat'
 import { useRoomSchedule } from './socket/useRoomSchedule'
 import { useRoomMenu } from './socket/useRoomMenu'
 import type { AppSocket } from './socket/types'
+import { useRefreshToken } from '@/apis'
 
 interface FinalStateMessage {
     location?: string
@@ -126,16 +127,15 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     }, [])
 
     // 연결/재연결/토큰 갱신
+    const { mutate: refreshToken, isPending, isError } = useRefreshToken()
+
     useEffect(() => {
         if (!accessToken) {
             // 토큰이 없으면 authStore.refresh()로 일원화된 갱신 시도.
             // refreshToken까지 없으면 홈으로 보낸다.
-            const { refreshToken, refresh } = useAuthStore.getState()
-            if (!refreshToken) {
-                navigate('/')
-                return
+            if (!isPending && !isError) {
+                refreshToken()
             }
-            void refresh()
             return
         }
 
@@ -152,7 +152,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
             s.removeAllListeners()
             s.close()
         }
-    }, [accessToken, roomId, matchType, navigate])
+    }, [accessToken, roomId, matchType, navigate, refreshToken, isPending, isError])
 
     // 방 lifecycle 이벤트 (도메인 이벤트는 훅이 담당)
     useEffect(() => {

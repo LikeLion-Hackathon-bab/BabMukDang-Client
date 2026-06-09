@@ -10,15 +10,14 @@
  * 생성시키고 `socket.io-client`로 `/invitation` 네임스페이스에 접속해
  * `BaseRoomGateway`(Backend)가 정의한 양방향 이벤트 9종을 모두 검증한다.
  *
- * 룸 생성은 `POST /invitations/send` → `PATCH /invitations/:id/accept`가
- * 발행하는 도메인 이벤트가 RabbitMQ를 거쳐 비동기로 처리된 뒤 이루어지므로,
- * 소켓 연결 직후 `room-assigned`를 受信할 때까지 재시도한다(`connectAndWaitForRoom`).
+ * 룸 생성은 `POST /invitations/send` → `PATCH /invitations/:id/accept` 흐름으로 만든다.
+ * accept API가 반환하는 roomId를 `/invitation?roomId={roomId}` 쿼리로 넘겨
+ * 명시적인 방 입장 권한 검증과 Socket.IO 이벤트 흐름을 검증한다.
  */
 
 import { expect, test } from '@playwright/test'
 import { io, type Socket } from 'socket.io-client'
 import type {
-    BaseResponse,
     ChatMessageRequestDto,
     ChatMessageResponseItem,
     ClientToServerEvents,
@@ -26,8 +25,6 @@ import type {
     DatePicksUpdateResponseDto,
     ExcludeMenuRequestDto,
     ExcludeMenuUpdateResponseDto,
-    InvitationPostRequest,
-    InvitationResponse,
     LocationCandidateAddRequestDto,
     LocationCandidateAddUpdateResponseDto,
     LocationCandidateVoteRequestDto,
@@ -44,107 +41,21 @@ import type {
 } from '@kimdaegyu/babmukdang-shared'
 import { endpoints } from '../apis/endpoints'
 import {
+    AppSocket,
     USER_A,
     USER_B,
+    WS_BASE,
     auth,
+    connectAndWaitForRoom,
     fetchMemberId,
     login,
     readBody,
-    url
+    url,
+    waitForDisconnect,
+    waitForEvent
 } from './helpers/auth'
 
-type AppSocket = Socket<ServerToClientEvents, ClientToServerEvents>
-
-// REST와 동일하게 `BACKEND_URL` 하나로 HTTP/WS를 모두 구성한다
-// (HTTP는 `${BACKEND_URL}/api/v1`, 소켓은 `${BACKEND_URL}/{namespace}`).
-const WS_BASE = process.env.BACKEND_URL ?? 'http://localhost:3000'
-
 test.describe.configure({ mode: 'serial', retries: 0 })
-
-// ─── 소켓 헬퍼 ────────────────────────────────────────────────────────────
-
-function connectSocket(token: string): AppSocket {
-    return io(`${WS_BASE}/invitation`, {
-        auth: { token },
-        transports: ['websocket'],
-        forceNew: true
-    })
-}
-
-function waitForEvent<K extends keyof ServerToClientEvents>(
-    socket: AppSocket,
-    event: K,
-    timeoutMs = 10_000
-): Promise<Parameters<ServerToClientEvents[K]>[0]> {
-    return new Promise((resolve, reject) => {
-        const timer = setTimeout(() => {
-            socket.off(event as any, handler as any)
-            reject(
-                new Error(
-                    `[e2e] '${String(event)}' 이벤트 대기 타임아웃 (${timeoutMs}ms)`
-                )
-            )
-        }, timeoutMs)
-        const handler = (data: any) => {
-            clearTimeout(timer)
-            resolve(data)
-        }
-        socket.once(event as any, handler as any)
-    })
-}
-
-function waitForDisconnect(
-    socket: AppSocket,
-    timeoutMs = 10_000
-): Promise<void> {
-    return new Promise((resolve, reject) => {
-        const timer = setTimeout(
-            () =>
-                reject(
-                    new Error(`[e2e] disconnect 대기 타임아웃 (${timeoutMs}ms)`)
-                ),
-            timeoutMs
-        )
-        socket.once('disconnect', () => {
-            clearTimeout(timer)
-            resolve()
-        })
-        socket.once('connect_error', () => {
-            clearTimeout(timer)
-            resolve()
-        })
-    })
-}
-
-// 룸 시드는 RabbitMQ를 거쳐 비동기로 처리되므로, `room-assigned`를 받지 못하면
-// (서버가 `findRoomForParticipant` 실패 시 즉시 disconnect함) 재연결을 반복한다.
-async function connectAndWaitForRoom(
-    token: string,
-    attempts = 5,
-    perAttemptTimeoutMs = 8_000
-): Promise<{ socket: AppSocket; roomAssigned: { roomId: string } }> {
-    let lastError: unknown
-    for (let i = 0; i < attempts; i++) {
-        const socket = connectSocket(token)
-        try {
-            const roomAssigned = await waitForEvent(
-                socket,
-                'room-assigned',
-                perAttemptTimeoutMs
-            )
-            return { socket, roomAssigned }
-        } catch (err) {
-            lastError = err
-            socket.disconnect()
-            await new Promise(r => setTimeout(r, 1_000))
-        }
-    }
-    throw new Error(
-        `[e2e] room-assigned 수신 실패 (재시도 ${attempts}회 모두 실패, 마지막 에러: ${
-            lastError instanceof Error ? lastError.message : String(lastError)
-        })`
-    )
-}
 
 // ─── 계정/룸 준비 ─────────────────────────────────────────────────────────
 
@@ -174,8 +85,9 @@ test.beforeAll(async ({ request }) => {
             message: 'E2E 소켓 테스트 초대장'
         }
     })
+    console.log(sendRes)
     const sendBody = await readBody(sendRes)
-
+    console.log(sendBody)
     // turn-001 todo 기록(docs/todo/backend-api-e2e-response-dto-gaps.md)에 따르면
     // `POST /invitations/send` 응답은 `id`가 아니라 `invitationId` 필드를 사용한다.
     const id = sendBody?.data ?? sendBody?.invitationId
@@ -185,27 +97,28 @@ test.beforeAll(async ({ request }) => {
         )
     }
     invitationId = id
-    function decodeJwtPayload(token: string) {
-        const payload = token.split('.')[1]
-        return JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'))
-    }
 
-    console.log('[e2e] tokenA payload', decodeJwtPayload(tokenA))
-    console.log('[e2e] tokenB payload', decodeJwtPayload(tokenB))
-    console.log('[e2e] memberIdA/memberIdB', memberIdA, memberIdB)
     const acceptRes = await request.patch(
         url(endpoints.invitations.accept(invitationId)),
         {
             headers: auth(tokenB)
         }
     )
-    console.log(acceptRes, await readBody(acceptRes))
+    const acceptBody = await readBody(acceptRes)
+    console.log(acceptRes, acceptBody)
     expect([200, 201]).toContain(acceptRes.status())
 
-    // 두 사용자 모두 같은 매칭방에 접속한다 (roomId 쿼리 없이 자동 탐색).
+    const acceptedRoomId = acceptBody?.data?.room?.roomId
+    if (typeof acceptedRoomId !== 'string' || acceptedRoomId.length === 0) {
+        throw new Error(
+            `[e2e] PATCH /invitations/:id/accept 응답에 room.roomId가 없습니다: body=${JSON.stringify(acceptBody)}`
+        )
+    }
+
+    // 두 사용자 모두 accept API가 반환한 roomId를 명시해서 같은 매칭방에 접속한다.
     const [a, b] = await Promise.all([
-        connectAndWaitForRoom(tokenA),
-        connectAndWaitForRoom(tokenB)
+        connectAndWaitForRoom(tokenA, acceptedRoomId),
+        connectAndWaitForRoom(tokenB, acceptedRoomId)
     ])
     console.log('접속 완료', a, b)
     socketA = a.socket
@@ -255,12 +168,12 @@ test.describe('연결/인증', () => {
     })
 })
 
-// ─── 2. 양방향 이벤트 (SocketServerEventMap 9종 전부) ─────────────────────
+// ─── 2. 양방향 이벤트 / Room lifecycle ───────────────────────────────────
 //
-// 각 테스트는 userA가 emit → userA·userB 양쪽 소켓이 대응 브로드캐스트를
-// 수신하는지, 그리고 페이로드가 Shared 타입과 일치하는지 검증한다.
-// 일부 이벤트는 방의 진행 단계(stage)에 의존하므로 serial로 실행하고
-// 전제 조건을 각 테스트 상단 주석에 명시한다.
+// RoomLifecycleService는 현재 stage에서 허용된 이벤트만 처리한다.
+// 따라서 E2E도 단순 이벤트 나열이 아니라 아래 순서의 실제 room lifecycle을 따른다.
+//
+// waiting → date → time → location → location-vote → exclude-menu → menu → restaurant → finish
 
 async function emitAndExpectBroadcast<
     ServerEvent extends keyof ClientToServerEvents,
@@ -277,24 +190,48 @@ async function emitAndExpectBroadcast<
     return Promise.all(waiters)
 }
 
-test.describe('양방향 이벤트 — SocketServerEventMap 9종', () => {
-    test('1) ready-state → ready-state-changed', async () => {
-        const payload: ReadyStateRequestDto = { isReady: true }
-        const [resA, resB] = await emitAndExpectBroadcast<
-            'ready-state',
-            'ready-state-changed'
-        >(
-            socketA,
-            [socketA, socketB],
-            'ready-state',
-            payload,
-            'ready-state-changed'
-        )
-        const a = resA as ReadyStateChangedDto
-        const b = resB as ReadyStateChangedDto
-        expect(typeof a.readyCount).toBe('number')
-        expect(typeof a.participantCount).toBe('number')
-        expect(b).toEqual(a)
+async function readyBothAndExpectStage(expectedPhase: string): Promise<void> {
+    const payload: ReadyStateRequestDto = { isReady: true }
+
+    await emitAndExpectBroadcast<'ready-state', 'ready-state-changed'>(
+        socketA,
+        [socketA, socketB],
+        'ready-state',
+        payload,
+        'ready-state-changed'
+    )
+
+    const stageWaiters = [
+        waitForEvent(socketA, 'stage-changed'),
+        waitForEvent(socketB, 'stage-changed')
+    ]
+
+    const [readyA, readyB] = await emitAndExpectBroadcast<
+        'ready-state',
+        'ready-state-changed'
+    >(
+        socketB,
+        [socketA, socketB],
+        'ready-state',
+        payload,
+        'ready-state-changed'
+    )
+
+    expect(readyA).toEqual(readyB)
+    expect(readyA.readyCount).toBe(2)
+    expect(readyA.participantCount).toBe(2)
+
+    const [stageA, stageB] = await Promise.all(stageWaiters)
+
+    expect(stageA).toEqual(stageB)
+    expect(stageA.phase).toBe(expectedPhase)
+}
+
+let locationId = ''
+
+test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
+    test('1) ready-state → stage-changed(date)', async () => {
+        await readyBothAndExpectStage('date')
     })
 
     test('2) chat-message → chat-message', async () => {
@@ -311,7 +248,7 @@ test.describe('양방향 이벤트 — SocketServerEventMap 9종', () => {
         expect(b).toEqual(a)
     })
 
-    test('3) pick-date → date-updated', async () => {
+    test('3) date 단계: pick-date → date-updated', async () => {
         const payload: DatePicksRequestDto = { dates: ['2099-12-31'] }
         const [resA, resB] = await emitAndExpectBroadcast<
             'pick-date',
@@ -324,9 +261,31 @@ test.describe('양방향 이벤트 — SocketServerEventMap 9종', () => {
         expect(resB).toEqual(resA)
     })
 
-    test('4) add-location-candidate → location-add-updated', async () => {
+    test('4) date 완료 → stage-changed(time)', async () => {
+        await readyBothAndExpectStage('time')
+    })
+
+    test('5) time 단계: pick-times → time-updated', async () => {
+        const payload: TimePicksRequestDto = { times: ['12:00', '13:00'] }
+        const [resA, resB] = await emitAndExpectBroadcast<
+            'pick-times',
+            'time-updated'
+        >(socketA, [socketA, socketB], 'pick-times', payload, 'time-updated')
+        const a = resA as TimePicksUpdateResponseDto
+        expect(Array.isArray(a)).toBe(true)
+        const mine = a.find(item => item.userId === memberIdA)
+        expect(mine?.times).toEqual(payload.times)
+        expect(resB).toEqual(resA)
+    })
+
+    test('6) time 완료 → stage-changed(location)', async () => {
+        await readyBothAndExpectStage('location')
+    })
+
+    test('7) location 단계: add-location-candidate → location-add-updated', async () => {
+        locationId = `e2e-loc-${Date.now()}`
         const payload: LocationCandidateAddRequestDto = {
-            id: `e2e-loc-${Date.now()}`,
+            id: locationId,
             placeName: 'E2E 테스트 장소',
             lat: 37.5,
             lng: 127.0,
@@ -350,27 +309,13 @@ test.describe('양방향 이벤트 — SocketServerEventMap 9종', () => {
         expect(resB).toEqual(resA)
     })
 
-    test('5) vote-location → location-vote-updated (전제: 4번에서 후보가 추가되어 있어야 함)', async () => {
-        const payload: LocationCandidateVoteRequestDto = {
-            locationId: `e2e-loc-${Date.now()}`
-        }
-        // 직전 테스트(4번)에서 추가한 후보가 없을 수 있으므로, 우선 후보를 다시 하나 추가한 뒤 투표한다
-        const addPayload: LocationCandidateAddRequestDto = {
-            id: payload.locationId,
-            placeName: 'E2E 투표용 장소',
-            lat: 37.5,
-            lng: 127.0
-        }
-        await emitAndExpectBroadcast<
-            'add-location-candidate',
-            'location-add-updated'
-        >(
-            socketA,
-            [socketA],
-            'add-location-candidate',
-            addPayload,
-            'location-add-updated'
-        )
+    test('8) location 완료 → stage-changed(location-vote)', async () => {
+        await readyBothAndExpectStage('location-vote')
+    })
+
+    test('9) location-vote 단계: vote-location → location-vote-updated', async () => {
+        expect(locationId.length).toBeGreaterThan(0)
+        const payload: LocationCandidateVoteRequestDto = { locationId }
 
         const [resA, resB] = await emitAndExpectBroadcast<
             'vote-location',
@@ -389,20 +334,11 @@ test.describe('양방향 이벤트 — SocketServerEventMap 9종', () => {
         expect(resB).toEqual(resA)
     })
 
-    test('6) pick-times → time-updated', async () => {
-        const payload: TimePicksRequestDto = { times: ['12:00', '13:00'] }
-        const [resA, resB] = await emitAndExpectBroadcast<
-            'pick-times',
-            'time-updated'
-        >(socketA, [socketA, socketB], 'pick-times', payload, 'time-updated')
-        const a = resA as TimePicksUpdateResponseDto
-        expect(Array.isArray(a)).toBe(true)
-        const mine = a.find(item => item.userId === memberIdA)
-        expect(mine?.times).toEqual(payload.times)
-        expect(resB).toEqual(resA)
+    test('10) location-vote 완료 → stage-changed(exclude-menu)', async () => {
+        await readyBothAndExpectStage('exclude-menu')
     })
 
-    test('7) exclude-menu → exclude-menu-updated', async () => {
+    test('11) exclude-menu 단계: exclude-menu → exclude-menu-updated', async () => {
         const payload: ExcludeMenuRequestDto = {
             menu: { code: 'KOREAN', label: '한식' }
         }
@@ -425,7 +361,11 @@ test.describe('양방향 이벤트 — SocketServerEventMap 9종', () => {
         expect(resB).toEqual(resA)
     })
 
-    test('8) pick-menu → menu-pick-updated', async () => {
+    test('12) exclude-menu 완료 → stage-changed(menu)', async () => {
+        await readyBothAndExpectStage('menu')
+    })
+
+    test('13) menu 단계: pick-menu → menu-pick-updated', async () => {
         const payload: MenuPickRequestDto = { menuCode: 'KOREAN' }
         const [resA, resB] = await emitAndExpectBroadcast<
             'pick-menu',
@@ -444,7 +384,11 @@ test.describe('양방향 이벤트 — SocketServerEventMap 9종', () => {
         expect(resB).toEqual(resA)
     })
 
-    test('9) pick-restaurant → restaurant-pick-updated', async () => {
+    test('14) menu 완료 → stage-changed(restaurant)', async () => {
+        await readyBothAndExpectStage('restaurant')
+    })
+
+    test('15) restaurant 단계: pick-restaurant → restaurant-pick-updated', async () => {
         const payload: RestaurantPickRequestDto = {
             restaurantId: 'e2e-restaurant-1'
         }
@@ -465,5 +409,9 @@ test.describe('양방향 이벤트 — SocketServerEventMap 9종', () => {
         )
         expect(picked?.selectedUsers).toContain(memberIdA)
         expect(resB).toEqual(resA)
+    })
+
+    test('16) restaurant 완료 → stage-changed(finish)', async () => {
+        await readyBothAndExpectStage('finish')
     })
 })

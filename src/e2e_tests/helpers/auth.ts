@@ -9,8 +9,14 @@
 import type { APIRequestContext } from '@playwright/test'
 import { expect } from '@playwright/test'
 import { endpoints } from '../../apis/endpoints'
+import { io, type Socket } from 'socket.io-client'
+import {
+    ClientToServerEvents,
+    ServerToClientEvents
+} from '@kimdaegyu/babmukdang-shared'
 
-export const BASE = (process.env.BACKEND_URL ?? 'http://localhost:3000') + '/api/v1'
+export const BASE =
+    (process.env.BACKEND_URL ?? 'http://localhost:3000') + '/api/v1'
 
 export function url(path: string): string {
     return `${BASE}${path}`
@@ -119,4 +125,137 @@ export const USER_A = {
 export const USER_B = {
     email: `e2e-user-b@babmukdang.test`,
     username: 'E2E유저B'
+}
+
+export type AppSocket = Socket<ServerToClientEvents, ClientToServerEvents>
+
+// REST와 동일하게 `BACKEND_URL` 하나로 HTTP/WS를 모두 구성한다
+// (HTTP는 `${BACKEND_URL}/api/v1`, 소켓은 `${BACKEND_URL}/{namespace}`).
+export const WS_BASE = process.env.BACKEND_URL ?? 'http://localhost:3000'
+
+// ─── 소켓 헬퍼 ────────────────────────────────────────────────────────────
+
+export function connectSocket(token: string, roomId?: string): AppSocket {
+    return io(`${WS_BASE}/invitation`, {
+        auth: { token },
+        query: roomId ? { roomId } : undefined,
+        transports: ['websocket'],
+        forceNew: true
+    })
+}
+
+export function waitForEvent<K extends keyof ServerToClientEvents>(
+    socket: AppSocket,
+    event: K,
+    timeoutMs = 10_000
+): Promise<Parameters<ServerToClientEvents[K]>[0]> {
+    return new Promise((resolve, reject) => {
+        const cleanup = () => {
+            clearTimeout(timer)
+            socket.off(event as any, handler as any)
+            socket.off('exception' as any, onException as any)
+            socket.off('disconnect', onDisconnect)
+            socket.off('connect_error', onConnectError)
+        }
+
+        const timer = setTimeout(() => {
+            cleanup()
+            reject(
+                new Error(
+                    `[e2e] '${String(event)}' 이벤트 대기 타임아웃 (${timeoutMs}ms), connected=${socket.connected}, socketId=${socket.id ?? 'none'}`
+                )
+            )
+        }, timeoutMs)
+
+        const handler = (data: any) => {
+            cleanup()
+            resolve(data)
+        }
+
+        const onException = (error: any) => {
+            cleanup()
+            reject(
+                new Error(
+                    `[e2e] '${String(event)}' 대기 중 서버 WebSocket exception 수신: ${JSON.stringify(error)}`
+                )
+            )
+        }
+
+        const onDisconnect = (reason: string) => {
+            cleanup()
+            reject(
+                new Error(
+                    `[e2e] '${String(event)}' 대기 중 disconnect: ${reason}`
+                )
+            )
+        }
+
+        const onConnectError = (error: Error) => {
+            cleanup()
+            reject(
+                new Error(
+                    `[e2e] '${String(event)}' 대기 중 connect_error: ${error.message}`
+                )
+            )
+        }
+
+        socket.once(event as any, handler as any)
+        socket.once('exception' as any, onException as any)
+        socket.once('disconnect', onDisconnect)
+        socket.once('connect_error', onConnectError)
+    })
+}
+
+export function waitForDisconnect(
+    socket: AppSocket,
+    timeoutMs = 10_000
+): Promise<void> {
+    return new Promise((resolve, reject) => {
+        const timer = setTimeout(
+            () =>
+                reject(
+                    new Error(`[e2e] disconnect 대기 타임아웃 (${timeoutMs}ms)`)
+                ),
+            timeoutMs
+        )
+        socket.once('disconnect', () => {
+            clearTimeout(timer)
+            resolve()
+        })
+        socket.once('connect_error', () => {
+            clearTimeout(timer)
+            resolve()
+        })
+    })
+}
+
+// accept API가 반환한 roomId를 명시해 접속한다. room-assigned를 받지 못하면
+// 테스트 환경의 일시적인 소켓 접속 지연을 고려해 짧게 재시도한다.
+export async function connectAndWaitForRoom(
+    token: string,
+    roomId: string,
+    attempts = 5,
+    perAttemptTimeoutMs = 8_000
+): Promise<{ socket: AppSocket; roomAssigned: { roomId: string } }> {
+    let lastError: unknown
+    for (let i = 0; i < attempts; i++) {
+        const socket = connectSocket(token, roomId)
+        try {
+            const roomAssigned = await waitForEvent(
+                socket,
+                'room-assigned',
+                perAttemptTimeoutMs
+            )
+            return { socket, roomAssigned }
+        } catch (err) {
+            lastError = err
+            socket.disconnect()
+            await new Promise(r => setTimeout(r, 1_000))
+        }
+    }
+    throw new Error(
+        `[e2e] room-assigned 수신 실패 (재시도 ${attempts}회 모두 실패, 마지막 에러: ${
+            lastError instanceof Error ? lastError.message : String(lastError)
+        })`
+    )
 }
