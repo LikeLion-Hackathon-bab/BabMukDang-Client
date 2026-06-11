@@ -33,13 +33,17 @@ export default defineConfig({
             }
         }),
         VitePWA({
+            injectRegister: false,
             registerType: 'autoUpdate',
             devOptions: {
-                enabled: true,
+                enabled: false,
                 type: 'module',
                 navigateFallback: 'index.html'
             },
             workbox: {
+                cleanupOutdatedCaches: true,
+                clientsClaim: true,
+                skipWaiting: true,
                 disableDevLogs: true,
                 maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // 4194304 bytes
             },
