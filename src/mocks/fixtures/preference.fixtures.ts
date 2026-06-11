@@ -1,7 +1,5 @@
 /**
  * @fileoverview Preference (선호도) 관련 Mock Fixtures
- *
- * 선호도 관련 테스트 및 개발용 mock 데이터를 정의합니다.
  */
 
 import type {
@@ -9,45 +7,43 @@ import type {
     PreferenceMetaResponse,
     PreferenceItem
 } from '@/apis'
+import { domainFood } from '@/domain/factories'
 
-/**
- * 선호도 항목 mock 데이터
- */
 export const mockPreferenceItems: {
+    liked: PreferenceItem[]
+    disliked: PreferenceItem[]
+    allergy: PreferenceItem[]
     likes: PreferenceItem[]
     dislikes: PreferenceItem[]
     allergies: PreferenceItem[]
-} = {
-    likes: [
-        { code: '10000001', label: '한식' },
-        { code: '10000002', label: '일식' },
-        { code: '10000003', label: '양식' },
-        { code: '10000004', label: '분식' }
-    ],
-    dislikes: [
-        { code: '20000001', label: '향신료' },
-        { code: '20000002', label: '고수' }
-    ],
-    allergies: [
-        { code: '30000001', label: '땅콩' },
-        { code: '30000002', label: '갑각류' }
+} = (() => {
+    const liked = [
+        domainFood('10000001', '한식'),
+        domainFood('10000002', '일식'),
+        domainFood('10000003', '양식'),
+        domainFood('10000004', '분식')
     ]
-}
+    const disliked = [domainFood('20000001', '향신료'), domainFood('20000002', '고수')]
+    const allergy = [domainFood('30000001', '땅콩'), domainFood('30000002', '갑각류')]
+    return {
+        liked,
+        disliked,
+        allergy,
+        // Legacy aliases for view-only callers during migration.
+        likes: liked,
+        dislikes: disliked,
+        allergies: allergy
+    }
+})()
 
-/**
- * 선호도 요약 응답 mock 데이터
- */
 export const mockPreferenceSummary: PreferenceSummaryResponse = {
-    likes: mockPreferenceItems.likes,
-    dislikes: mockPreferenceItems.dislikes,
-    allergies: mockPreferenceItems.allergies
+    liked: mockPreferenceItems.liked,
+    disliked: mockPreferenceItems.disliked,
+    allergy: mockPreferenceItems.allergy
 }
 
-/**
- * 선호도 메타 정보 응답 mock 데이터
- */
 export const mockPreferenceMeta: PreferenceMetaResponse = {
-    onboardedAt: '2024-01-15T10:30:00',
-    lastUpdatedAt: '2024-12-15T14:20:00',
-    revision: 3
+    likes: mockPreferenceItems.liked,
+    dislikes: mockPreferenceItems.disliked,
+    allergies: mockPreferenceItems.allergy
 }

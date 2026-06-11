@@ -13,8 +13,9 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { client } from './client'
-import { endpoints } from './endpoints'
+import { contractClient } from './client'
+import { apiContract } from '@kimdaegyu/babmukdang-shared/domain'
+import { domainId } from '@/domain/factories'
 import { queryKeys } from './keys'
 import type {
     FriendBlockItemResponse,
@@ -22,9 +23,9 @@ import type {
     FriendMealFilter,
     FriendMealListResponse,
     FriendRequestItemResponse,
-    MutationOptions
+    MutationOptions,
+    NoContent
 } from './types'
-import { responses } from './responses'
 
 // ============================================================================
 // API 함수
@@ -36,59 +37,73 @@ import { responses } from './responses'
 
 export const friendsApi = {
     getMeals: async (filter: FriendMealFilter['filter'] = 'ALL') => {
-        return client.get(responses.friends.meals, {
-            params: { filter }
+        return contractClient.get(apiContract.mealStatus.friendMealStatus, {
+            query: { status: filter }
         })
     },
 
     getFriends: async () => {
-        return client.get(responses.friends.list)
+        return contractClient.get(apiContract.friends.list)
     },
 
     searchFriends: async (keyword: string) => {
-        return client.get(responses.friends.search, {
-            params: { keyword }
+        return contractClient.get(apiContract.members.search, {
+            query: { username: keyword }
         })
     },
 
     removeFriend: async (memberId: number) => {
-        return client.delete(responses.friends.remove(memberId))
+        return contractClient.delete(apiContract.friends.unfriend, {
+            pathParams: { memberId: domainId.member(memberId) }
+        })
     },
 
     getBlocks: async () => {
-        return client.get(responses.friends.blocks)
+        return contractClient.get(apiContract.friends.blockList)
     },
 
     blockMember: async (memberId: number) => {
-        return client.post(responses.friends.block(memberId))
+        return contractClient.post(apiContract.friends.block, {
+            pathParams: { memberId: domainId.member(memberId) }
+        })
     },
 
-    unblockMember: async (memberId: number): Promise<void> => {
-        await client.delete(responses.friends.unblock(memberId))
+    unblockMember: async (memberId: number): Promise<NoContent> => {
+        return contractClient.delete(apiContract.friends.unblock, {
+            pathParams: { memberId: domainId.member(memberId) }
+        })
     },
 
     getIncomingRequests: async () => {
-        return client.get(responses.friends.requestsIncoming)
+        return contractClient.get(apiContract.friends.incomingRequest)
     },
 
     getOutgoingRequests: async () => {
-        return client.get(responses.friends.requestsOutgoing)
+        return contractClient.get(apiContract.friends.outgoingRequest)
     },
 
-    sendRequest: async (memberId: number) => {
-        return client.post(responses.friends.sendRequest(memberId))
+    sendRequest: async (memberId: number): Promise<NoContent> => {
+        return contractClient.post(apiContract.friends.sendRequest, {
+            pathParams: { memberId: domainId.member(memberId) }
+        })
     },
 
     acceptRequest: async (requestId: number) => {
-        return client.post(responses.friends.acceptRequest(requestId))
+        return contractClient.post(apiContract.friends.acceptRequest, {
+            pathParams: { requestId: domainId.friendRequest(requestId) }
+        })
     },
 
     rejectRequest: async (requestId: number) => {
-        return client.post(responses.friends.rejectRequest(requestId))
+        return contractClient.post(apiContract.friends.rejectRequest, {
+            pathParams: { requestId: domainId.friendRequest(requestId) }
+        })
     },
 
     cancelRequest: async (requestId: number) => {
-        return client.delete(responses.friends.cancelRequest(requestId))
+        return contractClient.delete(apiContract.friends.cancelRequest, {
+            pathParams: { requestId: domainId.friendRequest(requestId) }
+        })
     }
 }
 
@@ -196,15 +211,15 @@ const invalidateFriendGraph = (
 /**
  * 친구 요청 생성 Hook
  */
-export const useSendFriendRequest = (options: MutationOptions = {}) => {
+export const useSendFriendRequest = (options: MutationOptions<NoContent> = {}) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: (memberId: number) => friendsApi.sendRequest(memberId),
-        onSuccess: () => {
+        onSuccess: data => {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.friends.requestsOutgoing
             })
-            options.onSuccess?.()
+            options.onSuccess?.(data)
         },
         onError: options.onError
     })
@@ -215,13 +230,13 @@ export const useSendFriendRequest = (options: MutationOptions = {}) => {
  * 친구 요청 수락 Hook
  * 수락 성공 시 friends/friend meals/invitations/articles/recruits를 무효화한다.
  */
-export const useAcceptFriendRequest = (options: MutationOptions = {}) => {
+export const useAcceptFriendRequest = (options: MutationOptions<NoContent> = {}) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: (requestId: number) => friendsApi.acceptRequest(requestId),
-        onSuccess: () => {
+        onSuccess: data => {
             invalidateFriendGraph(queryClient)
-            options.onSuccess?.()
+            options.onSuccess?.(data)
         },
         onError: options.onError
     })
@@ -231,15 +246,15 @@ export const useAcceptFriendRequest = (options: MutationOptions = {}) => {
 /**
  * 친구 요청 거절 Hook
  */
-export const useRejectFriendRequest = (options: MutationOptions = {}) => {
+export const useRejectFriendRequest = (options: MutationOptions<NoContent> = {}) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: (requestId: number) => friendsApi.rejectRequest(requestId),
-        onSuccess: () => {
+        onSuccess: data => {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.friends.requestsIncoming
             })
-            options.onSuccess?.()
+            options.onSuccess?.(data)
         },
         onError: options.onError
     })
@@ -249,15 +264,15 @@ export const useRejectFriendRequest = (options: MutationOptions = {}) => {
 /**
  * 친구 요청 취소 Hook
  */
-export const useCancelFriendRequest = (options: MutationOptions = {}) => {
+export const useCancelFriendRequest = (options: MutationOptions<NoContent> = {}) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: (requestId: number) => friendsApi.cancelRequest(requestId),
-        onSuccess: () => {
+        onSuccess: data => {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.friends.requestsOutgoing
             })
-            options.onSuccess?.()
+            options.onSuccess?.(data)
         },
         onError: options.onError
     })
@@ -268,13 +283,13 @@ export const useCancelFriendRequest = (options: MutationOptions = {}) => {
  * 멤버 차단 Hook
  * 차단 성공 시 친구 graph 묶음을 무효화한다.
  */
-export const useBlockMember = (options: MutationOptions = {}) => {
+export const useBlockMember = (options: MutationOptions<NoContent> = {}) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: (memberId: number) => friendsApi.blockMember(memberId),
-        onSuccess: () => {
+        onSuccess: data => {
             invalidateFriendGraph(queryClient)
-            options.onSuccess?.()
+            options.onSuccess?.(data)
         },
         onError: options.onError
     })
@@ -284,13 +299,13 @@ export const useBlockMember = (options: MutationOptions = {}) => {
 /**
  * 멤버 차단 해제 Hook
  */
-export const useUnblockMember = (options: MutationOptions = {}) => {
+export const useUnblockMember = (options: MutationOptions<NoContent> = {}) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: (memberId: number) => friendsApi.unblockMember(memberId),
-        onSuccess: () => {
+        onSuccess: data => {
             queryClient.invalidateQueries({ queryKey: queryKeys.friends.all })
-            options.onSuccess?.()
+            options.onSuccess?.(data)
         },
         onError: options.onError
     })
@@ -300,13 +315,13 @@ export const useUnblockMember = (options: MutationOptions = {}) => {
 /**
  * 친구 삭제 Hook
  */
-export const useRemoveFriend = (options: MutationOptions = {}) => {
+export const useRemoveFriend = (options: MutationOptions<NoContent> = {}) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: (memberId: number) => friendsApi.removeFriend(memberId),
-        onSuccess: () => {
+        onSuccess: data => {
             queryClient.invalidateQueries({ queryKey: queryKeys.friends.all })
-            options.onSuccess?.()
+            options.onSuccess?.(data)
         },
         onError: options.onError
     })

@@ -1,7 +1,8 @@
 /**
  * @fileoverview Challenge (챌린지) 관련 Mock Fixtures
  *
- * 챌린지 관련 테스트 및 개발용 mock 데이터를 정의합니다.
+ * Shared challenge status is currently a minimal stub ({ count }). Keep richer
+ * week/month view data separate until the domain contract is finalized.
  */
 
 import type {
@@ -10,37 +11,25 @@ import type {
     MonthProgress
 } from '@/apis'
 
-/**
- * 주간 진행 상황 mock 데이터
- */
 export const mockWeekProgress: WeekProgress = {
-    days: [true, true, false, true, false, false, false], // 월화수목금토일
+    days: [true, true, false, true, false, false, false],
     completed: 3,
     goal: 5
 }
 
-/**
- * 월간 진행 상황 mock 데이터
- */
 export const mockMonthProgress: MonthProgress = {
     count: 12,
     goal: 20
 }
 
-/**
- * 챌린지 상태 응답 mock 데이터 (진행 중)
- */
-export const mockChallengeStatusInProgress: ChallengeStatusResponse = {
+export const mockChallengeStatusView = {
     week: mockWeekProgress,
     month: mockMonthProgress,
     weekRewardAvailable: false,
     monthRewardAvailable: false
 }
 
-/**
- * 챌린지 상태 응답 mock 데이터 (주간 목표 달성)
- */
-export const mockChallengeStatusWeekComplete: ChallengeStatusResponse = {
+export const mockChallengeStatusWeekCompleteView = {
     week: {
         days: [true, true, true, true, true, false, false],
         completed: 5,
@@ -51,8 +40,13 @@ export const mockChallengeStatusWeekComplete: ChallengeStatusResponse = {
     monthRewardAvailable: false
 }
 
-/**
- * 기본 챌린지 상태 응답 mock
- */
+export const mockChallengeStatusInProgress: ChallengeStatusResponse = {
+    count: mockMonthProgress.count
+}
+
+export const mockChallengeStatusWeekComplete: ChallengeStatusResponse = {
+    count: 5
+}
+
 export const mockChallengeStatus: ChallengeStatusResponse =
     mockChallengeStatusInProgress

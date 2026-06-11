@@ -13,6 +13,7 @@ const dirname =
     typeof __dirname !== 'undefined'
         ? __dirname
         : path.dirname(fileURLToPath(import.meta.url))
+const sharedDomainDir = path.resolve(dirname, '../BabMukDang-Shared/src/domain')
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
@@ -71,6 +72,26 @@ export default defineConfig({
     ],
     resolve: {
         alias: [
+            {
+                find: '@kimdaegyu/babmukdang-shared/domain',
+                replacement: path.resolve(dirname, '../BabMukDang-Shared/src/domain/index.ts')
+            },
+            {
+                find: '@kimdaegyu/babmukdang-shared',
+                replacement: path.resolve(dirname, '../BabMukDang-Shared/src/index.ts')
+            },
+            { find: '@/article', replacement: path.join(sharedDomainDir, 'article') },
+            { find: '@/auth', replacement: path.join(sharedDomainDir, 'auth') },
+            { find: '@/common', replacement: path.join(sharedDomainDir, 'common') },
+            { find: '@/friend', replacement: path.join(sharedDomainDir, 'friend') },
+            { find: '@/invitation', replacement: path.join(sharedDomainDir, 'invitation') },
+            { find: '@/meal', replacement: path.join(sharedDomainDir, 'meal') },
+            { find: '@/member', replacement: path.join(sharedDomainDir, 'member') },
+            { find: '@/plan', replacement: path.join(sharedDomainDir, 'plan') },
+            { find: '@/promotion', replacement: path.join(sharedDomainDir, 'promotion') },
+            { find: '@/recruit', replacement: path.join(sharedDomainDir, 'recruit') },
+            { find: '@/restaurant', replacement: path.join(sharedDomainDir, 'restaurant') },
+            { find: '@/room', replacement: path.join(sharedDomainDir, 'room') },
             {
                 find: '@',
                 replacement: '/src'

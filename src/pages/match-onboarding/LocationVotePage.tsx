@@ -1,10 +1,9 @@
 import { LocationVoteItem } from '@/components'
 import { useSocket } from '@/contexts/SocketContext'
 import { useEffect, useState } from 'react'
-import type {
-    LocationVoteInitialState,
-    LocationCandidateAddUpdateResponseDto
-} from '@kimdaegyu/babmukdang-shared'
+import type { LocationCandidate, MemberId } from '@kimdaegyu/babmukdang-shared/domain'
+type LocationCandidateAddUpdateResponseDto = (LocationCandidate & { authorMemberId?: MemberId })[]
+type LocationVoteInitialState = { locations: LocationCandidateAddUpdateResponseDto }
 
 export function LocationVotePage() {
     const { phaseData, socket } = useSocket()
@@ -22,7 +21,7 @@ export function LocationVotePage() {
     const handleLocationSelect = (id: string) => {
         setSelectedLocation(id)
         socket?.emit('vote-location', {
-            locationId: id
+            locationId: id as LocationCandidate['locationId']
         })
     }
     return (
@@ -30,10 +29,10 @@ export function LocationVotePage() {
             <div className="mt-20 flex flex-col gap-13">
                 {locationCandidates.map(location => (
                     <LocationVoteItem
-                        key={location.id}
-                        location={location}
+                        key={location.locationId}
+                        location={{ ...location, id: location.locationId }}
                         handleLocationSelect={handleLocationSelect}
-                        isSelected={selectedLocation === location.id}
+                        isSelected={selectedLocation === location.locationId}
                     />
                 ))}
             </div>

@@ -7,7 +7,7 @@ export interface Comment {
     parentCommentId: number | null
     content: string
     createdAt: string
-    profileImageUrl?: string
+    profileImageUrl?: string | null
     replies?: Comment[] // 트리 변환 후에만 생김
 }
 

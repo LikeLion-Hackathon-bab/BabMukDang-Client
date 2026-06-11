@@ -6,9 +6,10 @@
 
 import { http, HttpResponse } from 'msw'
 import { endpoints, api } from '@/apis'
+import { API_BASE_URL } from '@/apis/baseUrl'
 import { mockMealStatus, mockFedStatus } from '@/mocks/fixtures'
 
-const BASE_URL = import.meta.env.VITE_SERVER_URL || ''
+const BASE_URL = API_BASE_URL
 
 // 현재 식사 상태 (mutatable for testing)
 let currentMealStatus = { ...mockMealStatus }
@@ -36,9 +37,9 @@ export const mealStatusHandlers = [
             console.log('[MSW] 식사 상태 업데이트:', body)
 
             // 상태 업데이트
-            if (body.action === 'ATE_NOW') {
+            if (body.action === 'ARTICLE_UPLOAD') {
                 currentMealStatus = { ...mockFedStatus }
-            } else if (body.action === 'SET_OFF') {
+            } else if (body.action === 'SET_MANNUALY') {
                 currentMealStatus = { ...mockMealStatus }
             }
 

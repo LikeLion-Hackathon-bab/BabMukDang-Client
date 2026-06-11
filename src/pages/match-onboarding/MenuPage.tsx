@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import type { Menu, MenuInitialState } from '@kimdaegyu/babmukdang-shared'
+import type { Menu } from '@kimdaegyu/babmukdang-shared/domain'
+type MenuInitialState = { initialMenus: Menu[] }
 
 import { useSocket } from '@/contexts/SocketContext'
 import { MenuCard } from '@/components'
@@ -15,7 +16,7 @@ export function MenuPage() {
         }
     }, [phaseData])
 
-    const handleSelectMenu = (menuCode: string) => {
+    const handleSelectMenu = (menuCode: Menu['code']) => {
         socket?.emit('pick-menu', { menuCode })
     }
 
@@ -27,7 +28,7 @@ export function MenuPage() {
                         key={menu.code}
                         selectedUsers={
                             menuPicks.find(pick => pick.menuCode === menu.code)
-                                ?.selectedUsers
+                                ?.selectedMembers.map(String)
                         }
                         menuName={menu.label}
                         category={categories.find(

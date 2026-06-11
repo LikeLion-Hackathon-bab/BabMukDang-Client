@@ -1,16 +1,12 @@
 import { useEffect, useState } from 'react'
 import type {
-    ChatMessage,
-    ChatMessageResponseItem,
+    ChatMessageResponse,
     RoomInitialState
-} from '@kimdaegyu/babmukdang-shared'
+} from '@kimdaegyu/babmukdang-shared/domain'
 import type { AppSocket } from './types'
 
-/**
- * 채팅 도메인 훅.
- * - `join-room`: 입장 시 채팅 히스토리 seed (`RoomInitialState.chat`)
- * - `chat-message`: 신규 메시지 append
- */
+export type ChatMessage = ChatMessageResponse
+
 export function useRoomChat(socket: AppSocket | null) {
     const [chatMessages, setChatMessages] = useState<ChatMessage[]>([])
 
@@ -20,7 +16,7 @@ export function useRoomChat(socket: AppSocket | null) {
         const handleJoinRoom = (state: RoomInitialState) => {
             setChatMessages(state.chat)
         }
-        const handleChatMessage = (message: ChatMessageResponseItem) => {
+        const handleChatMessage = (message: ChatMessageResponse) => {
             setChatMessages(prev => [...prev, message])
         }
 

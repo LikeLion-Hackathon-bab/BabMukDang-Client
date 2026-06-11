@@ -5,105 +5,103 @@ import type {
     ArticleSummaryResponse,
     CommentDto,
     CommentResponse,
-    KakaoRestaurantResponse,
     PageArticleSummaryDto,
     PageArticleSummaryResponse,
-    RestaurantInfo
+    RestaurantInfo,
+    RestaurantResponseDto
 } from '../types'
 
-type DateLike = Date | string
+const toDateOnly = (value: string): string => value.split('T')[0]
 
-const toIsoString = (value: DateLike): string => {
-    if (value instanceof Date) {
-        return value.toISOString()
-    }
-
-    return value
-}
-
-const toDateOnly = (value: DateLike): string => toIsoString(value).split('T')[0]
-
-export const mapKakaoRestaurantToRestaurantInfo = (
-    restaurant: KakaoRestaurantResponse
+export const mapRestaurantToRestaurantInfo = (
+    restaurant: RestaurantResponseDto
 ): RestaurantInfo => ({
-    placeId: restaurant.id,
-    placeName: restaurant.place_name,
-    addressName: restaurant.address_name,
-    roadAddressName: restaurant.road_address_name,
-    phoneNumber: restaurant.phone,
-    placeUrl: restaurant.place_url ?? '',
+    placeId: String(restaurant.restaurantId),
+    placeName: restaurant.placeName,
+    addressName: restaurant.addressName,
+    roadAddressName: restaurant.roadAddressName,
+    phoneNumber: restaurant.phone ?? '',
+    placeUrl: restaurant.placeUrl ?? '',
     distance: restaurant.distance,
     categoryGroupCode: '',
-    categoryGroupName: restaurant.category_group_name,
-    categoryName: restaurant.category_name,
+    categoryGroupName: restaurant.categoryGroupName,
+    categoryName: restaurant.categoryName,
     x: restaurant.lng,
     y: restaurant.lat
 })
 
-export const mapRestaurantInfoToKakaoRestaurant = (
+export const mapRestaurantInfoToRestaurant = (
     restaurant: RestaurantInfo
-): KakaoRestaurantResponse => ({
-    id: restaurant.placeId,
-    place_name: restaurant.placeName,
-    category_name: restaurant.categoryName,
-    category_group_name: restaurant.categoryGroupName,
-    distance: restaurant.distance ?? '',
-    road_address_name: restaurant.roadAddressName,
-    address_name: restaurant.addressName,
-    phone: restaurant.phoneNumber,
-    place_url: restaurant.placeUrl,
+): RestaurantResponseDto => ({
+    restaurantId: restaurant.placeId as RestaurantResponseDto['restaurantId'],
+    placeName: restaurant.placeName,
+    categoryName: restaurant.categoryName,
+    categoryGroupName: restaurant.categoryGroupName,
+    distance: restaurant.distance,
+    roadAddressName: restaurant.roadAddressName,
+    addressName: restaurant.addressName,
+    phone: restaurant.phoneNumber || null,
+    placeUrl: restaurant.placeUrl || null,
     lat: Number(restaurant.y),
     lng: Number(restaurant.x)
 })
 
+// Backward-compatible mapper names used by older upload/article code.
+export const mapKakaoRestaurantToRestaurantInfo = mapRestaurantToRestaurantInfo
+export const mapRestaurantInfoToKakaoRestaurant = mapRestaurantInfoToRestaurant
+
 export const mapArticleSummary = (
     article: ArticleSummaryDto
 ): ArticleSummaryResponse => ({
-    articleId: article.id,
-    authorId: Number(article.author.userId),
+    articleId: Number(article.articleId),
+    authorId: Number(article.author.memberId),
     authorUsername: article.author.username,
     imageUrl: article.imageUrl,
     mealDate: toDateOnly(article.mealDate),
     mealTime: { hour: 0, minute: 0, second: 0, nano: 0 },
-    restaurantName: article.restaurant.place_name,
+    restaurantName: article.restaurant.placeName,
     likeCount: article.likeCount,
     commentCount: article.commentCount,
     likedByMe: article.likedByMe,
-    createdAt: toIsoString(article.createdAt),
-    expiresAt: toIsoString(article.expiresAt),
-    taggedMemberIds: article.taggedMembers.map(member => Number(member.userId))
+    createdAt: article.createdAt,
+    expiresAt: article.expiresAt,
+    taggedMemberIds: article.taggedMembers.map((member: { memberId: number | string }) => Number(member.memberId))
 })
 
 export const mapArticleDetail = (
     article: ArticleDetailDto
 ): ArticleDetailResponse => ({
-    articleId: article.id,
-    authorId: Number(article.author.userId),
-    authorUsername: article.author.username,
-    imageUrl: article.imageUrl,
-    mealDate: toDateOnly(article.mealDate),
-    mealTime: { hour: 0, minute: 0, second: 0, nano: 0 },
-    restaurant: mapKakaoRestaurantToRestaurantInfo(article.restaurant),
-    likeCount: article.likeCount,
-    commentCount: article.commentCount,
-    likedByMe: article.likedByMe,
-    createdAt: toIsoString(article.createdAt),
-    expiresAt: toIsoString(article.expiresAt)
+    ...mapArticleSummary(article),
+    restaurant: mapRestaurantToRestaurantInfo(article.restaurant),
+    comments: article.comments?.map(mapComment)
 })
 
 export const mapArticlePage = (
     page: PageArticleSummaryDto
-): PageArticleSummaryResponse => ({
-    ...page,
-    content: page.content.map(mapArticleSummary)
-})
+): PageArticleSummaryResponse => {
+    const items = page.items.map(mapArticleSummary)
+    return {
+        items,
+        content: items,
+        meta: page.meta,
+        totalElements: page.meta.totalItems,
+        totalPages: page.meta.totalPages,
+        first: !page.meta.hasPrevious,
+        last: !page.meta.hasNext,
+        size: page.meta.size,
+        number: page.meta.page,
+        numberOfElements: items.length,
+        empty: items.length === 0
+    }
+}
 
 export const mapComment = (comment: CommentDto): CommentResponse => ({
-    commentId: comment.commentId,
-    authorId: Number(comment.author.userId),
+    commentId: Number(comment.commentId),
+    authorId: Number(comment.author.memberId),
     authorUsername: comment.author.username,
-    parentCommentId: comment.parentCommentId,
+    parentCommentId:
+        comment.parentCommentId == null ? null : Number(comment.parentCommentId),
     content: comment.content,
-    createdAt: toIsoString(comment.createdAt),
-    profileImageUrl: comment.author.profileImageUrl
+    createdAt: comment.createdAt,
+    profileImageUrl: comment.author.profileImageUrl ?? null
 })

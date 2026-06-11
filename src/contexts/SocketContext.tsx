@@ -14,18 +14,21 @@ import React, {
 import { io } from 'socket.io-client'
 import { useNavigate, useParams } from 'react-router-dom'
 import type {
-    Category,
-    ChatMessage,
-    DatePicksUpdateResponseDto,
     FinalState,
-    MenuPickUpdateResponseDto,
     Participant,
-    PhaseDataBroadcastDto,
-    RestaurantPickUpdateResponseDto,
-    RoomInitialState,
-    TimePicksUpdateResponseDto,
-    WaitingInitialState
-} from '@kimdaegyu/babmukdang-shared'
+    PhaseDataBroadcast,
+    RoomInitialState
+} from '@kimdaegyu/babmukdang-shared/domain'
+import type { ChatMessage } from './socket/useRoomChat'
+import type {
+    DatePicksUpdateResponseDto,
+    TimePicksUpdateResponseDto
+} from './socket/useRoomSchedule'
+import type {
+    MenuPickUpdateResponseDto,
+    RestaurantPickUpdateResponseDto
+} from './socket/useRoomMenu'
+
 import { useAuthStore } from '@/store/authStore'
 import { useRoomReadyState } from './socket/useRoomReadyState'
 import { useRoomChat } from './socket/useRoomChat'
@@ -33,6 +36,9 @@ import { useRoomSchedule } from './socket/useRoomSchedule'
 import { useRoomMenu } from './socket/useRoomMenu'
 import type { AppSocket } from './socket/types'
 import { useRefreshToken } from '@/apis'
+
+type Category = { id: string; name: string; imageUrl?: string }
+type WaitingInitialState = { locationInitial?: string; meetingAt?: string }
 
 interface FinalStateMessage {
     location?: string
@@ -50,9 +56,9 @@ interface SocketContextValue {
     categories: Category[]
     participants: Participant[]
     stage: string
-    // Backend `stage-changed`의 phase별 초기 상태(PhaseDataBroadcastDto). 페이지는
+    // Backend `stage-changed`의 phase별 초기 상태(PhaseDataBroadcast). 페이지는
     // `phaseData.phase`로 좁히고 `phaseData.data`를 해당 phase 타입으로 사용한다.
-    phaseData: PhaseDataBroadcastDto | null
+    phaseData: PhaseDataBroadcast | null
     finalState: FinalState | null
     finalStateMessage: FinalStateMessage
     locationInitial: string | undefined
@@ -93,7 +99,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     const [categories, setCategories] = useState<Category[]>([])
     const [participants, setParticipants] = useState<Participant[]>([])
     const [stage, setStage] = useState('waiting')
-    const [phaseData, setPhaseData] = useState<PhaseDataBroadcastDto | null>(
+    const [phaseData, setPhaseData] = useState<PhaseDataBroadcast | null>(
         null
     )
     const [finalState, setFinalState] = useState<FinalState | null>(null)
@@ -168,7 +174,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
         const handleJoinRoom = (state: RoomInitialState) => {
             setParticipants(state.participants)
         }
-        const handleStageChanged = (data: PhaseDataBroadcastDto) => {
+        const handleStageChanged = (data: PhaseDataBroadcast) => {
             setStage(data.phase)
             setPhaseData(data)
             if (data.phase === 'waiting') {
@@ -184,7 +190,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
                 location: final?.location?.address,
                 'exclude-menu': final?.excludeMenu?.map(menu => menu.label),
                 menu: final?.menu?.label,
-                restaurant: final?.restaurant?.place_name
+                restaurant: final?.restaurant?.placeName
             })
         }
 

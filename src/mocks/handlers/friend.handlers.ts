@@ -6,7 +6,9 @@
 
 import { http, HttpResponse } from 'msw'
 import { endpoints } from '@/apis'
+import { API_BASE_URL } from '@/apis/baseUrl'
 import type { FriendRequestItemResponse } from '@/apis'
+import { domainId } from '@/domain/factories'
 import {
     mockFriendMealResponses,
     mockHungryFriends,
@@ -17,15 +19,15 @@ import {
     mockOutgoingFriendRequests
 } from '@/mocks/fixtures'
 
-const BASE_URL = import.meta.env.VITE_SERVER_URL || ''
+const BASE_URL = API_BASE_URL
 
 const makeRequest = (
     requestId: number,
     status: FriendRequestItemResponse['status']
 ): FriendRequestItemResponse => ({
-    requestId,
-    requester: { memberId: 1, userName: '유가은', profileImageUrl: '' },
-    recipient: { memberId: 2, userName: '서은우', profileImageUrl: '' },
+    requestId: domainId.friendRequest(requestId),
+    requester: { memberId: domainId.member(1), username: '유가은', profileImageUrl: '' },
+    recipient: { memberId: domainId.member(2), username: '서은우', profileImageUrl: '' },
     status,
     requestedAt: new Date().toISOString()
 })
@@ -65,7 +67,7 @@ export const friendHandlers = [
     http.get(`${BASE_URL}${endpoints.friends.search}`, ({ request }) => {
         const keyword = new URL(request.url).searchParams.get('keyword') ?? ''
         const data = mockFriendListItems.filter(friend =>
-            friend.userName.includes(keyword)
+            friend.username.includes(keyword)
         )
         return HttpResponse.json(data)
     }),

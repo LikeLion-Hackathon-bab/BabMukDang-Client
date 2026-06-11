@@ -14,10 +14,11 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { client } from './client'
-import { responses } from './responses'
+import { contractClient } from './client'
+import { apiContract } from '@kimdaegyu/babmukdang-shared/domain'
+import { domainId } from '@/domain/factories'
 import { queryKeys } from './keys'
-import { mapProfile } from './mappers/profile.mapper'
+import { mapProfile, mapProfileDetail } from './mappers/profile.mapper'
 import type {
     MutationOptions,
     ProfileResponse,
@@ -38,7 +39,7 @@ export const profileApi = {
      * @returns 프로필 정보 (화면 view model)
      */
     getMyProfile: async (): Promise<ProfileResponse> => {
-        const data = await client.get(responses.profile.myProfile)
+        const data = await contractClient.get(apiContract.members.me)
         return mapProfile(data)
     },
 
@@ -47,7 +48,8 @@ export const profileApi = {
      * @returns 프로필 상세 정보 (선호도 포함)
      */
     getMyProfileDetail: async (): Promise<ProfileDetailResponse> => {
-        return client.get(responses.profile.myProfileDetail)
+        const data = await contractClient.get(apiContract.members.myProfile)
+        return mapProfileDetail(data)
     },
 
     /**
@@ -56,7 +58,9 @@ export const profileApi = {
      * @returns 프로필 정보 (화면 view model)
      */
     getMemberProfile: async (memberId: number): Promise<ProfileResponse> => {
-        const data = await client.get(responses.profile.member(memberId))
+        const data = await contractClient.get(apiContract.members.memberProfile, {
+            pathParams: { memberId: domainId.member(memberId) }
+        })
         return mapProfile(data)
     },
 
@@ -68,7 +72,10 @@ export const profileApi = {
     getMemberProfileDetail: async (
         memberId: number
     ): Promise<ProfileDetailResponse> => {
-        return client.get(responses.profile.memberDetail(memberId))
+        const data = await contractClient.get(apiContract.members.memberProfile, {
+            pathParams: { memberId: domainId.member(memberId) }
+        })
+        return mapProfileDetail(data)
     },
 
     /**
@@ -79,11 +86,8 @@ export const profileApi = {
     updateMyProfile: async (
         data: UpdateProfileRequest
     ): Promise<ProfileResponse> => {
-        const profile = await client.patch(
-            responses.profile.updateProfile,
-            data
-        )
-        return mapProfile(profile)
+        await contractClient.patch(apiContract.members.updateProfile, { body: data })
+        return profileApi.getMyProfile()
     }
 }
 
@@ -184,14 +188,14 @@ export const useGetProfiles = (memberIds: number[]) => {
  *   bio: '자기소개'
  * })
  */
-export const useUpdateMyProfile = (options: MutationOptions = {}) => {
+export const useUpdateMyProfile = (options: MutationOptions<ProfileResponse> = {}) => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: (data: UpdateProfileRequest) =>
             profileApi.updateMyProfile(data),
-        onSuccess: () => {
+        onSuccess: data => {
             queryClient.invalidateQueries({ queryKey: queryKeys.profile.all })
-            options.onSuccess?.()
+            options.onSuccess?.(data)
         },
         onError: options.onError
     })

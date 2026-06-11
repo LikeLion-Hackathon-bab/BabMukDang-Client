@@ -11,15 +11,15 @@
  */
 
 import { useMutation } from '@tanstack/react-query'
-import { client } from './client'
-import { endpoints } from './endpoints'
-import type { MutationOptions, TokenResponse } from './types'
-import { responses } from './responses'
+import { contractClient } from './client'
+import { apiContract } from '@kimdaegyu/babmukdang-shared/domain'
+import type { MutationOptions, NoContent, TokenResponse } from './types'
 import { useAuthStore } from '@/store'
 
 import axios from 'axios'
 import { unwrapBaseResponse } from './client'
-import { BaseResponse } from '@kimdaegyu/babmukdang-shared'
+import type { BaseResponse } from '@kimdaegyu/babmukdang-shared/domain'
+import { API_BASE_URL } from './baseUrl'
 
 type EmailAuthRequest = {
     email: string
@@ -41,11 +41,11 @@ export const authApi = {
     login: async () => {
         // const res = await client.get(endpoints.auth.kakaoLogin)
         // return res.data
-        window.location.href = 'http://localhost:3000/api/v1/auth/kakao'
+        window.location.href = `${API_BASE_URL}/auth/kakao`
     },
 
-    emailLogin: async ({ email }: EmailAuthRequest): Promise<TokenResponse> => {
-        return client.post(responses.auth.login, { email })
+    emailLogin: async ({ email, password }: EmailAuthRequest): Promise<TokenResponse> => {
+        return contractClient.post(apiContract.auth.login, { body: { email, password } })
     },
 
     emailSignup: async ({
@@ -53,7 +53,9 @@ export const authApi = {
         password
     }: EmailAuthRequest): Promise<TokenResponse> => {
         const username = email.split('@')[0] || email
-        await client.post(responses.auth.signup, { email, username, password })
+        await contractClient.post(apiContract.auth.signup, {
+            body: { email, username, password }
+        })
         return authApi.emailLogin({ email, password })
     },
 
@@ -61,8 +63,8 @@ export const authApi = {
      * 로그아웃
      * @returns 성공 응답
      */
-    logout: async (): Promise<void> => {
-        return client.post(responses.auth.logout)
+    logout: async (): Promise<NoContent> => {
+        return contractClient.post(apiContract.auth.logout)
     },
 
     /**
@@ -72,7 +74,7 @@ export const authApi = {
     refresh: async (): Promise<TokenResponse> => {
         // 무한 루프 방지를 위해 인터셉터가 없는 axios 직접 사용
         const res = await axios.post<BaseResponse<TokenResponse>>(
-            `${import.meta.env.VITE_SERVER_URL}${endpoints.auth.refresh}`,
+            `${API_BASE_URL}${apiContract.auth.refresh.path}`,
             {},
             { withCredentials: true }
         )
@@ -97,7 +99,7 @@ export const refresh = authApi.refresh
  *
  * @example
  * const { mutate: refreshToken } = useRefreshToken({
- *   onSuccess: () => {
+ *   onSuccess: data => {
  *     console.log('토큰 갱신 성공')
  *   },
  *   onError: (error) => {
@@ -171,7 +173,7 @@ export const useEmailSignup = (options?: MutationOptions<TokenResponse>) => {
  * 로그아웃 Hook
  * @param options - 성공/에러 콜백
  */
-export const useLogout = (options: MutationOptions<void> = {}) => {
+export const useLogout = (options: MutationOptions<NoContent> = {}) => {
     const { logout: clearAuthState } = useAuthStore()
 
     return useMutation({

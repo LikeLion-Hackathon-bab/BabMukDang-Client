@@ -36,9 +36,9 @@ export { mockFriendMealResponses as MockFriendList } from '@/mocks/fixtures/frie
 import type {
     CommentResponse,
     RestaurantInfo,
-    PreferenceItem,
     ProfileDetailResponse
 } from '@/apis'
+import { domainFood } from '@/domain/factories'
 
 /**
  * 매칭 초대 알림 mock 데이터
@@ -99,24 +99,28 @@ export const MockMyProfileData: ProfileDetailResponse = {
     profileImageUrl: '/src/assets/icons/icon_profile_default.svg',
     userName: '서은우',
     bio: '기억이 아닌 추억으로',
+    username: '서은우',
     likes: [
-        { code: '한식', label: '한식' },
-        { code: '일식', label: '일식' },
-        { code: '양식', label: '양식' },
-        { code: '분식', label: '분식' }
+        domainFood('한식', '한식'),
+        domainFood('일식', '일식'),
+        domainFood('양식', '양식'),
+        domainFood('분식', '분식')
     ],
     allergies: [
-        { code: '락토', label: '락토' },
-        { code: '락토 오보', label: '락토 오보' },
-        { code: '락토 오보 오보', label: '락토 오보 오보' }
+        domainFood('락토', '락토'),
+        domainFood('락토 오보', '락토 오보'),
+        domainFood('락토 오보 오보', '락토 오보 오보')
     ],
     dislikes: [
-        { code: '향신료', label: '향신료' },
-        { code: '락토', label: '락토' },
-        { code: '락토 오보', label: '락토 오보' },
-        { code: '락토 오보 오보', label: '락토 오보 오보' }
+        domainFood('향신료', '향신료'),
+        domainFood('락토', '락토'),
+        domainFood('락토 오보', '락토 오보'),
+        domainFood('락토 오보 오보', '락토 오보 오보')
     ],
-    meetingCount: 0
+    meetingCount: 0,
+    friendConunt: 0,
+    completedPlans: 0,
+    uncompletedPlans: 0
 }
 
 /**

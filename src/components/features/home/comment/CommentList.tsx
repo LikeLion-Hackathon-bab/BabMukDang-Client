@@ -24,7 +24,7 @@ export function CommentList({
                     <>
                         <CommentItem
                             key={comment.commentId}
-                            profileImageUrl={comment?.profileImageUrl}
+                            profileImageUrl={comment.profileImageUrl ?? undefined}
                             commentAuthorName={comment.authorUsername}
                             comment={comment.content}
                             createdAt={comment.createdAt}
@@ -41,7 +41,7 @@ export function CommentList({
                             comment.replies.map(reply => (
                                 <ReplyCommentItem
                                     key={reply.commentId}
-                                    profileImageUrl={reply?.profileImageUrl}
+                                    profileImageUrl={reply.profileImageUrl ?? undefined}
                                     commentAuthorName={reply.authorUsername}
                                     comment={reply.content}
                                     createdAt={reply.createdAt}

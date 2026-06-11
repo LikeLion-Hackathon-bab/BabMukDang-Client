@@ -13,6 +13,7 @@ import {
 import React, { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useSendInvitation } from '@/apis'
+import { domainId } from '@/domain/factories'
 
 export function SendInvitationPage() {
     const cardList = [
@@ -36,7 +37,7 @@ export function SendInvitationPage() {
     console.log('userId', userId)
     const handleSendInvitation = () => {
         sendInvitation({
-            inviteeId: Number(userId),
+            inviteeId: domainId.member(Number(userId)),
             message: editText
         })
     }

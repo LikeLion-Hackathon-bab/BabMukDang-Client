@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom'
 import { Friend } from './FriendListSection'
 
 export function FriendCard({ friend }: { friend: Friend }) {
+    const displayName = friend.username ?? friend.userName ?? ''
+
     return (
         <div className="rounded-12 flex flex-row items-center justify-between bg-white p-12">
             <div className="flex flex-row items-center gap-13">
                 {friend.hungry ? <HungryIcon /> : <NotHungryIcon />}
                 <div className="flex h-full flex-col gap-8">
-                    <span className="text-body1-bold">{friend.userName}</span>
+                    <span className="text-body1-bold">{displayName}</span>
                     <span
                         className={`text-caption-medium ${
                             friend.hungry ? 'text-primary-500' : 'text-gray-4'

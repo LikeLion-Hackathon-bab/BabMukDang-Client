@@ -29,6 +29,8 @@ export type {
     // 공통
     LocalTime,
     MutationOptions,
+    NoContent,
+    Food,
     // 인증
     TokenResponse,
     // 게시글
@@ -61,6 +63,8 @@ export type {
     // 초대
     InvitationPostRequest,
     InvitationResponse,
+    SendInvitationResponse,
+    AcceptInvitationResponse,
     // 모임
     MeetingDto,
     MeetingParticipant,

@@ -4,7 +4,8 @@ import { useLocation, useParams } from 'react-router-dom'
 import {
     useCommentArticle,
     useGetArticleComments,
-    CommentResponse
+    CommentResponse,
+    CommentPostRequest
 } from '@/apis'
 import { buildCommentTree } from '@/lib'
 import { useBottomNavStore, useHeaderStore } from '@/store'
@@ -56,7 +57,9 @@ export function CommentPage() {
             articleId: Number(postId),
             comment: {
                 content: newMessage,
-                parentCommentId: replyCommentId ?? undefined
+                parentCommentId: replyCommentId == null
+                    ? null
+                    : (replyCommentId as CommentPostRequest['parentCommentId'])
             }
         })
         setNewMessage('')

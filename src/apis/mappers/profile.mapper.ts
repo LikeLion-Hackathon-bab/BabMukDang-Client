@@ -1,12 +1,32 @@
-import type { ProfileDto, ProfileResponse } from '../types'
+import type {
+    ProfileDetailDto,
+    ProfileDetailResponse,
+    ProfileDto,
+    ProfileResponse
+} from '../types'
 
-/**
- * Backend 프로필 응답 DTO(`member` 래퍼)를 화면 view model로 flatten한다.
- */
-export const mapProfile = (profile: ProfileDto): ProfileResponse => ({
-    memberId: profile.member.userId,
-    userName: profile.member.username,
-    profileImageUrl: profile.member.profileImageUrl,
-    bio: profile.member.bio,
-    meetingCount: profile.member.meetingCount
+export const mapProfile = (profile: ProfileDto | ProfileDetailDto): ProfileResponse => ({
+    memberId: Number(profile.memberId),
+    userName: profile.username,
+    username: profile.username,
+    profileImageUrl: profile.profileImageUrl ?? '',
+    bio: '',
+    meetingCount: 0
+})
+
+export const mapProfileDetail = (
+    profile: ProfileDetailDto
+): ProfileDetailResponse => ({
+    memberId: Number(profile.memberId),
+    userName: profile.username,
+    username: profile.username,
+    profileImageUrl: profile.profileImageUrl ?? '',
+    bio: profile.bio ?? '',
+    meetingCount: profile.completedPlans + profile.uncompletedPlans,
+    likes: [],
+    dislikes: [],
+    allergies: [],
+    friendConunt: profile.friendConunt,
+    completedPlans: profile.completedPlans,
+    uncompletedPlans: profile.uncompletedPlans
 })

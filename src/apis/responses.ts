@@ -1,196 +1,182 @@
-import { endpoints } from './endpoints'
+import {
+    apiContract,
+    type EndpointContract,
+    type HttpMethod,
+    type ResponseOf as ContractResponseOf
+} from '@kimdaegyu/babmukdang-shared/domain'
+import { domainId } from '@/domain/factories'
 
-import type {
-    ArticleDetailDto,
-    CommentDto,
-    PageArticleSummaryDto,
-    ArticlePostRequest,
-    LikePostResponse,
-    RecruitDto,
-    PostResponse,
-    PostRequest,
-    TokenResponse,
-    InvitationResponse,
-    PreferenceSummaryResponse,
-    PreferenceMetaResponse,
-    OnboardingPreferenceRequest,
-    ProfileDto,
-    ProfileDetailResponse,
-    UpdateProfileRequest,
-    CouponResponse,
-    ChallengeStatusResponse,
-    MealStatusResponse,
-    FriendBlockItemResponse,
-    FriendListItemResponse,
-    FriendMealListResponse,
-    FriendRequestItemResponse,
-    PlanResponse,
-    PresignArticleResponse,
-    PresignProfileResponse
-} from './types'
-
+/**
+ * @deprecated API 함수는 responses registry 대신 contractClient + apiContract를 직접 사용합니다.
+ * 이 파일은 기존 테스트/호환 import를 위해 남겨 둔 얇은 path registry입니다.
+ */
 export type TypedEndpoint<TResponse> = string & {
     readonly __response?: TResponse
 }
 
-export function typed<TResponse>(path: string): TypedEndpoint<TResponse> {
-    return path as TypedEndpoint<TResponse>
+type AnyContractEndpoint = EndpointContract<
+    HttpMethod,
+    string,
+    any,
+    any,
+    any,
+    any
+>
+
+const resolvePath = (path: string, params: Record<string, string | number> = {}) =>
+    path.replace(/:([A-Za-z0-9_]+)/g, (_, key: string) =>
+        encodeURIComponent(String(params[key]))
+    )
+
+export function typed<E extends AnyContractEndpoint>(
+    contract: E,
+    pathParams?: Record<string, string | number>
+): TypedEndpoint<ContractResponseOf<E>> {
+    return resolvePath(contract.path, pathParams) as TypedEndpoint<
+        ContractResponseOf<E>
+    >
 }
+
+export const typedLegacy = <TResponse>(path: string): TypedEndpoint<TResponse> =>
+    path as TypedEndpoint<TResponse>
 
 export type ResponseOf<TEndpoint> =
     TEndpoint extends TypedEndpoint<infer TResponse> ? TResponse : never
-// src/apis/responses.ts
 
 export const responses = {
     auth: {
-        logout: typed<void>(endpoints.auth.logout),
-        refresh: typed<TokenResponse>(endpoints.auth.refresh),
-        signup: typed<unknown>(endpoints.auth.signup),
-        login: typed<TokenResponse>(endpoints.auth.login),
-        test: typed<string>(endpoints.auth.test)
+        logout: typed(apiContract.auth.logout),
+        refresh: typed(apiContract.auth.refresh),
+        signup: typed(apiContract.auth.signup),
+        login: typed(apiContract.auth.login),
+        test: typedLegacy<string>('/auth/test')
     },
 
     announcements: {
-        list: typed<RecruitDto[]>(endpoints.recruits.list),
-        create: typed<PostResponse>(endpoints.recruits.create),
-        close: (id: number) => typed<void>(endpoints.recruits.close(id)),
-        join: (id: number) => typed<void>(endpoints.recruits.join(id))
+        list: typed(apiContract.recruits.list),
+        create: typed(apiContract.recruits.create),
+        close: (id: number) =>
+            typed(apiContract.recruits.close, { recruitId: domainId.recruit(id) }),
+        join: (id: number) =>
+            typed(apiContract.recruits.join, { recruitId: domainId.recruit(id) })
     },
+
     friends: {
-        meals: typed<FriendMealListResponse>(endpoints.friends.meals),
-        list: typed<FriendListItemResponse[]>(endpoints.friends.list),
-        search: typed<FriendListItemResponse[]>(endpoints.friends.search),
-        blocks: typed<FriendBlockItemResponse[]>(endpoints.friends.blocks),
-        requestsIncoming: typed<FriendRequestItemResponse[]>(
-            endpoints.friends.requestsIncoming
-        ),
-        requestsOutgoing: typed<FriendRequestItemResponse[]>(
-            endpoints.friends.requestsOutgoing
-        ),
+        meals: typed(apiContract.mealStatus.friendMealStatus),
+        list: typed(apiContract.friends.list),
+        search: typed(apiContract.members.search),
+        blocks: typed(apiContract.friends.blockList),
+        requestsIncoming: typed(apiContract.friends.incomingRequest),
+        requestsOutgoing: typed(apiContract.friends.outgoingRequest),
         sendRequest: (memberId: number) =>
-            typed<FriendRequestItemResponse>(
-                endpoints.friends.sendRequest(memberId)
-            ),
+            typed(apiContract.friends.sendRequest, { memberId: domainId.member(memberId) }),
         acceptRequest: (requestId: number) =>
-            typed<FriendRequestItemResponse>(
-                endpoints.friends.acceptRequest(requestId)
-            ),
+            typed(apiContract.friends.acceptRequest, {
+                requestId: domainId.friendRequest(requestId)
+            }),
         rejectRequest: (requestId: number) =>
-            typed<FriendRequestItemResponse>(
-                endpoints.friends.rejectRequest(requestId)
-            ),
+            typed(apiContract.friends.rejectRequest, {
+                requestId: domainId.friendRequest(requestId)
+            }),
         remove: (memberId: number) =>
-            typed<void>(endpoints.friends.remove(memberId)),
-
+            typed(apiContract.friends.unfriend, { memberId: domainId.member(memberId) }),
         block: (memberId: number) =>
-            typed<void>(endpoints.friends.block(memberId)),
-
+            typed(apiContract.friends.block, { memberId: domainId.member(memberId) }),
         unblock: (memberId: number) =>
-            typed<void>(endpoints.friends.unblock(memberId)),
-
+            typed(apiContract.friends.unblock, { memberId: domainId.member(memberId) }),
         cancelRequest: (requestId: number) =>
-            typed<void>(endpoints.friends.cancelRequest(requestId))
+            typed(apiContract.friends.cancelRequest, {
+                requestId: domainId.friendRequest(requestId)
+            })
     },
 
     articles: {
-        home: typed<PageArticleSummaryDto>(endpoints.articles.home),
-        recentMeals: typed<PageArticleSummaryDto>(
-            endpoints.articles.recentMeals
-        ),
+        home: typed(apiContract.articles.list),
+        recentMeals: typed(apiContract.articles.list),
         byAuthor: (authorId: number) =>
-            typed<PageArticleSummaryDto>(endpoints.articles.byAuthor(authorId)),
+            typed(apiContract.articles.byMember, { memberId: domainId.member(authorId) }),
         byMember: (memberId: number) =>
-            typed<PageArticleSummaryDto>(endpoints.articles.byMember(memberId)),
-        my: typed<PageArticleSummaryDto>(endpoints.articles.my),
-
+            typed(apiContract.articles.byMember, { memberId: domainId.member(memberId) }),
+        my: typed(apiContract.articles.my),
         detail: (id: number) =>
-            typed<ArticleDetailDto>(endpoints.articles.detail(id)),
-
-        create: typed<{ id: number }>(endpoints.articles.create),
-
-        delete: (id: number) => typed<void>(endpoints.articles.delete(id)),
-
+            typed(apiContract.articles.detail, { articleId: domainId.article(id) }),
+        create: typed(apiContract.articles.create),
+        delete: (id: number) =>
+            typed(apiContract.articles.delete, { articleId: domainId.article(id) }),
         like: (id: number) =>
-            typed<LikePostResponse>(endpoints.articles.like(id)),
-
+            typed(apiContract.articles.like, { articleId: domainId.article(id) }),
         comments: (id: number) =>
-            typed<CommentDto[]>(endpoints.articles.comments(id)),
-
+            typedLegacy(`/articles/${id}/comments`),
         createComment: (id: number) =>
-            typed<{ id: number }>(endpoints.articles.comments(id)),
-
+            typed(apiContract.articles.createComment, { articleId: domainId.article(id) }),
         deleteComment: (commentId: number) =>
-            typed<void>(endpoints.articles.deleteComment(commentId))
+            typed(apiContract.articles.deleteComment, { commentId: domainId.comment(commentId) })
     },
 
     invitations: {
-        list: typed<InvitationResponse[]>(endpoints.invitations.list),
-        me: typed<InvitationResponse[]>(endpoints.invitations.me),
-        send: typed<number>(endpoints.invitations.send),
+        list: typed(apiContract.invitations.list),
+        me: typed(apiContract.invitations.list),
+        send: typed(apiContract.invitations.send),
         accept: (id: number) =>
-            typed<InvitationResponse>(endpoints.invitations.accept(id)),
-        reject: (id: number) => typed<void>(endpoints.invitations.reject(id))
+            typed(apiContract.invitations.accept, {
+                invitationId: domainId.invitation(id)
+            }),
+        reject: (id: number) =>
+            typed(apiContract.invitations.reject, {
+                invitationId: domainId.invitation(id)
+            })
     },
 
     meetings: {
-        list: typed<PlanResponse[]>(endpoints.plans.list),
-        create: typed<PlanResponse>(endpoints.plans.create),
-        uncompleted: typed<PlanResponse[]>(endpoints.plans.uncompleted),
-        completed: typed<PlanResponse[]>(endpoints.plans.completed)
+        list: typed(apiContract.plans.list),
+        create: typedLegacy('/plans'),
+        uncompleted: typedLegacy('/plans'),
+        completed: typedLegacy('/plans/completed')
     },
 
     preferences: {
-        mySummary: typed<PreferenceSummaryResponse>(
-            endpoints.preferences.mySummary
-        ),
-        myMeta: typed<PreferenceMetaResponse>(endpoints.preferences.myMeta),
-        onboarding: typed<void>(endpoints.preferences.onboarding),
+        mySummary: typed(apiContract.members.myProfile),
+        myMeta: typed(apiContract.members.myProfile),
+        onboarding: typed(apiContract.members.createProfile),
         byMember: (memberId: number) =>
-            typed<PageArticleSummaryDto>(
-                endpoints.preferences.byMember(memberId)
-            )
+            typed(apiContract.articles.byMember, { memberId: domainId.member(memberId) })
     },
 
     profile: {
-        me: typed<ProfileDto>(endpoints.members.me),
-        myProfile: typed<ProfileDto>(endpoints.members.myProfile),
-        myProfileDetail: typed<ProfileDetailResponse>(
-            endpoints.members.myProfileDetail
-        ),
+        me: typed(apiContract.members.me),
+        myProfile: typed(apiContract.members.me),
+        myProfileDetail: typed(apiContract.members.myProfile),
         member: (id: number) =>
-            typed<ProfileDto>(endpoints.members.profile(id)),
+            typed(apiContract.members.memberProfile, { memberId: domainId.member(id) }),
         memberDetail: (id: number) =>
-            typed<ProfileDetailResponse>(endpoints.members.profileDetail(id)),
-        updateProfile: typed<ProfileDto>(endpoints.members.updateProfile)
+            typed(apiContract.members.memberProfile, { memberId: domainId.member(id) }),
+        updateProfile: typed(apiContract.members.updateProfile)
     },
 
     mealStatus: {
-        my: typed<MealStatusResponse>(endpoints.mealStatus.my),
-        update: typed<MealStatusResponse | void>(endpoints.mealStatus.update)
+        my: typed(apiContract.mealStatus.my),
+        update: typed(apiContract.mealStatus.updateMealStatus)
     },
+
     members: {
-        me: typed<ProfileDto>(endpoints.members.me),
-        myProfile: typed<ProfileDto>(endpoints.members.myProfile),
-        myProfileDetail: typed<ProfileDetailResponse>(
-            endpoints.members.myProfileDetail
-        ),
-        mealStatus: typed<MealStatusResponse>(endpoints.mealStatus.my)
+        me: typed(apiContract.members.me),
+        myProfile: typed(apiContract.members.me),
+        myProfileDetail: typed(apiContract.members.myProfile),
+        mealStatus: typed(apiContract.mealStatus.my)
     },
+
     upload: {
-        presignArticle: typed<PresignArticleResponse>(
-            endpoints.upload.presignArticle
-        ),
-        presignProfile: typed<PresignProfileResponse>(
-            endpoints.upload.presignProfile
-        )
+        presignArticle: typed(apiContract.articles.presignArticleImage),
+        presignProfile: typed(apiContract.members.presignProfileImage)
     },
+
     challenges: {
-        me: typed<ChallengeStatusResponse>(endpoints.challenges.me),
-        reward: typed<unknown>(endpoints.challenges.reward)
+        me: typed(apiContract.challenges.status),
+        reward: typed(apiContract.challenges.claimReward)
     },
 
     coupons: {
-        my: typed<CouponResponse[]>(endpoints.coupons.my),
-        use: (id: number) => typed<void>(endpoints.coupons.use(id))
+        my: typed(apiContract.coupons.list),
+        use: (id: number) => typed(apiContract.coupons.use, { couponId: domainId.coupon(id) })
     }
 } as const

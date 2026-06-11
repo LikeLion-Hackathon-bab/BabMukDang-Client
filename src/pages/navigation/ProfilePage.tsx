@@ -33,16 +33,7 @@ export function ProfilePage() {
     }, [])
     useEffect(() => {
         if (profileData) {
-            setProfile({
-                memberId: profileData.memberId,
-                profileImageUrl: profileData.profileImageUrl,
-                userName: profileData.userName,
-                bio: profileData.bio,
-                meetingCount: profileData.meetingCount,
-                likes: profileData.likes,
-                allergies: profileData.allergies,
-                dislikes: profileData.dislikes
-            })
+            setProfile(profileData)
         }
     }, [profileData])
     return (

@@ -11,9 +11,9 @@ import { expect } from '@playwright/test'
 import { endpoints } from '../../apis/endpoints'
 import { io, type Socket } from 'socket.io-client'
 import {
-    ClientToServerEvents,
-    ServerToClientEvents
-} from '@kimdaegyu/babmukdang-shared'
+    RoomClientToServerEvents as ClientToServerEvents,
+    RoomServerToClientEvents as ServerToClientEvents
+} from '@kimdaegyu/babmukdang-shared/domain'
 
 export const BASE =
     (process.env.BACKEND_URL ?? 'http://localhost:3000') + '/api/v1'
@@ -107,7 +107,7 @@ export async function fetchMemberId(
         headers: auth(token)
     })
     const body = await readBody(res)
-    const id = body?.data?.member.userId ?? body?.data.userId ?? body?.userId
+    const id = body?.data?.memberId ?? body?.data?.member?.memberId ?? body?.data?.member?.userId ?? body?.data?.userId ?? body?.memberId ?? body?.userId
 
     if (typeof id !== 'number' && typeof id !== 'string') {
         throw new Error(

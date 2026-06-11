@@ -25,6 +25,34 @@
         /* Paths */
         "baseUrl": ".",
         "paths": {
+            "@kimdaegyu/babmukdang-shared": ["../BabMukDang-Shared/src/index.ts"],
+            "@kimdaegyu/babmukdang-shared/domain": [
+                "../BabMukDang-Shared/src/domain/index.ts"
+            ],
+            "@/article": ["../BabMukDang-Shared/src/domain/article/index.ts"],
+            "@/article/*": ["../BabMukDang-Shared/src/domain/article/*"],
+            "@/auth": ["../BabMukDang-Shared/src/domain/auth/index.ts"],
+            "@/auth/*": ["../BabMukDang-Shared/src/domain/auth/*"],
+            "@/common": ["../BabMukDang-Shared/src/domain/common/index.ts"],
+            "@/common/*": ["../BabMukDang-Shared/src/domain/common/*"],
+            "@/friend": ["../BabMukDang-Shared/src/domain/friend/index.ts"],
+            "@/friend/*": ["../BabMukDang-Shared/src/domain/friend/*"],
+            "@/invitation": ["../BabMukDang-Shared/src/domain/invitation/index.ts"],
+            "@/invitation/*": ["../BabMukDang-Shared/src/domain/invitation/*"],
+            "@/meal": ["../BabMukDang-Shared/src/domain/meal/index.ts"],
+            "@/meal/*": ["../BabMukDang-Shared/src/domain/meal/*"],
+            "@/member": ["../BabMukDang-Shared/src/domain/member/index.ts"],
+            "@/member/*": ["../BabMukDang-Shared/src/domain/member/*"],
+            "@/plan": ["../BabMukDang-Shared/src/domain/plan/index.ts"],
+            "@/plan/*": ["../BabMukDang-Shared/src/domain/plan/*"],
+            "@/promotion": ["../BabMukDang-Shared/src/domain/promotion/index.ts"],
+            "@/promotion/*": ["../BabMukDang-Shared/src/domain/promotion/*"],
+            "@/recruit": ["../BabMukDang-Shared/src/domain/recruit/index.ts"],
+            "@/recruit/*": ["../BabMukDang-Shared/src/domain/recruit/*"],
+            "@/restaurant": ["../BabMukDang-Shared/src/domain/restaurant/index.ts"],
+            "@/restaurant/*": ["../BabMukDang-Shared/src/domain/restaurant/*"],
+            "@/room": ["../BabMukDang-Shared/src/domain/room/index.ts"],
+            "@/room/*": ["../BabMukDang-Shared/src/domain/room/*"],
             "@/*": ["./src/*"]
         }
     },

@@ -7,9 +7,10 @@
 
 import { http, HttpResponse } from 'msw'
 import { endpoints, api } from '@/apis'
+import { API_BASE_URL } from '@/apis/baseUrl'
 import { mockTokenResponse } from '@/mocks/fixtures'
 
-const BASE_URL = import.meta.env.VITE_SERVER_URL || ''
+const BASE_URL = API_BASE_URL
 
 /**
  * Auth API mock handlers

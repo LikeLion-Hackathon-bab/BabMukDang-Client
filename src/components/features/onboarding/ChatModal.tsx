@@ -9,7 +9,7 @@ import { COLORS } from '@/constants/colors'
 import { useSocket } from '@/contexts/SocketContext'
 import { ChatInput } from '@/components/shared'
 import { useAuthStore } from '@/store'
-import type { ChatMessage } from '@kimdaegyu/babmukdang-shared'
+import type { ChatMessageResponse as ChatMessage } from '@kimdaegyu/babmukdang-shared/domain'
 
 interface ChatModalProps {
     isOpen: boolean
@@ -45,17 +45,17 @@ export function ChatModal({
             const message: ChatMessage = {
                 messageId: Date.now().toString(),
                 user: {
-                    userId: userId ?? '',
+                    memberId: Number(userId ?? 0) as ChatMessage['user']['memberId'],
                     username: '나',
                     profileImageUrl: profile.profileImageUrl ?? ''
                 },
-                text,
+                message: text,
                 createdAt: new Date().toISOString()
             }
             setMessages(prev => [...prev, message])
             setNewMessage('')
             // Backend는 ChatMessageRequestDto({ text })만 수신한다.
-            socket?.emit('chat-message', { text })
+            socket?.emit('chat-message', { message: text })
         }
     }
 
@@ -96,7 +96,7 @@ export function ChatModal({
                 {/* 메시지 영역 */}
                 <div className="bg-primary-200 flex flex-1 flex-col gap-20 overflow-y-auto px-20 pt-30 pb-80">
                     {messages.map(message =>
-                        message.user.userId === userId ? (
+                        Number(message.user.memberId) === Number(userId) ? (
                             <ChatMessageMy message={message} />
                         ) : (
                             <ChatMessageOther message={message} />
@@ -148,7 +148,7 @@ const ChatMessageMy = ({ message }: { message: ChatMessage }) => {
             <div
                 className={`shadow-drop-1 bg-primary-400 rounded-12 w-fit px-16 py-12`}>
                 <span className="text-body2-medium break-words whitespace-pre-line text-black">
-                    {message.text}
+                    {message.message}
                 </span>
             </div>
         </div>
@@ -163,7 +163,7 @@ const ChatMessageOther = ({ message }: { message: ChatMessage }) => {
             <div
                 className={`shadow-drop-1 rounded-12 w-fit bg-white px-16 py-12`}>
                 <span className="text-body2-medium break-words whitespace-pre-line text-black">
-                    {message.text}
+                    {message.message}
                 </span>
             </div>
         </div>

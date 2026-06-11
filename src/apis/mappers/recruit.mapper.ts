@@ -5,16 +5,16 @@ export const mapRecruit = (recruit: RecruitDto): PostResponse => ({
     meetingAt: recruit.meetingAt,
     location: recruit.location,
     message: recruit.message,
-    postId: recruit.postId,
+    postId: Number(recruit.recruitId),
     author: {
-        authorId: Number(recruit.author.userId),
+        authorId: Number(recruit.author.memberId),
         name: recruit.author.username,
-        profileImageUrl: recruit.author.profileImageUrl
+        profileImageUrl: recruit.author.profileImageUrl ?? ''
     },
     createdAt: recruit.createdAt,
-    participants: recruit.participants.map(participant => ({
-        memberId: Number(participant.userId),
+    participants: recruit.participants.map((participant: { memberId: number | string; username: string; profileImageUrl?: string | null }) => ({
+        memberId: Number(participant.memberId),
         name: participant.username,
-        profileImageUrl: participant.profileImageUrl
+        profileImageUrl: participant.profileImageUrl ?? ''
     }))
 })

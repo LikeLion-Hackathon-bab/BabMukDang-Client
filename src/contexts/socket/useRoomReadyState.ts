@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react'
-import type { ReadyStateChangedDto } from '@kimdaegyu/babmukdang-shared'
+import type { z } from 'zod'
+import { ReadyStateChangedSchema } from '@kimdaegyu/babmukdang-shared/domain'
 import type { AppSocket } from './types'
 
-/**
- * 대기/준비 상태 도메인 훅.
- * - `ready-state-changed`: 방의 준비 인원/전체 인원 갱신
- * - `stage-changed`: 단계 전환 시 본인 준비 상태 초기화
- */
+type ReadyStateChanged = z.infer<typeof ReadyStateChangedSchema>
+
 export function useRoomReadyState(socket: AppSocket | null) {
     const [readyCount, setReadyCount] = useState(0)
     const [participantCount, setParticipantCount] = useState(0)
@@ -15,7 +13,7 @@ export function useRoomReadyState(socket: AppSocket | null) {
     useEffect(() => {
         if (!socket) return
 
-        const handleReadyStateChanged = (data: ReadyStateChangedDto) => {
+        const handleReadyStateChanged = (data: ReadyStateChanged) => {
             setReadyCount(data.readyCount)
             setParticipantCount(data.participantCount)
         }

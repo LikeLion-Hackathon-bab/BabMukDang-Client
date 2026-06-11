@@ -24,6 +24,7 @@ import {
     useSendFriendRequest,
     useUnblockMember
 } from '@/apis'
+import type { MemberResponse } from '@/apis/types'
 
 const asRecord = (value: unknown): Record<string, unknown> =>
     value && typeof value === 'object' ? (value as Record<string, unknown>) : {}
@@ -131,13 +132,19 @@ export function FriendPage() {
 
     const friendList = useMemo(
         () =>
-            (friendMeals ?? []).filter(friend =>
-                getDisplayName(friend).includes(keyword)
-            ),
+            (friendMeals ?? [])
+                .filter(friend => getDisplayName(friend).includes(keyword))
+                .map(friend => ({
+                    memberId: getMemberId(friend) ?? 0,
+                    userName: getDisplayName(friend),
+                    profileImageUrl: getString(friend, ['profileImageUrl'], ''),
+                    hungry: Boolean(asRecord(friend).hungry),
+                    label: getString(friend, ['label'], '')
+                })),
         [friendMeals, keyword]
     )
 
-    const searchResultList = searchedFriends ?? []
+    const searchResultList: MemberResponse[] = searchedFriends ?? []
     const myFriendList = friends ?? []
     const blockedMemberList = blockedMembers ?? []
     const incomingRequestList = incomingRequests ?? []
@@ -219,7 +226,7 @@ export function FriendPage() {
                     </span>
                 ) : (
                     <div className="flex flex-col gap-8">
-                        {searchResultList.map(member => {
+                        {searchResultList.map((member: MemberResponse) => {
                             const memberId = getMemberId(member)
                             return (
                                 <div

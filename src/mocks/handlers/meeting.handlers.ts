@@ -6,9 +6,10 @@
 
 import { http, HttpResponse } from 'msw'
 import { endpoints } from '@/apis'
+import { API_BASE_URL } from '@/apis/baseUrl'
 import { mockMeetingResponses } from '@/mocks/fixtures'
 
-const BASE_URL = import.meta.env.VITE_SERVER_URL || ''
+const BASE_URL = API_BASE_URL
 
 /**
  * Meeting 관련 MSW request handlers

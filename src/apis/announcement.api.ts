@@ -14,17 +14,19 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { client } from './client'
-import { endpoints } from './endpoints'
+import { contractClient } from './client'
+import { apiContract } from '@kimdaegyu/babmukdang-shared/domain'
+import { domainId } from '@/domain/factories'
 import { queryKeys } from './keys'
 import { mapRecruit } from './mappers/recruit.mapper'
 import type {
+    CreateRecruitResponse,
     MutationOptions,
+    NoContent,
     PostRequest,
     PostResponse,
     RecruitDto
 } from './types'
-import { responses } from './responses'
 
 // ============================================================================
 // API 함수
@@ -39,7 +41,7 @@ export const announcementApi = {
      * @returns 모집글 목록
      */
     getAnnouncements: async () => {
-        const data = await client.get(responses.announcements.list)
+        const data = await contractClient.get(apiContract.recruits.list)
         return data.map(mapRecruit)
     },
 
@@ -48,14 +50,16 @@ export const announcementApi = {
      * @param data - 모집글 데이터
      */
     createAnnouncement: async (body: PostRequest) => {
-        return client.post(responses.announcements.create, body)
+        return contractClient.post(apiContract.recruits.create, { body })
     },
     /**
      * 모집글 마감
      * @param announcementId - 모집글 ID
      */
     closeAnnouncement: async (id: number) => {
-        return client.post(responses.announcements.close(id))
+        return contractClient.patch(apiContract.recruits.close, {
+            pathParams: { recruitId: domainId.recruit(id) }
+        })
     },
 
     /**
@@ -63,7 +67,9 @@ export const announcementApi = {
      * @param announcementId - 모집글 ID
      */
     joinAnnouncement: async (id: number) => {
-        return client.post(responses.announcements.join(id))
+        return contractClient.post(apiContract.recruits.join, {
+            pathParams: { recruitId: domainId.recruit(id) }
+        })
     }
 }
 
@@ -101,15 +107,15 @@ export const useGetAnnouncements = () => {
  * 모집글 작성 Hook
  * @param options - 성공/에러 콜백
  */
-export const usePostAnnouncement = (options: MutationOptions = {}) => {
+export const usePostAnnouncement = (options: MutationOptions<CreateRecruitResponse> = {}) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: announcementApi.createAnnouncement,
-        onSuccess: () => {
+        onSuccess: data => {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.announcements.all
             })
-            options.onSuccess?.()
+            options.onSuccess?.(data)
         },
         onError: options.onError
     })
@@ -120,15 +126,15 @@ export const usePostAnnouncement = (options: MutationOptions = {}) => {
  * 모집글 마감 Hook
  * @param options - 성공/에러 콜백
  */
-export const useCloseAnnouncement = (options: MutationOptions = {}) => {
+export const useCloseAnnouncement = (options: MutationOptions<NoContent> = {}) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: closeAnnouncement,
-        onSuccess: () => {
+        onSuccess: data => {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.announcements.all
             })
-            options.onSuccess?.()
+            options.onSuccess?.(data)
         },
         onError: options.onError
     })
@@ -145,15 +151,15 @@ export const useCloseAnnouncement = (options: MutationOptions = {}) => {
  * })
  * join(announcementId)
  */
-export const useJoinAnnouncement = (options: MutationOptions = {}) => {
+export const useJoinAnnouncement = (options: MutationOptions<NoContent> = {}) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: joinAnnouncement,
-        onSuccess: () => {
+        onSuccess: data => {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.announcements.all
             })
-            options.onSuccess?.()
+            options.onSuccess?.(data)
         },
         onError: options.onError
     })

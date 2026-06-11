@@ -12,12 +12,13 @@
  * })
  */
 
-import { client } from './client'
-import { responses } from './responses'
+import { contractClient } from './client'
+import { apiContract } from '@kimdaegyu/babmukdang-shared/domain'
 import type {
     OnboardingPreferenceRequest,
     PreferenceMetaResponse,
-    PreferenceSummaryResponse
+    PreferenceSummaryResponse,
+    NoContent
 } from './types'
 
 // ============================================================================
@@ -34,8 +35,8 @@ export const preferenceApi = {
      */
     postOnboarding: async (
         data: OnboardingPreferenceRequest
-    ): Promise<void> => {
-        return client.post(responses.preferences.onboarding, data)
+    ): Promise<NoContent> => {
+        return contractClient.patch(apiContract.preferences.update, { body: data })
     },
 
     /**
@@ -43,7 +44,7 @@ export const preferenceApi = {
      * @returns 선호도 요약 (좋아하는 음식, 싫어하는 음식, 알레르기 목록)
      */
     getSummary: async (): Promise<PreferenceSummaryResponse> => {
-        return client.get(responses.preferences.mySummary)
+        return contractClient.get(apiContract.preferences.my)
     },
 
     /**
@@ -51,7 +52,12 @@ export const preferenceApi = {
      * @returns 온보딩 완료 시간, 마지막 수정 시간, 리비전 번호
      */
     getMeta: async (): Promise<PreferenceMetaResponse> => {
-        return client.get(responses.preferences.myMeta)
+        const summary = await preferenceApi.getSummary()
+        return {
+            likes: summary.liked,
+            dislikes: summary.disliked,
+            allergies: summary.allergy
+        }
     }
 }
 

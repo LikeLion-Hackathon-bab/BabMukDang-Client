@@ -1,6 +1,7 @@
 import { ArticlePostRequest, FoodAnalysisResultDto, RestaurantInfo } from '@/apis'
 import { mapRestaurantInfoToKakaoRestaurant } from '@/apis/mappers/article.mapper'
 import { create } from 'zustand'
+import { domainId } from '@/domain/factories'
 
 interface ArticleStore {
     image: File | null
@@ -41,7 +42,7 @@ export const useArticleStore = create<ArticleStore>(set => ({
             imageUrl: cdnUrl,
             mealDate: state.mealDate,
             restaurant: mapRestaurantInfoToKakaoRestaurant(restaurant),
-            taggedMembersId: state.taggedMemberIds,
+            taggedMemberIds: state.taggedMemberIds.map(domainId.member),
             ...(state.foodAnalysis
                 ? { foodAnalysis: state.foodAnalysis }
                 : {})

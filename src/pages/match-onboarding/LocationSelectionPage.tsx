@@ -1,8 +1,8 @@
+import { domainId } from '@/domain/factories'
 import { useState, useEffect, useRef } from 'react'
-import type {
-    LocationAddInitialState,
-    LocationCandidateAddUpdateResponseDto
-} from '@kimdaegyu/babmukdang-shared'
+import type { LocationCandidate, MemberId } from '@kimdaegyu/babmukdang-shared/domain'
+type LocationAddInitialState = LocationCandidate[]
+type LocationCandidateAddUpdateResponseDto = (LocationCandidate & { authorMemberId?: MemberId })[]
 
 import { useSocket } from '@/contexts/SocketContext'
 import { KakaoMap, LocationCadidateItem } from '@/components'
@@ -20,7 +20,7 @@ const toOptions = (
     candidates: LocationCandidateAddUpdateResponseDto
 ): LocationOption[] =>
     candidates.map(candidate => ({
-        id: candidate.id,
+        id: candidate.locationId,
         placeName: candidate.placeName,
         lat: candidate.lat,
         lng: candidate.lng,
@@ -85,7 +85,7 @@ export function LocationSelectionPage() {
         // 서버에 위치 후보 전송 (LocationCandidateAddRequestDto: id 필수)
         try {
             socket?.emit('add-location-candidate', {
-                id: Date.now().toString(),
+                locationId: domainId.location(Date.now().toString()),
                 placeName: `새로운 위치 (${lat.toFixed(4)}, ${lng.toFixed(4)})`,
                 address,
                 lat,

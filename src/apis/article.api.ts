@@ -14,8 +14,9 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { client } from './client'
-import { responses } from './responses'
+import { contractClient } from './client'
+import { apiContract } from '@kimdaegyu/babmukdang-shared/domain'
+import { domainId } from '@/domain/factories'
 import { queryKeys } from './keys'
 import {
     mapArticleDetail,
@@ -29,6 +30,8 @@ import type {
     CommentResponse,
     LikePostResponse,
     MutationOptions,
+    NoContent,
+    CreatedEntityIdResponse,
     PageArticleSummaryResponse
 } from './types'
 
@@ -50,7 +53,9 @@ export const articleApi = {
      * @returns 게시글 상세 정보
      */
     getById: async (articleId: number): Promise<ArticleDetailResponse> => {
-        const data = await client.get(responses.articles.detail(articleId))
+        const data = await contractClient.get(apiContract.articles.detail, {
+            pathParams: { articleId: domainId.article(articleId) }
+        })
         return mapArticleDetail(data)
     },
 
@@ -60,8 +65,10 @@ export const articleApi = {
      * @returns 댓글 목록
      */
     getComments: async (articleId: number): Promise<CommentResponse[]> => {
-        const data = await client.get(responses.articles.comments(articleId))
-        return data.map(mapComment)
+        const detail = await contractClient.get(apiContract.articles.detail, {
+            pathParams: { articleId: domainId.article(articleId) }
+        })
+        return (detail.comments ?? []).map(mapComment)
     },
 
     /**
@@ -69,7 +76,7 @@ export const articleApi = {
      * @returns 홈 피드 게시글 페이지
      */
     getHome: async (): Promise<PageArticleSummaryResponse> => {
-        const data = await client.get(responses.articles.home)
+        const data = await contractClient.get(apiContract.articles.list)
         return mapArticlePage(data)
     },
 
@@ -81,7 +88,9 @@ export const articleApi = {
     getByAuthor: async (
         authorId: number
     ): Promise<PageArticleSummaryResponse> => {
-        const data = await client.get(responses.articles.byAuthor(authorId))
+        const data = await contractClient.get(apiContract.articles.byMember, {
+            pathParams: { memberId: domainId.member(authorId) }
+        })
         return mapArticlePage(data)
     },
 
@@ -93,8 +102,9 @@ export const articleApi = {
     getByMember: async (
         memberId: number
     ): Promise<PageArticleSummaryResponse> => {
-        const data = await client.get(responses.articles.byMember(memberId), {
-            params: { page: 0 }
+        const data = await contractClient.get(apiContract.articles.byMember, {
+            pathParams: { memberId: domainId.member(memberId) },
+            query: { page: 0 }
         })
         return mapArticlePage(data)
     },
@@ -104,9 +114,7 @@ export const articleApi = {
      * @returns 내 게시글 페이지
      */
     getMy: async (): Promise<PageArticleSummaryResponse> => {
-        const data = await client.get(responses.articles.my, {
-            params: { page: 0 }
-        })
+        const data = await contractClient.get(apiContract.articles.my)
         return mapArticlePage(data)
     },
 
@@ -114,8 +122,8 @@ export const articleApi = {
      * 게시글 생성
      * @param data - 게시글 작성 데이터
      */
-    create: async (data: ArticlePostRequest): Promise<{ id: number }> => {
-        return client.post(responses.articles.create, data)
+    create: async (data: ArticlePostRequest) => {
+        return contractClient.post(apiContract.articles.create, { body: data })
     },
 
     /**
@@ -124,7 +132,9 @@ export const articleApi = {
      * @returns 좋아요 상태
      */
     like: async (articleId: number): Promise<LikePostResponse> => {
-        return client.post(responses.articles.like(articleId))
+        return contractClient.post(apiContract.articles.like, {
+            pathParams: { articleId: domainId.article(articleId) }
+        })
     },
 
     /**
@@ -135,24 +145,33 @@ export const articleApi = {
     createComment: async (
         articleId: number,
         data: CommentPostRequest
-    ): Promise<{ id: number }> => {
-        return client.post(responses.articles.createComment(articleId), data)
+    ): Promise<CreatedEntityIdResponse> => {
+        return contractClient.post(apiContract.articles.createComment, {
+            pathParams: { articleId: domainId.article(articleId) },
+            body: data
+        })
     },
 
     /**
      * 게시글 삭제
      * @param articleId - 게시글 ID
      */
-    delete: async (articleId: number): Promise<void> => {
-        return client.delete(responses.articles.delete(articleId))
+    delete: async (articleId: number): Promise<NoContent> => {
+        return contractClient.delete(apiContract.articles.delete, {
+            pathParams: { articleId: domainId.article(articleId) }
+        })
     },
 
     /**
      * 댓글 삭제
      * @param commentId - 댓글 ID
      */
-    deleteComment: async (commentId: number): Promise<void> => {
-        return client.delete(responses.articles.deleteComment(commentId))
+    deleteComment: async (articleId: number, commentId: number): Promise<NoContent> => {
+        return contractClient.delete(apiContract.articles.deleteComment, {
+            pathParams: {
+                commentId: domainId.comment(commentId)
+            }
+        })
     }
 }
 
@@ -280,7 +299,9 @@ type UploadAndPostVars = {
  *   })
  * })
  */
-export const useUploadArticle = (options: MutationOptions) => {
+type CreateArticleResult = Awaited<ReturnType<typeof articleApi.create>>
+
+export const useUploadArticle = (options: MutationOptions<CreateArticleResult>) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: async ({
@@ -304,9 +325,9 @@ export const useUploadArticle = (options: MutationOptions) => {
             const req = buildRequest(cdnUrl)
             return articleApi.create(req)
         },
-        onSuccess: () => {
+        onSuccess: data => {
             queryClient.invalidateQueries({ queryKey: queryKeys.articles.all })
-            options.onSuccess?.()
+            options.onSuccess?.(data)
         },
         onError: options.onError
     })
@@ -334,7 +355,7 @@ export const useLikeArticle = (
  * 댓글 작성 Hook
  * @param options - 성공/에러 콜백
  */
-export const useCommentArticle = (options: MutationOptions = {}) => {
+export const useCommentArticle = (options: MutationOptions<CreatedEntityIdResponse> = {}) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: ({
@@ -344,11 +365,11 @@ export const useCommentArticle = (options: MutationOptions = {}) => {
             articleId: number
             comment: CommentPostRequest
         }) => articleApi.createComment(articleId, comment),
-        onSuccess: () => {
+        onSuccess: data => {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.articles.all
             })
-            options.onSuccess?.()
+            options.onSuccess?.(data)
         },
         onError: options.onError
     })
@@ -359,14 +380,14 @@ export const useCommentArticle = (options: MutationOptions = {}) => {
  * 게시글 삭제 Hook
  * @param options - 성공/에러 콜백
  */
-export const useDeleteArticle = (options: MutationOptions = {}) => {
+export const useDeleteArticle = (options: MutationOptions<NoContent> = {}) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: ({ articleId }: { articleId: number }) =>
             articleApi.delete(articleId),
-        onSuccess: () => {
+        onSuccess: data => {
             queryClient.invalidateQueries({ queryKey: queryKeys.articles.all })
-            options.onSuccess?.()
+            options.onSuccess?.(data)
         },
         onError: options.onError
     })
@@ -377,14 +398,19 @@ export const useDeleteArticle = (options: MutationOptions = {}) => {
  * 댓글 삭제 Hook
  * @param options - 성공/에러 콜백
  */
-export const useDeleteArticleComment = (options: MutationOptions = {}) => {
+export const useDeleteArticleComment = (options: MutationOptions<NoContent> = {}) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
-        mutationFn: ({ commentId }: { commentId: number }) =>
-            articleApi.deleteComment(commentId),
-        onSuccess: () => {
+        mutationFn: ({
+            articleId,
+            commentId
+        }: {
+            articleId: number
+            commentId: number
+        }) => articleApi.deleteComment(articleId, commentId),
+        onSuccess: data => {
             queryClient.invalidateQueries({ queryKey: queryKeys.articles.all })
-            options.onSuccess?.()
+            options.onSuccess?.(data)
         },
         onError: options.onError
     })

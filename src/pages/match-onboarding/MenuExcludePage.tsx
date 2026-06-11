@@ -3,14 +3,15 @@ import { useEffect, useState } from 'react'
 import { useSocket } from '@/contexts/SocketContext'
 import { TagPerson, OnboardingHeader, ThumbImg } from '@/components'
 import { useAuthStore } from '@/store'
-import type {
-    ExcludeMenuInitialState,
-    ExcludeMenuUpdateResponseDto,
-    Menu
-} from '@kimdaegyu/babmukdang-shared'
+import type { Menu, MemberId } from '@kimdaegyu/babmukdang-shared/domain'
+type ExcludeMenuInitialState = {
+    recentMenus: { memberId: MemberId; menuList: Menu[] }[]
+    excludedMenuList?: { memberId: MemberId; exclusions: Menu[] }[]
+}
+type ExcludeMenuUpdateResponseDto = { memberId: MemberId; exclusions: Menu[] }[]
 
 interface UserRecentMenus {
-    userId: string
+    memberId: number
     menuList: Menu[]
     excludedMenuList?: Menu[]
 }
@@ -25,10 +26,10 @@ export function MenuExcludePage() {
             const excluded = data.excludedMenuList ?? []
             setUserRecentMenus(
                 data.recentMenus.map(recent => ({
-                    userId: recent.userId,
+                    memberId: Number(recent.memberId),
                     menuList: recent.menuList,
                     excludedMenuList: excluded.find(
-                        item => item.userId === recent.userId
+                        item => Number(item.memberId) === Number(recent.memberId)
                     )?.exclusions
                 }))
             )
@@ -40,7 +41,7 @@ export function MenuExcludePage() {
             setUserRecentMenus(prev =>
                 prev.map(item => {
                     const updateItem = data.find(
-                        update => update.userId === item.userId
+                        update => Number(update.memberId) === Number(item.memberId)
                     )
                     if (updateItem) {
                         return {
@@ -65,7 +66,7 @@ export function MenuExcludePage() {
                         <MenuExcludeList
                             key={index}
                             menuList={user.menuList}
-                            userId={user.userId}
+                            memberId={user.memberId}
                             excludedMenuList={user.excludedMenuList}
                         />
                     ))}
@@ -77,11 +78,11 @@ export function MenuExcludePage() {
 // 유저 한명의 메뉴 목록
 const MenuExcludeList = ({
     menuList,
-    userId,
+    memberId,
     excludedMenuList
 }: {
     menuList: Menu[]
-    userId: string
+    memberId: number
     excludedMenuList?: Menu[]
 }) => {
     const { categories, socket } = useSocket()
@@ -94,7 +95,7 @@ const MenuExcludeList = ({
     return (
         <div className="flex flex-col gap-10">
             <TagPerson
-                name={userId}
+                name={String(memberId)}
                 className="w-fit px-18"
             />
             <div className="-ml-20 flex h-fit w-screen gap-10 overflow-x-auto pl-20">

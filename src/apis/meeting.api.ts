@@ -9,8 +9,8 @@
  */
 
 import { useQuery } from '@tanstack/react-query'
-import { client } from './client'
-import { responses } from './responses'
+import { contractClient } from './client'
+import { apiContract } from '@kimdaegyu/babmukdang-shared/domain'
 import { queryKeys } from './keys'
 import { mapMeeting } from './mappers/meeting.mapper'
 import type { MeetingResponse } from './types'
@@ -28,7 +28,7 @@ export const meetingApi = {
      * @returns 모임 목록 (화면 view model)
      */
     getAll: async (): Promise<MeetingResponse[]> => {
-        const data = await client.get(responses.meetings.list)
+        const data = await contractClient.get(apiContract.plans.list)
         return data.map(mapMeeting)
     }
 }

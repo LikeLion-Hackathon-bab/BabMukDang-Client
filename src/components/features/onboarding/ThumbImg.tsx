@@ -2,9 +2,10 @@ import { useState } from 'react'
 
 type Item = {
     name: string
-    aspectRatio: number
-    placeholder: { blurhash?: string; thumbhashDataURL: string }
-    images: {
+    aspectRatio?: number
+    imageUrl?: string
+    placeholder?: { blurhash?: string; thumbhashDataURL: string }
+    images?: {
         src: string
         avifSrcset: string
         sizes?: string
@@ -53,6 +54,11 @@ export function ThumbImg({
                 </span>
             </div>
         )
+
+    const imageSrc = item.images?.src ?? item.imageUrl
+    const avifSrcset = item.images?.avifSrcset
+    const thumbhashDataURL = item.placeholder?.thumbhashDataURL
+
     return (
         <div
             className={`rounded-12 relative h-${size} w-${size} overflow-hidden ${className} ${
@@ -62,37 +68,47 @@ export function ThumbImg({
                 aspectRatio: `${aspectRatio || item.aspectRatio || '1/1'}`
             }}
             onClick={handleClick}>
-            {/* LQIP */}
-            <img
-                src={item.placeholder.thumbhashDataURL}
-                alt=""
-                aria-hidden
-                className="absolute inset-0 h-full w-full object-cover blur"
-                style={{ filter: 'blur(12px)', transform: 'scale(1.05)' }}
-            />
-            {/* 실제 썸네일 */}
-            <picture>
-                <source
-                    type="image/avif"
-                    srcSet={withCdnSrcset(
-                        item.images.avifSrcset,
-                        import.meta.env.VITE_CDN_URL
-                    )}
-                    sizes={item.images.sizes}
-                />
+            {thumbhashDataURL && (
                 <img
-                    alt={item.name}
-                    src={withCdnSrcset(
-                        item.images.src,
-                        import.meta.env.VITE_CDN_URL
-                    )}
-                    // loading={item.priority ? 'eager' : 'lazy'}
-                    // @ts-ignore
-                    // fetchpriority={item.priority ? 'high' : 'auto'}
-                    decoding="async"
-                    className="absolute inset-0 h-full w-full object-cover"
+                    src={thumbhashDataURL}
+                    alt=""
+                    aria-hidden
+                    className="absolute inset-0 h-full w-full object-cover blur"
+                    style={{ filter: 'blur(12px)', transform: 'scale(1.05)' }}
                 />
-            </picture>
+            )}
+            {imageSrc ? (
+                <picture>
+                    {avifSrcset && (
+                        <source
+                            type="image/avif"
+                            srcSet={withCdnSrcset(
+                                avifSrcset,
+                                import.meta.env.VITE_CDN_URL
+                            )}
+                            sizes={item.images?.sizes}
+                        />
+                    )}
+                    <img
+                        alt={item.name}
+                        src={withCdnSrcset(
+                            imageSrc,
+                            import.meta.env.VITE_CDN_URL
+                        )}
+                        // loading={item.priority ? 'eager' : 'lazy'}
+                        // @ts-ignore
+                        // fetchpriority={item.priority ? 'high' : 'auto'}
+                        decoding="async"
+                        className="absolute inset-0 h-full w-full object-cover"
+                    />
+                </picture>
+            ) : (
+                <div className="bg-gray-2 flex h-full w-full items-center justify-center">
+                    <span className="text-body2-medium text-gray-7">
+                        이미지 준비 중
+                    </span>
+                </div>
+            )}
         </div>
     )
 }

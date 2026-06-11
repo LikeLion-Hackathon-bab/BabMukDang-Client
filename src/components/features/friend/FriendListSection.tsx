@@ -2,8 +2,11 @@ import { FriendCard } from './InvitationFriendCard'
 
 export interface Friend {
     memberId: number
-    userName: string
-    profileImageUrl: string
+    /** 화면 legacy view model 필드. 신규 데이터는 username을 우선 사용한다. */
+    userName?: string
+    /** Shared domain FriendMealItemResponse 필드. */
+    username?: string
+    profileImageUrl?: string | null
     hungry: boolean
     label: string
 }

@@ -1,57 +1,28 @@
-/**
- * @fileoverview Invitation (초대) 관련 Mock Fixtures
- *
- * 초대 관련 테스트 및 개발용 mock 데이터를 정의합니다.
- */
+/** @fileoverview Invitation mock fixtures */
+import type { InvitationPostRequest, InvitationResponse } from '@/apis'
 
-import type { InvitationResponse, InvitationPostRequest } from '@/apis'
+const invitation = (
+    invitationId: number,
+    inviterName: string
+): InvitationResponse => ({
+    invitationId: invitationId as InvitationResponse['invitationId'],
+    inviterName,
+    inviterProfileImageUrl: null
+})
 
-/**
- * 초대 응답 mock 데이터 목록
- */
 export const mockInvitationResponses: InvitationResponse[] = [
-    {
-        invitationId: 1,
-        inviterName: '유가은',
-        inviterProfileImageUrl: ''
-    },
-    {
-        invitationId: 2,
-        inviterName: '김대규',
-        inviterProfileImageUrl: ''
-    },
-    {
-        invitationId: 4,
-        inviterName: '이민수',
-        inviterProfileImageUrl: ''
-    },
-    {
-        invitationId: 5,
-        inviterName: '이민수',
-        inviterProfileImageUrl: ''
-    },
-    {
-        invitationId: 6,
-        inviterName: '이민수',
-        inviterProfileImageUrl: ''
-    },
-    {
-        invitationId: 7,
-        inviterName: '이민수',
-        inviterProfileImageUrl: ''
-    }
+    invitation(1, '유가은'),
+    invitation(2, '김대규'),
+    invitation(4, '이민수'),
+    invitation(5, '이민수'),
+    invitation(6, '이민수'),
+    invitation(7, '이민수')
 ]
 
-/**
- * 초대 요청 mock 데이터
- */
 export const mockInvitationRequest: InvitationPostRequest = {
-    inviteeId: 2,
+    inviteeId: 2 as InvitationPostRequest['inviteeId'],
     message: '같이 밥 먹어요!'
 }
 
-/**
- * 단일 초대 응답 mock
- */
 export const mockSingleInvitationResponse: InvitationResponse =
     mockInvitationResponses[0]

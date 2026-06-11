@@ -14,13 +14,17 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { client } from './client'
-import { responses } from './responses'
+import { contractClient } from './client'
+import { apiContract } from '@kimdaegyu/babmukdang-shared/domain'
+import { domainId } from '@/domain/factories'
 import { queryKeys } from './keys'
 import type {
+    AcceptInvitationResponse,
     InvitationPostRequest,
     InvitationResponse,
-    MutationOptions
+    MutationOptions,
+    NoContent,
+    SendInvitationResponse
 } from './types'
 
 // ============================================================================
@@ -36,31 +40,35 @@ export const invitationApi = {
      * @returns 초대 목록
      */
     getAll: async (): Promise<InvitationResponse[]> => {
-        return client.get(responses.invitations.list)
+        return contractClient.get(apiContract.invitations.list)
     },
 
     /**
      * 초대 전송
      * @param data - 초대 데이터 (대상자 ID, 메시지)
      */
-    send: async (data: InvitationPostRequest): Promise<number> => {
-        return client.post(responses.invitations.send, data)
+    send: async (data: InvitationPostRequest): Promise<SendInvitationResponse> => {
+        return contractClient.post(apiContract.invitations.send, { body: data })
     },
 
     /**
      * 초대 수락
      * @param invitationId - 초대 ID
      */
-    accept: async (invitationId: number): Promise<InvitationResponse> => {
-        return client.post(responses.invitations.accept(invitationId))
+    accept: async (invitationId: number): Promise<AcceptInvitationResponse> => {
+        return contractClient.post(apiContract.invitations.accept, {
+            pathParams: { invitationId: domainId.invitation(invitationId) }
+        })
     },
 
     /**
      * 초대 거절
      * @param invitationId - 초대 ID
      */
-    reject: async (invitationId: number): Promise<void> => {
-        return client.post(responses.invitations.reject(invitationId))
+    reject: async (invitationId: number): Promise<NoContent> => {
+        return contractClient.post(apiContract.invitations.reject, {
+            pathParams: { invitationId: domainId.invitation(invitationId) }
+        })
     }
 }
 
@@ -101,15 +109,15 @@ export const useGetInvitations = () => {
  *   onSuccess: () => toast.success('초대를 보냈습니다.')
  * })
  */
-export const useSendInvitation = (options: MutationOptions = {}) => {
+export const useSendInvitation = (options: MutationOptions<SendInvitationResponse> = {}) => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: invitationApi.send,
-        onSuccess: () => {
+        onSuccess: data => {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.invitations.all
             })
-            options.onSuccess?.()
+            options.onSuccess?.(data)
         },
         onError: options.onError
     })
@@ -121,23 +129,23 @@ export const useSendInvitation = (options: MutationOptions = {}) => {
  *
  * @example
  * const { mutate: accept } = useAcceptInvitation({
- *   onSuccess: () => {
+ *   onSuccess: data => {
  *     toast.success('초대를 수락했습니다.')
  *     refetchFriends()
  *   }
  * })
  * accept(invitationId)
  */
-export const useAcceptInvitation = (options: MutationOptions = {}) => {
+export const useAcceptInvitation = (options: MutationOptions<AcceptInvitationResponse> = {}) => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: invitationApi.accept,
-        onSuccess: () => {
+        onSuccess: data => {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.invitations.all
             })
             queryClient.invalidateQueries({ queryKey: queryKeys.friends.all })
-            options.onSuccess?.()
+            options.onSuccess?.(data)
         },
         onError: options.onError
     })
@@ -147,15 +155,15 @@ export const useAcceptInvitation = (options: MutationOptions = {}) => {
  * 초대 거절 Hook
  * @param options - 성공/에러 콜백
  */
-export const useRejectInvitation = (options: MutationOptions = {}) => {
+export const useRejectInvitation = (options: MutationOptions<NoContent> = {}) => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: invitationApi.reject,
-        onSuccess: () => {
+        onSuccess: data => {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.invitations.all
             })
-            options.onSuccess?.()
+            options.onSuccess?.(data)
         },
         onError: options.onError
     })

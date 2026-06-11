@@ -16,14 +16,14 @@
  * 실패하도록 한다.
  */
 
-import {
-    ArticleSummaryResponseDto,
+import type {
+    ArticleSummaryResponse as ArticleSummaryResponseDto,
     BaseResponse,
-    type MemberSummaryResponse,
-    type PlanResponseDto,
-    type ReferralCreateResponse,
-    type ReferralItemResponse
-} from '@kimdaegyu/babmukdang-shared'
+    MemberCore as MemberSummaryResponse,
+    PlanResponse as PlanResponseDto,
+    ReferralCreateResponse,
+    ReferralItemResponse
+} from '@kimdaegyu/babmukdang-shared/domain'
 import { test, expect, type APIRequestContext } from '@playwright/test'
 import { endpoints } from '../apis/endpoints'
 import {
@@ -316,7 +316,7 @@ test.describe('Members', () => {
             headers: auth(tokenA)
         })
         expect(res.status()).toBe(200)
-        expect(body.data.member.userId).toBeTruthy()
+        expect(body.data.memberId).toBeTruthy()
     })
 
     test('GET /members/me/profile → 200', async ({ request }) => {
@@ -324,7 +324,7 @@ test.describe('Members', () => {
             headers: auth(tokenA)
         })
         expect(res.status()).toBe(200)
-        expect(body.data.member.userId).toBeTruthy()
+        expect(body.data.memberId).toBeTruthy()
     })
 
     test('GET /members/me/profile/detail → 200', async ({ request }) => {
@@ -340,7 +340,7 @@ test.describe('Members', () => {
     test('PATCH /members/me/profile → 200', async ({ request }) => {
         const res = await request.patch(url(ep.members.updateProfile), {
             headers: auth(tokenA),
-            data: { userName: 'E2E수정A', bio: '테스트 바이오' }
+            data: { username: 'E2E수정A', profileImageUrl: null, bio: '테스트 바이오' }
         })
         expect([200, 204]).toContain(res.status())
     })
@@ -370,7 +370,7 @@ test.describe('Members', () => {
             headers: auth(tokenA)
         })
         expect(res.status()).toBe(200)
-        expect(body.data.status).toBeTruthy()
+        expect(body.data.hungry).toBeTruthy()
     })
 
     test('PATCH /members/me/meal-status (ATE_NOW) → 200', async ({
@@ -400,7 +400,7 @@ test.describe('Members', () => {
             { headers: auth(tokenB) }
         )
         expect(res.status()).toBe(200)
-        expect(body.data.member.userId).toBeTruthy()
+        expect(body.data.memberId).toBeTruthy()
     })
 
     test('GET /members/:memberId/profile/detail → 200', async ({ request }) => {
@@ -433,7 +433,7 @@ test.describe('Members', () => {
             { headers: auth(tokenB) }
         )
         expect(res.status()).toBe(200)
-        expect(body.data.member.userId).toBeTruthy()
+        expect(body.data.memberId).toBeTruthy()
     })
 })
 
@@ -444,12 +444,12 @@ test.describe('Onboarding', () => {
         const res = await request.post(url(ep.onboarding.create), {
             headers: auth(tokenA),
             data: {
-                userName: USER_A.username,
+                username: USER_A.username,
                 profileImageUrl: null,
                 bio: null,
-                likedCodes: [],
-                dislikedCodes: [],
-                allergyCodes: []
+                liked: [],
+                disliked: [],
+                allergy: []
             }
         })
         expect([200, 204]).toContain(res.status())
@@ -477,9 +477,9 @@ test.describe('Preferences', () => {
         const res = await request.post(url(ep.preferences.onboarding), {
             headers: auth(tokenA),
             data: {
-                likedCodes: [],
-                dislikedCodes: [],
-                allergyCodes: []
+                liked: [],
+                disliked: [],
+                allergy: []
             }
         })
         expect([200, 204]).toContain(res.status())
@@ -553,7 +553,7 @@ test.describe('Articles', () => {
                     kakaoId: 'test-kakao-id',
                     kakaoUrl: 'https://place.map.kakao.com/test'
                 },
-                taggedMembersId: []
+                taggedMemberIds: []
             }
         })
         expect(res.status()).toBe(201)
@@ -571,7 +571,7 @@ test.describe('Articles', () => {
             { headers: auth(tokenA) }
         )
         expect(res.status()).toBe(200)
-        expect(body.data.id).toBe(createdArticleId)
+        expect(body.data.articleId).toBe(createdArticleId)
     })
 
     test('POST /articles/:articleId/like → 200', async ({ request }) => {
@@ -644,7 +644,7 @@ test.describe('Articles', () => {
                     kakaoId: 'test-kakao-id-2',
                     kakaoUrl: 'https://place.map.kakao.com/test2'
                 },
-                taggedMembersId: []
+                taggedMemberIds: []
             }
         })
         const createBody = await createRes.json()
@@ -918,7 +918,7 @@ test.describe('Challenges', () => {
             headers: auth(tokenA)
         })
         expect(res.status()).toBe(200)
-        expect(typeof body.data.week).toBe('object')
+        expect(typeof body.data.count).toBe('number')
     })
 
     test('POST /challenges/me/reward → 200 또는 400/409', async ({

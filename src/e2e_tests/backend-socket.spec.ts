@@ -17,28 +17,52 @@
 
 import { expect, test } from '@playwright/test'
 import { io, type Socket } from 'socket.io-client'
+import type { z } from 'zod'
 import type {
-    ChatMessageRequestDto,
-    ChatMessageResponseItem,
-    ClientToServerEvents,
-    DatePicksRequestDto,
-    DatePicksUpdateResponseDto,
-    ExcludeMenuRequestDto,
-    ExcludeMenuUpdateResponseDto,
-    LocationCandidateAddRequestDto,
-    LocationCandidateAddUpdateResponseDto,
-    LocationCandidateVoteRequestDto,
-    LocationCandidateVoteUpdateResponseDto,
-    MenuPickRequestDto,
-    MenuPickUpdateResponseDto,
-    ReadyStateChangedDto,
-    ReadyStateRequestDto,
-    RestaurantPickRequestDto,
-    RestaurantPickUpdateResponseDto,
-    ServerToClientEvents,
-    TimePicksRequestDto,
-    TimePicksUpdateResponseDto
-} from '@kimdaegyu/babmukdang-shared'
+    ChatMessageRequest as ChatMessageRequestDto,
+    ChatMessageResponse as ChatMessageResponseItem,
+    RoomClientToServerEvents as ClientToServerEvents,
+    RoomServerToClientEvents as ServerToClientEvents,
+    ReadyStateRequest as ReadyStateRequestDto
+} from '@kimdaegyu/babmukdang-shared/domain'
+import {
+    AddLocationCandidateRequestSchema,
+    DatePicksUpdateResponseSchema,
+    ExcludeMenuRequestSchema,
+    ExcludeMenuUpdateResponseSchema,
+    LocationCandidateAddUpdateResponseSchema,
+    LocationCandidateVoteUpdateResponseSchema,
+    MenuPickUpdateResponseSchema,
+    PickDateRequestSchema,
+    PickMenuRequestSchema,
+    PickRestaurantRequestSchema,
+    PickTimesRequestSchema,
+    ReadyStateChangedSchema,
+    RestaurantPickUpdateResponseSchema,
+    TimePicksUpdateResponseSchema,
+    VoteLocationRequestSchema,
+    FoodCodeSchema,
+    FoodLabelSchema,
+    LocationIdSchema,
+    toMemberId,
+    toRestaurantId
+} from '@kimdaegyu/babmukdang-shared/domain'
+
+type DatePicksRequestDto = z.infer<typeof PickDateRequestSchema>
+type TimePicksRequestDto = z.infer<typeof PickTimesRequestSchema>
+type LocationCandidateAddRequestDto = z.infer<typeof AddLocationCandidateRequestSchema>
+type LocationCandidateVoteRequestDto = z.infer<typeof VoteLocationRequestSchema>
+type ExcludeMenuRequestDto = z.infer<typeof ExcludeMenuRequestSchema>
+type MenuPickRequestDto = z.infer<typeof PickMenuRequestSchema>
+type RestaurantPickRequestDto = z.infer<typeof PickRestaurantRequestSchema>
+type ReadyStateChangedDto = z.infer<typeof ReadyStateChangedSchema>
+type DatePicksUpdateResponseDto = z.infer<typeof DatePicksUpdateResponseSchema>
+type TimePicksUpdateResponseDto = z.infer<typeof TimePicksUpdateResponseSchema>
+type LocationCandidateAddUpdateResponseDto = z.infer<typeof LocationCandidateAddUpdateResponseSchema>
+type LocationCandidateVoteUpdateResponseDto = z.infer<typeof LocationCandidateVoteUpdateResponseSchema>
+type ExcludeMenuUpdateResponseDto = z.infer<typeof ExcludeMenuUpdateResponseSchema>
+type MenuPickUpdateResponseDto = z.infer<typeof MenuPickUpdateResponseSchema>
+type RestaurantPickUpdateResponseDto = z.infer<typeof RestaurantPickUpdateResponseSchema>
 import { endpoints } from '../apis/endpoints'
 import {
     AppSocket,
@@ -81,7 +105,7 @@ test.beforeAll(async ({ request }) => {
     const sendRes = await request.post(url(endpoints.invitations.send), {
         headers: auth(tokenA),
         data: {
-            inviteeId: Number(memberIdB),
+            inviteeId: toMemberId(Number(memberIdB)),
             message: 'E2E 소켓 테스트 초대장'
         }
     })
@@ -236,15 +260,15 @@ test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
 
     test('2) chat-message → chat-message', async () => {
         const text = `E2E 소켓 채팅 ${Date.now()}`
-        const payload: ChatMessageRequestDto = { text }
+        const payload: ChatMessageRequestDto = { message: text }
         const [resA, resB] = await emitAndExpectBroadcast<
             'chat-message',
             'chat-message'
         >(socketA, [socketA, socketB], 'chat-message', payload, 'chat-message')
         const a = resA as ChatMessageResponseItem
         const b = resB as ChatMessageResponseItem
-        expect(a.text).toBe(text)
-        expect(a.user.userId).toBe(memberIdA)
+        expect(a.message).toBe(text)
+        expect(a.user.memberId).toBe(toMemberId(Number(memberIdA)))
         expect(b).toEqual(a)
     })
 
@@ -256,7 +280,7 @@ test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
         >(socketA, [socketA, socketB], 'pick-date', payload, 'date-updated')
         const a = resA as DatePicksUpdateResponseDto
         expect(Array.isArray(a)).toBe(true)
-        const mine = a.find(item => item.userId === memberIdA)
+        const mine = a.find(item => item.memberId === toMemberId(Number(memberIdA)))
         expect(mine?.dates).toEqual(payload.dates)
         expect(resB).toEqual(resA)
     })
@@ -273,7 +297,7 @@ test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
         >(socketA, [socketA, socketB], 'pick-times', payload, 'time-updated')
         const a = resA as TimePicksUpdateResponseDto
         expect(Array.isArray(a)).toBe(true)
-        const mine = a.find(item => item.userId === memberIdA)
+        const mine = a.find(item => item.memberId === toMemberId(Number(memberIdA)))
         expect(mine?.times).toEqual(payload.times)
         expect(resB).toEqual(resA)
     })
@@ -285,7 +309,7 @@ test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
     test('7) location 단계: add-location-candidate → location-add-updated', async () => {
         locationId = `e2e-loc-${Date.now()}`
         const payload: LocationCandidateAddRequestDto = {
-            id: locationId,
+            locationId: LocationIdSchema.parse(locationId),
             placeName: 'E2E 테스트 장소',
             lat: 37.5,
             lng: 127.0,
@@ -303,9 +327,9 @@ test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
         )
         const a = resA as LocationCandidateAddUpdateResponseDto
         expect(Array.isArray(a)).toBe(true)
-        const added = a.find(item => item.id === payload.id)
+        const added = a.find(item => item.locationId === payload.locationId)
         expect(added?.placeName).toBe(payload.placeName)
-        expect(added?.author).toBe(memberIdA)
+        expect(added?.authorMemberId).toBe(toMemberId(Number(memberIdA)))
         expect(resB).toEqual(resA)
     })
 
@@ -315,7 +339,7 @@ test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
 
     test('9) location-vote 단계: vote-location → location-vote-updated', async () => {
         expect(locationId.length).toBeGreaterThan(0)
-        const payload: LocationCandidateVoteRequestDto = { locationId }
+        const payload: LocationCandidateVoteRequestDto = { locationId: LocationIdSchema.parse(locationId) }
 
         const [resA, resB] = await emitAndExpectBroadcast<
             'vote-location',
@@ -330,7 +354,7 @@ test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
         const a = resA as LocationCandidateVoteUpdateResponseDto
         expect(Array.isArray(a)).toBe(true)
         const voted = a.find(item => item.locationId === payload.locationId)
-        expect(voted?.votes).toContain(memberIdB)
+        expect(voted?.votes).toContain(toMemberId(Number(memberIdB)))
         expect(resB).toEqual(resA)
     })
 
@@ -340,7 +364,7 @@ test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
 
     test('11) exclude-menu 단계: exclude-menu → exclude-menu-updated', async () => {
         const payload: ExcludeMenuRequestDto = {
-            menu: { code: 'KOREAN', label: '한식' }
+            menu: { code: FoodCodeSchema.parse('KOREAN'), label: FoodLabelSchema.parse('한식') }
         }
         const [resA, resB] = await emitAndExpectBroadcast<
             'exclude-menu',
@@ -354,7 +378,7 @@ test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
         )
         const a = resA as ExcludeMenuUpdateResponseDto
         expect(Array.isArray(a)).toBe(true)
-        const mine = a.find(item => item.userId === memberIdA)
+        const mine = a.find(item => item.memberId === toMemberId(Number(memberIdA)))
         expect(mine?.exclusions.some(m => m.code === payload.menu.code)).toBe(
             true
         )
@@ -366,7 +390,7 @@ test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
     })
 
     test('13) menu 단계: pick-menu → menu-pick-updated', async () => {
-        const payload: MenuPickRequestDto = { menuCode: 'KOREAN' }
+        const payload: MenuPickRequestDto = { menuCode: FoodCodeSchema.parse('KOREAN') }
         const [resA, resB] = await emitAndExpectBroadcast<
             'pick-menu',
             'menu-pick-updated'
@@ -380,7 +404,7 @@ test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
         const a = resA as MenuPickUpdateResponseDto
         expect(Array.isArray(a)).toBe(true)
         const picked = a.find(item => item.menuCode === payload.menuCode)
-        expect(picked?.selectedUsers).toContain(memberIdA)
+        expect(picked?.selectedMembers).toContain(toMemberId(Number(memberIdA)))
         expect(resB).toEqual(resA)
     })
 
@@ -390,7 +414,7 @@ test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
 
     test('15) restaurant 단계: pick-restaurant → restaurant-pick-updated', async () => {
         const payload: RestaurantPickRequestDto = {
-            restaurantId: 'e2e-restaurant-1'
+            restaurantId: toRestaurantId('e2e-restaurant-1')
         }
         const [resA, resB] = await emitAndExpectBroadcast<
             'pick-restaurant',
@@ -407,7 +431,7 @@ test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
         const picked = a.find(
             item => item.restaurantId === payload.restaurantId
         )
-        expect(picked?.selectedUsers).toContain(memberIdA)
+        expect(picked?.selectedMembers).toContain(toMemberId(Number(memberIdA)))
         expect(resB).toEqual(resA)
     })
 

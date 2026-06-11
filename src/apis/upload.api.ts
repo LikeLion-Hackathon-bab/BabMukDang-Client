@@ -11,8 +11,8 @@
  */
 
 import { useMutation } from '@tanstack/react-query'
-import { client } from './client'
-import { responses } from './responses'
+import { contractClient } from './client'
+import { apiContract } from '@kimdaegyu/babmukdang-shared/domain'
 import type { MutationOptions } from './types'
 
 // ============================================================================
@@ -70,12 +70,9 @@ export const uploadApi = {
         currentUserId: string,
         file: File
     ): Promise<PresignResponse> => {
-        const { key, putUrl, cdnUrl } = await client.post(
-            responses.upload.presignArticle,
-            {
-                userId: currentUserId,
-                contentType: file.type
-            }
+        const { key, putUrl, cdnUrl } = await contractClient.post(
+            apiContract.articles.presignArticleImage,
+            { headers: { 'Content-Type': normalizeContentType(file) } }
         )
         return { key, putUrl, cdnUrl }
     },
@@ -90,12 +87,9 @@ export const uploadApi = {
         currentUserId: string,
         file: File
     ): Promise<PresignResponse> => {
-        const { key, putUrl, cdnUrl } = await client.post(
-            responses.upload.presignProfile,
-            {
-                userId: currentUserId,
-                contentType: file.type
-            }
+        const { key, putUrl, cdnUrl } = await contractClient.post(
+            apiContract.members.presignProfileImage,
+            { headers: { 'Content-Type': normalizeContentType(file) } }
         )
         return { key, putUrl, cdnUrl }
     },
@@ -196,7 +190,7 @@ type UploadAndRegisterVars = {
  *   })
  * })
  */
-export const useUploadProfile = (options: MutationOptions = {}) => {
+export const useUploadProfile = (options: MutationOptions<void> = {}) => {
     const { mutate, isPending, error } = useMutation({
         mutationFn: async ({ currentUserId, file }: UploadAndRegisterVars) => {
             // 1) presign

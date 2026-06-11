@@ -1,30 +1,27 @@
 /**
  * @fileoverview Auth 관련 Mock Fixtures
- *
- * 인증 관련 테스트 및 개발용 mock 데이터를 정의합니다.
  */
 
 import type { TokenResponse, OnboardingPreferenceRequest } from '@/apis'
+import { domainFood } from '@/domain/factories'
 
-/**
- * 토큰 응답 mock 데이터
- */
 export const mockTokenResponse: TokenResponse = {
     accessToken: 'mock-access-token-jwt-string',
-    accessTokenMaxAge: 3600 // 1시간
+    accessTokenMaxAge: 3600
 }
 
-/**
- * 온보딩 선호도 요청 mock 데이터
- */
 export const mockOnboardingRequest: OnboardingPreferenceRequest = {
-    likedCodes: ['10000001', '10000002', '10000003'],
-    dislikedCodes: ['20000001'],
-    allergyCodes: ['30000001', '30000002']
+    username: 'mock-user',
+    profileImageUrl: null,
+    bio: null,
+    liked: [
+        domainFood('10000001', '한식'),
+        domainFood('10000002', '일식'),
+        domainFood('10000003', '양식')
+    ],
+    disliked: [domainFood('20000001', '향신료')],
+    allergy: [domainFood('30000001', '땅콩'), domainFood('30000002', '갑각류')]
 }
 
-/**
- * 카카오 로그인 리다이렉트 URL mock
- */
 export const mockKakaoLoginRedirectUrl =
     'https://kauth.kakao.com/oauth/authorize?client_id=mock&redirect_uri=mock'

@@ -7,11 +7,11 @@
  * - 5xx: `ServerError`
  * - 응답 없음(네트워크 단절/타임아웃 등): `NetworkError`
  *
- * 에러 응답 body는 Shared `ApiErrorResponse` 계약을 따른다.
+ * 에러 응답 body는 Shared `ApiFailure` 계약을 따른다.
  */
 
 import type { AxiosError } from 'axios'
-import type { ApiErrorResponse } from '@kimdaegyu/babmukdang-shared'
+import type { ApiFailure } from '@kimdaegyu/babmukdang-shared/domain'
 
 const DEFAULT_MESSAGE = '요청을 처리하지 못했어요. 잠시 후 다시 시도해주세요.'
 const SERVER_MESSAGE = '서버에 문제가 발생했어요. 잠시 후 다시 시도해주세요.'
@@ -47,10 +47,10 @@ export class NetworkError extends Error {
     }
 }
 
-const isApiErrorResponse = (data: unknown): data is ApiErrorResponse =>
+const isApiFailure = (data: unknown): data is ApiFailure =>
     typeof data === 'object' &&
     data !== null &&
-    typeof (data as ApiErrorResponse).message === 'string'
+    typeof (data as ApiFailure).message === 'string'
 
 /**
  * `AxiosError`를 `AppError`/`ServerError`/`NetworkError`로 변환한다.
@@ -65,12 +65,12 @@ export const toAppError = (
     }
 
     const { status, data } = response
-    const bodyMessage = isApiErrorResponse(data) ? data.message : undefined
+    const bodyMessage = isApiFailure(data) ? data.message : undefined
 
     if (status >= 500) {
         return new ServerError(bodyMessage ?? SERVER_MESSAGE, status)
     }
 
-    const code = isApiErrorResponse(data) ? data.code : undefined
+    const code = isApiFailure(data) ? data.code : undefined
     return new AppError(bodyMessage ?? DEFAULT_MESSAGE, status, code)
 }
