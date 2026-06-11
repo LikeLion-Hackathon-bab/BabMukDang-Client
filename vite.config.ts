@@ -3,7 +3,6 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { configDefaults } from 'vitest/config'
-import { VitePWA } from 'vite-plugin-pwa'
 import svgr from 'vite-plugin-svgr'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -32,69 +31,58 @@ export default defineConfig({
                 }
             }
         }),
-        VitePWA({
-            injectRegister: false,
-            registerType: 'autoUpdate',
-            devOptions: {
-                enabled: false,
-                type: 'module',
-                navigateFallback: 'index.html'
-            },
-            workbox: {
-                cleanupOutdatedCaches: true,
-                clientsClaim: true,
-                skipWaiting: true,
-                disableDevLogs: true,
-                maximumFileSizeToCacheInBytes: 4 * 1024 * 1024, // 4194304 bytes
-            },
-            srcDir: './src',
-            filename: 'service-worker.js',
-            includeManifestIcons: true,
-            manifest: {
-                name: '밥먹댕',
-                short_name: '밥먹댕',
-                id: '/',
-                description: '밥먹댕은 밥먹댕 댕',
-                theme_color: '#2563eb',
-                background_color: '#ffffff',
-                display: 'standalone',
-                orientation: 'portrait',
-                start_url: '/',
-                scope: '/',
-                icons: [
-                    {
-                        src: '/app_logo.svg',
-                        sizes: 'any',
-                        type: 'image/svg+xml'
-                    }
-                ],
-                categories: ['food', 'group'],
-                lang: 'ko',
-                dir: 'ltr'
-            }
-        })
     ],
     resolve: {
         alias: [
             {
                 find: '@kimdaegyu/babmukdang-shared/domain',
-                replacement: path.resolve(dirname, '../BabMukDang-Shared/src/domain/index.ts')
+                replacement: path.resolve(
+                    dirname,
+                    '../BabMukDang-Shared/src/domain/index.ts'
+                )
             },
             {
                 find: '@kimdaegyu/babmukdang-shared',
-                replacement: path.resolve(dirname, '../BabMukDang-Shared/src/index.ts')
+                replacement: path.resolve(
+                    dirname,
+                    '../BabMukDang-Shared/src/index.ts'
+                )
             },
-            { find: '@/article', replacement: path.join(sharedDomainDir, 'article') },
+            {
+                find: '@/article',
+                replacement: path.join(sharedDomainDir, 'article')
+            },
             { find: '@/auth', replacement: path.join(sharedDomainDir, 'auth') },
-            { find: '@/common', replacement: path.join(sharedDomainDir, 'common') },
-            { find: '@/friend', replacement: path.join(sharedDomainDir, 'friend') },
-            { find: '@/invitation', replacement: path.join(sharedDomainDir, 'invitation') },
+            {
+                find: '@/common',
+                replacement: path.join(sharedDomainDir, 'common')
+            },
+            {
+                find: '@/friend',
+                replacement: path.join(sharedDomainDir, 'friend')
+            },
+            {
+                find: '@/invitation',
+                replacement: path.join(sharedDomainDir, 'invitation')
+            },
             { find: '@/meal', replacement: path.join(sharedDomainDir, 'meal') },
-            { find: '@/member', replacement: path.join(sharedDomainDir, 'member') },
+            {
+                find: '@/member',
+                replacement: path.join(sharedDomainDir, 'member')
+            },
             { find: '@/plan', replacement: path.join(sharedDomainDir, 'plan') },
-            { find: '@/promotion', replacement: path.join(sharedDomainDir, 'promotion') },
-            { find: '@/recruit', replacement: path.join(sharedDomainDir, 'recruit') },
-            { find: '@/restaurant', replacement: path.join(sharedDomainDir, 'restaurant') },
+            {
+                find: '@/promotion',
+                replacement: path.join(sharedDomainDir, 'promotion')
+            },
+            {
+                find: '@/recruit',
+                replacement: path.join(sharedDomainDir, 'recruit')
+            },
+            {
+                find: '@/restaurant',
+                replacement: path.join(sharedDomainDir, 'restaurant')
+            },
             { find: '@/room', replacement: path.join(sharedDomainDir, 'room') },
             {
                 find: '@',
