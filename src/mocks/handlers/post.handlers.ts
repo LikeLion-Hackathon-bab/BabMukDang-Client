@@ -19,7 +19,17 @@ export const postHandlers = [
      * GET /recruits - 모집글 목록 조회
      */
     http.get(`${BASE_URL}${endpoints.recruits.list}`, () => {
-        const response: typeof api.recruits.ListResponse = mockRecruitResponses
+        const response: typeof api.recruits.ListResponse = {
+            items: mockRecruitResponses,
+            meta: {
+                page: 0,
+                size: mockRecruitResponses.length || 20,
+                totalItems: mockRecruitResponses.length,
+                totalPages: mockRecruitResponses.length > 0 ? 1 : 0,
+                hasNext: false,
+                hasPrevious: false
+            }
+        }
         return HttpResponse.json(response)
     }),
 

@@ -76,6 +76,7 @@ export type {
     PlanResponse,
     PresignArticleResponse,
     PresignProfileResponse,
+    RecruitListResponse,
     SendInvitationResponse,
     TokenResponse,
     UpdateMealStatusRequest,
@@ -188,7 +189,7 @@ export interface LikePostResponse {
 // Recruit view model
 // ============================================================================
 
-export type RecruitDto = RecruitListResponse[number]
+export type RecruitDto = RecruitListResponse['items'][number]
 export type PostRequest = CreateRecruitRequest
 
 export interface Post {

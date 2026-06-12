@@ -52,7 +52,7 @@ import type {
     MealStatusResponse,
     ProfileDetailResponse,
     ProfileDto,
-    RecruitDto
+    RecruitListResponse
 } from '../apis/types'
 
 const resolvePath = (
@@ -400,7 +400,7 @@ async function waitForNotification(
 // 엔드포인트 ↔ 응답 DTO 매핑. 실제로 바디를 검사하는 엔드포인트만 등록한다
 // (상태 코드만 확인하는 곳까지 등록해 봐야 추론된 타입을 아무도 쓰지 않는다).
 const responses = {
-    recruitsList: typed<RecruitDto[]>(ep.recruits.list),
+    recruitsList: typed<RecruitListResponse>(ep.recruits.list),
     couponsMy: typed<CouponResponse[]>(ep.coupons.my),
     friendsList: typed<FriendListItemResponse[]>(ep.friends.list),
     friendsBlocks: typed<FriendBlockItemResponse[]>(ep.friends.blocks),
@@ -822,12 +822,15 @@ test.describe('Articles', () => {
 let createdRecruitId = 0
 
 test.describe('Recruits', () => {
-    test(`GET ${ep.recruits.list} → 200 배열`, async ({ request }) => {
+    test(`GET ${ep.recruits.list} → 200 페이지`, async ({ request }) => {
         const { res, body } = await getJson(request, responses.recruitsList, {
-            headers: auth(tokenA)
+            headers: auth(tokenA),
+            params: { page: 0, size: 10 }
         })
         expect(res.status()).toBe(200)
-        expect(Array.isArray(body.data)).toBe(true)
+        expect(Array.isArray(body.data.items)).toBe(true)
+        expect(body.data.meta.page).toBe(0)
+        expect(body.data.meta.size).toBe(10)
     })
 
     test(`POST ${ep.recruits.create} → 201`, async ({ request }) => {

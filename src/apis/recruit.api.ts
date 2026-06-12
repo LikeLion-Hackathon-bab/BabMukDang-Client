@@ -41,8 +41,10 @@ export const recruitApi = {
      * @returns 모집글 목록
      */
     getRecruits: async () => {
-        const data = await contractClient.get(apiContract.recruits.list)
-        return data.map(mapRecruit)
+        const data = await contractClient.get(apiContract.recruits.list, {
+            query: { page: 0, size: 20 }
+        })
+        return data.items.map(mapRecruit)
     },
 
     /**

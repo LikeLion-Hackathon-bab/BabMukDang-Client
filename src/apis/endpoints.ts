@@ -33,6 +33,7 @@ import type {
     ProfileDetailResponse,
     ProfileDto,
     RecruitDto,
+    RecruitListResponse,
     TokenResponse,
     UpdateMealStatusRequest,
     UpdateProfileRequest
@@ -327,7 +328,7 @@ export const api = {
     },
     recruits: {
         /** 모집글 목록 응답 */
-        ListResponse: {} as RecruitDto[],
+        ListResponse: {} as RecruitListResponse,
         /** 모집글 생성 요청 */
         CreateRequest: {} as PostRequest
     },
