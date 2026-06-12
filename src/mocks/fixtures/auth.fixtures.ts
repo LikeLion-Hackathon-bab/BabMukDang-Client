@@ -6,8 +6,7 @@ import type { TokenResponse, OnboardingPreferenceRequest } from '@/apis'
 import { domainFood } from '@/domain/factories'
 
 export const mockTokenResponse: TokenResponse = {
-    accessToken: 'mock-access-token-jwt-string',
-    accessTokenMaxAge: 3600
+    accessToken: 'mock-access-token-jwt-string'
 }
 
 export const mockOnboardingRequest: OnboardingPreferenceRequest = {

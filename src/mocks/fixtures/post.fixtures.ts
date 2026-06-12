@@ -56,4 +56,5 @@ export const mockPostRequest: PostRequest = {
 
 export const mockPostResponses = mockRecruitResponses.map(mapRecruit)
 export const mockSinglePostResponse = mockPostResponses[0]
-export const MockAnnouncements = mockPostResponses
+export const MockRecruits = mockPostResponses
+

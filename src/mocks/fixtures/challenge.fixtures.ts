@@ -1,8 +1,7 @@
 /**
  * @fileoverview Challenge (챌린지) 관련 Mock Fixtures
  *
- * Shared challenge status is currently a minimal stub ({ count }). Keep richer
- * week/month view data separate until the domain contract is finalized.
+ * Shared challenge status follows the backend week/month progress response.
  */
 
 import type {
@@ -41,11 +40,17 @@ export const mockChallengeStatusWeekCompleteView = {
 }
 
 export const mockChallengeStatusInProgress: ChallengeStatusResponse = {
-    count: mockMonthProgress.count
+    week: mockWeekProgress,
+    month: mockMonthProgress,
+    weekRewardAvailable: false,
+    monthRewardAvailable: false
 }
 
 export const mockChallengeStatusWeekComplete: ChallengeStatusResponse = {
-    count: 5
+    week: mockChallengeStatusWeekCompleteView.week,
+    month: mockMonthProgress,
+    weekRewardAvailable: true,
+    monthRewardAvailable: false
 }
 
 export const mockChallengeStatus: ChallengeStatusResponse =

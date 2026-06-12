@@ -22,28 +22,31 @@ type Story = StoryObj<typeof meta>
 export const Invitation: Story = {
     args: {
         noti: {
-            id: 1,
+            id: 'noti-1',
             type: 'invitation',
             title: '밥약 초대',
             time: '방금 전',
             message:
                 '홍길동님이 점심 밥약에 초대했어요! 함께 맛있는 식사 어떠세요?',
             period: '2024.12.15 12:00',
-            imageUrl: 'https://picsum.photos/60/60'
+            imageUrl: 'https://picsum.photos/60/60',
+            roomId: '1'
         }
     }
 }
 
-export const Announcement: Story = {
+export const Recruit: Story = {
     args: {
         noti: {
-            id: 2,
-            type: 'announcement',
+            id: 'noti-2',
+            type: 'recruit',
             title: '공고 알림',
             time: '1시간 전',
             message: '새로운 밥약 공고가 올라왔어요! 지금 바로 확인해보세요.',
             period: '2024.12.15 18:00',
-            imageUrl: 'https://picsum.photos/60/60'
+            imageUrl: 'https://picsum.photos/60/60',
+            roomId: '2'
         }
     }
 }
+

@@ -25,31 +25,34 @@ type Story = StoryObj<typeof meta>
 
 const mockMatchingNotis = [
     {
-        id: 1,
+        id: 'noti-1',
         type: 'invitation' as const,
         title: '밥약 초대',
         time: '방금 전',
         message: '홍길동님이 밥약에 초대했어요!',
         period: '2024.12.15 12:00',
-        imageUrl: 'https://picsum.photos/60/60'
+        imageUrl: 'https://picsum.photos/60/60',
+        roomId: '1'
     },
     {
-        id: 2,
-        type: 'announcement' as const,
+        id: 'noti-2',
+        type: 'recruit' as const,
         title: '공고 알림',
         time: '1시간 전',
         message: '새로운 밥약 공고가 올라왔어요!',
         period: '2024.12.15 18:00',
-        imageUrl: 'https://picsum.photos/60/60'
+        imageUrl: 'https://picsum.photos/60/60',
+        roomId: '2'
     },
     {
-        id: 3,
+        id: 'noti-3',
         type: 'invitation' as const,
         title: '밥약 초대',
         time: '2시간 전',
         message: '김철수님이 밥약에 초대했어요!',
         period: '2024.12.16 13:00',
-        imageUrl: 'https://picsum.photos/60/60'
+        imageUrl: 'https://picsum.photos/60/60',
+        roomId: '3'
     }
 ]
 
@@ -71,8 +74,9 @@ export const InvitationOnly: Story = {
     }
 }
 
-export const AnnouncementOnly: Story = {
+export const RecruitOnly: Story = {
     args: {
-        matchingNotis: mockMatchingNotis.filter(n => n.type === 'announcement')
+        matchingNotis: mockMatchingNotis.filter(n => n.type === 'recruit')
     }
 }
+

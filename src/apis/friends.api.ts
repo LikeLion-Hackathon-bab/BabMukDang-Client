@@ -205,7 +205,7 @@ const invalidateFriendGraph = (
     queryClient.invalidateQueries({ queryKey: queryKeys.friends.all })
     queryClient.invalidateQueries({ queryKey: queryKeys.invitations.all })
     queryClient.invalidateQueries({ queryKey: queryKeys.articles.all })
-    queryClient.invalidateQueries({ queryKey: queryKeys.announcements.all })
+    queryClient.invalidateQueries({ queryKey: queryKeys.recruits.all })
 }
 
 /**

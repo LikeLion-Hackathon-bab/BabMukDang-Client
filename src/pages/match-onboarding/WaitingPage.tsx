@@ -38,11 +38,11 @@ export function WaitingPage() {
             <div className="flex flex-col items-center">
                 {/* 매칭 완료 메시지 */}
                 <h1 className="text-title1-semibold mb-32 text-center text-black">
-                    {matchType === 'announcement'
+                    {matchType === 'recruit'
                         ? '오늘의 한끼 멤버'
                         : '한끼 제안,'}
                     <br />
-                    {matchType === 'announcement'
+                    {matchType === 'recruit'
                         ? '모집 완료!🎉'
                         : '약속이 성사됐어요🎉'}
                 </h1>

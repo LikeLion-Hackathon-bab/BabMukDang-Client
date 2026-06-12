@@ -2,20 +2,20 @@ import { Post } from '@/apis'
 import { DownIcon, UpIcon } from '@/assets/icons'
 import { useRef, useState } from 'react'
 
-export function AddAnnouncementCard({
-    announcementAddData,
-    setAnnouncementAddData
+export function AddRecruitCard({
+    recruitAddData,
+    setRecruitAddData
 }: {
-    announcementAddData: Post
-    setAnnouncementAddData: (data: Post) => void
+    recruitAddData: Post
+    setRecruitAddData: (data: Post) => void
 }) {
-    const [message, setMessage] = useState(announcementAddData.message)
+    const [message, setMessage] = useState(recruitAddData.message)
     const [period, setPeriod] = useState<'오전' | '오후'>('오전')
     const [hour, setHour] = useState<number>(12)
     const [minute, setMinute] = useState<number>(0)
-    const [place, setPlace] = useState(announcementAddData.location)
+    const [place, setPlace] = useState(recruitAddData.location)
     const [participants, setParticipants] = useState<number>(
-        announcementAddData.targetCount
+        recruitAddData.targetCount
     )
     const [unlimited, setUnlimited] = useState<boolean>(false)
     const placeRef = useRef<HTMLInputElement>(null)
@@ -25,20 +25,20 @@ export function AddAnnouncementCard({
         nextMinute: number = minute
     ) => {
         const datePart = (
-            announcementAddData.meetingAt || new Date().toISOString()
+            recruitAddData.meetingAt || new Date().toISOString()
         ).split('T')[0]
         const hh = String(nextHour).padStart(2, '0')
         const mm = String(nextMinute).padStart(2, '0')
-        setAnnouncementAddData({
-            ...announcementAddData,
+        setRecruitAddData({
+            ...recruitAddData,
             meetingAt: `${datePart}T${hh}:${mm}`
         })
     }
     const decParticipants = () =>
         setParticipants(prev => {
             const next = prev > 0 ? prev - 1 : 0
-            setAnnouncementAddData({
-                ...announcementAddData,
+            setRecruitAddData({
+                ...recruitAddData,
                 targetCount: next
             })
             return next
@@ -46,8 +46,8 @@ export function AddAnnouncementCard({
     const incParticipants = () =>
         setParticipants(prev => {
             const next = prev + 1
-            setAnnouncementAddData({
-                ...announcementAddData,
+            setRecruitAddData({
+                ...recruitAddData,
                 targetCount: next
             })
             return next
@@ -65,8 +65,8 @@ export function AddAnnouncementCard({
                         onChange={e => {
                             const val = e.target.value
                             setMessage(val)
-                            setAnnouncementAddData({
-                                ...announcementAddData,
+                            setRecruitAddData({
+                                ...recruitAddData,
                                 message: val
                             })
                         }}
@@ -136,8 +136,8 @@ export function AddAnnouncementCard({
                     onChange={e => {
                         const val = e.target.value
                         setPlace(val)
-                        setAnnouncementAddData({
-                            ...announcementAddData,
+                        setRecruitAddData({
+                            ...recruitAddData,
                             location: val
                         })
                     }}
@@ -200,3 +200,4 @@ export function AddAnnouncementCard({
         </div>
     )
 }
+

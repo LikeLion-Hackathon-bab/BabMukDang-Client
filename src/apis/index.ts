@@ -149,22 +149,22 @@ export {
 } from './profile.api'
 
 // ============================================================================
-// Announcement (모집글/공지)
+// Recruit (모집글)
 // ============================================================================
 
 export {
-    announcementApi,
-    getAnnouncements,
-    postAnnouncement,
-    closeAnnouncement,
-    joinAnnouncement,
+    recruitApi,
+    getRecruits,
+    postRecruit,
+    closeRecruit,
+    joinRecruit,
     // Query hooks
-    useGetAnnouncements,
+    useGetRecruits,
     // Mutation hooks
-    usePostAnnouncement,
-    useCloseAnnouncement,
-    useJoinAnnouncement
-} from './announcement.api'
+    usePostRecruit,
+    useCloseRecruit,
+    useJoinRecruit
+} from './recruit.api'
 
 // ============================================================================
 // Invitation (초대)
@@ -183,6 +183,12 @@ export {
     useAcceptInvitation,
     useRejectInvitation
 } from './invitation.api'
+
+// ============================================================================
+// Notifications / Room access
+// ============================================================================
+
+export { notificationApi } from './notification.api'
 
 // ============================================================================
 // Meeting (모임)

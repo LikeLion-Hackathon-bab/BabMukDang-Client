@@ -22,7 +22,7 @@ type Story = StoryObj<typeof WaitingPage>
 
 export const Default: Story = {}
 
-export const AnnouncementType: Story = {
+export const RecruitType: Story = {
     parameters: {
         docs: {
             description: {
@@ -41,3 +41,4 @@ export const InvitationType: Story = {
         }
     }
 }
+

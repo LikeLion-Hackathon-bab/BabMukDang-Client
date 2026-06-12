@@ -1,10 +1,10 @@
 import { BottomSheet } from '../BottomSheet'
 import {
-    AddAnnouncementButton,
-    CloseAnnouncementButton
-} from './AnnouncementButton'
-import { AddAnnouncementCard } from './AddAnnouncementCard'
-import { AnnouncementCard } from './AnnouncementCard'
+    AddRecruitButton,
+    CloseRecruitButton
+} from './RecruitButton'
+import { AddRecruitCard } from './AddRecruitCard'
+import { RecruitCard } from './RecruitCard'
 import { AddCardButton } from './AddCardButton'
 import { Post, PostResponse } from '@/apis'
 import { useState, useRef, useCallback } from 'react'
@@ -12,15 +12,15 @@ import { useState, useRef, useCallback } from 'react'
 const CARD_WIDTH = 280
 const GAP = 16
 
-export function AnnouncementBottomSheet({
+export function RecruitBottomSheet({
     isAdd,
-    myAnnouncement
+    myRecruit
 }: {
     isAdd: boolean
-    myAnnouncement: PostResponse | null
+    myRecruit: PostResponse | null
 }) {
-    // 단일 AddAnnouncementCard용 상태 (isAdd=true일 때)
-    const [announcementAddData, setAnnouncementAddData] = useState<Post>({
+    // 단일 AddRecruitCard용 상태 (isAdd=true일 때)
+    const [recruitAddData, setRecruitAddData] = useState<Post>({
         location: '',
         message: '',
         targetCount: 0,
@@ -45,7 +45,7 @@ export function AnnouncementBottomSheet({
     const dragStartTranslateX = useRef(0)
     const containerRef = useRef<HTMLDivElement>(null)
 
-    // 전체 카드 수: CloseAnnouncementCard(0) + AddButton/AddAnnouncementCard(1)
+    // 전체 카드 수: CloseRecruitCard(0) + AddButton/AddRecruitCard(1)
     const totalItems = 2
 
     // 특정 인덱스로 스냅
@@ -58,7 +58,7 @@ export function AnnouncementBottomSheet({
         [totalItems]
     )
 
-    // AddButton 클릭 시 (index 1로 이동하며 AddAnnouncementCard 활성화)
+    // AddButton 클릭 시 (index 1로 이동하며 AddRecruitCard 활성화)
     const handleAddButtonClick = useCallback(() => {
         snapToIndex(1)
     }, [snapToIndex])
@@ -124,12 +124,12 @@ export function AnnouncementBottomSheet({
 
                 {isAdd ? (
                     <div className="flex w-280 flex-col gap-12">
-                        <AddAnnouncementCard
-                            announcementAddData={announcementAddData}
-                            setAnnouncementAddData={setAnnouncementAddData}
+                        <AddRecruitCard
+                            recruitAddData={recruitAddData}
+                            setRecruitAddData={setRecruitAddData}
                         />
-                        <AddAnnouncementButton
-                            announcementAddData={announcementAddData}
+                        <AddRecruitButton
+                            recruitAddData={recruitAddData}
                         />
                     </div>
                 ) : (
@@ -154,34 +154,34 @@ export function AnnouncementBottomSheet({
                                     ? 'none'
                                     : 'transform 0.3s ease-out'
                             }}>
-                            {/* AnnouncementCard with Kebab (인덱스 0) */}
+                            {/* RecruitCard with Kebab (인덱스 0) */}
                             <div className="flex w-280 shrink-0 flex-col gap-12">
-                                <AnnouncementCard
-                                    announcement={
-                                        myAnnouncement || ({} as PostResponse)
+                                <RecruitCard
+                                    recruit={
+                                        myRecruit || ({} as PostResponse)
                                     }
                                     showKebab={true}
                                 />
                                 {currentIndex === 0 && (
-                                    <CloseAnnouncementButton
-                                        announcementId={myAnnouncement?.postId}
+                                    <CloseRecruitButton
+                                        recruitId={myRecruit?.postId}
                                     />
                                 )}
                             </div>
 
-                            {/* 인덱스 1: currentIndex가 0이면 AddButton, 1이면 AddAnnouncementCard */}
+                            {/* 인덱스 1: currentIndex가 0이면 AddButton, 1이면 AddRecruitCard */}
                             {currentIndex === 0 ? (
                                 <AddCardButton onClick={handleAddButtonClick} />
                             ) : (
                                 <div className="flex w-280 shrink-0 flex-col gap-12">
-                                    <AddAnnouncementCard
-                                        announcementAddData={additionalCardData}
-                                        setAnnouncementAddData={
+                                    <AddRecruitCard
+                                        recruitAddData={additionalCardData}
+                                        setRecruitAddData={
                                             setAdditionalCardData
                                         }
                                     />
-                                    <AddAnnouncementButton
-                                        announcementAddData={additionalCardData}
+                                    <AddRecruitButton
+                                        recruitAddData={additionalCardData}
                                     />
                                 </div>
                             )}
@@ -192,3 +192,4 @@ export function AnnouncementBottomSheet({
         </BottomSheet>
     )
 }
+

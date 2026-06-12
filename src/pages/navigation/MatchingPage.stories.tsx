@@ -22,7 +22,7 @@ type Story = StoryObj<typeof MatchingPage>
 
 export const Default: Story = {}
 
-export const AnnouncementTab: Story = {
+export const RecruitTab: Story = {
     parameters: {
         docs: {
             description: {
@@ -41,3 +41,4 @@ export const InvitationTab: Story = {
         }
     }
 }
+

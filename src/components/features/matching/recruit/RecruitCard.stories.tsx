@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { AnnouncementCard } from './AnnouncementCard'
+import { RecruitCard } from './RecruitCard'
 import { useRef } from 'react'
-import { MockAnnouncements } from '@/constants/mockData'
+import { MockRecruits } from '@/constants/mockData'
 
-const meta: Meta<typeof AnnouncementCard> = {
-    title: 'Features/Matching/Announcement/AnnouncementCard',
-    component: AnnouncementCard,
+const meta: Meta<typeof RecruitCard> = {
+    title: 'Features/Matching/Recruit/RecruitCard',
+    component: RecruitCard,
     tags: ['autodocs'],
     parameters: {
         layout: 'padded'
@@ -29,12 +29,12 @@ const meta: Meta<typeof AnnouncementCard> = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const mockAnnouncement = { ...MockAnnouncements[0] }
+const mockRecruit = { ...MockRecruits[0] }
 
-const AnnouncementCardWrapper = (props: any) => {
+const RecruitCardWrapper = (props: any) => {
     const cardRef = useRef<HTMLDivElement>(null)
     return (
-        <AnnouncementCard
+        <RecruitCard
             {...props}
             cardRef={cardRef}
         />
@@ -44,8 +44,8 @@ const AnnouncementCardWrapper = (props: any) => {
 export const Active: Story = {
     render: () => (
         <div className="w-280">
-            <AnnouncementCardWrapper
-                announcement={mockAnnouncement}
+            <RecruitCardWrapper
+                recruit={mockRecruit}
                 index={0}
                 currentIndex={0}
                 isActive={true}
@@ -57,8 +57,8 @@ export const Active: Story = {
 export const Inactive: Story = {
     render: () => (
         <div className="w-280">
-            <AnnouncementCardWrapper
-                announcement={mockAnnouncement}
+            <RecruitCardWrapper
+                recruit={mockRecruit}
                 index={1}
                 currentIndex={0}
                 isActive={false}
@@ -70,11 +70,11 @@ export const Inactive: Story = {
 export const WithProfileImages: Story = {
     render: () => (
         <div className="w-280">
-            <AnnouncementCardWrapper
-                announcement={{
-                    ...mockAnnouncement,
+            <RecruitCardWrapper
+                recruit={{
+                    ...mockRecruit,
                     author: {
-                        ...mockAnnouncement.author,
+                        ...mockRecruit.author,
                         profileImageUrl: 'https://picsum.photos/40/40'
                     },
                     participants: [
@@ -101,9 +101,9 @@ export const WithProfileImages: Story = {
 export const ManyParticipants: Story = {
     render: () => (
         <div className="w-280">
-            <AnnouncementCardWrapper
-                announcement={{
-                    ...mockAnnouncement,
+            <RecruitCardWrapper
+                recruit={{
+                    ...mockRecruit,
                     targetCount: 5,
                     participants: [
                         { memberId: 2, name: '김철수', profileImageUrl: '' },
@@ -119,3 +119,4 @@ export const ManyParticipants: Story = {
         </div>
     )
 }
+

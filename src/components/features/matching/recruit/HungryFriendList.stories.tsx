@@ -2,7 +2,7 @@
 // import { HungryFriendList } from './HungryFriendList'
 
 // const meta: Meta<typeof HungryFriendList> = {
-//     title: 'Features/Matching/Announcement/HungryFriendList',
+//     title: 'Features/Matching/Recruit/HungryFriendList',
 //     component: HungryFriendList,
 //     tags: ['autodocs'],
 //     parameters: {
@@ -78,3 +78,4 @@
 //         hungryFriendList: []
 //     }
 // }
+

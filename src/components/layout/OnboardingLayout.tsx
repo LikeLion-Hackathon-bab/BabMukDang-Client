@@ -19,7 +19,7 @@ export const OnboardingLayout = () => {
     const { hideBottomNav, resetBottomNav } = useBottomNavStore()
     const navigate = useNavigate()
     const { matchType } = useParams<{
-        matchType: 'announcement' | 'invitation'
+        matchType: 'recruit' | 'invitation'
     }>()
 
     const [stage, setStage] = useState('waiting')
@@ -95,7 +95,7 @@ const ContentBlocker = () => {
 const SocketInner = ({ setStage }: { setStage: (stage: string) => void }) => {
     const { socket } = useSocket()
     const { matchType } = useParams<{
-        matchType: 'announcement' | 'invitation'
+        matchType: 'recruit' | 'invitation'
     }>()
     useLayoutEffect(() => {
         socket?.on('stage-changed', data => {
@@ -107,3 +107,4 @@ const SocketInner = ({ setStage }: { setStage: (stage: string) => void }) => {
     }, [matchType, socket])
     return <></>
 }
+

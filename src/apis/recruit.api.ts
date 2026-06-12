@@ -1,14 +1,14 @@
 /**
- * @fileoverview Announcement(모집글/공지) API 모듈
+ * @fileoverview Recruit(모집글) API 모듈
  *
  * 모집글 CRUD 및 참여/구독 관련 API 함수와 TanStack Query hooks를 제공합니다.
  *
  * @example
  * // 모집글 목록 조회
- * const { data: announcements } = useGetAnnouncements()
+ * const { data: recruits } = useGetRecruits()
  *
  * // 모집글 참여
- * const { mutate: join } = useJoinAnnouncement({
+ * const { mutate: join } = useJoinRecruit({
  *   onSuccess: () => toast.success('참여 완료')
  * })
  */
@@ -33,14 +33,14 @@ import type {
 // ============================================================================
 
 /**
- * Announcement API 함수 모음
+ * Recruit API 함수 모음
  */
-export const announcementApi = {
+export const recruitApi = {
     /**
      * 모집글 목록 조회
      * @returns 모집글 목록
      */
-    getAnnouncements: async () => {
+    getRecruits: async () => {
         const data = await contractClient.get(apiContract.recruits.list)
         return data.map(mapRecruit)
     },
@@ -49,35 +49,34 @@ export const announcementApi = {
      * 모집글 작성
      * @param data - 모집글 데이터
      */
-    createAnnouncement: async (body: PostRequest) => {
+    createRecruit: async (body: PostRequest) => {
         return contractClient.post(apiContract.recruits.create, { body })
     },
     /**
      * 모집글 마감
-     * @param announcementId - 모집글 ID
+     * @param recruitId - 모집글 ID
      */
-    closeAnnouncement: async (id: number) => {
-        return contractClient.patch(apiContract.recruits.close, {
+    closeRecruit: async (id: number) => {
+        return contractClient.post(apiContract.recruits.close, {
             pathParams: { recruitId: domainId.recruit(id) }
         })
     },
 
     /**
      * 모집글 참여
-     * @param announcementId - 모집글 ID
+     * @param recruitId - 모집글 ID
      */
-    joinAnnouncement: async (id: number) => {
+    joinRecruit: async (id: number) => {
         return contractClient.post(apiContract.recruits.join, {
             pathParams: { recruitId: domainId.recruit(id) }
         })
     }
 }
 
-// 하위 호환성을 위한 기존 함수 export
-export const getAnnouncements = announcementApi.getAnnouncements
-export const postAnnouncement = announcementApi.createAnnouncement
-export const closeAnnouncement = announcementApi.closeAnnouncement
-export const joinAnnouncement = announcementApi.joinAnnouncement
+export const getRecruits = recruitApi.getRecruits
+export const postRecruit = recruitApi.createRecruit
+export const closeRecruit = recruitApi.closeRecruit
+export const joinRecruit = recruitApi.joinRecruit
 
 // ============================================================================
 // Query Hooks
@@ -88,13 +87,13 @@ export const joinAnnouncement = announcementApi.joinAnnouncement
  * @returns Query 결과
  *
  * @example
- * const { data: announcements, refetch } = useGetAnnouncements()
- * announcements?.forEach(item => console.log(item.message))
+ * const { data: recruits, refetch } = useGetRecruits()
+ * recruits?.forEach(item => console.log(item.message))
  */
-export const useGetAnnouncements = () => {
+export const useGetRecruits = () => {
     const { data, isLoading, error, refetch } = useQuery({
-        queryKey: queryKeys.announcements.list,
-        queryFn: announcementApi.getAnnouncements
+        queryKey: queryKeys.recruits.list,
+        queryFn: recruitApi.getRecruits
     })
     return { data, isLoading, error, refetch }
 }
@@ -107,13 +106,13 @@ export const useGetAnnouncements = () => {
  * 모집글 작성 Hook
  * @param options - 성공/에러 콜백
  */
-export const usePostAnnouncement = (options: MutationOptions<CreateRecruitResponse> = {}) => {
+export const usePostRecruit = (options: MutationOptions<CreateRecruitResponse> = {}) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
-        mutationFn: announcementApi.createAnnouncement,
+        mutationFn: recruitApi.createRecruit,
         onSuccess: data => {
             queryClient.invalidateQueries({
-                queryKey: queryKeys.announcements.all
+                queryKey: queryKeys.recruits.all
             })
             options.onSuccess?.(data)
         },
@@ -126,13 +125,13 @@ export const usePostAnnouncement = (options: MutationOptions<CreateRecruitRespon
  * 모집글 마감 Hook
  * @param options - 성공/에러 콜백
  */
-export const useCloseAnnouncement = (options: MutationOptions<NoContent> = {}) => {
+export const useCloseRecruit = (options: MutationOptions<NoContent> = {}) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
-        mutationFn: closeAnnouncement,
+        mutationFn: closeRecruit,
         onSuccess: data => {
             queryClient.invalidateQueries({
-                queryKey: queryKeys.announcements.all
+                queryKey: queryKeys.recruits.all
             })
             options.onSuccess?.(data)
         },
@@ -146,18 +145,18 @@ export const useCloseAnnouncement = (options: MutationOptions<NoContent> = {}) =
  * @param options - 성공/에러 콜백
  *
  * @example
- * const { mutate: join } = useJoinAnnouncement({
+ * const { mutate: join } = useJoinRecruit({
  *   onSuccess: () => toast.success('참여가 완료되었습니다.')
  * })
- * join(announcementId)
+ * join(recruitId)
  */
-export const useJoinAnnouncement = (options: MutationOptions<NoContent> = {}) => {
+export const useJoinRecruit = (options: MutationOptions<NoContent> = {}) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
-        mutationFn: joinAnnouncement,
+        mutationFn: joinRecruit,
         onSuccess: data => {
             queryClient.invalidateQueries({
-                queryKey: queryKeys.announcements.all
+                queryKey: queryKeys.recruits.all
             })
             options.onSuccess?.(data)
         },

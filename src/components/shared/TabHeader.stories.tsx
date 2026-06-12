@@ -77,10 +77,10 @@ export const FourTabs: Story = {
 export const LongLabels: Story = {
     args: {
         tabs: [
-            { key: 'announcements', label: '공고' },
+            { key: 'recruits', label: '공고' },
             { key: 'invitations', label: '초대' }
         ],
-        activeTab: 'announcements'
+        activeTab: 'recruits'
     }
 }
 
@@ -107,3 +107,4 @@ const InteractiveTabHeader = () => {
 export const Interactive: Story = {
     render: () => <InteractiveTabHeader />
 }
+

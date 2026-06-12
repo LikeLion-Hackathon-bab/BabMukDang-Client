@@ -1,4 +1,4 @@
-export const announcementRouteMap = {
+export const recruitRouteMap = {
     location: 1,
     'location-vote': 2,
     'exclude-menu': 3,
@@ -15,7 +15,7 @@ export const invitationRouteMap = {
     restaurant: 7
 }
 
-export const announcementRouteTitleMap = {
+export const recruitRouteTitleMap = {
     location: '만날 장소를 더 구체화 해봐요.',
     'location-vote': '만날 장소를 정해보아요.',
     'exclude-menu': '최근에 먹은 메뉴예요.\n또 먹어도 괜찮아요?',
@@ -33,7 +33,7 @@ export const invitationRouteTitleMap = {
     restaurant: '만남 장소 근처 맛집 중 골라보아요.'
 }
 
-export const announcementRouteDescriptionMap = {
+export const recruitRouteDescriptionMap = {
     location:
         '지도에 위치를 클릭하거나, 장소 검색을 통해 장소를 추가 할 수 있어요.\n장소 추가 후 투표해보아요! '
 }
@@ -45,7 +45,7 @@ export const invitationRouteDescriptionMap = {
         '지도에 위치를 클릭하거나, 장소 검색을 통해 장소를 추가 할 수 있어요.\n장소 추가 후 투표해보아요! '
 }
 
-export const announcementRouteVoteLimitMap = {
+export const recruitRouteVoteLimitMap = {
     location: '1인 최대 2개 추가',
     'location-vote': '1인 1투표',
     'exclude-menu': '중복 투표',
@@ -62,3 +62,4 @@ export const invitationRouteVoteLimitMap = {
     menu: '중복 투표',
     restaurant: '1인 1투표'
 }
+

@@ -52,7 +52,7 @@ export const responses = {
         test: typedLegacy<string>('/auth/test')
     },
 
-    announcements: {
+    recruits: {
         list: typed(apiContract.recruits.list),
         create: typed(apiContract.recruits.create),
         close: (id: number) =>

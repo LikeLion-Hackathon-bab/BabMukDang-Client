@@ -6,7 +6,7 @@
  *
  * @example
  * // 기존 (deprecated)
- * import { MockAnnouncements } from '@/constants/mockData'
+ * import { MockRecruits } from '@/constants/mockData'
  *
  * // 새로운 방식
  * import { mockPostResponses } from '@/mocks/fixtures'
@@ -17,7 +17,7 @@
 // ============================================================================
 
 // Post (모집글/공지)
-export { mockPostResponses as MockAnnouncements } from '@/mocks/fixtures/post.fixtures'
+export { mockPostResponses as MockRecruits } from '@/mocks/fixtures/post.fixtures'
 
 // Coupon (쿠폰)
 export { mockCouponResponses as MockCouponList } from '@/mocks/fixtures/coupon.fixtures'
@@ -56,7 +56,7 @@ export const MockMatchingInviteNotis = [
     },
     {
         id: 2,
-        type: 'announcement',
+        type: 'recruit',
         title: '공고 알림',
         time: '20분 전',
         message: '가은님이 초대장을 보냈어요! 지금 확인해보고, 답장해봐요!',
@@ -192,3 +192,4 @@ export const MockPostList: {
         ]
     }
 ]
+

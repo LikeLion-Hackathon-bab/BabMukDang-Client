@@ -5,7 +5,7 @@ import { TagPerson, OnboardingHeader, ThumbImg } from '@/components'
 import { useAuthStore } from '@/store'
 import type { Menu, MemberId } from '@kimdaegyu/babmukdang-shared/domain'
 type ExcludeMenuInitialState = {
-    recentMenus: { memberId: MemberId; menuList: Menu[] }[]
+    recentMenus: { userId: string; menuList: Menu[] }[]
     excludedMenuList?: { memberId: MemberId; exclusions: Menu[] }[]
 }
 type ExcludeMenuUpdateResponseDto = { memberId: MemberId; exclusions: Menu[] }[]
@@ -26,10 +26,10 @@ export function MenuExcludePage() {
             const excluded = data.excludedMenuList ?? []
             setUserRecentMenus(
                 data.recentMenus.map(recent => ({
-                    memberId: Number(recent.memberId),
+                    memberId: Number(recent.userId),
                     menuList: recent.menuList,
                     excludedMenuList: excluded.find(
-                        item => Number(item.memberId) === Number(recent.memberId)
+                        item => Number(item.memberId) === Number(recent.userId)
                     )?.exclusions
                 }))
             )

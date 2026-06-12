@@ -5,27 +5,27 @@ import { Post, PostResponse } from '@/apis'
 import {
     TabHeader,
     JoinCompleteModal,
-    AnnouncementCarousel,
+    RecruitCarousel,
     RecieveInvitationList,
-    AnnouncementBottomSheet,
+    RecruitBottomSheet,
     InviteButton,
     LongTimeNoSeeFriendList
 } from '@/components'
 import { BOTTOM_NAVIGATION_HEIGHT } from '@/constants/bottomNav'
-import { useGetAnnouncements, useGetInvitations, useFriendMeals } from '@/apis'
+import { useGetRecruits, useGetInvitations, useFriendMeals } from '@/apis'
 import { useAuthStore, useHeaderStore } from '@/store'
-import { HungryFriendList } from '@/components/features/matching/announcement/HungryFriendList'
+import { HungryFriendList } from '@/components/features/matching/recruit/HungryFriendList'
 import { Friend } from '@/components/features/friend/FriendListSection'
 
 export function MatchingPage() {
-    const [activeTab, setActiveTab] = useState<'announcement' | 'invitation'>(
-        'announcement'
+    const [activeTab, setActiveTab] = useState<'recruit' | 'invitation'>(
+        'recruit'
     )
     const { resetHeader, setTitle, showCenterElement, hideLeftButton } =
         useHeaderStore()
 
     const tabs = [
-        { key: 'announcement', label: '공고' },
+        { key: 'recruit', label: '공고' },
         { key: 'invitation', label: '초대장' }
     ]
     useEffect(() => {
@@ -43,11 +43,11 @@ export function MatchingPage() {
                 tabs={tabs}
                 activeTab={activeTab}
                 onTabChange={tab =>
-                    setActiveTab(tab as 'announcement' | 'invitation')
+                    setActiveTab(tab as 'recruit' | 'invitation')
                 }
             />
-            {activeTab === 'announcement' ? (
-                <AnnouncementTab />
+            {activeTab === 'recruit' ? (
+                <RecruitTab />
             ) : (
                 <InvitationTab />
             )}
@@ -114,25 +114,25 @@ const hungryFriendFixture: Friend[] = [
     }
 ]
 
-function AnnouncementTab() {
-    const [announcements, setAnnouncements] = useState<PostResponse[]>([])
+function RecruitTab() {
+    const [recruits, setRecruits] = useState<PostResponse[]>([])
     const { userId } = useAuthStore()
-    const [myAnnouncements, setMyAnnouncements] = useState<PostResponse | null>(
+    const [myRecruits, setMyRecruits] = useState<PostResponse | null>(
         null
     )
-    const { data: announcementsData } = useGetAnnouncements()
+    const { data: recruitsData } = useGetRecruits()
     const [hungryFriendList, setHungryFriendList] =
         useState<Friend[]>(hungryFriendFixture)
     useEffect(() => {
-        console.log('announcementsData', announcementsData)
-        setMyAnnouncements(
-            announcementsData?.find(
-                announcement => announcement.author.authorId === Number(userId)
+        console.log('recruitsData', recruitsData)
+        setMyRecruits(
+            recruitsData?.find(
+                recruit => recruit.author.authorId === Number(userId)
             ) || null
         )
-        console.log('myAnnouncements', myAnnouncements, userId)
-        setAnnouncements(announcementsData || [])
-    }, [announcementsData, userId])
+        console.log('myRecruits', myRecruits, userId)
+        setRecruits(recruitsData || [])
+    }, [recruitsData, userId])
     return (
         <div className="bg-primary-100 flex h-full flex-col justify-center pb-90">
             <div className="flex flex-1 flex-col gap-16 pt-20 pb-90">
@@ -141,10 +141,10 @@ function AnnouncementTab() {
                         <HungryFriendList hungryFriendList={hungryFriendList} />
                     </div>
                 )}
-                <AnnouncementCarousel announcements={announcements} />
-                <AnnouncementBottomSheet
-                    isAdd={myAnnouncements === null}
-                    myAnnouncement={myAnnouncements || null}
+                <RecruitCarousel recruits={recruits} />
+                <RecruitBottomSheet
+                    isAdd={myRecruits === null}
+                    myRecruit={myRecruits || null}
                 />
             </div>
         </div>
@@ -190,3 +190,4 @@ function InvitationTab() {
         </div>
     )
 }
+

@@ -15,8 +15,9 @@ type Story = StoryObj<typeof meta>
 
 export const InvitationStart: Story = {}
 
-export const AnnouncementStart: Story = {}
+export const RecruitStart: Story = {}
 
 export const InvitationMiddle: Story = {}
 
-export const AnnouncementEnd: Story = {}
+export const RecruitEnd: Story = {}
+

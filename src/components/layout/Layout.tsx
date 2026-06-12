@@ -3,17 +3,20 @@ import { Header, BottomNavigation } from '@/components'
 import { useEffect } from 'react'
 import { useAuthStore } from '@/store'
 import { useGetMyProfile } from '@/apis'
+import { NotificationSseProvider } from '@/contexts/NotificationSseProvider'
 
 export function Layout() {
     return (
         <ProfileBootstrap>
-            <div className="bg-gray-1 flex h-screen min-h-screen w-screen min-w-screen flex-col">
-                <Header />
-                <main className="relative flex-1 overflow-x-hidden overflow-y-auto px-20 pb-90">
-                    <Outlet />
-                </main>
-                <BottomNavigation />
-            </div>
+            <NotificationSseProvider>
+                <div className="bg-gray-1 flex h-screen min-h-screen w-screen min-w-screen flex-col">
+                    <Header />
+                    <main className="relative flex-1 overflow-x-hidden overflow-y-auto px-20 pb-90">
+                        <Outlet />
+                    </main>
+                    <BottomNavigation />
+                </div>
+            </NotificationSseProvider>
         </ProfileBootstrap>
     )
 }

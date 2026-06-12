@@ -3,9 +3,9 @@ import { useSocket } from '@/contexts/SocketContext'
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import {
-    announcementRouteDescriptionMap,
-    announcementRouteTitleMap,
-    announcementRouteVoteLimitMap,
+    recruitRouteDescriptionMap,
+    recruitRouteTitleMap,
+    recruitRouteVoteLimitMap,
     invitationRouteDescriptionMap,
     invitationRouteTitleMap,
     invitationRouteVoteLimitMap
@@ -38,16 +38,16 @@ export function OnboardingHeader({
     }, [stage])
 
     const title = getByMatchType(
-        announcementRouteTitleMap,
+        recruitRouteTitleMap,
         invitationRouteTitleMap
     )
     const description = getByMatchType(
-        announcementRouteDescriptionMap,
+        recruitRouteDescriptionMap,
         invitationRouteDescriptionMap
     )
 
     const voteLimit = getByMatchType(
-        announcementRouteVoteLimitMap,
+        recruitRouteVoteLimitMap,
         invitationRouteVoteLimitMap
     )
     return (
@@ -102,7 +102,7 @@ const getText = (map: any, pathname: string) => {
 const getByMatchType = (map1: any, map2: any) => {
     const { matchType } = useSocket()
     const { pathname } = useLocation()
-    return matchType === 'announcement'
+    return matchType === 'recruit'
         ? getText(map1, pathname)
         : getText(map2, pathname)
 }
@@ -117,3 +117,4 @@ const finalTag = (text: string) => {
         </div>
     )
 }
+

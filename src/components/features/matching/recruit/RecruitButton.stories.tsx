@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import {
-    AddAnnouncementButton,
-    CloseAnnouncementButton
-} from './AnnouncementButton'
+    AddRecruitButton,
+    CloseRecruitButton
+} from './RecruitButton'
 
-const AddButtonMeta: Meta<typeof AddAnnouncementButton> = {
-    title: 'Features/Matching/Announcement/AddAnnouncementButton',
-    component: AddAnnouncementButton,
+const AddButtonMeta: Meta<typeof AddRecruitButton> = {
+    title: 'Features/Matching/Recruit/AddRecruitButton',
+    component: AddRecruitButton,
     tags: ['autodocs'],
     parameters: {
         layout: 'padded'
@@ -18,7 +18,7 @@ type AddButtonStory = StoryObj<typeof AddButtonMeta>
 
 export const AddButton: AddButtonStory = {
     args: {
-        announcementAddData: {
+        recruitAddData: {
             location: '강남역 근처',
             message: '점심 같이 드실 분!',
             targetCount: 3,
@@ -27,7 +27,8 @@ export const AddButton: AddButtonStory = {
     }
 }
 
-// CloseAnnouncementButton 스토리
-export const CloseButton: StoryObj<typeof CloseAnnouncementButton> = {
-    render: () => <CloseAnnouncementButton announcementId={1} />
+// CloseRecruitButton 스토리
+export const CloseButton: StoryObj<typeof CloseRecruitButton> = {
+    render: () => <CloseRecruitButton recruitId={1} />
 }
+

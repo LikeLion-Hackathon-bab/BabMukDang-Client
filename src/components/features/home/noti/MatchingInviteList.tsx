@@ -5,13 +5,14 @@ import {
 } from '@/components'
 
 type MatchingInviteNoti = {
-    id: number
-    type: 'invitation' | 'announcement'
+    id: string
+    type: 'invitation' | 'recruit'
     title: string
     time: string
     message: string
     period: string
     imageUrl: string
+    roomId: string
 }
 export function MatchingInviteList({
     matchingNotis,
@@ -19,8 +20,8 @@ export function MatchingInviteList({
     handleMatchingInviteNotiClick
 }: {
     matchingNotis: MatchingInviteNoti[]
-    handleDeleteMatchingNoti: (id: number) => void
-    handleMatchingInviteNotiClick: (type: 'invitation' | 'announcement') => void
+    handleDeleteMatchingNoti: (id: string) => void
+    handleMatchingInviteNotiClick: (noti: MatchingInviteNoti) => void
 }) {
     if (matchingNotis.length === 0) {
         return <EmptyNotiView isMatching />
@@ -33,7 +34,7 @@ export function MatchingInviteList({
                     onDelete={() => handleDeleteMatchingNoti(noti.id)}>
                     <MatchingInviteNotiCard
                         noti={noti}
-                        onClick={() => handleMatchingInviteNotiClick(noti.type)}
+                        onClick={() => handleMatchingInviteNotiClick(noti)}
                     />
                 </SwipeableCard>
             ))}

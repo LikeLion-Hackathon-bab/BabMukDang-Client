@@ -2,13 +2,14 @@ import { MatchingIcon } from '@/assets/icons'
 import { COLORS } from '@/constants/colors'
 
 interface MatchingInviteNoti {
-    id: number
-    type: 'invitation' | 'announcement'
+    id: string
+    type: 'invitation' | 'recruit'
     title: string
     time: string
     message: string
     period: string
     imageUrl?: string
+    roomId: string
 }
 
 export function MatchingInviteNotiCard({

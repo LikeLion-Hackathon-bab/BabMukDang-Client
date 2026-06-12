@@ -27,7 +27,7 @@ const meta: Meta<typeof JoinCompleteModal> = {
             control: 'text',
             description: '확인 버튼 텍스트'
         },
-        announcementId: {
+        recruitId: {
             control: 'text',
             description: '공고 ID'
         },
@@ -55,14 +55,14 @@ export const Default: Story = {
     }
 }
 
-export const WithAnnouncementId: Story = {
+export const WithRecruitId: Story = {
     args: {
         open: true,
         id: 'join-complete-with-id',
         title: '매칭 완료!',
         description: '밥약속이 성사되었습니다',
         acceptText: '약속 보러 가기',
-        announcementId: 'announcement-123'
+        recruitId: 'recruit-123'
     }
 }
 
@@ -95,3 +95,4 @@ export const Closed: Story = {
         acceptText: '확인하러 가기'
     }
 }
+

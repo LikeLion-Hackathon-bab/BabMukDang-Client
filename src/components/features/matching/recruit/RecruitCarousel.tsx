@@ -1,34 +1,34 @@
 import { useCarousel } from '@/hooks'
-import { PostResponse, useJoinAnnouncement } from '@/apis'
-import { AnnouncementCard, EmptyAnnouncementCard } from './AnnouncementCard'
-import { JoinButton } from './AnnouncementJoinButton'
+import { PostResponse, useJoinRecruit } from '@/apis'
+import { RecruitCard, EmptyRecruitCard } from './RecruitCard'
+import { JoinButton } from './RecruitJoinButton'
 import { useAuthStore } from '@/store'
 import { useState } from 'react'
 import { JoinCompleteModal } from '@/components'
 
-export function AnnouncementCarousel({
-    announcements
+export function RecruitCarousel({
+    recruits
 }: {
-    announcements: PostResponse[]
+    recruits: PostResponse[]
 }) {
-    // 빈 상태일 때는 캐러셀 없이 EmptyAnnouncementCard만 렌더링
-    if (announcements.length === 0) {
+    // 빈 상태일 때는 캐러셀 없이 EmptyRecruitCard만 렌더링
+    if (recruits.length === 0) {
         return (
             <div className="flex w-full translate-x-1/2">
-                <EmptyAnnouncementCard />
+                <EmptyRecruitCard />
             </div>
         )
     }
 
     // 공고가 있을 때만 캐러셀 렌더링
-    return <AnnouncementCarouselContent announcements={announcements} />
+    return <RecruitCarouselContent recruits={recruits} />
 }
 
 // 실제 캐러셀 로직을 포함한 내부 컴포넌트
-function AnnouncementCarouselContent({
-    announcements
+function RecruitCarouselContent({
+    recruits
 }: {
-    announcements: PostResponse[]
+    recruits: PostResponse[]
 }) {
     const {
         containerRef,
@@ -38,21 +38,21 @@ function AnnouncementCarouselContent({
         isDragging,
         handleCardClick
     } = useCarousel({
-        itemCount: announcements.length,
+        itemCount: recruits.length,
         threshold: window.innerWidth / 8,
         duration: 300,
         initialPosition: window.innerWidth / 2 - 280 / 2,
         clickThreshold: 5 // 5px 이내 움직임만 클릭으로 인정
     })
     const { userId } = useAuthStore()
-    const [selectedAnnouncement, setSelectedAnnouncement] =
+    const [selectedRecruit, setSelectedRecruit] =
         useState<PostResponse | null>(null)
-    const { mutate: joinAnnouncement } = useJoinAnnouncement({
+    const { mutate: joinRecruit } = useJoinRecruit({
         onSuccess: () => {
             console.log('announcemnet 참여하기가 완료되었습니다')
         },
         onError: () => {
-            console.log('Announcement join error')
+            console.log('Recruit join error')
         }
     })
 
@@ -69,13 +69,13 @@ function AnnouncementCarouselContent({
                     transform: `translateX(${translateX}px)`,
                     transition: isDragging ? 'none' : 'transform 0.3s ease-out'
                 }}>
-                {announcements
+                {recruits
                     .filter(
                         //todo 임시 코드
-                        announcement =>
-                            (announcement as any).authorId !== userId
+                        recruit =>
+                            (recruit as any).authorId !== userId
                     )
-                    .map((announcement, index) => {
+                    .map((recruit, index) => {
                         const isActive = index === currentIndex
 
                         // 중앙 카드와의 거리에 따른 스타일 계산
@@ -90,7 +90,7 @@ function AnnouncementCarouselContent({
 
                         return (
                             <div
-                                key={announcement.postId}
+                                key={recruit.postId}
                                 className="z-100 flex w-280 flex-col gap-16 transition-all duration-300 ease-out"
                                 style={{
                                     transform: `scale(${scale}) rotate(${rotate}deg)`,
@@ -100,8 +100,8 @@ function AnnouncementCarouselContent({
                                 }}
                                 onClick={e => handleCardClick(index, e)}
                                 onTouchStart={e => handleCardClick(index, e)}>
-                                <AnnouncementCard
-                                    announcement={announcement}
+                                <RecruitCard
+                                    recruit={recruit}
                                     cardRef={
                                         cardRef as React.RefObject<HTMLDivElement>
                                     }
@@ -112,20 +112,20 @@ function AnnouncementCarouselContent({
                                 {isActive && (
                                     <JoinButton
                                         disabled={isDragging}
-                                        announcement={announcement}
-                                        setSelectedAnnouncement={
-                                            setSelectedAnnouncement
+                                        recruit={recruit}
+                                        setSelectedRecruit={
+                                            setSelectedRecruit
                                         }
                                     />
                                 )}
                                 <JoinCompleteModal
-                                    announcementId={
-                                        selectedAnnouncement?.postId.toString() ||
+                                    recruitId={
+                                        selectedRecruit?.postId.toString() ||
                                         ''
                                     }
                                     onAccept={() => {
-                                        joinAnnouncement(
-                                            selectedAnnouncement?.postId || 0
+                                        joinRecruit(
+                                            selectedRecruit?.postId || 0
                                         )
                                     }}
                                     id="join-complete-modal"
@@ -140,3 +140,4 @@ function AnnouncementCarouselContent({
         </div>
     )
 }
+

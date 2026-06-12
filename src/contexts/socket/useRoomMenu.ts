@@ -1,17 +1,12 @@
 import { useEffect, useState } from 'react'
-import type { z } from 'zod'
-import {
-    MenuPickUpdateResponseSchema,
-    RestaurantPickUpdateResponseSchema
+import type {
+    MenuPickUpdateResponse,
+    RestaurantPickUpdateResponse
 } from '@kimdaegyu/babmukdang-shared/domain'
 import type { AppSocket } from './types'
 
-export type MenuPickUpdateResponseDto = z.infer<
-    typeof MenuPickUpdateResponseSchema
->
-export type RestaurantPickUpdateResponseDto = z.infer<
-    typeof RestaurantPickUpdateResponseSchema
->
+export type MenuPickUpdateResponseDto = MenuPickUpdateResponse
+export type RestaurantPickUpdateResponseDto = RestaurantPickUpdateResponse
 
 export function useRoomMenu(socket: AppSocket | null) {
     const [menuPicks, setMenuPicks] = useState<MenuPickUpdateResponseDto>([])

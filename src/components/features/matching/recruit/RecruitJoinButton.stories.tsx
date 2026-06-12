@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { JoinButton } from './AnnouncementJoinButton'
+import { JoinButton } from './RecruitJoinButton'
 import { PostResponse } from '@/apis'
-import { MockAnnouncements } from '@/constants/mockData'
+import { MockRecruits } from '@/constants/mockData'
 
 const meta: Meta<typeof JoinButton> = {
-    title: 'Features/Matching/Announcement/JoinButton',
+    title: 'Features/Matching/Recruit/JoinButton',
     component: JoinButton,
     tags: ['autodocs'],
     parameters: {
@@ -21,20 +21,21 @@ const meta: Meta<typeof JoinButton> = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const mockAnnouncement: PostResponse = {
-    ...MockAnnouncements[0]
+const mockRecruit: PostResponse = {
+    ...MockRecruits[0]
 }
 
 export const Default: Story = {
     args: {
         disabled: false,
-        announcement: mockAnnouncement
+        recruit: mockRecruit
     }
 }
 
 export const Disabled: Story = {
     args: {
         disabled: true,
-        announcement: mockAnnouncement
+        recruit: mockRecruit
     }
 }
+

@@ -185,7 +185,7 @@ export interface LikePostResponse {
 }
 
 // ============================================================================
-// Recruit / announcement view model
+// Recruit view model
 // ============================================================================
 
 export type RecruitDto = RecruitListResponse[number]

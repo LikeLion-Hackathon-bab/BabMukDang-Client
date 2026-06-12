@@ -8,15 +8,15 @@ import {
 } from '@/assets/icons'
 import { KebabButton } from '@/components'
 
-export function AnnouncementCard({
-    announcement,
+export function RecruitCard({
+    recruit,
     cardRef,
     index = 0,
     currentIndex = 0,
     isActive = true,
     showKebab = false
 }: {
-    announcement: PostResponse
+    recruit: PostResponse
     cardRef?: React.RefObject<HTMLDivElement>
     index?: number
     currentIndex?: number
@@ -33,9 +33,9 @@ export function AnnouncementCard({
             <div className="flex w-full flex-col items-center gap-16">
                 <div className="flex w-full items-center justify-between">
                     <div className="flex items-center gap-10">
-                        {announcement.author.profileImageUrl ? (
+                        {recruit.author.profileImageUrl ? (
                             <img
-                                src={announcement.author.profileImageUrl}
+                                src={recruit.author.profileImageUrl}
                                 alt="profile"
                                 className="size-20 rounded-full"
                             />
@@ -43,7 +43,7 @@ export function AnnouncementCard({
                             <ProfileDefaultIcon className="size-20" />
                         )}
                         <span className="text-body1-semibold">
-                            {announcement.author.name}
+                            {recruit.author.name}
                         </span>
                     </div>
                     {/* KebabButton at top-right (optional) */}
@@ -57,13 +57,13 @@ export function AnnouncementCard({
 
                 <div className="flex flex-col items-center gap-6">
                     <span className="text-caption-medium text-gray-5">
-                        {calculateTimeLeft(announcement.createdAt)}
+                        {calculateTimeLeft(recruit.createdAt)}
                     </span>
                     {/* Title */}
                     <div className="flex w-218 flex-col gap-16">
                         <div className="text-center">
                             <span className="text-title2-bold text-gray-8 whitespace-pre-line">
-                                {announcement.message}
+                                {recruit.message}
                             </span>
                         </div>
 
@@ -73,20 +73,20 @@ export function AnnouncementCard({
                                 <div className="flex items-center gap-4">
                                     <TimeWhiteIcon />
                                     <span className="text-body2-semibold text-white">
-                                        {formatTime(announcement.meetingAt)}
+                                        {formatTime(recruit.meetingAt)}
                                         {/* 2025-08-08T22:30 */}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-4">
                                     <LocationWhiteIcon />
                                     <span className="text-body2-semibold text-white">
-                                        {announcement.location}
+                                        {recruit.location}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-4">
                                     <PeopleWhiteIcon />
                                     <span className="text-body2-semibold text-white">
-                                        {announcement.targetCount}명
+                                        {recruit.targetCount}명
                                     </span>
                                 </div>
                             </div>
@@ -102,7 +102,7 @@ export function AnnouncementCard({
 
                 <div className="rounded-50 border-primary-200 h-40 border px-12 py-8">
                     <div className="flex flex-row gap-8">
-                        {announcement.participants.map((participant, index) => (
+                        {recruit.participants.map((participant, index) => (
                             <div
                                 key={index}
                                 className="flex items-center gap-8">
@@ -127,7 +127,7 @@ export function AnnouncementCard({
     )
 }
 
-export function EmptyAnnouncementCard() {
+export function EmptyRecruitCard() {
     return (
         <div className="shadow-drop-1 rounded-16 h-353 w-280 origin-center translate-x-[-50%] bg-white px-12 py-8">
             <div className="flex h-full flex-col items-center justify-center gap-16">
@@ -169,3 +169,4 @@ function formatTime(meetingAt: string) {
     const timeString = `${month}월 ${day}일 ${ampm} ${hours}시 ${minutes}분`
     return timeString
 }
+

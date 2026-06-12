@@ -52,7 +52,7 @@ interface SocketContextValue {
     // 페이지의 emit/on이 Shared 이벤트명/payload와 어긋나면 컴파일 에러로 강제된다.
     socket: AppSocket | null
     roomId: string | undefined
-    matchType: 'announcement' | 'invitation'
+    matchType: 'recruit' | 'invitation'
     categories: Category[]
     participants: Participant[]
     stage: string
@@ -92,7 +92,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     const navigate = useNavigate()
     const { roomId } = useParams<{ roomId: string }>()
     const { matchType } = useParams<{
-        matchType: 'announcement' | 'invitation'
+        matchType: 'recruit' | 'invitation'
     }>()
 
     // Provider가 직접 소유하는 lifecycle 상태 (≤10개)
@@ -212,7 +212,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
             value={{
                 socket,
                 roomId,
-                matchType: matchType as 'announcement' | 'invitation',
+                matchType: matchType as 'recruit' | 'invitation',
                 categories,
                 participants,
                 stage,

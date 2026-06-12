@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useParams } from 'react-router-dom'
 import {
-    announcementRouteMap,
+    recruitRouteMap,
     invitationRouteMap
 } from '@/constants/onboardingRoute'
 
 export const ProgressBar = () => {
     const { pathname } = useLocation()
     const { matchType } = useParams<{
-        matchType: 'announcement' | 'invitation'
+        matchType: 'recruit' | 'invitation'
     }>()
     const [totalProgress, setTotalProgress] = useState(0)
     useEffect(() => {
@@ -19,10 +19,10 @@ export const ProgressBar = () => {
                 ] / 7
             setTotalProgress(totalProgress)
         }
-        if (matchType === 'announcement') {
+        if (matchType === 'recruit') {
             const totalProgress =
-                announcementRouteMap[
-                    pathname.split('/')[2] as keyof typeof announcementRouteMap
+                recruitRouteMap[
+                    pathname.split('/')[2] as keyof typeof recruitRouteMap
                 ] / 5
             setTotalProgress(totalProgress)
         }
@@ -38,3 +38,4 @@ export const ProgressBar = () => {
         </div>
     )
 }
+

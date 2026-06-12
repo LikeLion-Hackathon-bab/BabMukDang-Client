@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { AddAnnouncementCard } from './AddAnnouncementCard'
+import { AddRecruitCard } from './AddRecruitCard'
 import { useState } from 'react'
 import { Post } from '@/apis'
 
-const meta: Meta<typeof AddAnnouncementCard> = {
-    title: 'Features/Matching/Announcement/AddAnnouncementCard',
-    component: AddAnnouncementCard,
+const meta: Meta<typeof AddRecruitCard> = {
+    title: 'Features/Matching/Recruit/AddRecruitCard',
+    component: AddRecruitCard,
     tags: ['autodocs'],
     parameters: {
         layout: 'padded'
@@ -15,7 +15,7 @@ const meta: Meta<typeof AddAnnouncementCard> = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const AddAnnouncementCardWithState = () => {
+const AddRecruitCardWithState = () => {
     const [data, setData] = useState<Post>({
         location: '',
         message: '',
@@ -23,20 +23,20 @@ const AddAnnouncementCardWithState = () => {
         meetingAt: ''
     })
     return (
-        <AddAnnouncementCard
-            announcementAddData={data}
-            setAnnouncementAddData={setData}
+        <AddRecruitCard
+            recruitAddData={data}
+            setRecruitAddData={setData}
         />
     )
 }
 
 export const Default: Story = {
-    render: () => <AddAnnouncementCardWithState />
+    render: () => <AddRecruitCardWithState />
 }
 
 export const WithInitialData: Story = {
     args: {
-        announcementAddData: {
+        recruitAddData: {
             location: '강남역 근처',
             message: '점심 같이 드실 분!',
             targetCount: 3,
@@ -44,3 +44,4 @@ export const WithInitialData: Story = {
         }
     }
 }
+

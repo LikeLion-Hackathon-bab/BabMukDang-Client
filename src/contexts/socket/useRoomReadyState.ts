@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react'
-import type { z } from 'zod'
-import { ReadyStateChangedSchema } from '@kimdaegyu/babmukdang-shared/domain'
+import type { ReadyStateChanged } from '@kimdaegyu/babmukdang-shared/domain'
 import type { AppSocket } from './types'
-
-type ReadyStateChanged = z.infer<typeof ReadyStateChangedSchema>
 
 export function useRoomReadyState(socket: AppSocket | null) {
     const [readyCount, setReadyCount] = useState(0)

@@ -154,7 +154,7 @@ export function FriendPage() {
 
     const handleSendRequest = () => {
         const memberId = Number(requestMemberId)
-        if (!Number.isFinite(memberId) || memberId <= 0) return
+        // if (!Number.isFinite(memberId) || memberId <= 0) return
         sendRequest(memberId)
     }
 

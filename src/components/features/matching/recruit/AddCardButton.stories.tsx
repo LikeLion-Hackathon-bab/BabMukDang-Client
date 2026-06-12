@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { AddCardButton } from './AddCardButton'
 
 const meta: Meta<typeof AddCardButton> = {
-    title: 'Features/Matching/Announcement/AddCardButton',
+    title: 'Features/Matching/Recruit/AddCardButton',
     component: AddCardButton,
     tags: ['autodocs'],
     parameters: {
@@ -20,3 +20,4 @@ export const WithClickHandler: Story = {
         onClick: () => alert('공고 추가 버튼 클릭!')
     }
 }
+

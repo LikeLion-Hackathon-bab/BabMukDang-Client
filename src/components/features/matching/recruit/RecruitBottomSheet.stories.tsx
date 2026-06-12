@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react'
-import { AnnouncementBottomSheet } from './AnnouncementBottomSheet'
-import { MockAnnouncements } from '@/constants/mockData'
+import { RecruitBottomSheet } from './RecruitBottomSheet'
+import { MockRecruits } from '@/constants/mockData'
 
-const meta: Meta<typeof AnnouncementBottomSheet> = {
-    title: 'Features/Matching/Announcement/AnnouncementBottomSheet',
-    component: AnnouncementBottomSheet,
+const meta: Meta<typeof RecruitBottomSheet> = {
+    title: 'Features/Matching/Recruit/RecruitBottomSheet',
+    component: RecruitBottomSheet,
     tags: ['autodocs'],
     parameters: {
         layout: 'fullscreen'
@@ -20,20 +20,21 @@ const meta: Meta<typeof AnnouncementBottomSheet> = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const mockAnnouncement = {
-    ...MockAnnouncements[0]
+const mockRecruit = {
+    ...MockRecruits[0]
 }
 
 export const AddMode: Story = {
     args: {
         isAdd: true,
-        myAnnouncement: null
+        myRecruit: null
     }
 }
 
 export const ViewMode: Story = {
     args: {
         isAdd: false,
-        myAnnouncement: mockAnnouncement
+        myRecruit: mockRecruit
     }
 }
+

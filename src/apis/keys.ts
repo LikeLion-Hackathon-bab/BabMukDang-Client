@@ -60,13 +60,13 @@ export const queryKeys = {
     },
 
     /**
-     * 공지/모집글(Announcement) 관련 쿼리 키
+     * 모집글(Recruit) 관련 쿼리 키
      */
-    announcements: {
-        /** 모든 공지 쿼리의 기본 키 */
-        all: ['announcements'] as const,
-        /** 공지 목록 */
-        list: ['announcements', 'list'] as const
+    recruits: {
+        /** 모든 모집글 쿼리의 기본 키 */
+        all: ['recruits'] as const,
+        /** 모집글 목록 */
+        list: ['recruits', 'list'] as const
     },
 
     /**
