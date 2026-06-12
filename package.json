@@ -22,7 +22,7 @@
         "@capacitor/android": "^7.4.3",
         "@capacitor/core": "^7.4.3",
         "@capacitor/ios": "^7.4.3",
-        "@kimdaegyu/babmukdang-shared": "workspace:*",
+        "@kimdaegyu/babmukdang-shared": "*",
         "@radix-ui/react-slot": "^1.2.3",
         "@tanstack/react-query": "^5.75.2",
         "@types/react-router-dom": "^5.3.3",
@@ -48,6 +48,7 @@
         "workbox-precaching": "^7.3.0",
         "workbox-routing": "^7.3.0",
         "workbox-window": "^7.3.0",
+        "zod": "^4.4.3",
         "zustand": "^5.0.7"
     },
     "devDependencies": {
