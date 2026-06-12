@@ -19,7 +19,7 @@ export default defineConfig({
     testDir: './src/e2e_tests',
     testMatch: [
         '**/integration.spec.ts',
-        // '**/backend-api.spec.ts',
+        '**/backend-api.spec.ts',
         '**/backend-socket.spec.ts'
     ],
     timeout: 60_000,

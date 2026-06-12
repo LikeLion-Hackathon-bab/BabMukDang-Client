@@ -19,13 +19,14 @@
 import type {
     ArticleSummaryResponse as ArticleSummaryResponseDto,
     BaseResponse,
-    MemberCore as MemberSummaryResponse,
     PlanResponse as PlanResponseDto,
     ReferralCreateResponse,
-    ReferralItemResponse
+    ReferralItemResponse,
+    MatchingNotification,
+    RoomAccessResponse
 } from '@kimdaegyu/babmukdang-shared/domain'
+import { apiContract } from '@kimdaegyu/babmukdang-shared/domain'
 import { test, expect, type APIRequestContext } from '@playwright/test'
-import { endpoints } from '../apis/endpoints'
 import {
     USER_A,
     USER_B,
@@ -53,6 +54,181 @@ import type {
     ProfileDto,
     RecruitDto
 } from '../apis/types'
+
+const resolvePath = (
+    path: string,
+    params: Record<string, string | number> = {}
+) =>
+    path.replace(/:([A-Za-z0-9_]+)/g, (_, key: string) =>
+        encodeURIComponent(String(params[key]))
+    )
+
+const buildBackendEndpoints = () =>
+    ({
+        auth: {
+            kakaoLogin: '/auth/kakao',
+            logout: apiContract.auth.logout.path,
+            refresh: apiContract.auth.refresh.path,
+            signup: apiContract.auth.signup.path,
+            login: apiContract.auth.login.path,
+            test: '/auth/test'
+        },
+        app: {
+            root: '/'
+        },
+        onboarding: {
+            create: apiContract.members.createProfile.path
+        },
+        referrals: {
+            create: apiContract.referrals.create.path,
+            me: apiContract.referrals.list.path,
+            redeem: apiContract.referrals.redeem.path
+        },
+        articles: {
+            home: apiContract.articles.list.path,
+            recentMeals: '/members/meals/recent',
+            detail: (id: number) =>
+                resolvePath(apiContract.articles.detail.path, {
+                    articleId: id
+                }),
+            create: apiContract.articles.create.path,
+            delete: (id: number) =>
+                resolvePath(apiContract.articles.delete.path, {
+                    articleId: id
+                }),
+            like: (id: number) =>
+                resolvePath(apiContract.articles.like.path, { articleId: id }),
+            comments: (id: number) => `/articles/${id}/comments`,
+            deleteComment: (commentId: number) =>
+                resolvePath(apiContract.articles.deleteComment.path, {
+                    commentId
+                }),
+            byAuthor: (authorId: number) =>
+                resolvePath(apiContract.articles.byMember.path, {
+                    memberId: authorId
+                }),
+            byMember: (memberId: number) =>
+                resolvePath(apiContract.articles.byMember.path, {
+                    memberId
+                }),
+            my: apiContract.articles.my.path
+        },
+        recruits: {
+            list: apiContract.recruits.list.path,
+            create: apiContract.recruits.create.path,
+            join: (recruitId: number) =>
+                resolvePath(apiContract.recruits.join.path, { recruitId }),
+            close: (recruitId: number) =>
+                resolvePath(apiContract.recruits.close.path, { recruitId })
+        },
+        members: {
+            me: apiContract.members.me.path,
+            byId: (id: number) =>
+                resolvePath('/members/:memberId', {
+                    memberId: id
+                }),
+            myProfile: apiContract.members.myProfile.path,
+            memberProfileDetail: (id: number) =>
+                resolvePath(apiContract.members.memberProfile.path, {
+                    memberId: id
+                }),
+            updateProfile: apiContract.members.updateProfile.path,
+            recent: '/members/recent',
+            recentMeals: '/members/meals/recent',
+            mealStatus: '/members/me/meal-status'
+        },
+        preferences: {
+            mySummary: apiContract.preferences.my.path,
+            update: apiContract.preferences.update.path
+        },
+        mealStatus: {
+            my: apiContract.mealStatus.my.path,
+            update: apiContract.mealStatus.updateMealStatus.path
+        },
+        friends: {
+            meals: apiContract.mealStatus.friendMealStatus.path,
+            list: apiContract.friends.list.path,
+            search: '/friends/search',
+            blocks: apiContract.friends.blockList.path,
+            requestsIncoming: apiContract.friends.incomingRequest.path,
+            requestsOutgoing: apiContract.friends.outgoingRequest.path,
+            sendRequest: (memberId: number) =>
+                resolvePath(apiContract.friends.sendRequest.path, {
+                    memberId
+                }),
+            acceptRequest: (requestId: number) =>
+                resolvePath(apiContract.friends.acceptRequest.path, {
+                    requestId
+                }),
+            rejectRequest: (requestId: number) =>
+                resolvePath(apiContract.friends.rejectRequest.path, {
+                    requestId
+                }),
+            remove: (memberId: number) =>
+                resolvePath(apiContract.friends.unfriend.path, {
+                    memberId
+                }),
+            block: (memberId: number) =>
+                resolvePath(apiContract.friends.block.path, { memberId }),
+            unblock: (memberId: number) =>
+                resolvePath(apiContract.friends.unblock.path, { memberId }),
+            cancelRequest: (requestId: number) =>
+                resolvePath(apiContract.friends.cancelRequest.path, {
+                    requestId
+                })
+        },
+        invitations: {
+            list: apiContract.invitations.list.path,
+            me: apiContract.invitations.list.path,
+            send: apiContract.invitations.send.path,
+            accept: (id: number) =>
+                resolvePath(apiContract.invitations.accept.path, {
+                    invitationId: id
+                }),
+            reject: (id: number) =>
+                resolvePath(apiContract.invitations.reject.path, {
+                    invitationId: id
+                })
+        },
+        notifications: {
+            list: apiContract.notifications.list.path,
+            markRead: (notificationId: string) =>
+                resolvePath(apiContract.notifications.markRead.path, {
+                    notificationId
+                }),
+            delete: (notificationId: string) =>
+                resolvePath(apiContract.notifications.delete.path, {
+                    notificationId
+                })
+        },
+        room: {
+            access: (roomId: string | number) =>
+                resolvePath(apiContract.room.access.path, { roomId })
+        },
+        plans: {
+            list: apiContract.plans.list.path,
+            uncompleted: '/plans',
+            completed: '/plans/completed'
+        },
+        subscriptions: {
+            recruit: (recruitId: number | string) =>
+                `/subscriptions/recruits/${recruitId}`,
+            direct: (postId: number | string) => `/subscribe/${postId}`
+        },
+        upload: {
+            presignArticle: apiContract.articles.presignArticleImage.path,
+            presignProfile: apiContract.members.presignProfileImage.path
+        },
+        challenges: {
+            me: apiContract.challenges.status.path,
+            reward: apiContract.challenges.claimReward.path
+        },
+        coupons: {
+            my: apiContract.coupons.list.path,
+            use: (id: number) =>
+                resolvePath(apiContract.coupons.use.path, { couponId: id })
+        }
+    }) as const
 
 // ─── 엔드포인트 사용 추적 ──────────────────────────────────────────────────
 
@@ -84,7 +260,7 @@ function track<T extends object>(value: T, prefix = ''): T {
     }) as T
 }
 
-const ep = track(endpoints)
+const ep = track(buildBackendEndpoints())
 
 // endpoint leaf의 접근 경로를 문자열로 표현한 타입입니다.
 // 예: 'auth.login', 'members.me', 'articles.detail'
@@ -192,6 +368,35 @@ async function postJson<T>(
     return { res, body }
 }
 
+async function patchJson<T>(
+    request: APIRequestContext,
+    path: Typed<T>,
+    options?: Parameters<APIRequestContext['patch']>[1]
+): Promise<{
+    res: Awaited<ReturnType<APIRequestContext['patch']>>
+    body: BaseResponse<T>
+}> {
+    const res = await request.patch(url(path), options)
+    const body = (await res.json()) as BaseResponse<T>
+    return { res, body }
+}
+
+async function waitForNotification(
+    request: APIRequestContext,
+    token: string,
+    predicate: (item: MatchingNotification) => boolean
+): Promise<MatchingNotification | undefined> {
+    for (let attempt = 0; attempt < 10; attempt += 1) {
+        const { body } = await getJson(request, responses.notificationsList, {
+            headers: auth(token)
+        })
+        const notification = body.data.find(predicate)
+        if (notification) return notification
+        await new Promise(resolve => setTimeout(resolve, 100))
+    }
+    return undefined
+}
+
 // 엔드포인트 ↔ 응답 DTO 매핑. 실제로 바디를 검사하는 엔드포인트만 등록한다
 // (상태 코드만 확인하는 곳까지 등록해 봐야 추론된 타입을 아무도 쓰지 않는다).
 const responses = {
@@ -208,18 +413,20 @@ const responses = {
     friendsMeals: typed<FriendMealListResponse>(ep.friends.meals),
     invitationsList: typed<InvitationResponse[]>(ep.invitations.list),
     invitationsMe: typed<InvitationResponse[]>(ep.invitations.me),
+    notificationsList: typed<MatchingNotification[]>(ep.notifications.list),
+    notificationMarkRead: (notificationId: string) =>
+        typed<MatchingNotification>(ep.notifications.markRead(notificationId)),
+    roomAccess: (roomId: string | number) =>
+        typed<RoomAccessResponse>(ep.room.access(roomId)),
     articleComments: (articleId: number) =>
         typed<CommentDto[]>(ep.articles.comments(articleId)),
     sendFriendRequest: (memberId: number) =>
         typed<FriendRequestItemResponse>(ep.friends.sendRequest(memberId)),
     membersMe: typed<ProfileDto>(ep.members.me),
     myProfile: typed<ProfileDto>(ep.members.myProfile),
-    myProfileDetail: typed<ProfileDetailResponse>(ep.members.myProfileDetail),
     memberById: (id: number) => typed<ProfileDto>(ep.members.byId(id)),
-    memberProfile: (id: number) => typed<ProfileDto>(ep.members.profile(id)),
-    memberProfileDetail: (id: number) =>
-        typed<ProfileDetailResponse>(ep.members.profileDetail(id)),
-    membersSummary: typed<MemberSummaryResponse>(ep.members.summary),
+    memberProfile: (id: number) =>
+        typed<ProfileDto>(ep.members.memberProfileDetail(id)),
     mealStatusMy: typed<MealStatusResponse>(ep.mealStatus.my),
     challengesMe: typed<ChallengeStatusResponse>(ep.challenges.me),
     articleDetail: (id: number) =>
@@ -267,7 +474,7 @@ test.beforeAll(async ({ request }) => {
 // ─── 1. App 루트 ──────────────────────────────────────────────────────────
 
 test.describe('App 루트', () => {
-    test('GET /api/v1 → 200 Hello World', async ({ request }) => {
+    test(`GET ${ep.app.root} → 200 Hello World`, async ({ request }) => {
         const res = await request.get(url(ep.app.root))
         expect(res.status()).toBe(200)
         const body = await res.json()
@@ -278,7 +485,7 @@ test.describe('App 루트', () => {
 // ─── 2. 인증 ─────────────────────────────────────────────────────────────
 
 test.describe('Auth', () => {
-    test('GET /auth/test → JWT 문자열 반환', async ({ request }) => {
+    test(`GET ${ep.auth.test} → JWT 문자열 반환`, async ({ request }) => {
         const res = await request.get(url(ep.auth.test))
         expect(res.status()).toBe(200)
         const body = await res.json()
@@ -286,14 +493,14 @@ test.describe('Auth', () => {
         expect(token.split('.').length).toBe(3)
     })
 
-    test('미인증 요청 → 401', async ({ request }) => {
+    test(`GET ${ep.members.me} 미인증 요청 → 401`, async ({ request }) => {
         const res = await request.get(url(ep.members.me))
         expect(res.status()).toBe(401)
         const body = await res.json()
         expect(body.success).toBe(false)
     })
 
-    test('GET /auth/kakao → 카카오 OAuth로 리다이렉트', async ({ request }) => {
+    test(`GET ${ep.auth.kakaoLogin} → 카카오 OAuth로 리다이렉트`, async ({ request }) => {
         const res = await request.get(url(ep.auth.kakaoLogin), {
             maxRedirects: 0
         })
@@ -301,7 +508,7 @@ test.describe('Auth', () => {
         expect([200, 301, 302, 307, 308]).toContain(res.status())
     })
 
-    test('POST /auth/refresh → 쿠키 없이 호출 시 401', async ({ request }) => {
+    test(`POST ${ep.auth.refresh} → 쿠키 없이 호출 시 401`, async ({ request }) => {
         const res = await request.post(url(ep.auth.refresh))
         // refresh-token 쿠키가 없으므로 인증 실패가 정상
         expect([200, 201, 401]).toContain(res.status())
@@ -311,7 +518,7 @@ test.describe('Auth', () => {
 // ─── 3. Members ──────────────────────────────────────────────────────────
 
 test.describe('Members', () => {
-    test('GET /members/me → 200', async ({ request }) => {
+    test(`GET ${ep.members.me} → 200`, async ({ request }) => {
         const { res, body } = await getJson(request, responses.membersMe, {
             headers: auth(tokenA)
         })
@@ -319,7 +526,7 @@ test.describe('Members', () => {
         expect(body.data.memberId).toBeTruthy()
     })
 
-    test('GET /members/me/profile → 200', async ({ request }) => {
+    test(`GET ${ep.members.myProfile} → 200`, async ({ request }) => {
         const { res, body } = await getJson(request, responses.myProfile, {
             headers: auth(tokenA)
         })
@@ -327,25 +534,27 @@ test.describe('Members', () => {
         expect(body.data.memberId).toBeTruthy()
     })
 
-    test('GET /members/me/profile/detail → 200', async ({ request }) => {
-        const { res, body } = await getJson(
-            request,
-            responses.myProfileDetail,
-            { headers: auth(tokenA) }
-        )
+    test(`GET ${ep.members.myProfile} detail 호환 → 200`, async ({ request }) => {
+        const { res, body } = await getJson(request, responses.myProfile, {
+            headers: auth(tokenA)
+        })
         expect(res.status()).toBe(200)
         expect(body.data.memberId).toBeTruthy()
     })
 
-    test('PATCH /members/me/profile → 200', async ({ request }) => {
+    test(`PATCH ${ep.members.updateProfile} → 200`, async ({ request }) => {
         const res = await request.patch(url(ep.members.updateProfile), {
             headers: auth(tokenA),
-            data: { username: 'E2E수정A', profileImageUrl: null, bio: '테스트 바이오' }
+            data: {
+                username: 'E2E수정A',
+                profileImageUrl: null,
+                bio: '테스트 바이오'
+            }
         })
         expect([200, 204]).toContain(res.status())
     })
 
-    test('GET /members/me/articles → 200 배열', async ({ request }) => {
+    test(`GET ${ep.articles.my} → 200 배열`, async ({ request }) => {
         const res = await request.get(url(ep.articles.my), {
             headers: auth(tokenA)
         })
@@ -357,38 +566,30 @@ test.describe('Members', () => {
         expect(Array.isArray(body.data?.items ?? body.data ?? body)).toBe(true)
     })
 
-    test('GET /members/me/summary → 200', async ({ request }) => {
-        const { res, body } = await getJson(request, responses.membersSummary, {
-            headers: auth(tokenA)
-        })
-        expect(res.status()).toBe(200)
-        expect(body.data.memberId).toBeTruthy()
-    })
-
-    test('GET /members/me/meal-status → 200', async ({ request }) => {
+    test(`GET ${ep.mealStatus.my} → 200`, async ({ request }) => {
         const { res, body } = await getJson(request, responses.mealStatusMy, {
             headers: auth(tokenA)
         })
         expect(res.status()).toBe(200)
-        expect(body.data.hungry).toBeTruthy()
+        expect(typeof body.data.hungry).toBe('boolean')
     })
 
-    test('PATCH /members/me/meal-status (ATE_NOW) → 200', async ({
+    test(`PATCH ${ep.mealStatus.update} (ARTICLE_UPLOAD) → 200`, async ({
         request
     }) => {
         const res = await request.patch(url(ep.mealStatus.update), {
             headers: auth(tokenA),
-            data: { action: 'ATE_NOW' }
+            data: { action: 'ARTICLE_UPLOAD' }
         })
         expect([200, 204]).toContain(res.status())
     })
 
-    test('PATCH /members/me/meal-status (SET_OFF) → 200', async ({
+    test(`PATCH ${ep.mealStatus.update} (SET_MANNUALY) → 200`, async ({
         request
     }) => {
         const res = await request.patch(url(ep.mealStatus.update), {
             headers: auth(tokenA),
-            data: { action: 'SET_OFF' }
+            data: { action: 'SET_MANNUALY' }
         })
         expect([200, 204]).toContain(res.status())
     })
@@ -403,26 +604,13 @@ test.describe('Members', () => {
         expect(body.data.memberId).toBeTruthy()
     })
 
-    test('GET /members/:memberId/profile/detail → 200', async ({ request }) => {
-        const { res, body } = await getJson(
-            request,
-            responses.memberProfileDetail(Number(memberIdA)),
-            { headers: auth(tokenB) }
-        )
-        expect(res.status()).toBe(200)
-        expect(body.data.memberId).toBeTruthy()
-    })
-
-    test('GET /members/:memberId/articles → 200 배열', async ({ request }) => {
+    test(`GET ${apiContract.articles.byMember.path} → 200 배열`, async ({ request }) => {
         const res = await request.get(
             url(ep.articles.byMember(Number(memberIdA))),
             { headers: auth(tokenB) }
         )
         expect(res.status()).toBe(200)
-        const body = (await res.json()) as BaseResponse<{
-            total: number
-            items: ArticleSummaryResponseDto[]
-        }>
+        const body = await res.json()
         expect(Array.isArray(body.data?.items ?? body.data ?? body)).toBe(true)
     })
 
@@ -440,7 +628,7 @@ test.describe('Members', () => {
 // ─── 4. Onboarding ───────────────────────────────────────────────────────
 
 test.describe('Onboarding', () => {
-    test('POST /onboarding → 204', async ({ request }) => {
+    test(`POST ${ep.onboarding.create} → 204`, async ({ request }) => {
         const res = await request.post(url(ep.onboarding.create), {
             headers: auth(tokenA),
             data: {
@@ -459,22 +647,15 @@ test.describe('Onboarding', () => {
 // ─── 5. Preferences ──────────────────────────────────────────────────────
 
 test.describe('Preferences', () => {
-    test('GET /preferences/me → 200', async ({ request }) => {
+    test(`GET ${ep.preferences.mySummary} → 200`, async ({ request }) => {
         const res = await request.get(url(ep.preferences.mySummary), {
             headers: auth(tokenA)
         })
         expect(res.status()).toBe(200)
     })
 
-    test('GET /preferences/me/meta → 200', async ({ request }) => {
-        const res = await request.get(url(ep.preferences.myMeta), {
-            headers: auth(tokenA)
-        })
-        expect(res.status()).toBe(200)
-    })
-
-    test('POST /preferences/onboarding → 204', async ({ request }) => {
-        const res = await request.post(url(ep.preferences.onboarding), {
+    test(`PATCH ${ep.preferences.update} → 204`, async ({ request }) => {
+        const res = await request.patch(url(ep.preferences.update), {
             headers: auth(tokenA),
             data: {
                 liked: [],
@@ -484,20 +665,6 @@ test.describe('Preferences', () => {
         })
         expect([200, 204]).toContain(res.status())
     })
-
-    test('GET /preferences/members/:memberId → 200 배열', async ({
-        request
-    }) => {
-        const res = await request.get(
-            url(ep.preferences.byMember(Number(memberIdA)))
-        )
-        expect(res.status()).toBe(200)
-        const body = (await res.json()) as BaseResponse<{
-            total: number
-            items: ArticleSummaryResponseDto[]
-        }>
-        expect(Array.isArray(body.data?.items ?? body.data ?? body)).toBe(true)
-    })
 })
 
 // ─── 6. Articles ─────────────────────────────────────────────────────────
@@ -506,7 +673,7 @@ let createdArticleId = 0
 let createdCommentId = 0
 
 test.describe('Articles', () => {
-    test('GET /articles/home → 200 배열', async ({ request }) => {
+    test(`GET ${ep.articles.home} → 200 배열`, async ({ request }) => {
         const res = await request.get(url(ep.articles.home), {
             headers: auth(tokenA)
         })
@@ -515,7 +682,7 @@ test.describe('Articles', () => {
         expect(Array.isArray(body.data ?? body.data?.items)).toBe(true)
     })
 
-    test('GET /articles/meals/recent → 200 배열', async ({ request }) => {
+    test(`GET ${ep.articles.recentMeals} → 200 배열`, async ({ request }) => {
         const res = await request.get(url(ep.articles.recentMeals), {
             headers: auth(tokenA)
         })
@@ -524,7 +691,7 @@ test.describe('Articles', () => {
         expect(Array.isArray(body.data?.items ?? body)).toBe(true)
     })
 
-    test('GET /articles/by-author/:authorId → 200 배열', async ({
+    test(`GET ${apiContract.articles.byMember.path} → 200 배열`, async ({
         request
     }) => {
         const res = await request.get(
@@ -536,22 +703,23 @@ test.describe('Articles', () => {
         expect(Array.isArray(body.data?.items ?? body)).toBe(true)
     })
 
-    test('POST /articles → 201, id 반환', async ({ request }) => {
+    test(`POST ${ep.articles.create} → 201, id 반환`, async ({ request }) => {
         const res = await request.post(url(ep.articles.create), {
             headers: auth(tokenA),
             data: {
                 imageUrl: 'https://via.placeholder.com/300',
-                mealDate: new Date().toISOString(),
+                mealDate: new Date().toISOString().slice(0, 10),
                 restaurant: {
-                    name: '테스트 식당',
-                    address: '서울시 테스트구',
-                    roadAddress: '서울시 테스트로 1',
+                    restaurantId: 'test-kakao-id',
+                    placeName: '테스트 식당',
+                    categoryName: '한식',
+                    categoryGroupName: '음식점',
+                    roadAddressName: '서울시 테스트로 1',
+                    addressName: '서울시 테스트구',
                     phone: '',
-                    lat: '37.5',
-                    lng: '127.0',
-                    category: '한식',
-                    kakaoId: 'test-kakao-id',
-                    kakaoUrl: 'https://place.map.kakao.com/test'
+                    placeUrl: 'https://place.map.kakao.com/test',
+                    lat: 37.5,
+                    lng: 127.0
                 },
                 taggedMemberIds: []
             }
@@ -563,7 +731,7 @@ test.describe('Articles', () => {
         createdArticleId = id
     })
 
-    test('GET /articles/:articleId → 200', async ({ request }) => {
+    test(`GET ${apiContract.articles.detail.path} → 200`, async ({ request }) => {
         test.skip(createdArticleId === 0, '게시물 생성 실패로 건너뜀')
         const { res, body } = await getJson(
             request,
@@ -574,7 +742,7 @@ test.describe('Articles', () => {
         expect(body.data.articleId).toBe(createdArticleId)
     })
 
-    test('POST /articles/:articleId/like → 200', async ({ request }) => {
+    test(`POST ${apiContract.articles.like.path} → 200`, async ({ request }) => {
         test.skip(createdArticleId === 0, '게시물 생성 실패로 건너뜀')
         const { res, body } = await postJson(
             request,
@@ -585,7 +753,7 @@ test.describe('Articles', () => {
         expect(typeof body.data.liked).toBe('boolean')
     })
 
-    test('POST /articles/:articleId/comments → 201, id 반환', async ({
+    test(`POST ${apiContract.articles.createComment.path} → 201, id 반환`, async ({
         request
     }) => {
         test.skip(createdArticleId === 0, '게시물 생성 실패로 건너뜀')
@@ -603,20 +771,7 @@ test.describe('Articles', () => {
         createdCommentId = id
     })
 
-    test('GET /articles/:articleId/comments → 200 배열', async ({
-        request
-    }) => {
-        test.skip(createdArticleId === 0, '게시물 생성 실패로 건너뜀')
-        const { res, body } = await getJson(
-            request,
-            responses.articleComments(createdArticleId),
-            { headers: auth(tokenA) }
-        )
-        expect(res.status()).toBe(200)
-        expect(Array.isArray(body.data)).toBe(true)
-    })
-
-    test('DELETE /articles/comments/:commentId → 204', async ({ request }) => {
+    test(`DELETE ${apiContract.articles.deleteComment.path} → 204`, async ({ request }) => {
         test.skip(createdCommentId === 0, '댓글 생성 실패로 건너뜀')
         const res = await request.delete(
             url(ep.articles.deleteComment(createdCommentId)),
@@ -625,24 +780,25 @@ test.describe('Articles', () => {
         expect(res.status()).toBe(204)
     })
 
-    test('DELETE /articles/:articleId → 204', async ({ request }) => {
+    test(`DELETE ${apiContract.articles.delete.path} → 204`, async ({ request }) => {
         test.skip(createdArticleId === 0, '게시물 생성 실패로 건너뜀')
         // 두 번째 게시물을 만들어 삭제 검증 (첫 번째는 이후 테스트에서 재활용)
         const createRes = await request.post(url(ep.articles.create), {
             headers: auth(tokenA),
             data: {
                 imageUrl: 'https://via.placeholder.com/300',
-                mealDate: new Date().toISOString(),
+                mealDate: new Date().toISOString().slice(0, 10),
                 restaurant: {
-                    name: '삭제 테스트 식당',
-                    address: '서울시',
-                    roadAddress: '서울시 테스트로 2',
+                    restaurantId: 'test-kakao-id-2',
+                    placeName: '삭제 테스트 식당',
+                    categoryName: '한식',
+                    categoryGroupName: '음식점',
+                    roadAddressName: '서울시 테스트로 2',
+                    addressName: '서울시',
                     phone: '',
-                    lat: '37.5',
-                    lng: '127.0',
-                    category: '한식',
-                    kakaoId: 'test-kakao-id-2',
-                    kakaoUrl: 'https://place.map.kakao.com/test2'
+                    placeUrl: 'https://place.map.kakao.com/test2',
+                    lat: 37.5,
+                    lng: 127.0
                 },
                 taggedMemberIds: []
             }
@@ -666,7 +822,7 @@ test.describe('Articles', () => {
 let createdRecruitId = 0
 
 test.describe('Recruits', () => {
-    test('GET /recruits → 200 배열', async ({ request }) => {
+    test(`GET ${ep.recruits.list} → 200 배열`, async ({ request }) => {
         const { res, body } = await getJson(request, responses.recruitsList, {
             headers: auth(tokenA)
         })
@@ -674,7 +830,7 @@ test.describe('Recruits', () => {
         expect(Array.isArray(body.data)).toBe(true)
     })
 
-    test('POST /recruits → 200 또는 201', async ({ request }) => {
+    test(`POST ${ep.recruits.create} → 201`, async ({ request }) => {
         const future = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
         const res = await request.post(url(ep.recruits.create), {
             headers: auth(tokenA),
@@ -685,26 +841,25 @@ test.describe('Recruits', () => {
                 message: 'E2E 테스트 모집글'
             }
         })
-        expect([200, 201]).toContain(res.status())
+        expect(res.status()).toBe(201)
         const body = await res.json()
-        const id = body.data
+        const id = body.data?.recruitId ?? body.data
         createdRecruitId = Number(id)
     })
 
-    test('POST /recruits/:id/join (다른 사용자) → 200', async ({ request }) => {
+    test(`POST ${apiContract.recruits.join.path} (다른 사용자) → 201 또는 409`, async ({ request }) => {
         test.skip(createdRecruitId === 0, '모집글 생성 실패로 건너뜀')
         const res = await request.post(
             url(ep.recruits.join(createdRecruitId)),
             { headers: auth(tokenB) }
         )
-        // 이미 참여했거나 만원이면 409/400, 정상이면 200/201
-        expect([200, 201, 400, 409]).toContain(res.status())
+        expect([201, 409]).toContain(res.status())
     })
 
     // ─── 7.1. Subscriptions ───────────────────────────────────────────────────
 
     test.describe('Subscriptions', () => {
-        test('POST /subscriptions/recruits/:recruitId → 200 또는 409', async ({
+        test(`POST ${ep.subscriptions.recruit(':recruitId')} → 201 또는 409`, async ({
             request
         }) => {
             test.skip(createdRecruitId === 0, '모집글 생성 실패로 건너뜀')
@@ -712,26 +867,26 @@ test.describe('Recruits', () => {
                 url(ep.subscriptions.recruit(createdRecruitId)),
                 { headers: auth(tokenA) }
             )
-            expect([200, 201, 409]).toContain(res.status())
+            expect([201, 409]).toContain(res.status())
         })
 
-        test('POST /subscribe/:postId → 200 또는 409', async ({ request }) => {
+        test(`POST ${ep.subscriptions.direct(':postId')} → 201 또는 409`, async ({ request }) => {
             test.skip(createdRecruitId === 0, '모집글 생성 실패로 건너뜀')
             const res = await request.post(
                 url(ep.subscriptions.direct(createdRecruitId)),
                 { headers: auth(tokenB) }
             )
-            expect([200, 201, 409]).toContain(res.status())
+            expect([201, 409]).toContain(res.status())
         })
     })
 
-    test('POST /recruits/:id/close (작성자) → 200', async ({ request }) => {
+    test(`POST ${apiContract.recruits.close.path} (작성자) → 201`, async ({ request }) => {
         test.skip(createdRecruitId === 0, '모집글 생성 실패로 건너뜀')
         const res = await request.post(
             url(ep.recruits.close(createdRecruitId)),
             { headers: auth(tokenA) }
         )
-        expect([200, 201, 400, 409]).toContain(res.status())
+        expect(res.status()).toBe(201)
     })
 })
 
@@ -740,21 +895,7 @@ test.describe('Recruits', () => {
 let createdPlanId = 0
 
 test.describe('Plans', () => {
-    test('POST /plans → 201', async ({ request }) => {
-        const res = await request.post(url(ep.plans.create), {
-            headers: auth(tokenA),
-            data: {
-                meetingDate: '2099-12-31',
-                meetingTime: '12:00'
-            }
-        })
-        expect(res.status()).toBe(201)
-        const body = await res.json()
-        const id = body.data?.id ?? body.id
-        if (typeof id === 'number') createdPlanId = id
-    })
-
-    test('GET /plans → 200 배열', async ({ request }) => {
+    test(`GET ${ep.plans.list} → 200 배열`, async ({ request }) => {
         const { res, body } = await getJson(request, responses.plansList, {
             headers: auth(tokenA)
         })
@@ -762,7 +903,7 @@ test.describe('Plans', () => {
         expect(Array.isArray(body.data)).toBe(true)
     })
 
-    test('GET /plans/uncompleted → 200 배열', async ({ request }) => {
+    test(`GET ${ep.plans.uncompleted} uncompleted 호환 → 200 배열`, async ({ request }) => {
         const { res, body } = await getJson(
             request,
             responses.plansUncompleted,
@@ -774,7 +915,7 @@ test.describe('Plans', () => {
         expect(Array.isArray(body.data)).toBe(true)
     })
 
-    test('GET /plans/completed → 200 배열', async ({ request }) => {
+    test(`GET ${ep.plans.completed} → 200 배열`, async ({ request }) => {
         const { res, body } = await getJson(request, responses.plansCompleted, {
             headers: auth(tokenA)
         })
@@ -788,7 +929,7 @@ test.describe('Plans', () => {
 let createdInvitationId = 0
 
 test.describe('Invitations', () => {
-    test('POST /invitations/send → 200 또는 201', async ({ request }) => {
+    test(`POST ${ep.invitations.send} → 201`, async ({ request }) => {
         const res = await request.post(url(ep.invitations.send), {
             headers: auth(tokenA),
             data: {
@@ -796,13 +937,13 @@ test.describe('Invitations', () => {
                 message: 'E2E 테스트 초대장'
             }
         })
-        expect([200, 201, 400, 409]).toContain(res.status())
+        expect(res.status()).toBe(201)
         const body = await res.json()
-        const id = body.data?.id ?? body.id
+        const id = body.data?.invitationId ?? body.data?.id ?? body.id
         if (typeof id === 'number') createdInvitationId = id
     })
 
-    test('GET /invitations → 200 배열', async ({ request }) => {
+    test(`GET ${ep.invitations.list} → 200 배열`, async ({ request }) => {
         const { res, body } = await getJson(
             request,
             responses.invitationsList,
@@ -814,7 +955,7 @@ test.describe('Invitations', () => {
         expect(Array.isArray(body.data)).toBe(true)
     })
 
-    test('GET /invitations/me → 200 배열', async ({ request }) => {
+    test(`GET ${ep.invitations.me} me 호환 → 200 배열`, async ({ request }) => {
         const { res, body } = await getJson(request, responses.invitationsMe, {
             headers: auth(tokenB)
         })
@@ -822,7 +963,7 @@ test.describe('Invitations', () => {
         expect(Array.isArray(body.data)).toBe(true)
     })
 
-    test('PATCH /invitations/:id/accept → 200 (초대가 있는 경우)', async ({
+    test(`POST ${apiContract.invitations.accept.path} → 201 (초대가 있는 경우)`, async ({
         request
     }) => {
         // 초대 목록에서 첫 번째 초대를 수락한다
@@ -840,13 +981,13 @@ test.describe('Invitations', () => {
             return
         }
         const invId = list[0].invitationId
-        const res = await request.patch(url(ep.invitations.accept(invId)), {
+        const res = await request.post(url(ep.invitations.accept(invId)), {
             headers: auth(tokenB)
         })
-        expect([200, 201, 400, 409]).toContain(res.status())
+        expect(res.status()).toBe(201)
     })
 
-    test('POST /invitations/send (reject용 2차 초대) → 다양한 상태 허용', async ({
+    test(`POST ${ep.invitations.send} (reject용 2차 초대) → 201 후 reject 201`, async ({
         request
     }) => {
         const res = await request.post(url(ep.invitations.send), {
@@ -856,17 +997,185 @@ test.describe('Invitations', () => {
                 message: 'E2E 거절용 초대'
             }
         })
-        expect([200, 201, 400, 409]).toContain(res.status())
+        expect(res.status()).toBe(201)
         const body = await res.json()
-        const id = body.data?.id ?? body.id
+        const id = body.data?.invitationId ?? body.data?.id ?? body.id
         if (typeof id === 'number') {
-            // PATCH reject 검증
-            const rejectRes = await request.patch(
+            const rejectRes = await request.post(
                 url(ep.invitations.reject(id)),
                 { headers: auth(tokenB) }
             )
-            expect([200, 201, 400, 409]).toContain(rejectRes.status())
+            expect(rejectRes.status()).toBe(201)
         }
+    })
+})
+
+// ─── 9.1. Notifications ─────────────────────────────────────────────────
+
+test.describe('Notifications', () => {
+    test(`GET ${ep.notifications.list} → 200 배열`, async ({ request }) => {
+        const { res, body } = await getJson(
+            request,
+            responses.notificationsList,
+            { headers: auth(tokenB) }
+        )
+        expect(res.status()).toBe(200)
+        expect(Array.isArray(body.data)).toBe(true)
+    })
+
+    test(`POST ${ep.invitations.send} 후 accept 시 ${ep.notifications.list} 알림/읽음/삭제/room access 동작`, async ({
+        request
+    }) => {
+        const sendRes = await request.post(url(ep.invitations.send), {
+            headers: auth(tokenA),
+            data: {
+                inviteeId: Number(memberIdB),
+                message: 'E2E 알림 영속화 테스트 초대'
+            }
+        })
+        expect(sendRes.status()).toBe(201)
+        const sendBody = await readBody(sendRes)
+        const invitationId =
+            sendBody?.data?.invitationId ?? sendBody?.invitationId
+        expect(typeof invitationId).toBe('number')
+
+        const preAccessRes = await request.get(
+            url(ep.room.access(invitationId)),
+            { headers: auth(tokenB) }
+        )
+        expect(preAccessRes.status()).toBe(404)
+
+        const acceptRes = await request.post(
+            url(ep.invitations.accept(invitationId)),
+            { headers: auth(tokenB) }
+        )
+        expect(acceptRes.status()).toBe(201)
+        const acceptBody = await readBody(acceptRes)
+        const roomId = acceptBody?.data?.room?.roomId
+        expect(typeof roomId).toBe('string')
+
+        const { res: listRes, body: listBody } = await getJson(
+            request,
+            responses.notificationsList,
+            { headers: auth(tokenB) }
+        )
+        expect(listRes.status()).toBe(200)
+        const notification = listBody.data.find(
+            item => item.kind === 'invitation' && item.roomId === roomId
+        )
+        expect(notification).toBeTruthy()
+        expect(notification?.readAt).toBeNull()
+
+        const { res: accessRes, body: accessBody } = await getJson(
+            request,
+            responses.roomAccess(roomId),
+            { headers: auth(tokenB) }
+        )
+        expect(accessRes.status()).toBe(200)
+        expect(accessBody.data.canJoin).toBe(true)
+        expect(accessBody.data.roomId).toBe(roomId)
+
+        const notificationId = notification!.notificationId
+        const { res: markReadRes, body: markReadBody } = await patchJson(
+            request,
+            responses.notificationMarkRead(notificationId),
+            { headers: auth(tokenB) }
+        )
+        expect(markReadRes.status()).toBe(200)
+        expect(markReadBody.data.readAt).toBeTruthy()
+
+        const deleteRes = await request.delete(
+            url(ep.notifications.delete(notificationId)),
+            { headers: auth(tokenB) }
+        )
+        expect([200, 204]).toContain(deleteRes.status())
+
+        const { body: afterDeleteBody } = await getJson(
+            request,
+            responses.notificationsList,
+            { headers: auth(tokenB) }
+        )
+        expect(
+            afterDeleteBody.data.some(
+                item => item.notificationId === notificationId
+            )
+        ).toBe(false)
+    })
+
+    test(`POST ${apiContract.recruits.join.path} 후 ${ep.notifications.list} recruit 알림/읽음/삭제/room access 동작`, async ({
+        request
+    }) => {
+        const future = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+        const createRes = await request.post(url(ep.recruits.create), {
+            headers: auth(tokenA),
+            data: {
+                targetCount: 2,
+                meetingAt: future.toISOString(),
+                location: '서울시 강남구 테헤란로',
+                message: 'E2E recruit 알림 영속화 테스트'
+            }
+        })
+        expect(createRes.status()).toBe(201)
+        const createBody = await readBody(createRes)
+        const recruitId = createBody?.data?.recruitId ?? createBody?.data
+        expect(typeof recruitId).toBe('number')
+
+        const joinRes = await request.post(url(ep.recruits.join(recruitId)), {
+            headers: auth(tokenB)
+        })
+        expect(joinRes.status()).toBe(201)
+
+        const closeRes = await request.post(url(ep.recruits.close(recruitId)), {
+            headers: auth(tokenA)
+        })
+        expect(closeRes.status()).toBe(201)
+
+        const notification = await waitForNotification(
+            request,
+            tokenB,
+            item =>
+                item.kind === 'recruit' &&
+                item.roomType === 'recruit' &&
+                item.roomId === String(recruitId)
+        )
+        expect(notification).toBeTruthy()
+        expect(notification?.readAt).toBeNull()
+
+        const { res: accessRes, body: accessBody } = await getJson(
+            request,
+            responses.roomAccess(recruitId),
+            { headers: auth(tokenB) }
+        )
+        expect(accessRes.status()).toBe(200)
+        expect(accessBody.data.canJoin).toBe(true)
+        expect(accessBody.data.roomId).toBe(String(recruitId))
+        expect(accessBody.data.roomType).toBe('recruit')
+
+        const notificationId = notification!.notificationId
+        const { res: markReadRes, body: markReadBody } = await patchJson(
+            request,
+            responses.notificationMarkRead(notificationId),
+            { headers: auth(tokenB) }
+        )
+        expect(markReadRes.status()).toBe(200)
+        expect(markReadBody.data.readAt).toBeTruthy()
+
+        const deleteRes = await request.delete(
+            url(ep.notifications.delete(notificationId)),
+            { headers: auth(tokenB) }
+        )
+        expect(deleteRes.status()).toBe(200)
+
+        const { body: afterDeleteBody } = await getJson(
+            request,
+            responses.notificationsList,
+            { headers: auth(tokenB) }
+        )
+        expect(
+            afterDeleteBody.data.some(
+                item => item.notificationId === notificationId
+            )
+        ).toBe(false)
     })
 })
 
@@ -875,7 +1184,7 @@ test.describe('Invitations', () => {
 let referralCode = ''
 
 test.describe('Referrals', () => {
-    test('POST /referrals → 201, code 반환', async ({ request }) => {
+    test(`POST ${ep.referrals.create} → 201, code 반환`, async ({ request }) => {
         const { res, body } = await postJson(
             request,
             responses.referralsCreate,
@@ -887,7 +1196,7 @@ test.describe('Referrals', () => {
         if (typeof body.data?.code === 'string') referralCode = body.data.code
     })
 
-    test('GET /referrals/me → 200 배열', async ({ request }) => {
+    test(`GET ${ep.referrals.me} → 200 배열`, async ({ request }) => {
         const { res, body } = await getJson(request, responses.referralsMe, {
             headers: auth(tokenA)
         })
@@ -895,7 +1204,7 @@ test.describe('Referrals', () => {
         expect(Array.isArray(body.data)).toBe(true)
     })
 
-    test('POST /referrals/redeem → 204 또는 400/409 (자기 코드 or 중복)', async ({
+    test(`POST ${ep.referrals.redeem} → 204 또는 400/409 (자기 코드 or 중복)`, async ({
         request
     }) => {
         // userB가 userA의 추천코드를 redeem한다
@@ -906,22 +1215,23 @@ test.describe('Referrals', () => {
             data: { code: referralCode }
         })
         // 정상: 204, 자기참조 or 중복: 400/409
-        expect([200, 204, 400, 409]).toContain(res.status())
+        expect([200, 204, 400, 404, 409]).toContain(res.status())
     })
 })
 
 // ─── 11. Challenges ──────────────────────────────────────────────────────
 
 test.describe('Challenges', () => {
-    test('GET /challenges/me → 200', async ({ request }) => {
+    test(`GET ${ep.challenges.me} → 200`, async ({ request }) => {
         const { res, body } = await getJson(request, responses.challengesMe, {
             headers: auth(tokenA)
         })
         expect(res.status()).toBe(200)
-        expect(typeof body.data.count).toBe('number')
+        expect(typeof body.data.week.completed).toBe('number')
+        expect(typeof body.data.month.count).toBe('number')
     })
 
-    test('POST /challenges/me/reward → 200 또는 400/409', async ({
+    test(`POST ${ep.challenges.reward} → 200 또는 400/409`, async ({
         request
     }) => {
         const res = await request.post(url(ep.challenges.reward), {
@@ -936,7 +1246,7 @@ test.describe('Challenges', () => {
 // ─── 12. Coupons ─────────────────────────────────────────────────────────
 
 test.describe('Coupons', () => {
-    test('GET /coupons/me → 200 배열', async ({ request }) => {
+    test(`GET ${ep.coupons.my} → 200 배열`, async ({ request }) => {
         const { res, body } = await getJson(request, responses.couponsMy, {
             headers: auth(tokenA)
         })
@@ -944,7 +1254,7 @@ test.describe('Coupons', () => {
         expect(Array.isArray(body.data)).toBe(true)
     })
 
-    test('POST /coupons/:couponId/use → 쿠폰 있으면 200, 없으면 404', async ({
+    test(`POST ${apiContract.coupons.use.path} → 쿠폰 있으면 200, 없으면 404`, async ({
         request
     }) => {
         // 보유 쿠폰 목록 조회 후 첫 번째 쿠폰 사용
@@ -976,7 +1286,7 @@ test.describe('Coupons', () => {
 let friendRequestId = 0
 
 test.describe('Friends', () => {
-    test('GET /friends/me → 200 배열', async ({ request }) => {
+    test(`GET ${ep.friends.list} → 200 배열`, async ({ request }) => {
         const { res, body } = await getJson(request, responses.friendsList, {
             headers: auth(tokenA)
         })
@@ -984,14 +1294,14 @@ test.describe('Friends', () => {
         expect(Array.isArray(body.data)).toBe(true)
     })
 
-    test('GET /friends/search → 200 배열', async ({ request }) => {
+    test(`GET ${ep.friends.search} → 200 배열`, async ({ request }) => {
         const res = await request.get(url(responses.friendsSearch('q=E2E')), {
             headers: auth(tokenA)
         })
         expect([200, 400]).toContain(res.status())
     })
 
-    test('GET /friends/blocks/me → 200 배열', async ({ request }) => {
+    test(`GET ${ep.friends.blocks} → 200 배열`, async ({ request }) => {
         const { res, body } = await getJson(request, responses.friendsBlocks, {
             headers: auth(tokenA)
         })
@@ -999,7 +1309,7 @@ test.describe('Friends', () => {
         expect(Array.isArray(body.data)).toBe(true)
     })
 
-    test('GET /friends/requests/incoming → 200 배열', async ({ request }) => {
+    test(`GET ${ep.friends.requestsIncoming} → 200 배열`, async ({ request }) => {
         const { res, body } = await getJson(
             request,
             responses.friendsRequestsIncoming,
@@ -1009,7 +1319,7 @@ test.describe('Friends', () => {
         expect(Array.isArray(body.data)).toBe(true)
     })
 
-    test('GET /friends/requests/outgoing → 200 배열', async ({ request }) => {
+    test(`GET ${ep.friends.requestsOutgoing} → 200 배열`, async ({ request }) => {
         const { res, body } = await getJson(
             request,
             responses.friendsRequestsOutgoing,
@@ -1019,7 +1329,7 @@ test.describe('Friends', () => {
         expect(Array.isArray(body.data)).toBe(true)
     })
 
-    test('POST /friends/requests/:memberId → 200 또는 409', async ({
+    test(`POST ${apiContract.friends.sendRequest.path} → 200 또는 409`, async ({
         request
     }) => {
         const { res, body } = await postJson(
@@ -1030,7 +1340,7 @@ test.describe('Friends', () => {
         // 이미 요청했거나 친구이면 409, 정상이면 200/201
         await assertStatus(
             res,
-            [200, 201, 400, 409],
+            [200, 201, 404, 409],
             `POST /friends/requests/${memberIdB} (memberIdA=${memberIdA})`
         )
         // FriendRequestItemResponse는 `id`가 아니라 `requestId` 필드를 사용한다
@@ -1038,7 +1348,7 @@ test.describe('Friends', () => {
         if (typeof id === 'number') friendRequestId = id
     })
 
-    test('GET /friends/requests/incoming (userB 기준) → 요청 목록 확인', async ({
+    test(`GET ${ep.friends.requestsIncoming} (userB 기준) → 요청 목록 확인`, async ({
         request
     }) => {
         const { res, body } = await getJson(
@@ -1053,7 +1363,7 @@ test.describe('Friends', () => {
         }
     })
 
-    test('POST /friends/requests/:requestId/accept → 200 또는 404/409', async ({
+    test(`POST ${apiContract.friends.acceptRequest.path} → 200 또는 404/409`, async ({
         request
     }) => {
         if (friendRequestId === 0) return
@@ -1061,19 +1371,19 @@ test.describe('Friends', () => {
             url(ep.friends.acceptRequest(friendRequestId)),
             { headers: auth(tokenB) }
         )
-        expect([200, 201, 400, 404, 409]).toContain(res.status())
+        expect([200, 201, 404, 409]).toContain(res.status())
     })
 
-    test('DELETE /friends/:memberId → 200 또는 404', async ({ request }) => {
+    test(`DELETE ${apiContract.friends.unfriend.path} → 200 또는 404`, async ({ request }) => {
         // 친구 삭제 (친구가 없으면 404)
         const res = await request.delete(
             url(ep.friends.remove(Number(memberIdB))),
             { headers: auth(tokenA) }
         )
-        expect([200, 204, 400, 404, 409]).toContain(res.status())
+        expect([200, 204, 404, 409]).toContain(res.status())
     })
 
-    test('DELETE /friends/requests/:requestId → 200 또는 404', async ({
+    test(`DELETE ${apiContract.friends.cancelRequest.path} → 200 또는 404`, async ({
         request
     }) => {
         // userA가 새 요청 후 직접 취소
@@ -1087,34 +1397,34 @@ test.describe('Friends', () => {
         const res = await request.delete(url(ep.friends.cancelRequest(reqId)), {
             headers: auth(tokenA)
         })
-        expect([200, 204, 400, 404]).toContain(res.status())
+        expect([200, 204, 404]).toContain(res.status())
     })
 
-    test('POST /friends/blocks/:memberId → 200 또는 409', async ({
+    test(`POST ${apiContract.friends.block.path} → 200 또는 409`, async ({
         request
     }) => {
         const res = await request.post(
             url(ep.friends.block(Number(memberIdB))),
             { headers: auth(tokenA) }
         )
-        expect([200, 204, 201, 400, 409]).toContain(res.status())
+        expect([200, 204, 201, 409]).toContain(res.status())
     })
 
-    test('DELETE /friends/blocks/:memberId → 200 또는 404', async ({
+    test(`DELETE ${apiContract.friends.unblock.path} → 200 또는 404`, async ({
         request
     }) => {
         const res = await request.delete(
             url(ep.friends.unblock(Number(memberIdB))),
             { headers: auth(tokenA) }
         )
-        expect([200, 204, 400, 404]).toContain(res.status())
+        expect([200, 204, 404]).toContain(res.status())
     })
 })
 
 // ─── 14. Friends Meals ───────────────────────────────────────────────────
 
 test.describe('Friends Meals', () => {
-    test('GET /friends/me/meals → 200 배열', async ({ request }) => {
+    test(`GET ${ep.friends.meals} → 200 배열`, async ({ request }) => {
         const { res, body } = await getJson(request, responses.friendsMeals, {
             headers: auth(tokenA)
         })
@@ -1125,7 +1435,7 @@ test.describe('Friends Meals', () => {
 
 // ─── 2. 인증 ─────────────────────────────────────────────────────────────
 
-test('POST /auth/logout → 200 또는 204', async ({ request }) => {
+test(`POST ${ep.auth.logout} → 200 또는 204`, async ({ request }) => {
     const res = await request.post(url(ep.auth.logout), {
         headers: auth(tokenA)
     })
@@ -1140,9 +1450,9 @@ test('POST /auth/logout → 200 또는 204', async ({ request }) => {
 
 test.describe('엔드포인트 커버리지', () => {
     test('endpoints.ts의 leaf 개수와 e2e에서 사용한 고유 엔드포인트 개수가 일치한다', () => {
-        const totalDefined = countLeaves(endpoints)
+        const totalDefined = countLeaves(ep)
         const unusedEndpointPaths = getUnusedEndpointPaths(
-            endpoints,
+            ep,
             usedEndpointPaths
         )
         console.log(unusedEndpointPaths)

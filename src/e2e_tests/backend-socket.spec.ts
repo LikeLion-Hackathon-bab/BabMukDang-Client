@@ -15,31 +15,33 @@
  * 명시적인 방 입장 권한 검증과 Socket.IO 이벤트 흐름을 검증한다.
  */
 
-import { expect, test } from '@playwright/test'
+import { expect, test, type APIRequestContext } from '@playwright/test'
 import { io, type Socket } from 'socket.io-client'
-import type { z } from 'zod'
 import type {
     ChatMessageRequest as ChatMessageRequestDto,
     ChatMessageResponse as ChatMessageResponseItem,
+    DatePicksUpdateResponse as DatePicksUpdateResponseDto,
+    ExcludeMenuUpdateResponse as ExcludeMenuUpdateResponseDto,
+    LocationCandidate,
+    LocationCandidateAddUpdateResponse as LocationCandidateAddUpdateResponseDto,
+    LocationCandidateVoteUpdateResponse as LocationCandidateVoteUpdateResponseDto,
+    Menu,
+    MenuPickUpdateResponse as MenuPickUpdateResponseDto,
+    PhaseDataBroadcast as StageChangedResponseDto,
     RoomClientToServerEvents as ClientToServerEvents,
     RoomServerToClientEvents as ServerToClientEvents,
-    ReadyStateRequest as ReadyStateRequestDto
+    ReadyStateRequest as ReadyStateRequestDto,
+    RestaurantPickUpdateResponse as RestaurantPickUpdateResponseDto,
+    TimePicksUpdateResponse as TimePicksUpdateResponseDto
 } from '@kimdaegyu/babmukdang-shared/domain'
 import {
     AddLocationCandidateRequestSchema,
-    DatePicksUpdateResponseSchema,
+    apiContract,
     ExcludeMenuRequestSchema,
-    ExcludeMenuUpdateResponseSchema,
-    LocationCandidateAddUpdateResponseSchema,
-    LocationCandidateVoteUpdateResponseSchema,
-    MenuPickUpdateResponseSchema,
     PickDateRequestSchema,
     PickMenuRequestSchema,
     PickRestaurantRequestSchema,
     PickTimesRequestSchema,
-    ReadyStateChangedSchema,
-    RestaurantPickUpdateResponseSchema,
-    TimePicksUpdateResponseSchema,
     VoteLocationRequestSchema,
     FoodCodeSchema,
     FoodLabelSchema,
@@ -48,22 +50,13 @@ import {
     toRestaurantId
 } from '@kimdaegyu/babmukdang-shared/domain'
 
-type DatePicksRequestDto = z.infer<typeof PickDateRequestSchema>
-type TimePicksRequestDto = z.infer<typeof PickTimesRequestSchema>
-type LocationCandidateAddRequestDto = z.infer<typeof AddLocationCandidateRequestSchema>
-type LocationCandidateVoteRequestDto = z.infer<typeof VoteLocationRequestSchema>
-type ExcludeMenuRequestDto = z.infer<typeof ExcludeMenuRequestSchema>
-type MenuPickRequestDto = z.infer<typeof PickMenuRequestSchema>
-type RestaurantPickRequestDto = z.infer<typeof PickRestaurantRequestSchema>
-type ReadyStateChangedDto = z.infer<typeof ReadyStateChangedSchema>
-type DatePicksUpdateResponseDto = z.infer<typeof DatePicksUpdateResponseSchema>
-type TimePicksUpdateResponseDto = z.infer<typeof TimePicksUpdateResponseSchema>
-type LocationCandidateAddUpdateResponseDto = z.infer<typeof LocationCandidateAddUpdateResponseSchema>
-type LocationCandidateVoteUpdateResponseDto = z.infer<typeof LocationCandidateVoteUpdateResponseSchema>
-type ExcludeMenuUpdateResponseDto = z.infer<typeof ExcludeMenuUpdateResponseSchema>
-type MenuPickUpdateResponseDto = z.infer<typeof MenuPickUpdateResponseSchema>
-type RestaurantPickUpdateResponseDto = z.infer<typeof RestaurantPickUpdateResponseSchema>
-import { endpoints } from '../apis/endpoints'
+type DatePicksRequestDto = Parameters<ClientToServerEvents['pick-date']>[0]
+type TimePicksRequestDto = Parameters<ClientToServerEvents['pick-times']>[0]
+type LocationCandidateAddRequestDto = LocationCandidate
+type LocationCandidateVoteRequestDto = Parameters<ClientToServerEvents['vote-location']>[0]
+type ExcludeMenuRequestDto = { menu: Menu }
+type MenuPickRequestDto = Parameters<ClientToServerEvents['pick-menu']>[0]
+type RestaurantPickRequestDto = Parameters<ClientToServerEvents['pick-restaurant']>[0]
 import {
     AppSocket,
     USER_A,
@@ -80,6 +73,53 @@ import {
 } from './helpers/auth'
 
 test.describe.configure({ mode: 'serial', retries: 0 })
+
+const resolvePath = (
+    path: string,
+    params: Record<string, string | number> = {}
+) =>
+    path.replace(/:([A-Za-z0-9_]+)/g, (_, key: string) =>
+        encodeURIComponent(String(params[key]))
+    )
+
+async function seedRecentMeal(
+    request: APIRequestContext,
+    token: string
+): Promise<void> {
+    const res = await request.post(url(apiContract.articles.create.path), {
+        headers: auth(token),
+        data: {
+            imageUrl: 'https://via.placeholder.com/300',
+            mealDate: new Date().toISOString().slice(0, 10),
+            restaurant: {
+                restaurantId: `socket-e2e-restaurant-${Date.now()}`,
+                placeName: '소켓 E2E 식당',
+                categoryName: '한식',
+                categoryGroupName: '음식점',
+                roadAddressName: '서울시 테스트로 1',
+                addressName: '서울시 테스트구',
+                phone: '',
+                placeUrl: 'https://place.map.kakao.com/socket-e2e',
+                lat: 37.5,
+                lng: 127.0
+            },
+            taggedMemberIds: [],
+            foodAnalysis: {
+                code: FoodCodeSchema.parse('KOREAN'),
+                label: FoodLabelSchema.parse('한식'),
+                confidence: 0.99,
+                tsUtc: new Date().toISOString()
+            }
+        }
+    })
+
+    if (res.status() !== 201) {
+        const body = await readBody(res)
+        throw new Error(
+            `[e2e] POST /articles 최근 메뉴 seed 실패: status=${res.status()}, body=${JSON.stringify(body)}`
+        )
+    }
+}
 
 // ─── 계정/룸 준비 ─────────────────────────────────────────────────────────
 
@@ -99,22 +139,19 @@ test.beforeAll(async ({ request }) => {
     tokenB = await login(request, USER_B.email)
     memberIdA = await fetchMemberId(request, tokenA, USER_A.email)
     memberIdB = await fetchMemberId(request, tokenB, USER_B.email)
+    await seedRecentMeal(request, tokenA)
 
     // userA → userB 초대 전송, userB가 수락 → 도메인 이벤트가 RabbitMQ를 거쳐
     // `RoomSeedFlowService.seedInvitation`을 호출하고 매칭방이 생성된다.
-    const sendRes = await request.post(url(endpoints.invitations.send), {
+    const sendRes = await request.post(url(apiContract.invitations.send.path), {
         headers: auth(tokenA),
         data: {
             inviteeId: toMemberId(Number(memberIdB)),
             message: 'E2E 소켓 테스트 초대장'
         }
     })
-    console.log(sendRes)
     const sendBody = await readBody(sendRes)
-    console.log(sendBody)
-    // turn-001 todo 기록(docs/todo/backend-api-e2e-response-dto-gaps.md)에 따르면
-    // `POST /invitations/send` 응답은 `id`가 아니라 `invitationId` 필드를 사용한다.
-    const id = sendBody?.data ?? sendBody?.invitationId
+    const id = sendBody?.data?.invitationId ?? sendBody?.invitationId
     if (typeof id !== 'number') {
         throw new Error(
             `[e2e] POST /invitations/send 실패: status=${sendRes.status()}, body=${JSON.stringify(sendBody)}`
@@ -122,20 +159,23 @@ test.beforeAll(async ({ request }) => {
     }
     invitationId = id
 
-    const acceptRes = await request.patch(
-        url(endpoints.invitations.accept(invitationId)),
+    const acceptRes = await request.post(
+        url(
+            resolvePath(apiContract.invitations.accept.path, {
+                invitationId
+            })
+        ),
         {
             headers: auth(tokenB)
         }
     )
     const acceptBody = await readBody(acceptRes)
-    console.log(acceptRes, acceptBody)
     expect([200, 201]).toContain(acceptRes.status())
 
     const acceptedRoomId = acceptBody?.data?.room?.roomId
     if (typeof acceptedRoomId !== 'string' || acceptedRoomId.length === 0) {
         throw new Error(
-            `[e2e] PATCH /invitations/:id/accept 응답에 room.roomId가 없습니다: body=${JSON.stringify(acceptBody)}`
+            `[e2e] POST /invitations/:invitationId/accept 응답에 room.roomId가 없습니다: body=${JSON.stringify(acceptBody)}`
         )
     }
 
@@ -144,7 +184,6 @@ test.beforeAll(async ({ request }) => {
         connectAndWaitForRoom(tokenA, acceptedRoomId),
         connectAndWaitForRoom(tokenB, acceptedRoomId)
     ])
-    console.log('접속 완료', a, b)
     socketA = a.socket
     socketB = b.socket
     roomId = a.roomAssigned.roomId
@@ -214,7 +253,9 @@ async function emitAndExpectBroadcast<
     return Promise.all(waiters)
 }
 
-async function readyBothAndExpectStage(expectedPhase: string): Promise<void> {
+async function readyBothAndExpectStage(
+    expectedPhase: string
+): Promise<StageChangedResponseDto> {
     const payload: ReadyStateRequestDto = { isReady: true }
 
     await emitAndExpectBroadcast<'ready-state', 'ready-state-changed'>(
@@ -249,9 +290,13 @@ async function readyBothAndExpectStage(expectedPhase: string): Promise<void> {
 
     expect(stageA).toEqual(stageB)
     expect(stageA.phase).toBe(expectedPhase)
+
+    return stageA
 }
 
 let locationId = ''
+let selectedMenuCode: MenuPickRequestDto['menuCode'] | undefined
+let selectedRestaurantId: RestaurantPickRequestDto['restaurantId'] | undefined
 
 test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
     test('1) ready-state → stage-changed(date)', async () => {
@@ -364,7 +409,10 @@ test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
 
     test('11) exclude-menu 단계: exclude-menu → exclude-menu-updated', async () => {
         const payload: ExcludeMenuRequestDto = {
-            menu: { code: FoodCodeSchema.parse('KOREAN'), label: FoodLabelSchema.parse('한식') }
+            menu: {
+                code: FoodCodeSchema.parse('JAPANESE'),
+                label: FoodLabelSchema.parse('일식')
+            }
         }
         const [resA, resB] = await emitAndExpectBroadcast<
             'exclude-menu',
@@ -386,11 +434,18 @@ test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
     })
 
     test('12) exclude-menu 완료 → stage-changed(menu)', async () => {
-        await readyBothAndExpectStage('menu')
+        const stage = await readyBothAndExpectStage('menu')
+        const initialMenus =
+            (stage.data as { initialMenus?: Array<{ code: unknown }> })
+                .initialMenus ?? []
+
+        expect(initialMenus.length).toBeGreaterThan(0)
+        selectedMenuCode = FoodCodeSchema.parse(initialMenus[0].code)
     })
 
     test('13) menu 단계: pick-menu → menu-pick-updated', async () => {
-        const payload: MenuPickRequestDto = { menuCode: FoodCodeSchema.parse('KOREAN') }
+        expect(selectedMenuCode).toBeDefined()
+        const payload: MenuPickRequestDto = { menuCode: selectedMenuCode! }
         const [resA, resB] = await emitAndExpectBroadcast<
             'pick-menu',
             'menu-pick-updated'
@@ -409,12 +464,24 @@ test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
     })
 
     test('14) menu 완료 → stage-changed(restaurant)', async () => {
-        await readyBothAndExpectStage('restaurant')
+        const stage = await readyBothAndExpectStage('restaurant')
+        const initialRestaurants =
+            (
+                stage.data as {
+                    initialRestaurants?: Array<{ restaurantId: unknown }>
+                }
+            ).initialRestaurants ?? []
+
+        expect(initialRestaurants.length).toBeGreaterThan(0)
+        selectedRestaurantId = toRestaurantId(
+            String(initialRestaurants[0].restaurantId)
+        )
     })
 
     test('15) restaurant 단계: pick-restaurant → restaurant-pick-updated', async () => {
+        expect(selectedRestaurantId).toBeDefined()
         const payload: RestaurantPickRequestDto = {
-            restaurantId: toRestaurantId('e2e-restaurant-1')
+            restaurantId: selectedRestaurantId!
         }
         const [resA, resB] = await emitAndExpectBroadcast<
             'pick-restaurant',
