@@ -1,4 +1,4 @@
-import { PostResponse } from '@/apis'
+import type { RecruitCardView } from '@/viewModels'
 import {
     ProfileDefaultIcon,
     EmptyViewIcon,
@@ -16,7 +16,7 @@ export function RecruitCard({
     isActive = true,
     showKebab = false
 }: {
-    recruit: PostResponse
+    recruit: RecruitCardView
     cardRef?: React.RefObject<HTMLDivElement>
     index?: number
     currentIndex?: number

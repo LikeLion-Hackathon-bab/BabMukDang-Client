@@ -6,7 +6,7 @@ import {
 import { AddRecruitCard } from './AddRecruitCard'
 import { RecruitCard } from './RecruitCard'
 import { AddCardButton } from './AddCardButton'
-import { Post, PostResponse } from '@/apis'
+import type { RecruitCardView, RecruitFormView } from '@/viewModels'
 import { useState, useRef, useCallback } from 'react'
 
 const CARD_WIDTH = 280
@@ -17,10 +17,10 @@ export function RecruitBottomSheet({
     myRecruit
 }: {
     isAdd: boolean
-    myRecruit: PostResponse | null
+    myRecruit: RecruitCardView | null
 }) {
     // 단일 AddRecruitCard용 상태 (isAdd=true일 때)
-    const [recruitAddData, setRecruitAddData] = useState<Post>({
+    const [recruitAddData, setRecruitAddData] = useState<RecruitFormView>({
         location: '',
         message: '',
         targetCount: 0,
@@ -28,7 +28,7 @@ export function RecruitBottomSheet({
     })
 
     // 추가 카드 상태 (isAdd=false일 때, 슬라이드로 활성화됨)
-    const [additionalCardData, setAdditionalCardData] = useState<Post>({
+    const [additionalCardData, setAdditionalCardData] = useState<RecruitFormView>({
         location: '',
         message: '',
         targetCount: 0,
@@ -158,7 +158,7 @@ export function RecruitBottomSheet({
                             <div className="flex w-280 shrink-0 flex-col gap-12">
                                 <RecruitCard
                                     recruit={
-                                        myRecruit || ({} as PostResponse)
+                                        myRecruit || ({} as RecruitCardView)
                                     }
                                     showKebab={true}
                                 />

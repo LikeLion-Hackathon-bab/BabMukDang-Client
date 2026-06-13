@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { AddRecruitCard } from './AddRecruitCard'
 import { useState } from 'react'
-import { Post } from '@/apis'
+import type { RecruitFormView } from '@/viewModels'
 
 const meta: Meta<typeof AddRecruitCard> = {
     title: 'Features/Matching/Recruit/AddRecruitCard',
@@ -16,7 +16,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 const AddRecruitCardWithState = () => {
-    const [data, setData] = useState<Post>({
+    const [data, setData] = useState<RecruitFormView>({
         location: '',
         message: '',
         targetCount: 0,

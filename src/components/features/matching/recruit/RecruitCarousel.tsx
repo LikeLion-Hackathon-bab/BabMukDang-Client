@@ -1,15 +1,18 @@
 import { useCarousel } from '@/hooks'
-import { PostResponse, useJoinRecruit } from '@/apis'
+import type { RecruitCardView } from '@/viewModels'
 import { RecruitCard, EmptyRecruitCard } from './RecruitCard'
 import { JoinButton } from './RecruitJoinButton'
-import { useAuthStore } from '@/store'
 import { useState } from 'react'
 import { JoinCompleteModal } from '@/components'
 
 export function RecruitCarousel({
-    recruits
+    recruits,
+    currentUserId,
+    onJoinRecruit
 }: {
-    recruits: PostResponse[]
+    recruits: RecruitCardView[]
+    currentUserId?: string | null
+    onJoinRecruit: (recruitId: number) => void
 }) {
     // 빈 상태일 때는 캐러셀 없이 EmptyRecruitCard만 렌더링
     if (recruits.length === 0) {
@@ -21,14 +24,18 @@ export function RecruitCarousel({
     }
 
     // 공고가 있을 때만 캐러셀 렌더링
-    return <RecruitCarouselContent recruits={recruits} />
+    return <RecruitCarouselContent recruits={recruits} currentUserId={currentUserId} onJoinRecruit={onJoinRecruit} />
 }
 
 // 실제 캐러셀 로직을 포함한 내부 컴포넌트
 function RecruitCarouselContent({
-    recruits
+    recruits,
+    currentUserId,
+    onJoinRecruit
 }: {
-    recruits: PostResponse[]
+    recruits: RecruitCardView[]
+    currentUserId?: string | null
+    onJoinRecruit: (recruitId: number) => void
 }) {
     const {
         containerRef,
@@ -44,17 +51,8 @@ function RecruitCarouselContent({
         initialPosition: window.innerWidth / 2 - 280 / 2,
         clickThreshold: 5 // 5px 이내 움직임만 클릭으로 인정
     })
-    const { userId } = useAuthStore()
     const [selectedRecruit, setSelectedRecruit] =
-        useState<PostResponse | null>(null)
-    const { mutate: joinRecruit } = useJoinRecruit({
-        onSuccess: () => {
-            console.log('announcemnet 참여하기가 완료되었습니다')
-        },
-        onError: () => {
-            console.log('Recruit join error')
-        }
-    })
+        useState<RecruitCardView | null>(null)
 
     return (
         <div
@@ -73,7 +71,7 @@ function RecruitCarouselContent({
                     .filter(
                         //todo 임시 코드
                         recruit =>
-                            (recruit as any).authorId !== userId
+                            recruit.author.authorId !== Number(currentUserId)
                     )
                     .map((recruit, index) => {
                         const isActive = index === currentIndex
@@ -116,6 +114,7 @@ function RecruitCarouselContent({
                                         setSelectedRecruit={
                                             setSelectedRecruit
                                         }
+                                        onJoinRecruit={onJoinRecruit}
                                     />
                                 )}
                                 <JoinCompleteModal
@@ -124,9 +123,9 @@ function RecruitCarouselContent({
                                         ''
                                     }
                                     onAccept={() => {
-                                        joinRecruit(
-                                            selectedRecruit?.postId || 0
-                                        )
+                                        if (selectedRecruit) {
+                                            onJoinRecruit(selectedRecruit.postId)
+                                        }
                                     }}
                                     id="join-complete-modal"
                                     title="참여하기가 완료되었습니다."

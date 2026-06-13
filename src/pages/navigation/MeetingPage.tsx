@@ -1,27 +1,33 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { FilterList, MeetingCard, MeetingHeader } from '@/components'
 import { MEETING_FILTER_LIST } from '@/constants/filters'
-import { useGetMeetings, MeetingResponse } from '@/apis'
-import { MockMeetingList } from '@/constants/mockData'
+import { useCancelPlan, useGetPlanDetail, useGetPlans } from '@/apis'
+import { mapMeeting } from '@/apis/mappers/meeting.mapper'
 import { useHeaderStore } from '@/store'
 
 export function MeetingPage() {
     const { resetHeader, hideHeader } = useHeaderStore()
-    const { data: meetings, isLoading } = useGetMeetings()
+    const { data: plans, isLoading } = useGetPlans()
+    const [selectedPlanId, setSelectedPlanId] = useState<number>(0)
+    const { data: selectedPlanDetail } = useGetPlanDetail(selectedPlanId, {
+        enabled: selectedPlanId > 0
+    })
+    const { mutate: cancelPlan } = useCancelPlan({
+        onSuccess: () => {
+            setSelectedPlanId(0)
+        }
+    })
     const [activeFilter, setActiveFilter] = useState<{
         key: string
         label: string
     }>(MEETING_FILTER_LIST[0])
-    const [meetingList, setMeetingList] =
-        useState<MeetingResponse[]>(MockMeetingList)
+    const meetingList = useMemo(() => (plans ?? []).map(mapMeeting), [plans])
+    const selectedMeeting = selectedPlanDetail
+        ? mapMeeting(selectedPlanDetail)
+        : meetingList[0]
+
     useEffect(() => {
-        if (meetings?.length) {
-            setMeetingList(meetings)
-        }
-    }, [meetings])
-    useEffect(() => {
-        hideHeader()
         hideHeader()
         return () => {
             resetHeader()
@@ -30,7 +36,7 @@ export function MeetingPage() {
     return (
         <div className="flex w-full flex-1 flex-col items-center gap-16 pt-303">
             {/* MeetingHeader */}
-            <MeetingHeader meeting={meetingList[0]} />
+            {selectedMeeting && <MeetingHeader meeting={selectedMeeting} />}
 
             <FilterList
                 filterList={MEETING_FILTER_LIST}
@@ -49,13 +55,24 @@ export function MeetingPage() {
                     )
                     .map((meeting, idx) => (
                         <MeetingCard
-                            key={idx}
+                            key={meeting.id}
                             meeting={meeting}
                             onClick={() => {
-                                console.log('clicked')
+                                setSelectedPlanId(meeting.id)
                             }}
+                            onCancel={() => cancelPlan({ planId: meeting.id })}
                         />
                     ))}
+                {isLoading && (
+                    <span className="text-caption-regular text-gray-5">
+                        약속을 불러오는 중입니다.
+                    </span>
+                )}
+                {!isLoading && meetingList.length === 0 && (
+                    <span className="text-caption-regular text-gray-5">
+                        표시할 약속이 없습니다.
+                    </span>
+                )}
             </div>
         </div>
     )

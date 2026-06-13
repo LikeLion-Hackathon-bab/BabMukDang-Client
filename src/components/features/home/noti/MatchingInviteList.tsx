@@ -3,7 +3,7 @@ import {
     MatchingInviteNotiCard,
     EmptyNotiView
 } from '@/components'
-import type { MatchingInviteNoti } from '@/pages/home/NotiStoragePage'
+import type { MatchingInviteNoti } from '@/viewModels'
 export function MatchingInviteList({
     matchingNotis,
     handleDeleteMatchingNoti,

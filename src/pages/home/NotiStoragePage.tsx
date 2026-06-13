@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { MockLocalNewsNotis } from '@/constants/mockData'
-
 import {
     TabHeader,
     FilterList,
@@ -11,10 +9,13 @@ import {
 } from '@/components'
 import { LOCAL_NEWS_FILTER_LIST } from '@/constants/filters'
 import { useHeaderStore, useNotificationStore } from '@/store'
-import { notificationApi, useGetNotifications } from '@/apis/notification.api'
-import type { MatchingNotification } from '@kimdaegyu/babmukdang-shared/domain'
-
-export type MatchingInviteNoti = MatchingNotification
+import {
+    useAccessRoom,
+    useDeleteNotification,
+    useGetNotifications,
+    useMarkRead
+} from '@/apis/notification.api'
+import type { MatchingInviteNoti } from '@/viewModels'
 interface LocalNewsNoti {
     id: number
     type: 'school' | 'restaurant' | 'area'
@@ -31,12 +32,15 @@ export function NotiStoragePage() {
         state => state.removeNotification
     )
     const markRead = useNotificationStore(state => state.markRead)
-
-    const {
-        data: fetchedNotifications,
-        isLoading,
-        error
-    } = useGetNotifications()
+    const { mutate: readNotification } = useMarkRead({
+        onSuccess: () => {},
+        onError: () => {}
+    })
+    const { mutate: deleteNotification } = useDeleteNotification({
+        onSuccess: () => {},
+        onError: () => {}
+    })
+    const { data: fetchedNotifications } = useGetNotifications()
 
     useEffect(() => {
         if (fetchedNotifications) {
@@ -61,9 +65,7 @@ export function NotiStoragePage() {
         }
     }, [])
 
-    const [localNewsNotis, setLocalNewsNotis] = useState<LocalNewsNoti[]>(
-        MockLocalNewsNotis as LocalNewsNoti[]
-    )
+    const [localNewsNotis, setLocalNewsNotis] = useState<LocalNewsNoti[]>([])
 
     const [activeFilter, setActiveFilter] = useState<{
         key: string
@@ -86,7 +88,7 @@ export function NotiStoragePage() {
     )
 
     const handleDeleteMatchingNoti = async (id: string) => {
-        await notificationApi.delete(id)
+        await deleteNotification(id)
         removeNotification(id)
     }
 
@@ -95,10 +97,20 @@ export function NotiStoragePage() {
     }
 
     const handleMatchingInviteNotiClick = async (noti: MatchingInviteNoti) => {
-        const notification = await notificationApi.markRead(noti.notificationId)
-        markRead(notification)
-        const access = await notificationApi.accessRoom(noti.roomId)
-        navigate(`/${access.roomType}/${access.stage}/${access.roomId}`)
+        const notification = await readNotification(noti.notificationId)
+        markRead(noti)
+
+        const {
+            data: accessRoomData,
+            isLoading,
+            error
+        } = useAccessRoom(noti.roomId)
+
+        if (accessRoomData && !isLoading && !error) {
+            navigate(
+                `/${accessRoomData.roomType}/${accessRoomData.stage}/${accessRoomData.roomId}`
+            )
+        }
     }
 
     return (

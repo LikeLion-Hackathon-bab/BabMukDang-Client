@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { MatchingInviteList } from './MatchingInviteList'
+import type { MatchingInviteNoti } from '@/viewModels'
 
 const meta: Meta<typeof MatchingInviteList> = {
     title: 'Features/Home/Noti/MatchingInviteList',
@@ -23,36 +24,39 @@ const meta: Meta<typeof MatchingInviteList> = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const mockMatchingNotis = [
+const roomId = (value: string): MatchingInviteNoti['roomId'] =>
+    value as MatchingInviteNoti['roomId']
+
+const mockMatchingNotis: MatchingInviteNoti[] = [
     {
-        id: 'noti-1',
-        type: 'invitation' as const,
+        notificationId: 'noti-1',
+        kind: 'invitation',
+        roomType: 'invitation',
         title: '밥약 초대',
-        time: '방금 전',
+        createdAt: '방금 전',
         message: '홍길동님이 밥약에 초대했어요!',
-        period: '2024.12.15 12:00',
-        imageUrl: 'https://picsum.photos/60/60',
-        roomId: '1'
+        readAt: null,
+        roomId: roomId('1')
     },
     {
-        id: 'noti-2',
-        type: 'recruit' as const,
+        notificationId: 'noti-2',
+        kind: 'recruit',
+        roomType: 'recruit',
         title: '공고 알림',
-        time: '1시간 전',
+        createdAt: '1시간 전',
         message: '새로운 밥약 공고가 올라왔어요!',
-        period: '2024.12.15 18:00',
-        imageUrl: 'https://picsum.photos/60/60',
-        roomId: '2'
+        readAt: null,
+        roomId: roomId('2')
     },
     {
-        id: 'noti-3',
-        type: 'invitation' as const,
+        notificationId: 'noti-3',
+        kind: 'invitation',
+        roomType: 'invitation',
         title: '밥약 초대',
-        time: '2시간 전',
+        createdAt: '2시간 전',
         message: '김철수님이 밥약에 초대했어요!',
-        period: '2024.12.16 13:00',
-        imageUrl: 'https://picsum.photos/60/60',
-        roomId: '3'
+        readAt: null,
+        roomId: roomId('3')
     }
 ]
 
@@ -70,13 +74,12 @@ export const Empty: Story = {
 
 export const InvitationOnly: Story = {
     args: {
-        matchingNotis: mockMatchingNotis.filter(n => n.type === 'invitation')
+        matchingNotis: mockMatchingNotis.filter(n => n.kind === 'invitation')
     }
 }
 
 export const RecruitOnly: Story = {
     args: {
-        matchingNotis: mockMatchingNotis.filter(n => n.type === 'recruit')
+        matchingNotis: mockMatchingNotis.filter(n => n.kind === 'recruit')
     }
 }
-

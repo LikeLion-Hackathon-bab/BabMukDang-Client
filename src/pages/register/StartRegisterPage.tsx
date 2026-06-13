@@ -1,32 +1,11 @@
 import { CardBobGraphic } from '@/assets/graphics'
 import { KakaoIcon, LogoTextIcon } from '@/assets/icons'
 import SplashImg from '@/assets/images/SplashImg.png'
-import { login, useEmailLogin, useEmailSignup } from '@/apis'
-import { useAuthStore } from '@/store'
 import { useNavigate } from 'react-router-dom'
-import { mockTokenResponse } from '@/mocks/fixtures'
 import { useState } from 'react'
-
-/**
- * 개발 환경에서 Mock 로그인 수행
- * fixture 데이터를 사용하여 즉시 로그인 처리
- */
-function useMockLogin() {
-    const { setTokens } = useAuthStore()
-
-    const mockLogin = () => {
-        console.log('[Mock] 개발 환경 로그인 - fixture 데이터 사용')
-        setTokens({
-            accessToken: mockTokenResponse.accessToken
-        })
-    }
-
-    return mockLogin
-}
+import { useKakaoLogin, useEmailLogin, useEmailSignup } from '@/apis/auth.api'
 
 export function StartRegisterPage() {
-    const isDev = false
-    const mockLogin = useMockLogin()
     const navigate = useNavigate()
 
     const [email, setEmail] = useState('')
@@ -56,11 +35,7 @@ export function StartRegisterPage() {
         })
 
     const handleLogin = () => {
-        if (isDev) {
-            mockLogin()
-        } else {
-            login()
-        }
+        useKakaoLogin()
     }
 
     const handleEmailLogin = () => {
@@ -93,14 +68,14 @@ export function StartRegisterPage() {
                     <LogoTextIcon fillcolor="#fff" />
                 </div>
                 <div className="flex w-full flex-col items-center gap-20">
-                    <div className="flex w-full flex-col gap-10 rounded-24 bg-white/90 p-16 backdrop-blur-sm">
+                    <div className="rounded-24 flex w-full flex-col gap-10 bg-white/90 p-16 backdrop-blur-sm">
                         <input
                             type="email"
                             value={email}
                             onChange={event => setEmail(event.target.value)}
                             placeholder="이메일"
                             autoComplete="email"
-                            className="text-body2-medium text-gray-8 placeholder:text-gray-4 rounded-12 border border-gray-2 bg-white px-14 py-12 outline-none focus:border-primary-500"
+                            className="text-body2-medium text-gray-8 placeholder:text-gray-4 rounded-12 border-gray-2 focus:border-primary-500 border bg-white px-14 py-12 outline-none"
                         />
                         <input
                             type="password"
@@ -108,7 +83,7 @@ export function StartRegisterPage() {
                             onChange={event => setPassword(event.target.value)}
                             placeholder="비밀번호"
                             autoComplete="current-password"
-                            className="text-body2-medium text-gray-8 placeholder:text-gray-4 rounded-12 border border-gray-2 bg-white px-14 py-12 outline-none focus:border-primary-500"
+                            className="text-body2-medium text-gray-8 placeholder:text-gray-4 rounded-12 border-gray-2 focus:border-primary-500 border bg-white px-14 py-12 outline-none"
                         />
                         {authError && (
                             <p className="text-caption-medium text-red-500">
@@ -134,9 +109,7 @@ export function StartRegisterPage() {
                     </div>
                     <KakaoLoginButton handleLogin={handleLogin} />
                     <span className="text-caption-medium text-primary-100">
-                        {isDev
-                            ? '🧪 개발 모드 - Mock 로그인'
-                            : '로그인 후 식사 취향 테스트를 완료해주세요'}
+                        로그인 후 식사 취향 테스트를 완료해주세요
                     </span>
                 </div>
             </div>

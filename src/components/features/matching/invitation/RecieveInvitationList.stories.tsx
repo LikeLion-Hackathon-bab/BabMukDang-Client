@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { RecieveInvitationList } from './RecieveInvitationList'
 import { domainId } from '@/domain/factories'
-import type { InvitationResponse } from '@/apis'
+import type { InvitationResponse } from '@kimdaegyu/babmukdang-shared/domain'
 
 const meta: Meta<typeof RecieveInvitationList> = {
     title: 'Features/Matching/Invitation/RecieveInvitationList',

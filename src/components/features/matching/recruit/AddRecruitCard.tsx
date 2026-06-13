@@ -1,4 +1,4 @@
-import { Post } from '@/apis'
+import type { RecruitFormView } from '@/viewModels'
 import { DownIcon, UpIcon } from '@/assets/icons'
 import { useRef, useState } from 'react'
 
@@ -6,8 +6,8 @@ export function AddRecruitCard({
     recruitAddData,
     setRecruitAddData
 }: {
-    recruitAddData: Post
-    setRecruitAddData: (data: Post) => void
+    recruitAddData: RecruitFormView
+    setRecruitAddData: (data: RecruitFormView) => void
 }) {
     const [message, setMessage] = useState(recruitAddData.message)
     const [period, setPeriod] = useState<'오전' | '오후'>('오전')

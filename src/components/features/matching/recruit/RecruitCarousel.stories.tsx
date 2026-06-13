@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { RecruitCarousel } from './RecruitCarousel'
-import { PostResponse } from '@/apis'
+import type { RecruitCardView } from '@/viewModels'
 import { MockRecruits } from '@/constants/mockData'
 
 const meta: Meta<typeof RecruitCarousel> = {

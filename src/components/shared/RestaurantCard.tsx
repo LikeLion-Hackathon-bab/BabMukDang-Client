@@ -1,26 +1,13 @@
 import { CallIcon, LocationGrayIcon, ShareIcon } from '@/assets/icons'
-import { useAuthStore } from '@/store'
 import { FriendProfileList } from '../features/onboarding'
 import { Link } from 'react-router-dom'
 import { COLORS } from '@/constants/colors'
-// import { Restaurant } from '@/types/restaurant'
-
-interface Restaurant {
-    id: string
-    place_name: string
-    category_name: string
-    category_group_name: string
-    distance: string
-    road_address_name: string
-    address_name: string
-    phone: string
-    selectUsers: string[]
-    place_url?: string
-}
+import type { RestaurantCardView } from '@/viewModels'
 interface RestaurantCardProps {
-    restaurant: Restaurant
+    restaurant: RestaurantCardView
     gps?: any
-    onClick: (restaurant: Restaurant) => void
+    selectedUserId?: string | null
+    onClick: (restaurant: RestaurantCardView) => void
     className?: string
 }
 
@@ -28,12 +15,12 @@ export function RestaurantCard({
     restaurant,
     onClick,
     className = '',
-    gps
+    gps,
+    selectedUserId
 }: RestaurantCardProps) {
-    const { userId } = useAuthStore()
     return (
         <div
-            className={`shadow-drop-1 flex w-full justify-between rounded-lg p-12 ${className} ${restaurant?.selectUsers?.includes(userId!) ? 'border-primary-main bg-primary-100 border' : 'bg-white'}`}
+            className={`shadow-drop-1 flex w-full justify-between rounded-lg p-12 ${className} ${selectedUserId && restaurant?.selectUsers?.includes(selectedUserId) ? 'border-primary-main bg-primary-100 border' : 'bg-white'}`}
             onClick={() => onClick(restaurant)}>
             <div className="flex flex-col gap-11">
                 {/* 레스토랑 이름과 카테고리 */}

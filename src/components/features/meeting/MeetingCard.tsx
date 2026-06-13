@@ -6,10 +6,12 @@ import type { MeetingCardView } from '@/viewModels'
 
 export function MeetingCard({
     meeting,
-    onClick
+    onClick,
+    onCancel
 }: {
     meeting: MeetingCardView
     onClick: () => void
+    onCancel?: () => void
 }) {
     const [isOpen, setIsOpen] = useState(false)
     const handleClick = () => {
@@ -75,7 +77,13 @@ export function MeetingCard({
 
                                     {/* 취소 버튼 */}
                                     {!meeting.isCompleted && (
-                                        <button className="bg-gray-1 rounded-5 flex items-center justify-center py-5">
+                                        <button
+                                            type="button"
+                                            className="bg-gray-1 rounded-5 flex items-center justify-center py-5"
+                                            onClick={event => {
+                                                event.stopPropagation()
+                                                onCancel?.()
+                                            }}>
                                             <span className="text-caption-medium text-gray-5">
                                                 약속 취소하기
                                             </span>

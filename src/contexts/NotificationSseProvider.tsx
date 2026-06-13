@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import type { MatchingNotification } from '@kimdaegyu/babmukdang-shared/domain'
 import { API_BASE_URL } from '@/apis/baseUrl'
-import { notificationApi, useGetNotifications } from '@/apis/notification.api'
+import { useGetNotifications } from '@/apis/notification.api'
 import { useAuthStore, useNotificationStore } from '@/store'
 
 const parseNotification = (raw: string): MatchingNotification | null => {

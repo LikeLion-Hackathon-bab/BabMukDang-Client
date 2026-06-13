@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 
 import { ProfileDefaultIcon } from '@/assets/icons'
-import { InvitationResponse } from '@/apis'
+import type { InvitationResponse } from '@kimdaegyu/babmukdang-shared/domain'
 
 export function RecieveInvitationList({
     invitations

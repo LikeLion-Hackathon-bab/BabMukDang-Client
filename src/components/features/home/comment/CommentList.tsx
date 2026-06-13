@@ -4,13 +4,14 @@ import { Comment } from '@/lib/buildCommentTree'
 export function CommentList({
     comments,
     totalCommentCount,
-    onClickReply
+    onClickReply,
+    onClickDelete
 }: {
     comments: Comment[]
     totalCommentCount: number
     onClickReply: (commentId: number, authorUsername: string) => void
+    onClickDelete?: (commentId: number) => void
 }) {
-    console.log(comments)
     return (
         <div className="flex flex-col gap-20">
             <div className="flex flex-row items-center gap-4">
@@ -35,6 +36,9 @@ export function CommentList({
                                     comment.authorUsername
                                 )
                             }
+                            onClickDelete={() =>
+                                onClickDelete?.(comment.commentId)
+                            }
                         />
                         {comment?.replies &&
                             comment.replies.length > 0 &&
@@ -51,6 +55,9 @@ export function CommentList({
                                             reply.commentId,
                                             reply.authorUsername
                                         )
+                                    }
+                                    onClickDelete={() =>
+                                        onClickDelete?.(reply.commentId)
                                     }
                                 />
                             ))}

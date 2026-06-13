@@ -41,7 +41,7 @@ export function LocationSelectionPage() {
     useEffect(() => {
         if (locationInitial) {
             setLocationOptions(
-                toOptions(locationInitial as LocationAddInitialState)
+                toOptions(locationInitial as unknown as LocationAddInitialState)
             )
         }
     }, [locationInitial])

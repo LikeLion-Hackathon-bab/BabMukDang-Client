@@ -1,60 +1,61 @@
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-
-import { BOTTOM_NAVIGATION_HEIGHT } from '@/constants/bottomNav'
-import { MockMyProfileData } from '@/constants/mockData'
+import { useSearchParams } from 'react-router-dom'
 
 import {
     ProfileModal,
     ProfileSection,
     FriendProfileSection
 } from '@/components'
-
-type MyProfileData = {
-    profileImgUrl: string
-    name: string
-    description: string
-    preferredMenus: string[]
-    cantEat: string[]
-    friends: number
-    completedMeetings: number
-    uncompletedMeetings: number
-    challengeCount: number
-}
+import { useGetMemberProfileDetail } from '@/apis'
 
 export function FriendProfilePage() {
-    const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
+    const memberId = Number(searchParams.get('memberId'))
+    const canLoadMember = Number.isFinite(memberId) && memberId > 0
+    const { data: profile } = useGetMemberProfileDetail(memberId, {
+        enabled: canLoadMember
+    })
+
     return (
         <main className="relative h-full min-h-full">
-            {/* 프로필 섹션 */}
-            <ProfileSection
-                profileImgUrl={MockMyProfileData.profileImageUrl}
-                name={MockMyProfileData.userName}
-                description={MockMyProfileData.bio}
-                likes={MockMyProfileData.likes.map(like => like.label)}
-                dislikes={MockMyProfileData.dislikes.map(
-                    dislike => dislike.label
-                )}
-                allergies={MockMyProfileData.allergies.map(
-                    allergy => allergy.label
-                )}
-                isFriend={true}
-            />
-            <FriendProfileSection
-                friends={MockMyProfileData.meetingCount}
-                completedMeetings={MockMyProfileData.meetingCount}
-                uncompletedMeetings={MockMyProfileData.meetingCount}
-            />
-            <ProfileModal
-                id="profile-notify-modal"
-                likes={MockMyProfileData.likes.map(like => like.label)}
-                dislikes={MockMyProfileData.dislikes.map(
-                    dislike => dislike.label
-                )}
-                allergies={MockMyProfileData.allergies.map(
-                    allergy => allergy.label
-                )}
-            />
+            {profile ? (
+                <>
+                    {/* 프로필 섹션 */}
+                    <ProfileSection
+                        profileImgUrl={profile.profileImageUrl}
+                        name={profile.userName}
+                        description={profile.bio}
+                        likes={profile.likes.map(like => like.label)}
+                        dislikes={profile.dislikes.map(
+                            dislike => dislike.label
+                        )}
+                        allergies={profile.allergies.map(
+                            allergy => allergy.label
+                        )}
+                        isFriend={true}
+                    />
+                    <FriendProfileSection
+                        friends={profile.friendConunt}
+                        completedMeetings={profile.completedPlans}
+                        uncompletedMeetings={profile.uncompletedPlans}
+                    />
+                    <ProfileModal
+                        id="profile-notify-modal"
+                        likes={profile.likes.map(like => like.label)}
+                        dislikes={profile.dislikes.map(
+                            dislike => dislike.label
+                        )}
+                        allergies={profile.allergies.map(
+                            allergy => allergy.label
+                        )}
+                    />
+                </>
+            ) : (
+                <div className="flex h-full items-center justify-center">
+                    <span className="text-caption-regular text-gray-5">
+                        친구 프로필을 불러올 수 없습니다.
+                    </span>
+                </div>
+            )}
         </main>
     )
 }

@@ -1,21 +1,16 @@
 import { useEffect, useState } from 'react'
 
-import { Post, PostResponse } from '@/apis'
-
+import type { RecruitCardView } from '@/viewModels'
 import {
     TabHeader,
-    JoinCompleteModal,
     RecruitCarousel,
     RecieveInvitationList,
     RecruitBottomSheet,
-    InviteButton,
-    LongTimeNoSeeFriendList
+    InviteButton
 } from '@/components'
 import { BOTTOM_NAVIGATION_HEIGHT } from '@/constants/bottomNav'
-import { useGetRecruits, useGetInvitations, useFriendMeals } from '@/apis'
+import { useGetRecruits, useGetInvitations, useJoinRecruit } from '@/apis'
 import { useAuthStore, useHeaderStore } from '@/store'
-import { HungryFriendList } from '@/components/features/matching/recruit/HungryFriendList'
-import { Friend } from '@/components/features/friend/FriendListSection'
 
 export function MatchingPage() {
     const [activeTab, setActiveTab] = useState<'recruit' | 'invitation'>(
@@ -46,83 +41,23 @@ export function MatchingPage() {
                     setActiveTab(tab as 'recruit' | 'invitation')
                 }
             />
-            {activeTab === 'recruit' ? (
-                <RecruitTab />
-            ) : (
-                <InvitationTab />
-            )}
+            {activeTab === 'recruit' ? <RecruitTab /> : <InvitationTab />}
         </div>
     )
 }
-// TODO: fixture 제거
-const hungryFriendFixture: Friend[] = [
-    {
-        memberId: 1,
-        userName: '김철수',
-        profileImageUrl: 'https://via.placeholder.com/150',
-        hungry: true,
-        label: '밥먹고 싶어요'
-    },
-    {
-        memberId: 2,
-        userName: '이영희',
-        profileImageUrl: 'https://via.placeholder.com/150',
-        hungry: false,
-        label: '밥먹고 싶어요'
-    },
-    {
-        memberId: 3,
-        userName: '박민수',
-        profileImageUrl: 'https://via.placeholder.com/150',
-        hungry: false,
-        label: '밥먹고 싶어요'
-    },
-    {
-        memberId: 3,
-        userName: '박민수',
-        profileImageUrl: 'https://via.placeholder.com/150',
-        hungry: false,
-        label: '밥먹고 싶어요'
-    },
-    {
-        memberId: 3,
-        userName: '박민수',
-        profileImageUrl: 'https://via.placeholder.com/150',
-        hungry: false,
-        label: '밥먹고 싶어요'
-    },
-    {
-        memberId: 3,
-        userName: '박민수',
-        profileImageUrl: 'https://via.placeholder.com/150',
-        hungry: false,
-        label: '밥먹고 싶어요'
-    },
-    {
-        memberId: 3,
-        userName: '박민수',
-        profileImageUrl: 'https://via.placeholder.com/150',
-        hungry: false,
-        label: '밥먹고 싶어요'
-    },
-    {
-        memberId: 3,
-        userName: '박민수',
-        profileImageUrl: 'https://via.placeholder.com/150',
-        hungry: false,
-        label: '밥먹고 싶어요'
-    }
-]
-
 function RecruitTab() {
-    const [recruits, setRecruits] = useState<PostResponse[]>([])
+    const [recruits, setRecruits] = useState<RecruitCardView[]>([])
     const { userId } = useAuthStore()
-    const [myRecruits, setMyRecruits] = useState<PostResponse | null>(
-        null
-    )
+    const [myRecruits, setMyRecruits] = useState<RecruitCardView | null>(null)
     const { data: recruitsData } = useGetRecruits()
-    const [hungryFriendList, setHungryFriendList] =
-        useState<Friend[]>(hungryFriendFixture)
+    const { mutate: joinRecruit } = useJoinRecruit({
+        onSuccess: () => {
+            console.log('announcement 참여하기가 완료되었습니다')
+        },
+        onError: (error: Error) => {
+            console.log(error)
+        }
+    })
     useEffect(() => {
         console.log('recruitsData', recruitsData)
         setMyRecruits(
@@ -136,12 +71,11 @@ function RecruitTab() {
     return (
         <div className="bg-primary-100 flex h-full flex-col justify-center pb-90">
             <div className="flex flex-1 flex-col gap-16 pt-20 pb-90">
-                {hungryFriendList.length > 0 && (
-                    <div className="px-20">
-                        <HungryFriendList hungryFriendList={hungryFriendList} />
-                    </div>
-                )}
-                <RecruitCarousel recruits={recruits} />
+                <RecruitCarousel
+                    recruits={recruits}
+                    currentUserId={userId}
+                    onJoinRecruit={joinRecruit}
+                />
                 <RecruitBottomSheet
                     isAdd={myRecruits === null}
                     myRecruit={myRecruits || null}
@@ -151,31 +85,9 @@ function RecruitTab() {
     )
 }
 
-// TODO: fixture 제거
-const longTimeNoSeeFriendFixture = [
-    {
-        memberId: 1,
-        userName: '김철수',
-        profileImageUrl: 'https://via.placeholder.com/150',
-        lastMeetingDate: '2025-12-18'
-    },
-    {
-        memberId: 2,
-        userName: '이영희',
-        profileImageUrl: 'https://via.placeholder.com/150',
-        lastMeetingDate: '2025-12-18'
-    },
-    {
-        memberId: 3,
-        userName: '박민수',
-        profileImageUrl: 'https://via.placeholder.com/150',
-        lastMeetingDate: '2025-12-18'
-    }
-]
 function InvitationTab() {
-    const { data: invitations } = useGetInvitations()
-    const { data: friendMeals } = useFriendMeals()
-    const longTimeNoSeeFriendList = longTimeNoSeeFriendFixture
+    const { data: invitations, isLoading } = useGetInvitations()
+
     return (
         <div
             className={`flex flex-col gap-40 px-20 pt-18 pb-${BOTTOM_NAVIGATION_HEIGHT}`}>
@@ -183,11 +95,12 @@ function InvitationTab() {
             <div className="flex flex-col gap-16">
                 <InviteButton />
                 <RecieveInvitationList invitations={invitations || []} />
-                <LongTimeNoSeeFriendList
-                    longTimeNoSeeFriendList={longTimeNoSeeFriendList}
-                />
+                {isLoading && (
+                    <span className="text-caption-regular text-gray-5">
+                        초대장을 불러오는 중입니다.
+                    </span>
+                )}
             </div>
         </div>
     )
 }
-

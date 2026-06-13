@@ -11,10 +11,10 @@ import { INVITATION_FILTER_LIST } from '@/constants/filters'
 import { FriendSearchInput } from '@/components/features/friend/FriendSearchInput'
 import {
     useAcceptFriendRequest,
+    useAllFriendMeals,
     useBlockMember,
     useBlockedMembers,
     useCancelFriendRequest,
-    useFriendMeals,
     useFriends,
     useIncomingFriendRequests,
     useOutgoingFriendRequests,
@@ -96,12 +96,11 @@ export function FriendPage() {
     /**
      * Friend List (식사 상태 기준 친구 목록: GET /friends/me/meals)
      */
-    const mealFilter = activeFilter.key as Parameters<typeof useFriendMeals>[0]
     const {
         data: friendMeals,
         isLoading: isFriendMealsLoading,
         error: friendMealsError
-    } = useFriendMeals(mealFilter)
+    } = useAllFriendMeals()
     const { data: friends, isLoading: isFriendsLoading } = useFriends()
     const { data: searchedFriends, isLoading: isSearchLoading } =
         useSearchFriends(keyword)

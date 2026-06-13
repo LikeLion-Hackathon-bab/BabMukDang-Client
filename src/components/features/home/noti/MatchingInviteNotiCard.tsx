@@ -1,6 +1,6 @@
 import { MatchingIcon } from '@/assets/icons'
 import { COLORS } from '@/constants/colors'
-import type { MatchingInviteNoti } from '@/pages/home/NotiStoragePage'
+import type { MatchingInviteNoti } from '@/viewModels'
 export function MatchingInviteNotiCard({
     noti,
     onClick

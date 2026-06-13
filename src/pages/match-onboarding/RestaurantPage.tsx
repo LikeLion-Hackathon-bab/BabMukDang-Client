@@ -1,18 +1,8 @@
 import { useEffect, useState } from 'react'
 import type { RestaurantResponse } from '@kimdaegyu/babmukdang-shared/domain'
 type RestaurantInitialState = { initialRestaurants: RestaurantResponse[] }
-type RestaurantCardModel = {
-    id: string
-    place_name: string
-    category_name: string
-    category_group_name: string
-    distance: string
-    road_address_name: string
-    address_name: string
-    phone: string
-    selectUsers: string[]
-    place_url?: string
-}
+import type { RestaurantCardView } from '@/viewModels'
+import { useAuthStore } from '@/store'
 
 import { RestaurantCard } from '@/components'
 import { useSocket } from '@/contexts/SocketContext'
@@ -29,11 +19,13 @@ export function RestaurantPage() {
         }
     }, [phaseData])
 
-    const onClickRestaurant = (restaurant: RestaurantCardModel) => {
+    const userId = useAuthStore(state => state.userId)
+
+    const onClickRestaurant = (restaurant: RestaurantCardView) => {
         socket?.emit('pick-restaurant', { restaurantId: restaurant.id as RestaurantResponse['restaurantId'] })
     }
 
-    const toCardModel = (restaurant: RestaurantResponse): RestaurantCardModel => ({
+    const toCardModel = (restaurant: RestaurantResponse): RestaurantCardView => ({
         id: String(restaurant.restaurantId),
         place_name: restaurant.placeName,
         category_name: restaurant.categoryName,
@@ -56,6 +48,7 @@ export function RestaurantPage() {
                         key={restaurant.restaurantId}
                         restaurant={toCardModel(restaurant)}
                         onClick={onClickRestaurant}
+                        selectedUserId={userId}
                     />
                 ))}
             </div>

@@ -1,25 +1,19 @@
-import { PostResponse, useJoinRecruit } from '@/apis'
+import type { RecruitCardView } from '@/viewModels'
 import { ModalTrigger, MutalButtonSmall } from '@/components'
 
 export function JoinButton({
     disabled,
     recruit,
-    setSelectedRecruit
+    setSelectedRecruit,
+    onJoinRecruit
 }: {
     disabled?: boolean
-    recruit: PostResponse
-    setSelectedRecruit: (recruit: PostResponse) => void
+    recruit: RecruitCardView
+    setSelectedRecruit: (recruit: RecruitCardView) => void
+    onJoinRecruit: (recruitId: number) => void
 }) {
-    const { mutate: joinRecruit } = useJoinRecruit({
-        onSuccess: () => {
-            console.log('joinRecruit')
-        },
-        onError: (error: Error) => {
-            console.log(error)
-        }
-    })
     const handleJoinRecruit = () => {
-        joinRecruit(recruit.postId)
+        onJoinRecruit(recruit.postId)
         setSelectedRecruit(recruit)
     }
     return (

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { JoinButton } from './RecruitJoinButton'
-import { PostResponse } from '@/apis'
+import type { RecruitCardView } from '@/viewModels'
 import { MockRecruits } from '@/constants/mockData'
 
 const meta: Meta<typeof JoinButton> = {
@@ -21,7 +21,7 @@ const meta: Meta<typeof JoinButton> = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const mockRecruit: PostResponse = {
+const mockRecruit: RecruitCardView = {
     ...MockRecruits[0]
 }
 

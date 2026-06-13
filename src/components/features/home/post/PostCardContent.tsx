@@ -4,7 +4,8 @@ import {
     HeartFilledIcon,
     HeartWhiteIcon
 } from '@/assets/icons'
-import { useLikeArticle, LikePostResponse } from '@/apis'
+import { useLikeArticle } from '@/apis'
+import type { ArticleLikeView } from '@/viewModels'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { COLORS } from '@/constants/colors'
@@ -28,7 +29,8 @@ export const PostCardContent = ({
     commentCount: number
 }) => {
     const [isLiked, setIsLiked] = useState(likedByMe)
-    const onSuccess = (data: LikePostResponse) => {
+    const onSuccess = (data?: ArticleLikeView) => {
+        if (!data) return
         if (data.liked) {
             setIsLiked(true)
         } else {

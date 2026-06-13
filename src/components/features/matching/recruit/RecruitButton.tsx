@@ -1,16 +1,12 @@
-import {
-    useCloseRecruit,
-    useGetRecruits,
-    usePostRecruit,
-    PostRequest
-} from '@/apis'
+import { useCloseRecruit, useGetRecruits, usePostRecruit } from '@/apis'
+import type { RecruitFormView } from '@/viewModels'
 import { MutalButtonSmall } from '@/components'
 import { useNavigate } from 'react-router-dom'
 
 export function AddRecruitButton({
     recruitAddData
 }: {
-    recruitAddData: PostRequest
+    recruitAddData: RecruitFormView
 }) {
     const { mutate: postRecruit } = usePostRecruit({
         onSuccess: () => {
