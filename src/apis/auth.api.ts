@@ -19,7 +19,7 @@ import { useAuthStore } from '@/store'
 import axios from 'axios'
 import { unwrapBaseResponse } from './client'
 import type {
-    BaseResponse,
+    ApiResponse,
     LoginRequest
 } from '@kimdaegyu/babmukdang-shared/domain'
 import { API_BASE_URL } from './baseUrl'
@@ -78,7 +78,7 @@ const authApi = {
      */
     refresh: async (): Promise<TokenResponse> => {
         // 무한 루프 방지를 위해 인터셉터가 없는 axios 직접 사용
-        const res = await axios.post<BaseResponse<TokenResponse>>(
+        const res = await axios.post<ApiResponse<TokenResponse>>(
             `${API_BASE_URL}${apiContract.auth.refresh.path}`,
             {},
             { withCredentials: true }

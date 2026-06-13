@@ -7,13 +7,14 @@ import axios, {
 import { toAppError } from './errors'
 import {
     apiContract,
-    type BaseResponse,
+    type ApiResponse,
     type TokenResponse
 } from '@kimdaegyu/babmukdang-shared/domain'
 import type {
     EndpointContract,
     HttpMethod,
-    ResponseOf as ContractResponseOf
+    ResponseOf as ContractResponseOf,
+    ApiFailure
 } from '@kimdaegyu/babmukdang-shared/domain'
 import type { z } from 'zod'
 import { API_BASE_URL } from './baseUrl'
@@ -40,12 +41,15 @@ const addRefreshSubscriber = (callback: (token: string) => void) => {
     refreshSubscribers.push(callback)
 }
 
-export function unwrapBaseResponse<T>(body: BaseResponse<T>): T {
-    if (typeof body.code === 'number' && body.code >= 400) {
+function isApiFailure<T>(body: ApiResponse<T>): body is ApiFailure {
+    return (body as { success?: unknown }).success === false
+}
+export function unwrapBaseResponse<T>(body: ApiResponse<T>): T {
+    if (isApiFailure(body)) {
         throw body
     }
 
-    return body.data
+    return (body as unknown as { data: T }).data
 }
 
 // Request Interceptor: Authorization 헤더 자동 추가
@@ -91,7 +95,7 @@ axiosClient.interceptors.response.use(
 
         try {
             const refreshResponse = await axios.post<
-                BaseResponse<TokenResponse>
+                ApiResponse<TokenResponse>
             >(
                 `${API_BASE_URL}${apiContract.auth.refresh.path}`,
                 {},
@@ -253,7 +257,7 @@ export const contractClient = {
     ): Promise<ContractResponseOf<E>> {
         const pathParams = parsePathParams(contract, config?.pathParams)
         const query = parseQuery(contract, config?.query)
-        const res = await axiosClient.get<BaseResponse<ContractResponseOf<E>>>(
+        const res = await axiosClient.get<ApiResponse<ContractResponseOf<E>>>(
             resolveContractPath(contract, pathParams),
             toAxiosConfig(config, query)
         )
@@ -267,7 +271,7 @@ export const contractClient = {
         const pathParams = parsePathParams(contract, config?.pathParams)
         const query = parseQuery(contract, config?.query)
         const body = parseBody(contract, config?.body)
-        const res = await axiosClient.post<BaseResponse<ContractResponseOf<E>>>(
+        const res = await axiosClient.post<ApiResponse<ContractResponseOf<E>>>(
             resolveContractPath(contract, pathParams),
             body,
             toAxiosConfig(config, query)
@@ -282,9 +286,7 @@ export const contractClient = {
         const pathParams = parsePathParams(contract, config?.pathParams)
         const query = parseQuery(contract, config?.query)
         const body = parseBody(contract, config?.body)
-        const res = await axiosClient.patch<
-            BaseResponse<ContractResponseOf<E>>
-        >(
+        const res = await axiosClient.patch<ApiResponse<ContractResponseOf<E>>>(
             resolveContractPath(contract, pathParams),
             body,
             toAxiosConfig(config, query)
@@ -299,7 +301,7 @@ export const contractClient = {
         const pathParams = parsePathParams(contract, config?.pathParams)
         const query = parseQuery(contract, config?.query)
         const res = await axiosClient.delete<
-            BaseResponse<ContractResponseOf<E>>
+            ApiResponse<ContractResponseOf<E>>
         >(
             resolveContractPath(contract, pathParams),
             toAxiosConfig(config, query)
