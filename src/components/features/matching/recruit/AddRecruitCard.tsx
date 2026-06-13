@@ -29,9 +29,10 @@ export function AddRecruitCard({
         ).split('T')[0]
         const hh = String(nextHour).padStart(2, '0')
         const mm = String(nextMinute).padStart(2, '0')
+        console.log('updateMeetingAt', `${datePart}T${hh}:${mm}:00Z`)
         setRecruitAddData({
             ...recruitAddData,
-            meetingAt: `${datePart}T${hh}:${mm}`
+            meetingAt: `${datePart}T${hh}:${mm}:00Z`
         })
     }
     const decParticipants = () =>
@@ -200,4 +201,3 @@ export function AddRecruitCard({
         </div>
     )
 }
-

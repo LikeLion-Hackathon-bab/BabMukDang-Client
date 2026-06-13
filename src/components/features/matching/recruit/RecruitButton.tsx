@@ -2,7 +2,7 @@ import {
     useCloseRecruit,
     useGetRecruits,
     usePostRecruit,
-    Post
+    PostRequest
 } from '@/apis'
 import { MutalButtonSmall } from '@/components'
 import { useNavigate } from 'react-router-dom'
@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'
 export function AddRecruitButton({
     recruitAddData
 }: {
-    recruitAddData: Post
+    recruitAddData: PostRequest
 }) {
     const { mutate: postRecruit } = usePostRecruit({
         onSuccess: () => {
@@ -58,4 +58,3 @@ export function CloseRecruitButton({
             onClick={handleCloseRecruit}></MutalButtonSmall>
     )
 }
-
