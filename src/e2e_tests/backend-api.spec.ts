@@ -18,7 +18,7 @@
 
 import type {
     ArticleSummaryResponse as ArticleSummaryResponseDto,
-    BaseResponse,
+    ApiResponse,
     PlanResponse as PlanResponseDto,
     ReferralCreateResponse,
     ReferralItemResponse,
@@ -328,7 +328,7 @@ function getUnusedEndpointPaths(
 
 // ─── 응답 타입 레지스트리 + 헬퍼 ──────────────────────────────────────────
 //
-// `(await res.json()) as BaseResponse<Foo>` 캐스팅을 호출부마다 반복하는 대신,
+// `(await res.json()) as ApiResponse<Foo>` 캐스팅을 호출부마다 반복하는 대신,
 // "이 엔드포인트는 이런 응답을 반환한다"는 선언을 `responses` 한 곳에 모아두고
 // getJson/postJson이 거기서 타입을 추론한다.
 //   - 응답 DTO가 바뀌면 레지스트리 한 줄만 고치면 모든 호출부에 반영된다.
@@ -337,9 +337,29 @@ function getUnusedEndpointPaths(
 //     타입 에러로 드러난다.
 
 type Typed<T> = string & { readonly __response?: T }
+type ApiSuccessBody<T> = ApiResponse<T> & {
+    success: true
+    code: number
+    message: string
+    data: T
+}
 
 function typed<T>(path: string): Typed<T> {
     return path as Typed<T>
+}
+
+function unwrapApiSuccess<T>(body: ApiResponse<T>): ApiSuccessBody<T> {
+    const response = body as {
+        success?: unknown
+        code?: unknown
+        message?: unknown
+    }
+
+    if (response.success === false) {
+        throw new Error(`${String(response.code)}: ${String(response.message)}`)
+    }
+
+    return body as ApiSuccessBody<T>
 }
 
 async function getJson<T>(
@@ -348,11 +368,11 @@ async function getJson<T>(
     options?: Parameters<APIRequestContext['get']>[1]
 ): Promise<{
     res: Awaited<ReturnType<APIRequestContext['get']>>
-    body: BaseResponse<T>
+    body: ApiSuccessBody<T>
 }> {
     const res = await request.get(url(path), options)
-    const body = (await res.json()) as BaseResponse<T>
-    return { res, body }
+    const body = (await res.json()) as ApiResponse<T>
+    return { res, body: unwrapApiSuccess(body) }
 }
 
 async function postJson<T>(
@@ -361,11 +381,11 @@ async function postJson<T>(
     options?: Parameters<APIRequestContext['post']>[1]
 ): Promise<{
     res: Awaited<ReturnType<APIRequestContext['post']>>
-    body: BaseResponse<T>
+    body: ApiSuccessBody<T>
 }> {
     const res = await request.post(url(path), options)
-    const body = (await res.json()) as BaseResponse<T>
-    return { res, body }
+    const body = (await res.json()) as ApiResponse<T>
+    return { res, body: unwrapApiSuccess(body) }
 }
 
 async function patchJson<T>(
@@ -374,11 +394,11 @@ async function patchJson<T>(
     options?: Parameters<APIRequestContext['patch']>[1]
 ): Promise<{
     res: Awaited<ReturnType<APIRequestContext['patch']>>
-    body: BaseResponse<T>
+    body: ApiSuccessBody<T>
 }> {
     const res = await request.patch(url(path), options)
-    const body = (await res.json()) as BaseResponse<T>
-    return { res, body }
+    const body = (await res.json()) as ApiResponse<T>
+    return { res, body: unwrapApiSuccess(body) }
 }
 
 async function waitForNotification(
@@ -458,13 +478,9 @@ test.describe.configure({
 })
 
 test.beforeAll(async ({ request }) => {
-    // 계정 생성
-    // await signup(request, USER_A.email, USER_A.username)
-    // await signup(request, USER_B.email, USER_B.username)
-
     // 로그인 → JWT 발급
-    tokenA = await login(request, USER_A.email)
-    tokenB = await login(request, USER_B.email)
+    tokenA = await login(request, USER_A.email, USER_A.username)
+    tokenB = await login(request, USER_B.email, USER_B.username)
 
     // 내 프로필에서 memberId 조회
     memberIdA = await fetchMemberId(request, tokenA, USER_A.email)
@@ -565,11 +581,16 @@ test.describe('Members', () => {
             headers: auth(tokenA)
         })
         expect(res.status()).toBe(200)
-        const body = (await res.json()) as BaseResponse<{
+        const body = (await res.json()) as ApiResponse<{
             total: number
             items: ArticleSummaryResponseDto[]
         }>
-        expect(Array.isArray(body.data?.items ?? body.data ?? body)).toBe(true)
+        const successBody = unwrapApiSuccess(body)
+        expect(
+            Array.isArray(
+                successBody.data?.items ?? successBody.data ?? successBody
+            )
+        ).toBe(true)
     })
 
     test(`GET ${ep.mealStatus.my} → 200`, async ({ request }) => {
@@ -1422,16 +1443,18 @@ test.describe('Friends', () => {
         request
     }) => {
         // userA가 새 요청 후 직접 취소
-        const { body: createBody } = await postJson(
+        await postJson(
             request,
             responses.sendFriendRequest(Number(memberIdB)),
             { headers: auth(tokenA) }
         )
-        const reqId = createBody.data?.requestId
-        if (typeof reqId !== 'number') return
-        const res = await request.delete(url(ep.friends.cancelRequest(reqId)), {
-            headers: auth(tokenA)
-        })
+
+        const res = await request.delete(
+            url(ep.friends.cancelRequest(Number(memberIdB))),
+            {
+                headers: auth(tokenA)
+            }
+        )
         expect([200, 204, 404]).toContain(res.status())
     })
 

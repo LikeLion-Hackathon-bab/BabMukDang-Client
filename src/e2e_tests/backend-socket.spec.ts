@@ -53,10 +53,14 @@ import {
 type DatePicksRequestDto = Parameters<ClientToServerEvents['pick-date']>[0]
 type TimePicksRequestDto = Parameters<ClientToServerEvents['pick-times']>[0]
 type LocationCandidateAddRequestDto = LocationCandidate
-type LocationCandidateVoteRequestDto = Parameters<ClientToServerEvents['vote-location']>[0]
+type LocationCandidateVoteRequestDto = Parameters<
+    ClientToServerEvents['vote-location']
+>[0]
 type ExcludeMenuRequestDto = { menu: Menu }
 type MenuPickRequestDto = Parameters<ClientToServerEvents['pick-menu']>[0]
-type RestaurantPickRequestDto = Parameters<ClientToServerEvents['pick-restaurant']>[0]
+type RestaurantPickRequestDto = Parameters<
+    ClientToServerEvents['pick-restaurant']
+>[0]
 import {
     AppSocket,
     USER_A,
@@ -135,8 +139,8 @@ let roomId = ''
 
 test.beforeAll(async ({ request }) => {
     test.setTimeout(120_000)
-    tokenA = await login(request, USER_A.email)
-    tokenB = await login(request, USER_B.email)
+    tokenA = await login(request, USER_A.email, USER_A.username)
+    tokenB = await login(request, USER_B.email, USER_B.username)
     memberIdA = await fetchMemberId(request, tokenA, USER_A.email)
     memberIdB = await fetchMemberId(request, tokenB, USER_B.email)
     await seedRecentMeal(request, tokenA)
@@ -325,7 +329,9 @@ test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
         >(socketA, [socketA, socketB], 'pick-date', payload, 'date-updated')
         const a = resA as DatePicksUpdateResponseDto
         expect(Array.isArray(a)).toBe(true)
-        const mine = a.find(item => item.memberId === toMemberId(Number(memberIdA)))
+        const mine = a.find(
+            item => item.memberId === toMemberId(Number(memberIdA))
+        )
         expect(mine?.dates).toEqual(payload.dates)
         expect(resB).toEqual(resA)
     })
@@ -342,7 +348,9 @@ test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
         >(socketA, [socketA, socketB], 'pick-times', payload, 'time-updated')
         const a = resA as TimePicksUpdateResponseDto
         expect(Array.isArray(a)).toBe(true)
-        const mine = a.find(item => item.memberId === toMemberId(Number(memberIdA)))
+        const mine = a.find(
+            item => item.memberId === toMemberId(Number(memberIdA))
+        )
         expect(mine?.times).toEqual(payload.times)
         expect(resB).toEqual(resA)
     })
@@ -384,7 +392,9 @@ test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
 
     test('9) location-vote 단계: vote-location → location-vote-updated', async () => {
         expect(locationId.length).toBeGreaterThan(0)
-        const payload: LocationCandidateVoteRequestDto = { locationId: LocationIdSchema.parse(locationId) }
+        const payload: LocationCandidateVoteRequestDto = {
+            locationId: LocationIdSchema.parse(locationId)
+        }
 
         const [resA, resB] = await emitAndExpectBroadcast<
             'vote-location',
@@ -426,7 +436,9 @@ test.describe('양방향 이벤트 — Room lifecycle 순서 검증', () => {
         )
         const a = resA as ExcludeMenuUpdateResponseDto
         expect(Array.isArray(a)).toBe(true)
-        const mine = a.find(item => item.memberId === toMemberId(Number(memberIdA)))
+        const mine = a.find(
+            item => item.memberId === toMemberId(Number(memberIdA))
+        )
         expect(mine?.exclusions.some(m => m.code === payload.menu.code)).toBe(
             true
         )

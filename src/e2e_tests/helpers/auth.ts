@@ -73,17 +73,20 @@ export async function signup(
 
 export async function login(
     request: APIRequestContext,
-    email: string
+    email: string,
+    username: string
 ): Promise<string> {
     const res = await request.post(url(endpoints.auth.login), {
         data: { email }
     })
     if (!res.ok()) {
+        await signup(request, email, username)
         console.error(
             `[e2e] POST /auth/login (${email}) 실패: status=${res.status()}, body=${JSON.stringify(
                 await readBody(res)
             )}`
         )
+        return await login(request, email, username)
     }
     expect(res.ok()).toBeTruthy()
     const body = await res.json()
