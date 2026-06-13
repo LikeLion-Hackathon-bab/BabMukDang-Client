@@ -16,7 +16,12 @@
         "test:e2e:headed": "playwright test --headed",
         "test:e2e:integration": "playwright test --config playwright.integration.config.ts",
         "storybook": "storybook dev -p 6006",
-        "build-storybook": "storybook build"
+        "build-storybook": "storybook build",
+        "depcruise": "depcruise src --config dependency-cruiser.config.cjs",
+        "depcruise:ci": "depcruise src --config dependency-cruiser.config.cjs --output-type err",
+        "depcruise:json": "depcruise src --config dependency-cruiser.config.cjs --output-type json --output-to dependency-cruiser-report.json",
+        "depcruise:dot": "depcruise src --config dependency-cruiser.config.cjs --output-type dot --output-to dependency-cruiser-graph.dot",
+        "depcruise:graph": "depcruise src --config dependency-cruiser.config.cjs --output-type dot | dot -T svg > dependency-cruiser-graph.svg"
     },
     "dependencies": {
         "@capacitor/android": "^7.4.3",
