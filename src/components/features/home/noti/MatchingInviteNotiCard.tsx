@@ -1,17 +1,6 @@
 import { MatchingIcon } from '@/assets/icons'
 import { COLORS } from '@/constants/colors'
-
-interface MatchingInviteNoti {
-    id: string
-    type: 'invitation' | 'recruit'
-    title: string
-    time: string
-    message: string
-    period: string
-    imageUrl?: string
-    roomId: string
-}
-
+import type { MatchingInviteNoti } from '@/pages/home/NotiStoragePage'
 export function MatchingInviteNotiCard({
     noti,
     onClick
@@ -34,7 +23,7 @@ export function MatchingInviteNotiCard({
                     </span>
                 </div>
                 <span className="text-caption-medium text-gray-3">
-                    {noti.time}
+                    {noti.createdAt}
                 </span>
             </div>
             <span className="text-caption-medium text-gray-5 w-full">

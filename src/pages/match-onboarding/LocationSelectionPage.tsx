@@ -1,8 +1,13 @@
 import { domainId } from '@/domain/factories'
 import { useState, useEffect, useRef } from 'react'
-import type { LocationCandidate, MemberId } from '@kimdaegyu/babmukdang-shared/domain'
+import type {
+    LocationCandidate,
+    MemberId
+} from '@kimdaegyu/babmukdang-shared/domain'
 type LocationAddInitialState = LocationCandidate[]
-type LocationCandidateAddUpdateResponseDto = (LocationCandidate & { authorMemberId?: MemberId })[]
+type LocationCandidateAddUpdateResponseDto = (LocationCandidate & {
+    authorMemberId?: MemberId
+})[]
 
 import { useSocket } from '@/contexts/SocketContext'
 import { KakaoMap, LocationCadidateItem } from '@/components'
@@ -29,17 +34,17 @@ const toOptions = (
     }))
 
 export function LocationSelectionPage() {
-    const { socket, phaseData } = useSocket()
+    const { socket, locationInitial } = useSocket()
 
     const [locationOptions, setLocationOptions] = useState<LocationOption[]>([])
     const mapRef = useRef<HTMLDivElement>(null)
     useEffect(() => {
-        if (phaseData && phaseData.phase === 'location') {
+        if (locationInitial) {
             setLocationOptions(
-                toOptions(phaseData.data as LocationAddInitialState)
+                toOptions(locationInitial as LocationAddInitialState)
             )
         }
-    }, [phaseData])
+    }, [locationInitial])
 
     useEffect(() => {
         const handleLocationAdded = (

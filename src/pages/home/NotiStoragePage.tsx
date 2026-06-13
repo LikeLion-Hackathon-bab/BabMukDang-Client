@@ -11,18 +11,10 @@ import {
 } from '@/components'
 import { LOCAL_NEWS_FILTER_LIST } from '@/constants/filters'
 import { useHeaderStore, useNotificationStore } from '@/store'
-import { notificationApi } from '@/apis/notification.api'
+import { notificationApi, useGetNotifications } from '@/apis/notification.api'
+import type { MatchingNotification } from '@kimdaegyu/babmukdang-shared/domain'
 
-type MatchingInviteNoti = {
-    id: string
-    type: 'invitation' | 'recruit'
-    title: string
-    time: string
-    message: string
-    period: string
-    imageUrl: string
-    roomId: string
-}
+export type MatchingInviteNoti = MatchingNotification
 interface LocalNewsNoti {
     id: number
     type: 'school' | 'restaurant' | 'area'
@@ -34,11 +26,25 @@ interface LocalNewsNoti {
 }
 export function NotiStoragePage() {
     const navigate = useNavigate()
-    const notifications = useNotificationStore(state => state.notifications)
+    const { notifications, addNotification } = useNotificationStore()
     const removeNotification = useNotificationStore(
         state => state.removeNotification
     )
     const markRead = useNotificationStore(state => state.markRead)
+
+    const {
+        data: fetchedNotifications,
+        isLoading,
+        error
+    } = useGetNotifications()
+
+    useEffect(() => {
+        if (fetchedNotifications) {
+            fetchedNotifications.forEach(notification => {
+                addNotification(notification)
+            })
+        }
+    }, [])
 
     // 헤더 관련
     const { resetHeader, setTitle, showCenterElement } = useHeaderStore()
@@ -67,17 +73,15 @@ export function NotiStoragePage() {
     // 삭제 핸들러들
     const matchingNotis: MatchingInviteNoti[] = notifications.map(
         notification => ({
-            id: notification.notificationId,
-            type:
-                notification.roomType === 'invitation'
-                    ? 'invitation'
-                    : 'recruit',
-            title: notification.title,
-            time: formatNotificationTime(notification.createdAt),
-            message: notification.message,
-            period: '',
-            imageUrl: '',
-            roomId: notification.roomId
+            notificationId: notification.notificationId,
+            createdAt: formatNotificationTime(notification.createdAt),
+            roomId: notification.roomId,
+            roomType: notification.roomType,
+            kind: notification.kind,
+            title:
+                notification.kind === 'invitation' ? '매칭 초대' : '매칭 모집',
+            readAt: notification.readAt,
+            message: notification.message
         })
     )
 
@@ -91,7 +95,7 @@ export function NotiStoragePage() {
     }
 
     const handleMatchingInviteNotiClick = async (noti: MatchingInviteNoti) => {
-        const notification = await notificationApi.markRead(noti.id)
+        const notification = await notificationApi.markRead(noti.notificationId)
         markRead(notification)
         const access = await notificationApi.accessRoom(noti.roomId)
         navigate(`/${access.roomType}/${access.stage}/${access.roomId}`)

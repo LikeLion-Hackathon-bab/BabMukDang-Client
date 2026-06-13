@@ -3,17 +3,7 @@ import {
     MatchingInviteNotiCard,
     EmptyNotiView
 } from '@/components'
-
-type MatchingInviteNoti = {
-    id: string
-    type: 'invitation' | 'recruit'
-    title: string
-    time: string
-    message: string
-    period: string
-    imageUrl: string
-    roomId: string
-}
+import type { MatchingInviteNoti } from '@/pages/home/NotiStoragePage'
 export function MatchingInviteList({
     matchingNotis,
     handleDeleteMatchingNoti,
@@ -30,8 +20,10 @@ export function MatchingInviteList({
         <div className="flex flex-col">
             {matchingNotis.map(noti => (
                 <SwipeableCard
-                    key={noti.id}
-                    onDelete={() => handleDeleteMatchingNoti(noti.id)}>
+                    key={noti.notificationId}
+                    onDelete={() =>
+                        handleDeleteMatchingNoti(noti.notificationId)
+                    }>
                     <MatchingInviteNotiCard
                         noti={noti}
                         onClick={() => handleMatchingInviteNotiClick(noti)}

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import type { MatchingNotification } from '@kimdaegyu/babmukdang-shared/domain'
 import { API_BASE_URL } from '@/apis/baseUrl'
-import { notificationApi } from '@/apis/notification.api'
+import { notificationApi, useGetNotifications } from '@/apis/notification.api'
 import { useAuthStore, useNotificationStore } from '@/store'
 
 const parseNotification = (raw: string): MatchingNotification | null => {
@@ -23,17 +23,13 @@ export function NotificationSseProvider({
     const addNotifications = useNotificationStore(
         state => state.addNotifications
     )
+    const { data: notifications } = useGetNotifications()
     const clearLatest = useNotificationStore(state => state.clearLatest)
 
     useEffect(() => {
         if (!accessToken) return
 
-        notificationApi
-            .getAll()
-            .then(addNotifications)
-            .catch(() => {
-                // 초기 inbox 동기화 실패는 SSE 재연결로 회복한다.
-            })
+        addNotifications(notifications ?? [])
 
         const source = new EventSource(
             `${API_BASE_URL}/sse/notifications?token=${encodeURIComponent(accessToken)}`,
@@ -50,7 +46,7 @@ export function NotificationSseProvider({
         return () => {
             source.close()
         }
-    }, [accessToken, addNotification, addNotifications])
+    }, [accessToken, addNotification, addNotifications, notifications])
 
     useEffect(() => {
         if (!latest) return
@@ -62,9 +58,9 @@ export function NotificationSseProvider({
         <>
             {children}
             {latest && (
-                <div className="fixed top-20 left-1/2 z-50 w-[calc(100%-40px)] max-w-390 -translate-x-1/2 rounded-20 bg-gray-8 px-18 py-14 text-white shadow-lg">
+                <div className="rounded-20 bg-gray-8 fixed top-20 left-1/2 z-50 w-[calc(100%-40px)] max-w-390 -translate-x-1/2 px-18 py-14 text-white shadow-lg">
                     <p className="text-body1-semibold">{latest.title}</p>
-                    <p className="text-caption-medium mt-4 text-gray-2">
+                    <p className="text-caption-medium text-gray-2 mt-4">
                         {latest.message}
                     </p>
                 </div>

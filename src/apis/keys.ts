@@ -119,6 +119,23 @@ export const queryKeys = {
         summary: ['preferences', 'summary'] as const,
         /** 선호도 메타정보 */
         meta: ['preferences', 'meta'] as const
+    },
+
+    /**
+     * 알림(Notifications) 관련 쿼리 키
+     */
+    notifications: {
+        /** 모든 알림 쿼리의 기본 키 */
+        all: ['notifications'] as const,
+        /** 방 접근 */
+        roomAccess: (roomId: string) =>
+            ['notifications', 'room', roomId] as const,
+        /** 알림 읽음 */
+        markRead: (notificationId: string) =>
+            ['notifications', 'markRead', notificationId] as const,
+        /** 알림 삭제 */
+        delete: (notificationId: string) =>
+            ['notifications', 'delete', notificationId] as const
     }
 } as const
 
