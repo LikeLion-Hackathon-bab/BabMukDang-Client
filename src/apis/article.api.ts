@@ -324,10 +324,7 @@ export const useUploadArticle = (
                 }
             })
 
-            uploadArticlePhoto({
-                currentUserId,
-                file
-            })
+            uploadArticlePhoto(file)
         },
         onSuccess: data => {
             queryClient.invalidateQueries({ queryKey: queryKeys.articles.all })

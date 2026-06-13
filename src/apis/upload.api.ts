@@ -15,8 +15,8 @@ import { contractClient } from './client'
 import { apiContract } from '@kimdaegyu/babmukdang-shared/domain'
 import type {
     MutationOptions,
-    PresignArticleResponse,
-    PresignProfileResponse
+    UploadArticleImageResponse,
+    UploadProfileImageResponse
 } from './types'
 
 // ============================================================================
@@ -48,8 +48,6 @@ const normalizeContentType = (file: File): string => {
 // API 함수
 // ============================================================================
 
-type PresignResponse = PresignArticleResponse | PresignProfileResponse
-
 /**
  * Upload API 함수 모음
  */
@@ -60,13 +58,12 @@ const uploadApi = {
      * @param file - 업로드할 파일
      * @returns presigned URL 정보
      */
-    presignArticle: async (
-        currentUserId: string,
-        file: File
-    ): Promise<PresignResponse> => {
+    presignArticle: async (file: File): Promise<UploadArticleImageResponse> => {
         const { key, putUrl, cdnUrl } = await contractClient.post(
             apiContract.articles.presignArticleImage,
-            { headers: { 'Content-Type': normalizeContentType(file) } }
+            {
+                body: { contentType: normalizeContentType(file) }
+            }
         )
         return { key, putUrl, cdnUrl }
     },
@@ -77,13 +74,12 @@ const uploadApi = {
      * @param file - 업로드할 파일
      * @returns presigned URL 정보
      */
-    presignProfile: async (
-        currentUserId: string,
-        file: File
-    ): Promise<PresignResponse> => {
+    presignProfile: async (file: File): Promise<UploadProfileImageResponse> => {
         const { key, putUrl, cdnUrl } = await contractClient.post(
             apiContract.members.presignProfileImage,
-            { headers: { 'Content-Type': normalizeContentType(file) } }
+            {
+                body: { contentType: normalizeContentType(file) }
+            }
         )
         return { key, putUrl, cdnUrl }
     },
@@ -142,16 +138,6 @@ const uploadApi = {
 // ============================================================================
 
 /**
- * 프로필 이미지 업로드 변수 타입
- */
-type UploadAndRegisterVars = {
-    /** 현재 사용자 ID */
-    currentUserId: string
-    /** 업로드할 파일 */
-    file: File
-}
-
-/**
  * 프로필 이미지 업로드 Hook (presign + S3 업로드)
  * @param options - 성공/에러 콜백
  *
@@ -175,12 +161,9 @@ export const useUploadProfilePhoto = (
     options: MutationOptions<string> = {}
 ) => {
     const { mutate, mutateAsync, isPending, error } = useMutation({
-        mutationFn: async ({ currentUserId, file }: UploadAndRegisterVars) => {
+        mutationFn: async (file: File) => {
             // 1) presign
-            const { putUrl, cdnUrl } = await uploadApi.presignProfile(
-                String(currentUserId),
-                file
-            )
+            const { putUrl, cdnUrl } = await uploadApi.presignProfile(file)
 
             // 2) S3 업로드
             await uploadApi.uploadProfileS3({ putUrl, file })
@@ -218,12 +201,9 @@ export const useUploadArticlePhoto = (
     options: MutationOptions<string> = {}
 ) => {
     const { mutate, mutateAsync, isPending, error } = useMutation({
-        mutationFn: async ({ currentUserId, file }: UploadAndRegisterVars) => {
+        mutationFn: async (file: File) => {
             // 1) presign
-            const { putUrl, cdnUrl } = await uploadApi.presignArticle(
-                String(currentUserId),
-                file
-            )
+            const { putUrl, cdnUrl } = await uploadApi.presignArticle(file)
 
             // 2) S3 업로드
             await uploadApi.uploadArticleS3({ putUrl, file })

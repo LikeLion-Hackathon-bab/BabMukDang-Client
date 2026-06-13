@@ -36,8 +36,8 @@ import type {
     NoContent,
     PageArticleSummaryResponse as DomainPageArticleSummaryResponse,
     PlanResponse,
-    PresignArticleResponse,
-    PresignProfileResponse,
+    UploadArticleImageResponse,
+    UploadProfileImageResponse,
     ProfileDetailResponse as DomainProfileDetailResponse,
     RecruitListResponse,
     RestaurantResponse,
@@ -74,8 +74,8 @@ export type {
     MemberResponse,
     NoContent,
     PlanResponse,
-    PresignArticleResponse,
-    PresignProfileResponse,
+    UploadArticleImageResponse,
+    UploadProfileImageResponse,
     RecruitListResponse,
     SendInvitationResponse,
     TokenResponse,
@@ -131,10 +131,13 @@ export type {
 // above; these aliases remain so existing screens do not confuse server DTOs with
 // client-side view models during the migration.
 export type RestaurantInfo = import('../viewModels/api').RestaurantInputView
-export type ArticleSummaryResponse = import('../viewModels/api').ArticleSummaryView
-export type ArticleDetailResponse = import('../viewModels/api').ArticleDetailView
+export type ArticleSummaryResponse =
+    import('../viewModels/api').ArticleSummaryView
+export type ArticleDetailResponse =
+    import('../viewModels/api').ArticleDetailView
 export type CommentResponse = import('../viewModels/api').CommentView
-export type PageArticleSummaryResponse = import('../viewModels/api').ArticlePageView
+export type PageArticleSummaryResponse =
+    import('../viewModels/api').ArticlePageView
 export type LikePostResponse = import('../viewModels/api').ArticleLikeView
 
 // ============================================================================
@@ -158,17 +161,20 @@ export type ProfileResponse = import('../viewModels/api').ProfileSummaryView
 // ============================================================================
 
 export type ProfileDetailDto = DomainProfileDetailResponse
-export type ProfileDetailResponse = import('../viewModels/api').ProfileDetailView
+export type ProfileDetailResponse =
+    import('../viewModels/api').ProfileDetailView
 
 export type InvitationPostRequest = CreateInvitationRequest
 export type MeetingDto = PlanResponse
-export type MeetingParticipant = import('../viewModels/api').MeetingParticipantView
+export type MeetingParticipant =
+    import('../viewModels/api').MeetingParticipantView
 export type MeetingResponse = import('../viewModels/api').MeetingCardView
 
 export type OnboardingPreferenceRequest = CreateProfileRequest
 export type OnboardingPreferenceResponse = NoContent
 export type PreferenceSummaryResponse = MemberFoodPreference
-export type PreferenceMetaResponse = import('../viewModels/api').PreferenceMetaView
+export type PreferenceMetaResponse =
+    import('../viewModels/api').PreferenceMetaView
 export type PreferenceItem = Food
 
 export type FriendMealResponse = FriendMealItemResponse

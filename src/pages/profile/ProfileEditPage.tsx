@@ -101,7 +101,8 @@ export function ProfileEditPage() {
     const navigate = useNavigate()
     const { userId } = useAuthStore()
     const currentMemberId = Number(userId)
-    const canLoadMember = Number.isFinite(currentMemberId) && currentMemberId > 0
+    const canLoadMember =
+        Number.isFinite(currentMemberId) && currentMemberId > 0
 
     const { data: profileSummary } = useGetMemberProfile(currentMemberId, {
         enabled: canLoadMember
@@ -134,7 +135,9 @@ export function ProfileEditPage() {
         setName(profileSummary?.userName ?? profileDetail?.userName ?? '')
         setBio(profileDetail?.bio ?? profileSummary?.bio ?? '')
         setProfileImageUrl(
-            profileSummary?.profileImageUrl ?? profileDetail?.profileImageUrl ?? ''
+            profileSummary?.profileImageUrl ??
+                profileDetail?.profileImageUrl ??
+                ''
         )
     }, [profileDetail, profileSummary])
 
@@ -161,11 +164,11 @@ export function ProfileEditPage() {
         let nextProfileImageUrl = profileImageUrl
 
         if (selectedFile) {
-            nextProfileImageUrl = await uploadProfilePhoto({
-                currentUserId: String(currentMemberId),
-                file: selectedFile
-            })
-            setProfileImageUrl(nextProfileImageUrl)
+            let result = await uploadProfilePhoto(selectedFile)
+            if (result) {
+                nextProfileImageUrl = result
+                setProfileImageUrl(nextProfileImageUrl)
+            }
         }
 
         await updateProfile({
