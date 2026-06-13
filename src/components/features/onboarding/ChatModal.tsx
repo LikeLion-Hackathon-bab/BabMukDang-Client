@@ -1,15 +1,13 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import {
     CommentIcon,
-    DeleteIcon,
-    DeleteCircleIcon,
-    SendIcon
+    DeleteIcon
 } from '@/assets/icons'
 import { COLORS } from '@/constants/colors'
 import { useSocket } from '@/contexts/SocketContext'
 import { ChatInput } from '@/components/shared'
 import { useAuthStore } from '@/store'
-import type { ChatMessageResponse as ChatMessage } from '@kimdaegyu/babmukdang-shared/domain'
+import type { ChatMessageResponse as ChatMessage } from '@kimdaegyu/babmukdang-shared/domain/room'
 
 interface ChatModalProps {
     isOpen: boolean
@@ -22,7 +20,7 @@ export function ChatModal({
     onClose,
     roomId = 'default-room'
 }: ChatModalProps) {
-    const { socket, chatMessages } = useSocket()
+    const { commands, chatMessages } = useSocket()
     const { userId, profile } = useAuthStore()
     const [messages, setMessages] = useState<ChatMessage[]>(chatMessages)
     const [newMessage, setNewMessage] = useState('')
@@ -54,8 +52,7 @@ export function ChatModal({
             }
             setMessages(prev => [...prev, message])
             setNewMessage('')
-            // Backend는 ChatMessageRequestDto({ text })만 수신한다.
-            socket?.emit('chat-message', { message: text })
+            commands?.sendChatMessage(text)
         }
     }
 
@@ -74,15 +71,8 @@ export function ChatModal({
         })
     }
     useEffect(() => {
-        if (!socket) return
-        const handleChatMessage = (message: ChatMessage) => {
-            setMessages(prev => [...prev, message])
-        }
-        socket.on('chat-message', handleChatMessage)
-        return () => {
-            socket.off('chat-message', handleChatMessage)
-        }
-    }, [socket])
+        setMessages(chatMessages)
+    }, [chatMessages])
     useEffect(() => {
         scrollToBottom()
     }, [messages])
@@ -181,33 +171,8 @@ export function ChatButton({
     className = '',
     isOpen
 }: ChatButtonProps) {
-    // const { socket, userId } = useSocket()
-    // const [unreadCount, setUnreadCount] = useState(0)
-    // useEffect(() => {
-    //     const handleChatMessage = (message: ChatMessage) => {
-    //         console.log(message.user.userId !== userId, isOpen)
-    //         if (message.user.userId !== userId && !isOpen) {
-    //             setUnreadCount(prev => prev + 1)
-    //         }
-    //     }
-    //     socket?.on('chat-message', handleChatMessage)
-    //     return () => {
-    //         socket?.off('chat-message', handleChatMessage)
-    //     }
-    // }, [])
-    // useEffect(() => {
-    //     console.log('isOpen', isOpen)
-    //     if (isOpen) {
-    //         setUnreadCount(0)
-    //     }
-    // }, [isOpen])
     return (
         <>
-            {/* {unreadCount > 0 && !isOpen && (
-                <div className="text-caption-medium absolute -top-1 -right-1 flex h-12 w-12 items-center justify-center rounded-full bg-red-500 text-white">
-                    {unreadCount}
-                </div>
-            )} */}
             <button
                 onClick={() => {
                     onClick()

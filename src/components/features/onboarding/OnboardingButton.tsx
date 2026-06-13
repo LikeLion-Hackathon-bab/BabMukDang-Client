@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 
 export function OnboardingButton() {
     const {
-        socket,
+        commands,
         readyCount,
         participantCount,
         stage,
@@ -37,8 +37,7 @@ export function OnboardingButton() {
 
     const onClickReady = () => {
         const next = !isSelfReady
-        // 새로운 상태 값으로 소켓 이벤트 발생
-        socket?.emit('ready-state', { isReady: next })
+        commands?.readyState(next)
 
         if (stage === 'finish') {
             navigate('/')

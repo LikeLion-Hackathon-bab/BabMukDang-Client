@@ -1,31 +1,10 @@
-import { useEffect, useState } from 'react'
-import type { ReadyStateChanged } from '@kimdaegyu/babmukdang-shared/domain'
-import type { AppSocket } from './types'
+import { useMatchStore } from '@/store/matchStore'
 
-export function useRoomReadyState(socket: AppSocket | null) {
-    const [readyCount, setReadyCount] = useState(0)
-    const [participantCount, setParticipantCount] = useState(0)
-    const [isSelfReady, setIsSelfReady] = useState(false)
-
-    useEffect(() => {
-        if (!socket) return
-
-        const handleReadyStateChanged = (data: ReadyStateChanged) => {
-            setReadyCount(data.readyCount)
-            setParticipantCount(data.participantCount)
-        }
-        const handleStageChanged = () => {
-            setIsSelfReady(false)
-        }
-
-        socket.on('ready-state-changed', handleReadyStateChanged)
-        socket.on('stage-changed', handleStageChanged)
-
-        return () => {
-            socket.off('ready-state-changed', handleReadyStateChanged)
-            socket.off('stage-changed', handleStageChanged)
-        }
-    }, [socket])
+export function useRoomReadyState() {
+    const readyCount = useMatchStore(state => state.readyCount)
+    const participantCount = useMatchStore(state => state.participantCount)
+    const isSelfReady = useMatchStore(state => state.isSelfReady)
+    const setIsSelfReady = useMatchStore(state => state.setIsSelfReady)
 
     return { readyCount, participantCount, isSelfReady, setIsSelfReady }
 }

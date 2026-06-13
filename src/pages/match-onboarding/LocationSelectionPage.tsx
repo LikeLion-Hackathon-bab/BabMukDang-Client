@@ -1,13 +1,6 @@
 import { domainId } from '@/domain/factories'
 import { useState, useEffect, useRef } from 'react'
-import type {
-    LocationCandidate,
-    MemberId
-} from '@kimdaegyu/babmukdang-shared/domain'
-type LocationAddInitialState = LocationCandidate[]
-type LocationCandidateAddUpdateResponseDto = (LocationCandidate & {
-    authorMemberId?: MemberId
-})[]
+import type { LocationCandidateAddUpdateResponse } from '@kimdaegyu/babmukdang-shared/domain/room'
 
 import { useSocket } from '@/contexts/SocketContext'
 import { KakaoMap, LocationCadidateItem } from '@/components'
@@ -22,7 +15,7 @@ interface LocationOption {
 }
 
 const toOptions = (
-    candidates: LocationCandidateAddUpdateResponseDto
+    candidates: LocationCandidateAddUpdateResponse
 ): LocationOption[] =>
     candidates.map(candidate => ({
         id: candidate.locationId,
@@ -34,52 +27,38 @@ const toOptions = (
     }))
 
 export function LocationSelectionPage() {
-    const { socket, locationInitial } = useSocket()
+    const { commands, locationCandidates } = useSocket()
 
     const [locationOptions, setLocationOptions] = useState<LocationOption[]>([])
     const mapRef = useRef<HTMLDivElement>(null)
-    useEffect(() => {
-        if (locationInitial) {
-            setLocationOptions(
-                toOptions(locationInitial as unknown as LocationAddInitialState)
-            )
-        }
-    }, [locationInitial])
 
     useEffect(() => {
-        const handleLocationAdded = (
-            data: LocationCandidateAddUpdateResponseDto
-        ) => {
-            setLocationOptions(toOptions(data))
-            data.forEach(location => {
-                const latlng = new window.kakao.maps.LatLng(
-                    location.lat,
-                    location.lng
-                )
-                const marker = new window.kakao.maps.Marker({
-                    position: latlng
-                })
-                marker.setMap(mapRef.current)
+        setLocationOptions(toOptions(locationCandidates))
+
+        if (!window.kakao?.maps || !mapRef.current) {
+            return
+        }
+
+        locationCandidates.forEach(location => {
+            const latlng = new window.kakao.maps.LatLng(
+                location.lat,
+                location.lng
+            )
+            const marker = new window.kakao.maps.Marker({
+                position: latlng
             })
-        }
-        socket?.on('location-add-updated', handleLocationAdded)
-        return () => {
-            socket?.off('location-add-updated', handleLocationAdded)
-        }
-    }, [socket])
+            marker.setMap(mapRef.current)
+        })
+    }, [locationCandidates])
 
     const handleLocationSelect = (locationId: string) => {
-        // setLocationOptions(prev =>
-        //     prev.map(location =>
-        //         location.id === locationId
-        //             ? { ...location, isSelected: !location.isSelected }
-        //             : location
-        //     )
-        // )
-        // setSelectedLocation(locationId)
-        // socket?.emit('add-location-candidate', {
-        //     candidateId: locationId
-        // })
+        setLocationOptions(prev =>
+            prev.map(location =>
+                location.id === locationId
+                    ? { ...location, isSelected: !location.isSelected }
+                    : location
+            )
+        )
     }
 
     const handleMapLocationSelect = async (
@@ -87,9 +66,8 @@ export function LocationSelectionPage() {
         lng: number,
         address: string
     ) => {
-        // 서버에 위치 후보 전송 (LocationCandidateAddRequestDto: id 필수)
         try {
-            socket?.emit('add-location-candidate', {
+            commands?.addLocationCandidate({
                 locationId: domainId.location(Date.now().toString()),
                 placeName: `새로운 위치 (${lat.toFixed(4)}, ${lng.toFixed(4)})`,
                 address,

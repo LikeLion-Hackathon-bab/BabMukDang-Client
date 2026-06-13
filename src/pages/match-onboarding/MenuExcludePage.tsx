@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react'
 
 import { useSocket } from '@/contexts/SocketContext'
 import { TagPerson, OnboardingHeader, ThumbImg } from '@/components'
-import { useAuthStore } from '@/store'
-import type { Menu, MemberId } from '@kimdaegyu/babmukdang-shared/domain'
+import type { Menu, Participant } from '@kimdaegyu/babmukdang-shared/domain/room'
+type MemberId = Participant['memberId']
 type ExcludeMenuInitialState = {
     recentMenus: { userId: string; menuList: Menu[] }[]
     excludedMenuList?: { memberId: MemberId; exclusions: Menu[] }[]
 }
-type ExcludeMenuUpdateResponseDto = { memberId: MemberId; exclusions: Menu[] }[]
 
 interface UserRecentMenus {
     memberId: number
@@ -19,7 +18,7 @@ export function MenuExcludePage() {
     const [userRecentMenus, setUserRecentMenus] = useState<UserRecentMenus[]>(
         []
     )
-    const { phaseData, socket } = useSocket()
+    const { phaseData, excludeMenuPicks } = useSocket()
     useEffect(() => {
         if (phaseData && phaseData.phase === 'exclude-menu') {
             const data = phaseData.data as ExcludeMenuInitialState
@@ -37,27 +36,21 @@ export function MenuExcludePage() {
     }, [phaseData])
 
     useEffect(() => {
-        const handleExcludeUpdated = (data: ExcludeMenuUpdateResponseDto) => {
-            setUserRecentMenus(prev =>
-                prev.map(item => {
-                    const updateItem = data.find(
-                        update => Number(update.memberId) === Number(item.memberId)
-                    )
-                    if (updateItem) {
-                        return {
-                            ...item,
-                            excludedMenuList: updateItem.exclusions
-                        }
+        setUserRecentMenus(prev =>
+            prev.map(item => {
+                const updateItem = excludeMenuPicks.find(
+                    update => Number(update.memberId) === Number(item.memberId)
+                )
+                if (updateItem) {
+                    return {
+                        ...item,
+                        excludedMenuList: updateItem.exclusions
                     }
-                    return item
-                })
-            )
-        }
-        socket?.on('exclude-menu-updated', handleExcludeUpdated)
-        return () => {
-            socket?.off('exclude-menu-updated', handleExcludeUpdated)
-        }
-    }, [socket])
+                }
+                return item
+            })
+        )
+    }, [excludeMenuPicks])
     return (
         <>
             <div className="flex flex-col gap-30">
@@ -85,12 +78,9 @@ const MenuExcludeList = ({
     memberId: number
     excludedMenuList?: Menu[]
 }) => {
-    const { categories, socket } = useSocket()
-    const { userId: currentUserId } = useAuthStore()
+    const { categories, commands } = useSocket()
     const handleClick = (menu: Menu) => {
-        // if (userId === currentUserId) {
-        socket?.emit('exclude-menu', { menu })
-        // }
+        commands?.excludeMenu({ menu })
     }
     return (
         <div className="flex flex-col gap-10">

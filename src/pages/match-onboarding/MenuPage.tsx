@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import type { Menu } from '@kimdaegyu/babmukdang-shared/domain'
+import type { Menu } from '@kimdaegyu/babmukdang-shared/domain/room'
 type MenuInitialState = { initialMenus: Menu[] }
 
 import { useSocket } from '@/contexts/SocketContext'
@@ -7,7 +7,7 @@ import { MenuCard } from '@/components'
 import { useAuthStore } from '@/store'
 
 export function MenuPage() {
-    const { phaseData, categories, socket, menuPicks } = useSocket()
+    const { phaseData, categories, commands, menuPicks } = useSocket()
     const { userId } = useAuthStore()
     const [menus, setMenus] = useState<Menu[]>([])
     useEffect(() => {
@@ -17,7 +17,7 @@ export function MenuPage() {
     }, [phaseData])
 
     const handleSelectMenu = (menuCode: Menu['code']) => {
-        socket?.emit('pick-menu', { menuCode })
+        commands?.pickMenu({ menuCode })
     }
 
     return (

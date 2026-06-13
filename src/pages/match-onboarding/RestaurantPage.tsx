@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import type { RestaurantResponse } from '@kimdaegyu/babmukdang-shared/domain'
+import type { RestaurantResponse } from '@kimdaegyu/babmukdang-shared/domain/restaurant'
 type RestaurantInitialState = { initialRestaurants: RestaurantResponse[] }
 import type { RestaurantCardView } from '@/viewModels'
 import { useAuthStore } from '@/store'
@@ -10,7 +10,7 @@ import { useSocket } from '@/contexts/SocketContext'
 export function RestaurantPage() {
     const [restaurants, setRestaurants] = useState<RestaurantResponse[]>([])
 
-    const { phaseData, socket, restaurantPicks } = useSocket()
+    const { phaseData, commands, restaurantPicks } = useSocket()
     useEffect(() => {
         if (phaseData && phaseData.phase === 'restaurant') {
             setRestaurants(
@@ -22,7 +22,9 @@ export function RestaurantPage() {
     const userId = useAuthStore(state => state.userId)
 
     const onClickRestaurant = (restaurant: RestaurantCardView) => {
-        socket?.emit('pick-restaurant', { restaurantId: restaurant.id as RestaurantResponse['restaurantId'] })
+        commands?.pickRestaurant({
+            restaurantId: restaurant.id as RestaurantResponse['restaurantId']
+        })
     }
 
     const toCardModel = (restaurant: RestaurantResponse): RestaurantCardView => ({
