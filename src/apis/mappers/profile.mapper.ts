@@ -1,11 +1,11 @@
 import type {
     ProfileDetailDto,
-    ProfileDetailResponse,
+    ProfileDetailView,
     ProfileDto,
-    ProfileResponse
+    ProfileSummaryView
 } from '../types'
 
-export const mapProfile = (profile: ProfileDto | ProfileDetailDto): ProfileResponse => ({
+export const mapProfile = (profile: ProfileDto | ProfileDetailDto): ProfileSummaryView => ({
     memberId: Number(profile.memberId),
     userName: profile.username,
     username: profile.username,
@@ -16,7 +16,7 @@ export const mapProfile = (profile: ProfileDto | ProfileDetailDto): ProfileRespo
 
 export const mapProfileDetail = (
     profile: ProfileDetailDto
-): ProfileDetailResponse => ({
+): ProfileDetailView => ({
     memberId: Number(profile.memberId),
     userName: profile.username,
     username: profile.username,

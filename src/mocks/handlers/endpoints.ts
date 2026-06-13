@@ -16,28 +16,28 @@
 
 import type {
     ArticleDetailDto,
-    ArticleDetailResponse,
+    ArticleDetailView,
     ArticlePostRequest,
     CommentPostRequest,
     ChallengeStatusResponse,
     CouponResponse,
-    LikePostResponse,
+    ArticleLikeView,
     MealStatusResponse,
     OnboardingPreferenceRequest,
     PageArticleSummaryDto,
-    PageArticleSummaryResponse,
-    PostRequest,
-    PostResponse,
+    ArticlePageView,
+    RecruitFormView,
+    RecruitCardView,
     PreferenceMetaResponse,
     PreferenceSummaryResponse,
-    ProfileDetailResponse,
+    ProfileDetailView,
     ProfileDto,
     RecruitDto,
     RecruitListResponse,
     TokenResponse,
     UpdateMealStatusRequest,
     UpdateProfileRequest
-} from './types'
+} from '../../apis/types'
 
 // ============================================================================
 // 엔드포인트 정의
@@ -314,15 +314,17 @@ export const api = {
         /** 게시글 생성 요청 */
         CreateRequest: {} as ArticlePostRequest,
         /** 좋아요 응답 */
-        LikeResponse: {} as LikePostResponse,
+        LikeResponse: {} as ArticleLikeView,
         /** 댓글 작성 요청 */
         CommentRequest: {} as CommentPostRequest
     },
     members: {
         /** 프로필 응답 (Backend DTO) */
         ProfileResponse: {} as ProfileDto,
-        /** 프로필 상세 응답 (Backend DTO) */
-        ProfileDetailResponse: {} as ProfileDetailResponse,
+        /** 프로필 상세 응답 (Client view model) */
+        ProfileDetailView: {} as ProfileDetailView,
+        /** @deprecated Use ProfileDetailView. */
+        ProfileDetailResponse: {} as ProfileDetailView,
         /** 프로필 수정 요청 */
         UpdateRequest: {} as UpdateProfileRequest
     },
@@ -330,7 +332,7 @@ export const api = {
         /** 모집글 목록 응답 */
         ListResponse: {} as RecruitListResponse,
         /** 모집글 생성 요청 */
-        CreateRequest: {} as PostRequest
+        CreateRequest: {} as RecruitFormView
     },
     preferences: {
         /** 선호도 요약 응답 */

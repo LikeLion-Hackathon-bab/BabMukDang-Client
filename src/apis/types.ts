@@ -87,12 +87,7 @@ export type {
 export type WeekProgress = { days: boolean[]; completed: number; goal: number }
 export type MonthProgress = { count: number; goal: number }
 
-export interface LocalTime {
-    hour: number
-    minute: number
-    second: number
-    nano: number
-}
+export type LocalTime = import('../viewModels/api').LocalTimeView
 
 export interface MutationOptions<TData = NoContent> {
     mutationFn?: () => Promise<TData>
@@ -102,7 +97,7 @@ export interface MutationOptions<TData = NoContent> {
 }
 
 // ============================================================================
-// Article API DTO aliases and view models
+// Article API DTO aliases
 // ============================================================================
 
 export type ArticleSummaryDto = DomainArticleSummaryResponse
@@ -115,171 +110,67 @@ export type CommentDto = ArticleComment
 export type KakaoRestaurantResponse = RestaurantResponse
 export type RestaurantResponseDto = RestaurantResponse
 
-export interface RestaurantInfo {
-    placeId: string
-    placeName: string
-    addressName: string
-    roadAddressName: string
-    phoneNumber: string
-    placeUrl: string
-    distance?: string
-    categoryGroupCode: string
-    categoryGroupName: string
-    categoryName: string
-    x: number
-    y: number
-}
+export type {
+    ArticleDetailView,
+    ArticleLikeView,
+    ArticlePageView,
+    ArticleSummaryView,
+    CommentView,
+    MeetingCardView,
+    MeetingParticipantView,
+    PreferenceMetaView,
+    ProfileDetailView,
+    ProfileSummaryView,
+    RecruitCardView,
+    RecruitFormView,
+    RestaurantCardView,
+    RestaurantInputView
+} from '../viewModels/api'
 
-export interface ArticleSummaryResponse {
-    articleId: number
-    authorId: number
-    authorUsername: string
-    imageUrl: string
-    mealDate: string
-    mealTime: LocalTime
-    restaurantName: string
-    likeCount: number
-    commentCount: number
-    likedByMe: boolean
-    createdAt: string
-    expiresAt: string
-    taggedMemberIds: number[]
-}
-
-export interface ArticleDetailResponse extends ArticleSummaryResponse {
-    restaurant: RestaurantInfo
-    comments?: CommentResponse[]
-}
-
-export interface CommentResponse {
-    commentId: number
-    authorId: number
-    authorUsername: string
-    parentCommentId: number | null
-    content: string
-    createdAt: string
-    profileImageUrl?: string | null
-    distance?: string
-    replies?: CommentResponse[]
-}
-
-export interface PageArticleSummaryResponse {
-    items: ArticleSummaryResponse[]
-    content: ArticleSummaryResponse[]
-    meta: DomainPageArticleSummaryResponse['meta']
-    totalElements: number
-    totalPages: number
-    first: boolean
-    last: boolean
-    size: number
-    number: number
-    numberOfElements: number
-    empty: boolean
-}
-
-// Legacy page aliases kept for screens that still expect content-style naming.
-export type ArticlePageView = PageArticleSummaryResponse
-
-export interface LikePostResponse {
-    liked: boolean
-    likeCount: number
-}
+// Backward-compatible type aliases. API adapters should migrate to the View names
+// above; these aliases remain so existing screens do not confuse server DTOs with
+// client-side view models during the migration.
+export type RestaurantInfo = import('../viewModels/api').RestaurantInputView
+export type ArticleSummaryResponse = import('../viewModels/api').ArticleSummaryView
+export type ArticleDetailResponse = import('../viewModels/api').ArticleDetailView
+export type CommentResponse = import('../viewModels/api').CommentView
+export type PageArticleSummaryResponse = import('../viewModels/api').ArticlePageView
+export type LikePostResponse = import('../viewModels/api').ArticleLikeView
 
 // ============================================================================
-// Recruit view model
+// Recruit DTO aliases and view models
 // ============================================================================
 
 export type RecruitDto = RecruitListResponse['items'][number]
 export type PostRequest = CreateRecruitRequest
-
-export interface Post {
-    targetCount: number
-    meetingAt: string
-    location: string
-    message: string
-}
-
-export interface PostResponse extends Post {
-    postId: number
-    author: {
-        authorId: number
-        name: string
-        profileImageUrl: string
-    }
-    createdAt: string
-    participants: {
-        memberId?: number
-        name: string
-        profileImageUrl: string
-    }[]
-}
+export type Post = import('../viewModels/api').RecruitFormView
+export type PostResponse = import('../viewModels/api').RecruitCardView
 
 // ============================================================================
 // Profile view models
 // ============================================================================
 
 export type ProfileDto = MemberResponse
-
-export interface ProfileResponse {
-    memberId: number
-    userName: string
-    username: string
-    profileImageUrl: string
-    bio: string
-    meetingCount: number
-}
+export type ProfileResponse = import('../viewModels/api').ProfileSummaryView
 
 // ============================================================================
 // Invitation / meeting / preference
 // ============================================================================
 
 export type ProfileDetailDto = DomainProfileDetailResponse
-
-export interface ProfileDetailResponse {
-    memberId: number
-    userName: string
-    username: string
-    profileImageUrl: string
-    bio: string
-    meetingCount: number
-    likes: Food[]
-    dislikes: Food[]
-    allergies: Food[]
-    friendConunt: number
-    completedPlans: number
-    uncompletedPlans: number
-}
+export type ProfileDetailResponse = import('../viewModels/api').ProfileDetailView
 
 export type InvitationPostRequest = CreateInvitationRequest
 export type MeetingDto = PlanResponse
-
-export interface MeetingParticipant {
-    userId: number
-    name: string
-}
-
-export interface MeetingResponse {
-    id: number
-    participants: MeetingParticipant[]
-    location: string
-    time: string
-    restaurant: string
-    isCompleted: boolean
-    restaurantType: string
-}
+export type MeetingParticipant = import('../viewModels/api').MeetingParticipantView
+export type MeetingResponse = import('../viewModels/api').MeetingCardView
 
 export type OnboardingPreferenceRequest = CreateProfileRequest
 export type OnboardingPreferenceResponse = NoContent
 export type PreferenceSummaryResponse = MemberFoodPreference
-export type PreferenceMetaResponse = {
-    likes?: Food[]
-    dislikes?: Food[]
-    allergies?: Food[]
-}
+export type PreferenceMetaResponse = import('../viewModels/api').PreferenceMetaView
 export type PreferenceItem = Food
 
 export type FriendMealResponse = FriendMealItemResponse
-export interface FriendMealFilter {
-    filter: MealStatus
-}
+export type FriendMealFilter = { filter: MealStatus }
 export type FriendMealListResponse = FriendMealItemResponse[]

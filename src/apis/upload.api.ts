@@ -13,7 +13,11 @@
 import { useMutation } from '@tanstack/react-query'
 import { contractClient } from './client'
 import { apiContract } from '@kimdaegyu/babmukdang-shared/domain'
-import type { MutationOptions } from './types'
+import type {
+    MutationOptions,
+    PresignArticleResponse,
+    PresignProfileResponse
+} from './types'
 
 // ============================================================================
 // 유틸리티 함수
@@ -44,22 +48,12 @@ const normalizeContentType = (file: File): string => {
 // API 함수
 // ============================================================================
 
-/**
- * Presign 응답 타입
- */
-interface PresignResponse {
-    /** S3 객체 키 */
-    key: string
-    /** S3 PUT 업로드용 presigned URL */
-    putUrl: string
-    /** CDN URL (업로드 후 접근 가능) */
-    cdnUrl: string
-}
+type PresignResponse = PresignArticleResponse | PresignProfileResponse
 
 /**
  * Upload API 함수 모음
  */
-export const uploadApi = {
+const uploadApi = {
     /**
      * 게시글 이미지용 presigned URL 발급
      * @param currentUserId - 현재 사용자 ID
@@ -143,12 +137,6 @@ export const uploadApi = {
     }
 }
 
-// 하위 호환성을 위한 기존 함수 export
-export const presignArticle = uploadApi.presignArticle
-export const presignProfile = uploadApi.presignProfile
-export const uploadArticleS3 = uploadApi.uploadArticleS3
-export const uploadProfileS3 = uploadApi.uploadProfileS3
-
 // ============================================================================
 // Mutation Hooks
 // ============================================================================
@@ -161,13 +149,6 @@ type UploadAndRegisterVars = {
     currentUserId: string
     /** 업로드할 파일 */
     file: File
-    /** CDN URL을 받아서 최종 요청 데이터를 만드는 빌더 */
-    buildRequest: (cdnUrl: string) => {
-        imageUrl: string
-        username: string
-        preferences: string[]
-        cantEat: string[]
-    }
 }
 
 /**
@@ -190,11 +171,13 @@ type UploadAndRegisterVars = {
  *   })
  * })
  */
-export const useUploadProfile = (options: MutationOptions<void> = {}) => {
-    const { mutate, isPending, error } = useMutation({
+export const useUploadProfilePhoto = (
+    options: MutationOptions<string> = {}
+) => {
+    const { mutate, mutateAsync, isPending, error } = useMutation({
         mutationFn: async ({ currentUserId, file }: UploadAndRegisterVars) => {
             // 1) presign
-            const { putUrl } = await uploadApi.presignProfile(
+            const { putUrl, cdnUrl } = await uploadApi.presignProfile(
                 String(currentUserId),
                 file
             )
@@ -202,11 +185,55 @@ export const useUploadProfile = (options: MutationOptions<void> = {}) => {
             // 2) S3 업로드
             await uploadApi.uploadProfileS3({ putUrl, file })
 
-            // 3) 필요시 추가 처리 (현재는 S3 업로드만)
+            return cdnUrl
         },
         onSuccess: options.onSuccess,
         onError: options.onError
     })
 
-    return { mutate, isPending, error }
+    return { mutate, mutateAsync, isPending, error }
+}
+
+/**
+ * 게시글 이미지 업로드 Hook (presign + S3 업로드)
+ * @param options - 성공/에러 콜백
+ *
+ * @example
+ * const { mutate: uploadArticle } = useUploadArticle({
+ *   onSuccess: () => toast.success('게시글 이미지가 업로드되었습니다.')
+ * })
+ *
+ * uploadArticle({
+ *   currentUserId: user.id.toString(),
+ *   file,
+ *   buildRequest: (cdnUrl) => ({
+ *     imageUrl: cdnUrl,
+ *     username: '사용자명',
+ *     preferences: ['KOREAN'],
+ *     cantEat: ['PEANUT']
+ *   })
+ * })
+ */
+export const useUploadArticlePhoto = (
+    options: MutationOptions<string> = {}
+) => {
+    const { mutate, mutateAsync, isPending, error } = useMutation({
+        mutationFn: async ({ currentUserId, file }: UploadAndRegisterVars) => {
+            // 1) presign
+            const { putUrl, cdnUrl } = await uploadApi.presignArticle(
+                String(currentUserId),
+                file
+            )
+
+            // 2) S3 업로드
+            await uploadApi.uploadArticleS3({ putUrl, file })
+
+            // 3) 필요시 추가 처리 (현재는 S3 업로드만)
+            return cdnUrl
+        },
+        onSuccess: options.onSuccess,
+        onError: options.onError
+    })
+
+    return { mutate, mutateAsync, isPending, error }
 }

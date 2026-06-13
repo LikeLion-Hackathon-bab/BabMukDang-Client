@@ -24,16 +24,17 @@ import {
     mapComment
 } from './mappers/article.mapper'
 import type {
-    ArticleDetailResponse,
+    ArticleDetailView,
     ArticlePostRequest,
     CommentPostRequest,
-    CommentResponse,
-    LikePostResponse,
+    CommentView,
+    ArticleLikeView,
     MutationOptions,
     NoContent,
     CreatedEntityIdResponse,
-    PageArticleSummaryResponse
+    ArticlePageView
 } from './types'
+import { useUploadArticlePhoto } from '@/apis/upload.api'
 
 // ============================================================================
 // API 함수
@@ -46,13 +47,13 @@ import type {
  * // 직접 API 호출이 필요한 경우
  * const response = await articleApi.getById(123)
  */
-export const articleApi = {
+const articleApi = {
     /**
      * 게시글 상세 조회
      * @param articleId - 게시글 ID
      * @returns 게시글 상세 정보
      */
-    getById: async (articleId: number): Promise<ArticleDetailResponse> => {
+    getById: async (articleId: number): Promise<ArticleDetailView> => {
         const data = await contractClient.get(apiContract.articles.detail, {
             pathParams: { articleId: domainId.article(articleId) }
         })
@@ -64,7 +65,7 @@ export const articleApi = {
      * @param articleId - 게시글 ID
      * @returns 댓글 목록
      */
-    getComments: async (articleId: number): Promise<CommentResponse[]> => {
+    getComments: async (articleId: number): Promise<CommentView[]> => {
         const detail = await contractClient.get(apiContract.articles.detail, {
             pathParams: { articleId: domainId.article(articleId) }
         })
@@ -75,7 +76,7 @@ export const articleApi = {
      * 홈 피드 게시글 조회
      * @returns 홈 피드 게시글 페이지
      */
-    getHome: async (): Promise<PageArticleSummaryResponse> => {
+    getHome: async (): Promise<ArticlePageView> => {
         const data = await contractClient.get(apiContract.articles.list)
         return mapArticlePage(data)
     },
@@ -85,9 +86,7 @@ export const articleApi = {
      * @param authorId - 작성자 ID
      * @returns 게시글 페이지
      */
-    getByAuthor: async (
-        authorId: number
-    ): Promise<PageArticleSummaryResponse> => {
+    getByAuthor: async (authorId: number): Promise<ArticlePageView> => {
         const data = await contractClient.get(apiContract.articles.byMember, {
             pathParams: { memberId: domainId.member(authorId) }
         })
@@ -99,9 +98,7 @@ export const articleApi = {
      * @param memberId - 멤버 ID
      * @returns 게시글 페이지
      */
-    getByMember: async (
-        memberId: number
-    ): Promise<PageArticleSummaryResponse> => {
+    getByMember: async (memberId: number): Promise<ArticlePageView> => {
         const data = await contractClient.get(apiContract.articles.byMember, {
             pathParams: { memberId: domainId.member(memberId) },
             query: { page: 0 }
@@ -113,7 +110,7 @@ export const articleApi = {
      * 내 게시글 조회
      * @returns 내 게시글 페이지
      */
-    getMy: async (): Promise<PageArticleSummaryResponse> => {
+    getMy: async (): Promise<ArticlePageView> => {
         const data = await contractClient.get(apiContract.articles.my)
         return mapArticlePage(data)
     },
@@ -131,7 +128,7 @@ export const articleApi = {
      * @param articleId - 게시글 ID
      * @returns 좋아요 상태
      */
-    like: async (articleId: number): Promise<LikePostResponse> => {
+    like: async (articleId: number): Promise<ArticleLikeView> => {
         return contractClient.post(apiContract.articles.like, {
             pathParams: { articleId: domainId.article(articleId) }
         })
@@ -166,7 +163,10 @@ export const articleApi = {
      * 댓글 삭제
      * @param commentId - 댓글 ID
      */
-    deleteComment: async (articleId: number, commentId: number): Promise<NoContent> => {
+    deleteComment: async (
+        articleId: number,
+        commentId: number
+    ): Promise<NoContent> => {
         return contractClient.delete(apiContract.articles.deleteComment, {
             pathParams: {
                 commentId: domainId.comment(commentId)
@@ -187,12 +187,12 @@ export const articleApi = {
  * @example
  * const { data: article, isLoading } = useGetArticle(123)
  */
-export const useGetArticle = (articleId: number) => {
-    const { data, isLoading, error } = useQuery({
+export const useGetArticleDetail = (articleId: number) => {
+    const { data, isLoading, error, refetch } = useQuery({
         queryKey: queryKeys.articles.detail(articleId),
         queryFn: () => articleApi.getById(articleId)
     })
-    return { data, isLoading, error }
+    return { data, isLoading, error, refetch }
 }
 
 /**
@@ -301,7 +301,9 @@ type UploadAndPostVars = {
  */
 type CreateArticleResult = Awaited<ReturnType<typeof articleApi.create>>
 
-export const useUploadArticle = (options: MutationOptions<CreateArticleResult>) => {
+export const useUploadArticle = (
+    options: MutationOptions<CreateArticleResult>
+) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: async ({
@@ -309,25 +311,27 @@ export const useUploadArticle = (options: MutationOptions<CreateArticleResult>) 
             file,
             buildRequest
         }: UploadAndPostVars) => {
-            // 동적 import로 순환 참조 방지
-            const { uploadApi } = await import('./upload.api.ts')
+            const { mutate: uploadArticlePhoto } = useUploadArticlePhoto({
+                onSuccess: url => {
+                    if (!url) {
+                        throw new Error('CDN URL이 반환되지 않았습니다.')
+                    }
+                    const req = buildRequest(url)
+                    return articleApi.create(req)
+                },
+                onError: e => {
+                    throw new Error('이미지 업로드 실패: ' + e.message)
+                }
+            })
 
-            // 1) presign
-            const { putUrl, cdnUrl } = await uploadApi.presignArticle(
-                String(currentUserId),
+            uploadArticlePhoto({
+                currentUserId,
                 file
-            )
-
-            // 2) S3 업로드
-            await uploadApi.uploadArticleS3({ putUrl, file })
-
-            // 3) Backend에 게시물 생성
-            const req = buildRequest(cdnUrl)
-            return articleApi.create(req)
+            })
         },
         onSuccess: data => {
             queryClient.invalidateQueries({ queryKey: queryKeys.articles.all })
-            options.onSuccess?.(data)
+            options.onSuccess?.()
         },
         onError: options.onError
     })
@@ -340,7 +344,7 @@ export const useUploadArticle = (options: MutationOptions<CreateArticleResult>) 
  * @param options - 성공/에러 콜백
  */
 export const useLikeArticle = (
-    options: MutationOptions<LikePostResponse> = {}
+    options: MutationOptions<ArticleLikeView> = {}
 ) => {
     const { mutate, isPending, error } = useMutation({
         mutationFn: ({ articleId }: { articleId: number }) =>
@@ -355,7 +359,9 @@ export const useLikeArticle = (
  * 댓글 작성 Hook
  * @param options - 성공/에러 콜백
  */
-export const useCommentArticle = (options: MutationOptions<CreatedEntityIdResponse> = {}) => {
+export const useCommentArticle = (
+    options: MutationOptions<CreatedEntityIdResponse> = {}
+) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: ({
@@ -398,7 +404,9 @@ export const useDeleteArticle = (options: MutationOptions<NoContent> = {}) => {
  * 댓글 삭제 Hook
  * @param options - 성공/에러 콜백
  */
-export const useDeleteArticleComment = (options: MutationOptions<NoContent> = {}) => {
+export const useDeleteArticleComment = (
+    options: MutationOptions<NoContent> = {}
+) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: ({

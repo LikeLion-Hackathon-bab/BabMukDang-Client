@@ -5,7 +5,7 @@
  */
 
 import { http, HttpResponse } from 'msw'
-import { endpoints } from '@/apis'
+import { endpoints } from './endpoints'
 import { API_BASE_URL } from '@/apis/baseUrl'
 import { mockMeetingResponses } from '@/mocks/fixtures'
 

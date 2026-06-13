@@ -86,9 +86,10 @@ export const queryKeys = {
         /** 모든 모임 쿼리의 기본 키 */
         all: ['meetings'] as const,
         /** 모임 목록 */
-        list: ['meetings', 'list'] as const
+        list: ['meetings', 'list'] as const,
+        /** 모임 상세 */
+        detail: (planId: number) => ['meetings', planId] as const
     },
-
     /**
      * 친구(Friends) 관련 쿼리 키
      */
@@ -115,6 +116,8 @@ export const queryKeys = {
     preferences: {
         /** 모든 선호도 쿼리의 기본 키 */
         all: ['preferences'] as const,
+        /** 내 음식 선호도 */
+        my: ['preferences', 'my'] as const,
         /** 선호도 요약 */
         summary: ['preferences', 'summary'] as const,
         /** 선호도 메타정보 */
@@ -129,13 +132,7 @@ export const queryKeys = {
         all: ['notifications'] as const,
         /** 방 접근 */
         roomAccess: (roomId: string) =>
-            ['notifications', 'room', roomId] as const,
-        /** 알림 읽음 */
-        markRead: (notificationId: string) =>
-            ['notifications', 'markRead', notificationId] as const,
-        /** 알림 삭제 */
-        delete: (notificationId: string) =>
-            ['notifications', 'delete', notificationId] as const
+            ['notifications', 'room', roomId] as const
     }
 } as const
 

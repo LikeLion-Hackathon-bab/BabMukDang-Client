@@ -21,8 +21,8 @@ import { queryKeys } from './keys'
 import { mapProfile, mapProfileDetail } from './mappers/profile.mapper'
 import type {
     MutationOptions,
-    ProfileResponse,
-    ProfileDetailResponse,
+    ProfileSummaryView,
+    ProfileDetailView,
     UpdateProfileRequest
 } from './types'
 
@@ -33,12 +33,12 @@ import type {
 /**
  * Profile API 함수 모음
  */
-export const profileApi = {
+const profileApi = {
     /**
      * 내 프로필 조회
      * @returns 프로필 정보 (화면 view model)
      */
-    getMyProfile: async (): Promise<ProfileResponse> => {
+    getMyProfile: async (): Promise<ProfileSummaryView> => {
         const data = await contractClient.get(apiContract.members.me)
         return mapProfile(data)
     },
@@ -47,7 +47,7 @@ export const profileApi = {
      * 내 프로필 상세 조회
      * @returns 프로필 상세 정보 (선호도 포함)
      */
-    getMyProfileDetail: async (): Promise<ProfileDetailResponse> => {
+    getMyProfileDetail: async (): Promise<ProfileDetailView> => {
         const data = await contractClient.get(apiContract.members.myProfile)
         return mapProfileDetail(data)
     },
@@ -57,10 +57,13 @@ export const profileApi = {
      * @param memberId - 멤버 ID
      * @returns 프로필 정보 (화면 view model)
      */
-    getMemberProfile: async (memberId: number): Promise<ProfileResponse> => {
-        const data = await contractClient.get(apiContract.members.memberProfile, {
-            pathParams: { memberId: domainId.member(memberId) }
-        })
+    getMemberProfile: async (memberId: number): Promise<ProfileSummaryView> => {
+        const data = await contractClient.get(
+            apiContract.members.memberProfile,
+            {
+                pathParams: { memberId: domainId.member(memberId) }
+            }
+        )
         return mapProfile(data)
     },
 
@@ -71,10 +74,13 @@ export const profileApi = {
      */
     getMemberProfileDetail: async (
         memberId: number
-    ): Promise<ProfileDetailResponse> => {
-        const data = await contractClient.get(apiContract.members.memberProfile, {
-            pathParams: { memberId: domainId.member(memberId) }
-        })
+    ): Promise<ProfileDetailView> => {
+        const data = await contractClient.get(
+            apiContract.members.memberProfile,
+            {
+                pathParams: { memberId: domainId.member(memberId) }
+            }
+        )
         return mapProfileDetail(data)
     },
 
@@ -85,8 +91,10 @@ export const profileApi = {
      */
     updateMyProfile: async (
         data: UpdateProfileRequest
-    ): Promise<ProfileResponse> => {
-        await contractClient.patch(apiContract.members.updateProfile, { body: data })
+    ): Promise<ProfileSummaryView> => {
+        await contractClient.patch(apiContract.members.updateProfile, {
+            body: data
+        })
         return profileApi.getMyProfile()
     }
 }
@@ -126,10 +134,14 @@ export const useGetMyProfileDetail = () => {
  * 특정 멤버 프로필 조회 Hook
  * @param memberId - 멤버 ID
  */
-export const useGetMemberProfile = (memberId: number) => {
+export const useGetMemberProfile = (
+    memberId: number,
+    options?: { enabled?: boolean }
+) => {
     return useQuery({
         queryKey: queryKeys.profile.member(memberId),
-        queryFn: () => profileApi.getMemberProfile(memberId)
+        queryFn: () => profileApi.getMemberProfile(memberId),
+        enabled: (options?.enabled ?? true) && memberId > 0
     })
 }
 
@@ -137,10 +149,14 @@ export const useGetMemberProfile = (memberId: number) => {
  * 특정 멤버 프로필 상세 조회 Hook
  * @param memberId - 멤버 ID
  */
-export const useGetMemberProfileDetail = (memberId: number) => {
+export const useGetMemberProfileDetail = (
+    memberId: number,
+    options?: { enabled?: boolean }
+) => {
     return useQuery({
         queryKey: queryKeys.profile.memberDetail(memberId),
-        queryFn: () => profileApi.getMemberProfileDetail(memberId)
+        queryFn: () => profileApi.getMemberProfileDetail(memberId),
+        enabled: (options?.enabled ?? true) && memberId > 0
     })
 }
 
@@ -188,7 +204,9 @@ export const useGetProfiles = (memberIds: number[]) => {
  *   bio: '자기소개'
  * })
  */
-export const useUpdateMyProfile = (options: MutationOptions<ProfileResponse> = {}) => {
+export const useUpdateMyProfile = (
+    options: MutationOptions<ProfileSummaryView> = {}
+) => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: (data: UpdateProfileRequest) =>

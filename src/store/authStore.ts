@@ -13,7 +13,6 @@ interface AuthState {
     }
     setTokens: ({ accessToken }: { accessToken: string }) => void
     clearTokens: () => void
-    refresh: () => Promise<void>
     setUsername: (username: string) => void
     setUserId: (userId: string) => void
     setProfile: (profile: {
@@ -22,7 +21,7 @@ interface AuthState {
         bio: string | null
         meetingCount: number | null
     }) => void
-    logout: () => void
+    flushAuthStore: () => void
 }
 
 // localStorage에 저장될 상태만 정의 (함수 제외)
@@ -52,7 +51,6 @@ export const useAuthStore = create<AuthState>()(
     persist(
         set => ({
             accessToken: null,
-            refreshToken: null,
             username: null,
             userId: null,
             profile: {
@@ -64,16 +62,6 @@ export const useAuthStore = create<AuthState>()(
             setTokens: ({ accessToken }: { accessToken: string }) =>
                 set({ accessToken }),
             clearTokens: () => set({ accessToken: null }),
-            // 토큰 갱신 단일 진입점. SocketProvider 등에서 갱신 로직을 중복
-            // 구현하지 않고 이 액션만 호출한다.
-            // (apis는 client→authStore 순환을 피하려고 동적 import)
-            refresh: async () => {
-                const { refresh: refreshApi } = await import('@/apis')
-                const token = await refreshApi()
-                set({
-                    accessToken: token.accessToken
-                })
-            },
             setUsername: (username: string) => set({ username }),
             setUserId: (userId: string) => set({ userId }),
             setProfile: (profile: {
@@ -82,7 +70,7 @@ export const useAuthStore = create<AuthState>()(
                 bio: string | null
                 meetingCount: number | null
             }) => set({ profile }),
-            logout: () => {
+            flushAuthStore: () => {
                 set({
                     accessToken: null,
                     username: null,

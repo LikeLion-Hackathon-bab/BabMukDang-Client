@@ -1,6 +1,6 @@
-import type { MeetingDto, MeetingResponse } from '../types'
+import type { MeetingDto, MeetingCardView } from '../types'
 
-export const mapMeeting = (meeting: MeetingDto): MeetingResponse => ({
+export const mapMeeting = (meeting: MeetingDto): MeetingCardView => ({
     id: Number(meeting.planId),
     participants: meeting.participants.map((participant: { memberId: number | string; username: string }) => ({
         userId: Number(participant.memberId),

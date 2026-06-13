@@ -23,8 +23,8 @@ import type {
     CreateRecruitResponse,
     MutationOptions,
     NoContent,
-    PostRequest,
-    PostResponse,
+    RecruitFormView,
+    RecruitCardView,
     RecruitDto
 } from './types'
 
@@ -35,7 +35,7 @@ import type {
 /**
  * Recruit API 함수 모음
  */
-export const recruitApi = {
+const recruitApi = {
     /**
      * 모집글 목록 조회
      * @returns 모집글 목록
@@ -51,7 +51,7 @@ export const recruitApi = {
      * 모집글 작성
      * @param data - 모집글 데이터
      */
-    createRecruit: async (body: PostRequest) => {
+    createRecruit: async (body: RecruitFormView) => {
         return contractClient.post(apiContract.recruits.create, { body })
     },
     /**
@@ -74,11 +74,6 @@ export const recruitApi = {
         })
     }
 }
-
-export const getRecruits = recruitApi.getRecruits
-export const postRecruit = recruitApi.createRecruit
-export const closeRecruit = recruitApi.closeRecruit
-export const joinRecruit = recruitApi.joinRecruit
 
 // ============================================================================
 // Query Hooks
@@ -108,7 +103,9 @@ export const useGetRecruits = () => {
  * 모집글 작성 Hook
  * @param options - 성공/에러 콜백
  */
-export const usePostRecruit = (options: MutationOptions<CreateRecruitResponse> = {}) => {
+export const usePostRecruit = (
+    options: MutationOptions<CreateRecruitResponse> = {}
+) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: recruitApi.createRecruit,
@@ -130,7 +127,7 @@ export const usePostRecruit = (options: MutationOptions<CreateRecruitResponse> =
 export const useCloseRecruit = (options: MutationOptions<NoContent> = {}) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
-        mutationFn: closeRecruit,
+        mutationFn: recruitApi.closeRecruit,
         onSuccess: data => {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.recruits.all
@@ -155,7 +152,7 @@ export const useCloseRecruit = (options: MutationOptions<NoContent> = {}) => {
 export const useJoinRecruit = (options: MutationOptions<NoContent> = {}) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
-        mutationFn: joinRecruit,
+        mutationFn: recruitApi.joinRecruit,
         onSuccess: data => {
             queryClient.invalidateQueries({
                 queryKey: queryKeys.recruits.all

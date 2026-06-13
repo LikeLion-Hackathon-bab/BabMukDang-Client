@@ -1,21 +1,21 @@
 import type {
     ArticleDetailDto,
-    ArticleDetailResponse,
+    ArticleDetailView,
     ArticleSummaryDto,
-    ArticleSummaryResponse,
+    ArticleSummaryView,
     CommentDto,
-    CommentResponse,
+    CommentView,
     PageArticleSummaryDto,
-    PageArticleSummaryResponse,
-    RestaurantInfo,
+    ArticlePageView,
+    RestaurantInputView,
     RestaurantResponseDto
 } from '../types'
 
 const toDateOnly = (value: string): string => value.split('T')[0]
 
-export const mapRestaurantToRestaurantInfo = (
+export const mapRestaurantToRestaurantInputView = (
     restaurant: RestaurantResponseDto
-): RestaurantInfo => ({
+): RestaurantInputView => ({
     placeId: String(restaurant.restaurantId),
     placeName: restaurant.placeName,
     addressName: restaurant.addressName,
@@ -30,8 +30,8 @@ export const mapRestaurantToRestaurantInfo = (
     y: restaurant.lat
 })
 
-export const mapRestaurantInfoToRestaurant = (
-    restaurant: RestaurantInfo
+export const mapRestaurantInputViewToRestaurant = (
+    restaurant: RestaurantInputView
 ): RestaurantResponseDto => ({
     restaurantId: restaurant.placeId as RestaurantResponseDto['restaurantId'],
     placeName: restaurant.placeName,
@@ -47,12 +47,14 @@ export const mapRestaurantInfoToRestaurant = (
 })
 
 // Backward-compatible mapper names used by older upload/article code.
-export const mapKakaoRestaurantToRestaurantInfo = mapRestaurantToRestaurantInfo
-export const mapRestaurantInfoToKakaoRestaurant = mapRestaurantInfoToRestaurant
+export const mapKakaoRestaurantToRestaurantInputView = mapRestaurantToRestaurantInputView
+export const mapRestaurantInputViewToKakaoRestaurant = mapRestaurantInputViewToRestaurant
+export const mapKakaoRestaurantToRestaurantInfo = mapRestaurantToRestaurantInputView
+export const mapRestaurantInfoToKakaoRestaurant = mapRestaurantInputViewToRestaurant
 
 export const mapArticleSummary = (
     article: ArticleSummaryDto
-): ArticleSummaryResponse => ({
+): ArticleSummaryView => ({
     articleId: Number(article.articleId),
     authorId: Number(article.author.memberId),
     authorUsername: article.author.username,
@@ -70,15 +72,15 @@ export const mapArticleSummary = (
 
 export const mapArticleDetail = (
     article: ArticleDetailDto
-): ArticleDetailResponse => ({
+): ArticleDetailView => ({
     ...mapArticleSummary(article),
-    restaurant: mapRestaurantToRestaurantInfo(article.restaurant),
+    restaurant: mapRestaurantToRestaurantInputView(article.restaurant),
     comments: article.comments?.map(mapComment)
 })
 
 export const mapArticlePage = (
     page: PageArticleSummaryDto
-): PageArticleSummaryResponse => {
+): ArticlePageView => {
     const items = page.items.map(mapArticleSummary)
     return {
         items,
@@ -95,7 +97,7 @@ export const mapArticlePage = (
     }
 }
 
-export const mapComment = (comment: CommentDto): CommentResponse => ({
+export const mapComment = (comment: CommentDto): CommentView => ({
     commentId: Number(comment.commentId),
     authorId: Number(comment.author.memberId),
     authorUsername: comment.author.username,

@@ -500,7 +500,9 @@ test.describe('Auth', () => {
         expect(body.success).toBe(false)
     })
 
-    test(`GET ${ep.auth.kakaoLogin} → 카카오 OAuth로 리다이렉트`, async ({ request }) => {
+    test(`GET ${ep.auth.kakaoLogin} → 카카오 OAuth로 리다이렉트`, async ({
+        request
+    }) => {
         const res = await request.get(url(ep.auth.kakaoLogin), {
             maxRedirects: 0
         })
@@ -508,7 +510,9 @@ test.describe('Auth', () => {
         expect([200, 301, 302, 307, 308]).toContain(res.status())
     })
 
-    test(`POST ${ep.auth.refresh} → 쿠키 없이 호출 시 401`, async ({ request }) => {
+    test(`POST ${ep.auth.refresh} → 쿠키 없이 호출 시 401`, async ({
+        request
+    }) => {
         const res = await request.post(url(ep.auth.refresh))
         // refresh-token 쿠키가 없으므로 인증 실패가 정상
         expect([200, 201, 401]).toContain(res.status())
@@ -534,7 +538,9 @@ test.describe('Members', () => {
         expect(body.data.memberId).toBeTruthy()
     })
 
-    test(`GET ${ep.members.myProfile} detail 호환 → 200`, async ({ request }) => {
+    test(`GET ${ep.members.myProfile} detail 호환 → 200`, async ({
+        request
+    }) => {
         const { res, body } = await getJson(request, responses.myProfile, {
             headers: auth(tokenA)
         })
@@ -604,7 +610,9 @@ test.describe('Members', () => {
         expect(body.data.memberId).toBeTruthy()
     })
 
-    test(`GET ${apiContract.articles.byMember.path} → 200 배열`, async ({ request }) => {
+    test(`GET ${apiContract.articles.byMember.path} → 200 배열`, async ({
+        request
+    }) => {
         const res = await request.get(
             url(ep.articles.byMember(Number(memberIdA))),
             { headers: auth(tokenB) }
@@ -731,7 +739,9 @@ test.describe('Articles', () => {
         createdArticleId = id
     })
 
-    test(`GET ${apiContract.articles.detail.path} → 200`, async ({ request }) => {
+    test(`GET ${apiContract.articles.detail.path} → 200`, async ({
+        request
+    }) => {
         test.skip(createdArticleId === 0, '게시물 생성 실패로 건너뜀')
         const { res, body } = await getJson(
             request,
@@ -742,7 +752,9 @@ test.describe('Articles', () => {
         expect(body.data.articleId).toBe(createdArticleId)
     })
 
-    test(`POST ${apiContract.articles.like.path} → 200`, async ({ request }) => {
+    test(`POST ${apiContract.articles.like.path} → 200`, async ({
+        request
+    }) => {
         test.skip(createdArticleId === 0, '게시물 생성 실패로 건너뜀')
         const { res, body } = await postJson(
             request,
@@ -771,7 +783,9 @@ test.describe('Articles', () => {
         createdCommentId = id
     })
 
-    test(`DELETE ${apiContract.articles.deleteComment.path} → 204`, async ({ request }) => {
+    test(`DELETE ${apiContract.articles.deleteComment.path} → 204`, async ({
+        request
+    }) => {
         test.skip(createdCommentId === 0, '댓글 생성 실패로 건너뜀')
         const res = await request.delete(
             url(ep.articles.deleteComment(createdCommentId)),
@@ -780,7 +794,9 @@ test.describe('Articles', () => {
         expect(res.status()).toBe(204)
     })
 
-    test(`DELETE ${apiContract.articles.delete.path} → 204`, async ({ request }) => {
+    test(`DELETE ${apiContract.articles.delete.path} → 204`, async ({
+        request
+    }) => {
         test.skip(createdArticleId === 0, '게시물 생성 실패로 건너뜀')
         // 두 번째 게시물을 만들어 삭제 검증 (첫 번째는 이후 테스트에서 재활용)
         const createRes = await request.post(url(ep.articles.create), {
@@ -850,7 +866,9 @@ test.describe('Recruits', () => {
         createdRecruitId = Number(id)
     })
 
-    test(`POST ${apiContract.recruits.join.path} (다른 사용자) → 201 또는 409`, async ({ request }) => {
+    test(`POST ${apiContract.recruits.join.path} (다른 사용자) → 201 또는 409`, async ({
+        request
+    }) => {
         test.skip(createdRecruitId === 0, '모집글 생성 실패로 건너뜀')
         const res = await request.post(
             url(ep.recruits.join(createdRecruitId)),
@@ -873,7 +891,9 @@ test.describe('Recruits', () => {
             expect([201, 409]).toContain(res.status())
         })
 
-        test(`POST ${ep.subscriptions.direct(':postId')} → 201 또는 409`, async ({ request }) => {
+        test(`POST ${ep.subscriptions.direct(':postId')} → 201 또는 409`, async ({
+            request
+        }) => {
             test.skip(createdRecruitId === 0, '모집글 생성 실패로 건너뜀')
             const res = await request.post(
                 url(ep.subscriptions.direct(createdRecruitId)),
@@ -883,7 +903,9 @@ test.describe('Recruits', () => {
         })
     })
 
-    test(`POST ${apiContract.recruits.close.path} (작성자) → 201`, async ({ request }) => {
+    test(`POST ${apiContract.recruits.close.path} (작성자) → 201`, async ({
+        request
+    }) => {
         test.skip(createdRecruitId === 0, '모집글 생성 실패로 건너뜀')
         const res = await request.post(
             url(ep.recruits.close(createdRecruitId)),
@@ -906,7 +928,9 @@ test.describe('Plans', () => {
         expect(Array.isArray(body.data)).toBe(true)
     })
 
-    test(`GET ${ep.plans.uncompleted} uncompleted 호환 → 200 배열`, async ({ request }) => {
+    test(`GET ${ep.plans.uncompleted} uncompleted 호환 → 200 배열`, async ({
+        request
+    }) => {
         const { res, body } = await getJson(
             request,
             responses.plansUncompleted,
@@ -1187,7 +1211,9 @@ test.describe('Notifications', () => {
 let referralCode = ''
 
 test.describe('Referrals', () => {
-    test(`POST ${ep.referrals.create} → 201, code 반환`, async ({ request }) => {
+    test(`POST ${ep.referrals.create} → 201, code 반환`, async ({
+        request
+    }) => {
         const { res, body } = await postJson(
             request,
             responses.referralsCreate,
@@ -1312,7 +1338,9 @@ test.describe('Friends', () => {
         expect(Array.isArray(body.data)).toBe(true)
     })
 
-    test(`GET ${ep.friends.requestsIncoming} → 200 배열`, async ({ request }) => {
+    test(`GET ${ep.friends.requestsIncoming} → 200 배열`, async ({
+        request
+    }) => {
         const { res, body } = await getJson(
             request,
             responses.friendsRequestsIncoming,
@@ -1322,7 +1350,9 @@ test.describe('Friends', () => {
         expect(Array.isArray(body.data)).toBe(true)
     })
 
-    test(`GET ${ep.friends.requestsOutgoing} → 200 배열`, async ({ request }) => {
+    test(`GET ${ep.friends.requestsOutgoing} → 200 배열`, async ({
+        request
+    }) => {
         const { res, body } = await getJson(
             request,
             responses.friendsRequestsOutgoing,
@@ -1377,7 +1407,9 @@ test.describe('Friends', () => {
         expect([200, 201, 404, 409]).toContain(res.status())
     })
 
-    test(`DELETE ${apiContract.friends.unfriend.path} → 200 또는 404`, async ({ request }) => {
+    test(`DELETE ${apiContract.friends.unfriend.path} → 200 또는 404`, async ({
+        request
+    }) => {
         // 친구 삭제 (친구가 없으면 404)
         const res = await request.delete(
             url(ep.friends.remove(Number(memberIdB))),

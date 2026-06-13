@@ -34,7 +34,7 @@ import type {
 /**
  * Invitation API 함수 모음
  */
-export const invitationApi = {
+const invitationApi = {
     /**
      * 초대 목록 조회
      * @returns 초대 목록
@@ -47,7 +47,9 @@ export const invitationApi = {
      * 초대 전송
      * @param data - 초대 데이터 (대상자 ID, 메시지)
      */
-    send: async (data: InvitationPostRequest): Promise<SendInvitationResponse> => {
+    send: async (
+        data: InvitationPostRequest
+    ): Promise<SendInvitationResponse> => {
         return contractClient.post(apiContract.invitations.send, { body: data })
     },
 
@@ -71,12 +73,6 @@ export const invitationApi = {
         })
     }
 }
-
-// 하위 호환성을 위한 기존 함수 export
-export const getInvitations = invitationApi.getAll
-export const sendInvitation = invitationApi.send
-export const acceptInvitation = invitationApi.accept
-export const rejectInvitation = invitationApi.reject
 
 // ============================================================================
 // Query Hooks
@@ -109,7 +105,9 @@ export const useGetInvitations = () => {
  *   onSuccess: () => toast.success('초대를 보냈습니다.')
  * })
  */
-export const useSendInvitation = (options: MutationOptions<SendInvitationResponse> = {}) => {
+export const useSendInvitation = (
+    options: MutationOptions<SendInvitationResponse> = {}
+) => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: invitationApi.send,
@@ -136,7 +134,9 @@ export const useSendInvitation = (options: MutationOptions<SendInvitationRespons
  * })
  * accept(invitationId)
  */
-export const useAcceptInvitation = (options: MutationOptions<AcceptInvitationResponse> = {}) => {
+export const useAcceptInvitation = (
+    options: MutationOptions<AcceptInvitationResponse> = {}
+) => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: invitationApi.accept,
@@ -155,7 +155,9 @@ export const useAcceptInvitation = (options: MutationOptions<AcceptInvitationRes
  * 초대 거절 Hook
  * @param options - 성공/에러 콜백
  */
-export const useRejectInvitation = (options: MutationOptions<NoContent> = {}) => {
+export const useRejectInvitation = (
+    options: MutationOptions<NoContent> = {}
+) => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: invitationApi.reject,

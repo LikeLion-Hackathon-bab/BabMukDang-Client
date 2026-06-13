@@ -35,7 +35,7 @@ import type {
  * Friends API 함수 모음
  */
 
-export const friendsApi = {
+const friendsApi = {
     getMeals: async (filter: FriendMealFilter['filter'] = 'ALL') => {
         return contractClient.get(apiContract.mealStatus.friendMealStatus, {
             query: { status: filter }
@@ -106,9 +106,6 @@ export const friendsApi = {
         })
     }
 }
-
-// 하위 호환성을 위한 기존 함수 export
-export const getFriendMeals = friendsApi.getMeals
 
 // ============================================================================
 // Query Hooks
@@ -211,7 +208,9 @@ const invalidateFriendGraph = (
 /**
  * 친구 요청 생성 Hook
  */
-export const useSendFriendRequest = (options: MutationOptions<NoContent> = {}) => {
+export const useSendFriendRequest = (
+    options: MutationOptions<NoContent> = {}
+) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: (memberId: number) => friendsApi.sendRequest(memberId),
@@ -230,7 +229,9 @@ export const useSendFriendRequest = (options: MutationOptions<NoContent> = {}) =
  * 친구 요청 수락 Hook
  * 수락 성공 시 friends/friend meals/invitations/articles/recruits를 무효화한다.
  */
-export const useAcceptFriendRequest = (options: MutationOptions<NoContent> = {}) => {
+export const useAcceptFriendRequest = (
+    options: MutationOptions<NoContent> = {}
+) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: (requestId: number) => friendsApi.acceptRequest(requestId),
@@ -246,7 +247,9 @@ export const useAcceptFriendRequest = (options: MutationOptions<NoContent> = {})
 /**
  * 친구 요청 거절 Hook
  */
-export const useRejectFriendRequest = (options: MutationOptions<NoContent> = {}) => {
+export const useRejectFriendRequest = (
+    options: MutationOptions<NoContent> = {}
+) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: (requestId: number) => friendsApi.rejectRequest(requestId),
@@ -264,7 +267,9 @@ export const useRejectFriendRequest = (options: MutationOptions<NoContent> = {})
 /**
  * 친구 요청 취소 Hook
  */
-export const useCancelFriendRequest = (options: MutationOptions<NoContent> = {}) => {
+export const useCancelFriendRequest = (
+    options: MutationOptions<NoContent> = {}
+) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: (requestId: number) => friendsApi.cancelRequest(requestId),

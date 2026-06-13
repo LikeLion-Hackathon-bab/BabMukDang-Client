@@ -6,7 +6,7 @@
  */
 
 import { http, HttpResponse } from 'msw'
-import { endpoints, api } from '@/apis'
+import { endpoints, api } from './endpoints'
 import { API_BASE_URL } from '@/apis/baseUrl'
 import { articleFixtures } from '@/mocks/fixtures'
 

@@ -1,24 +1,23 @@
 /**
  * @fileoverview Preference(선호도) API 모듈
  *
- * 사용자 음식 선호도 관련 API 함수를 제공합니다.
+ * Shared API contract의 preferences 엔드포인트에 맞춘 API 함수와
+ * TanStack Query hooks를 제공합니다.
  *
  * @example
- * // 온보딩 선호도 저장
- * await preferenceApi.postOnboarding({
- *   likedCodes: ['KOREAN', 'JAPANESE'],
- *   dislikedCodes: ['SPICY'],
- *   allergyCodes: ['PEANUT']
- * })
+ * // 내 음식 선호도 조회
+ * const { data: preference } = useGetMyPreference()
  */
 
-import { contractClient } from './client'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { apiContract } from '@kimdaegyu/babmukdang-shared/domain'
+import { contractClient } from './client'
+import { queryKeys } from './keys'
 import type {
-    OnboardingPreferenceRequest,
-    PreferenceMetaResponse,
-    PreferenceSummaryResponse,
-    NoContent
+    MemberFoodPreference,
+    MutationOptions,
+    NoContent,
+    UpdatePreferenceRequest
 } from './types'
 
 // ============================================================================
@@ -28,40 +27,75 @@ import type {
 /**
  * Preference API 함수 모음
  */
-export const preferenceApi = {
+const preferenceApi = {
     /**
-     * 온보딩 선호도 저장
-     * @param data - 선호도 데이터 (좋아하는 음식, 싫어하는 음식, 알레르기)
+     * 내 음식 선호도 조회
+     * @returns 좋아하는 음식, 싫어하는 음식, 알레르기 목록
      */
-    postOnboarding: async (
-        data: OnboardingPreferenceRequest
-    ): Promise<NoContent> => {
-        return contractClient.patch(apiContract.preferences.update, { body: data })
-    },
-
-    /**
-     * 선호도 요약 조회
-     * @returns 선호도 요약 (좋아하는 음식, 싫어하는 음식, 알레르기 목록)
-     */
-    getSummary: async (): Promise<PreferenceSummaryResponse> => {
+    getMy: async (): Promise<MemberFoodPreference> => {
         return contractClient.get(apiContract.preferences.my)
     },
 
     /**
-     * 선호도 메타 정보 조회
-     * @returns 온보딩 완료 시간, 마지막 수정 시간, 리비전 번호
+     * 내 음식 선호도 수정
+     * @param data - 수정할 음식 선호도 데이터
      */
-    getMeta: async (): Promise<PreferenceMetaResponse> => {
-        const summary = await preferenceApi.getSummary()
-        return {
-            likes: summary.liked,
-            dislikes: summary.disliked,
-            allergies: summary.allergy
-        }
+    update: async (data: UpdatePreferenceRequest): Promise<NoContent> => {
+        return contractClient.patch(apiContract.preferences.update, {
+            body: data
+        })
     }
 }
 
-// 하위 호환성을 위한 기존 함수 export
-export const postOnboardingPreference = preferenceApi.postOnboarding
-export const getPreferenceSummary = preferenceApi.getSummary
-export const getPreferenceMeta = preferenceApi.getMeta
+// ============================================================================
+// Query Hooks
+// ============================================================================
+
+/**
+ * 내 음식 선호도 조회 Hook
+ * @returns Query 결과 (liked, disliked, allergy)
+ *
+ * @example
+ * const { data: preference } = useGetMyPreference()
+ * console.log(preference?.liked)
+ */
+export const useGetMyPreference = () => {
+    const { data, isLoading, error, refetch } = useQuery({
+        queryKey: queryKeys.preferences.my,
+        queryFn: preferenceApi.getMy
+    })
+    return { data, isLoading, error, refetch }
+}
+
+// ============================================================================
+// Mutation Hooks
+// ============================================================================
+
+/**
+ * 내 음식 선호도 수정 Hook
+ * @param options - 성공/에러 콜백
+ *
+ * @example
+ * const { mutate: updatePreference } = useUpdatePreference({
+ *   onSuccess: () => toast.success('선호도가 저장되었습니다')
+ * })
+ * updatePreference({ liked: [], disliked: [], allergy: [] })
+ */
+export const useUpdatePreference = (
+    options: MutationOptions<NoContent> = {}
+) => {
+    const queryClient = useQueryClient()
+    const { mutate, mutateAsync, isPending, error } = useMutation({
+        mutationFn: (data: UpdatePreferenceRequest) =>
+            preferenceApi.update(data),
+        onSuccess: data => {
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.preferences.all
+            })
+            options.onSuccess?.(data)
+        },
+        onError: options.onError,
+        onSettled: options.onSettled
+    })
+    return { mutate, mutateAsync, isPending, error }
+}

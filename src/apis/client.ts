@@ -10,7 +10,6 @@ import {
     type BaseResponse,
     type TokenResponse
 } from '@kimdaegyu/babmukdang-shared/domain'
-import type { ResponseOf, TypedEndpoint } from './responses'
 import type {
     EndpointContract,
     HttpMethod,
@@ -77,7 +76,7 @@ axiosClient.interceptors.response.use(
 
         originalRequest._retry = true
 
-        const { setTokens, logout } = useAuthStore.getState()
+        const { setTokens, flushAuthStore } = useAuthStore.getState()
 
         if (isRefreshing) {
             return new Promise(resolve => {
@@ -113,7 +112,7 @@ axiosClient.interceptors.response.use(
 
             return axiosClient(originalRequest)
         } catch {
-            logout()
+            flushAuthStore()
             refreshSubscribers = []
             return Promise.reject(toAppError(error))
         } finally {
@@ -121,60 +120,6 @@ axiosClient.interceptors.response.use(
         }
     }
 )
-
-export const client = {
-    async get<E extends TypedEndpoint<unknown>>(
-        endpoint: E,
-        config?: AxiosRequestConfig
-    ): Promise<ResponseOf<E>> {
-        const res = await axiosClient.get<BaseResponse<ResponseOf<E>>>(
-            endpoint,
-            config
-        )
-
-        return unwrapBaseResponse(res.data)
-    },
-
-    async post<E extends TypedEndpoint<unknown>, TBody = unknown>(
-        endpoint: E,
-        data?: TBody,
-        config?: AxiosRequestConfig
-    ): Promise<ResponseOf<E>> {
-        const res = await axiosClient.post<BaseResponse<ResponseOf<E>>>(
-            endpoint,
-            data,
-            config
-        )
-
-        return unwrapBaseResponse(res.data)
-    },
-
-    async patch<E extends TypedEndpoint<unknown>, TBody = unknown>(
-        endpoint: E,
-        data?: TBody,
-        config?: AxiosRequestConfig
-    ): Promise<ResponseOf<E>> {
-        const res = await axiosClient.patch<BaseResponse<ResponseOf<E>>>(
-            endpoint,
-            data,
-            config
-        )
-
-        return unwrapBaseResponse(res.data)
-    },
-
-    async delete<E extends TypedEndpoint<unknown>>(
-        endpoint: E,
-        config?: AxiosRequestConfig
-    ): Promise<ResponseOf<E>> {
-        const res = await axiosClient.delete<BaseResponse<ResponseOf<E>>>(
-            endpoint,
-            config
-        )
-
-        return unwrapBaseResponse(res.data)
-    }
-}
 
 // ============================================================================
 // Shared apiContract 기반 typed client

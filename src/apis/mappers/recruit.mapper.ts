@@ -1,6 +1,6 @@
-import type { PostResponse, RecruitDto } from '../types'
+import type { RecruitCardView, RecruitDto } from '../types'
 
-export const mapRecruit = (recruit: RecruitDto): PostResponse => ({
+export const mapRecruit = (recruit: RecruitDto): RecruitCardView => ({
     targetCount: recruit.targetCount,
     meetingAt: recruit.meetingAt,
     location: recruit.location,

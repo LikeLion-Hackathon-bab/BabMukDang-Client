@@ -8,7 +8,7 @@
 
 import type { APIRequestContext } from '@playwright/test'
 import { expect } from '@playwright/test'
-import { endpoints } from '../../apis/endpoints'
+import { endpoints } from '../../mocks/handlers/endpoints'
 import { io, type Socket } from 'socket.io-client'
 import {
     RoomClientToServerEvents as ClientToServerEvents,
@@ -107,7 +107,13 @@ export async function fetchMemberId(
         headers: auth(token)
     })
     const body = await readBody(res)
-    const id = body?.data?.memberId ?? body?.data?.member?.memberId ?? body?.data?.member?.userId ?? body?.data?.userId ?? body?.memberId ?? body?.userId
+    const id =
+        body?.data?.memberId ??
+        body?.data?.member?.memberId ??
+        body?.data?.member?.userId ??
+        body?.data?.userId ??
+        body?.memberId ??
+        body?.userId
 
     if (typeof id !== 'number' && typeof id !== 'string') {
         throw new Error(

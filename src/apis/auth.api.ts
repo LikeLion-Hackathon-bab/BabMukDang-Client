@@ -18,13 +18,13 @@ import { useAuthStore } from '@/store'
 
 import axios from 'axios'
 import { unwrapBaseResponse } from './client'
-import type { BaseResponse } from '@kimdaegyu/babmukdang-shared/domain'
+import type {
+    BaseResponse,
+    LoginRequest
+} from '@kimdaegyu/babmukdang-shared/domain'
 import { API_BASE_URL } from './baseUrl'
 
-type EmailAuthRequest = {
-    email: string
-    password: string
-}
+type EmailAuthRequest = LoginRequest
 
 // ============================================================================
 // API 함수
@@ -33,7 +33,7 @@ type EmailAuthRequest = {
 /**
  * Auth API 함수 모음
  */
-export const authApi = {
+const authApi = {
     /**
      * 카카오 로그인 시작
      * @returns 토큰 응답
@@ -44,8 +44,13 @@ export const authApi = {
         window.location.href = `${API_BASE_URL}/auth/kakao`
     },
 
-    emailLogin: async ({ email, password }: EmailAuthRequest): Promise<TokenResponse> => {
-        return contractClient.post(apiContract.auth.login, { body: { email, password } })
+    emailLogin: async ({
+        email,
+        password
+    }: EmailAuthRequest): Promise<TokenResponse> => {
+        return contractClient.post(apiContract.auth.login, {
+            body: { email, password }
+        })
     },
 
     emailSignup: async ({
@@ -82,16 +87,15 @@ export const authApi = {
     }
 }
 
-// 기존 함수 export 유지 (하위 호환성)
-export const login = authApi.login
-export const emailLogin = authApi.emailLogin
-export const emailSignup = authApi.emailSignup
-export const logout = authApi.logout
-export const refresh = authApi.refresh
-
 // ============================================================================
 // Mutation Hooks
 // ============================================================================
+/**
+ * 카카오 로그인 redirect Hook
+ */
+export const useKakaoLogin = () => {
+    return (async () => await authApi.login())()
+}
 
 /**
  * 토큰 갱신 Hook
@@ -162,7 +166,9 @@ export const useEmailSignup = (options?: MutationOptions<TokenResponse>) => {
         onError: error => {
             clearTokens()
             options?.onError?.(
-                error instanceof Error ? error : new Error('Email signup failed')
+                error instanceof Error
+                    ? error
+                    : new Error('Email signup failed')
             )
         },
         onSettled: options?.onSettled
@@ -174,12 +180,12 @@ export const useEmailSignup = (options?: MutationOptions<TokenResponse>) => {
  * @param options - 성공/에러 콜백
  */
 export const useLogout = (options: MutationOptions<NoContent> = {}) => {
-    const { logout: clearAuthState } = useAuthStore()
+    const { flushAuthStore } = useAuthStore()
 
     return useMutation({
         mutationFn: authApi.logout,
         onSuccess: data => {
-            clearAuthState()
+            flushAuthStore()
             options.onSuccess?.(data)
         },
         onError: options.onError

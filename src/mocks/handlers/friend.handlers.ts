@@ -5,7 +5,7 @@
  */
 
 import { http, HttpResponse } from 'msw'
-import { endpoints } from '@/apis'
+import { endpoints } from './endpoints'
 import { API_BASE_URL } from '@/apis/baseUrl'
 import type { FriendRequestItemResponse } from '@/apis'
 import { domainId } from '@/domain/factories'
@@ -26,8 +26,16 @@ const makeRequest = (
     status: FriendRequestItemResponse['status']
 ): FriendRequestItemResponse => ({
     requestId: domainId.friendRequest(requestId),
-    requester: { memberId: domainId.member(1), username: '유가은', profileImageUrl: '' },
-    recipient: { memberId: domainId.member(2), username: '서은우', profileImageUrl: '' },
+    requester: {
+        memberId: domainId.member(1),
+        username: '유가은',
+        profileImageUrl: ''
+    },
+    recipient: {
+        memberId: domainId.member(2),
+        username: '서은우',
+        profileImageUrl: ''
+    },
     status,
     requestedAt: new Date().toISOString()
 })

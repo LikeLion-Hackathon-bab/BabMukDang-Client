@@ -1,40 +1,60 @@
 /**
- * @fileoverview Meeting(모임) API 모듈
+ * @fileoverview Plan(모임) API 모듈
  *
- * 모임 관련 API 함수와 TanStack Query hooks를 제공합니다.
+ * Shared API contract의 plans 엔드포인트에 맞춘 API 함수와
+ * TanStack Query hooks를 제공합니다.
  *
  * @example
  * // 모임 목록 조회
- * const { data: meetings, refetch } = useGetMeetings()
+ * const { data: plans } = useGetPlans()
  */
 
-import { useQuery } from '@tanstack/react-query'
-import { contractClient } from './client'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { apiContract } from '@kimdaegyu/babmukdang-shared/domain'
+import { contractClient } from './client'
+import { domainId } from '@/domain/factories'
 import { queryKeys } from './keys'
-import { mapMeeting } from './mappers/meeting.mapper'
-import type { MeetingResponse } from './types'
+import type { MutationOptions, NoContent, PlanResponse } from './types'
+import type { PlanListQuery } from '@kimdaegyu/babmukdang-shared/domain'
 
 // ============================================================================
 // API 함수
 // ============================================================================
 
 /**
- * Meeting API 함수 모음
+ * Plan API 함수 모음
  */
-export const meetingApi = {
+const meetingApi = {
     /**
      * 모임 목록 조회
-     * @returns 모임 목록 (화면 view model)
+     * @param query - 모임 목록 조회 조건
+     * @returns Shared PlanResponse 배열
      */
-    getAll: async (): Promise<MeetingResponse[]> => {
-        const data = await contractClient.get(apiContract.plans.list)
-        return data.map(mapMeeting)
+    getPlans: async (query: PlanListQuery = {}): Promise<PlanResponse[]> => {
+        return contractClient.get(apiContract.plans.list, { query })
+    },
+
+    /**
+     * 모임 상세 조회
+     * @param planId - 모임 ID
+     * @returns Shared PlanResponse
+     */
+    getPlanDetail: async (planId: number): Promise<PlanResponse> => {
+        return contractClient.get(apiContract.plans.detail, {
+            pathParams: { planId: domainId.plan(planId) }
+        })
+    },
+
+    /**
+     * 모임 취소
+     * @param planId - 모임 ID
+     */
+    cancelPlan: async (planId: number): Promise<NoContent> => {
+        return contractClient.patch(apiContract.plans.cancel, {
+            pathParams: { planId: domainId.plan(planId) }
+        })
     }
 }
-
-// 하위 호환성을 위한 기존 함수 export
-export const getMeetings = meetingApi.getAll
 
 // ============================================================================
 // Query Hooks
@@ -42,18 +62,68 @@ export const getMeetings = meetingApi.getAll
 
 /**
  * 모임 목록 조회 Hook
- * @returns Query 결과 (data?.data에 실제 목록 포함)
+ * @param query - 모임 목록 조회 조건
+ * @returns Query 결과 (Shared PlanResponse 배열)
  *
  * @example
- * const { data: meetings, refetch } = useGetMeetings()
- * meetings?.forEach(meeting => {
- *   console.log(meeting.restaurant, meeting.time)
+ * const { data: plans } = useGetPlans()
+ * plans?.forEach(plan => {
+ *   console.log(plan.planId, plan.status)
  * })
  */
-export const useGetMeetings = () => {
+export const useGetPlans = (query: PlanListQuery = {}) => {
     const { data, isLoading, error, refetch } = useQuery({
         queryKey: queryKeys.meetings.list,
-        queryFn: meetingApi.getAll
+        queryFn: () => meetingApi.getPlans(query)
     })
     return { data, isLoading, error, refetch }
+}
+
+/**
+ * 모임 상세 조회 Hook
+ * @param planId - 모임 ID
+ * @returns Query 결과 (Shared PlanResponse)
+ *
+ * @example
+ * const { data: plan } = useGetPlanDetail(1)
+ */
+export const useGetPlanDetail = (
+    planId: number,
+    options?: { enabled?: boolean }
+) => {
+    const { data, isLoading, error, refetch } = useQuery({
+        queryKey: queryKeys.meetings.detail(planId),
+        queryFn: () => meetingApi.getPlanDetail(planId),
+        enabled: (options?.enabled ?? true) && planId > 0
+    })
+    return { data, isLoading, error, refetch }
+}
+
+// ============================================================================
+// Mutation Hooks
+// ============================================================================
+
+/**
+ * 모임 취소 Hook
+ * @param options - 성공/에러 콜백
+ *
+ * @example
+ * const { mutate: cancelPlan } = useCancelPlan({
+ *   onSuccess: () => toast.success('모임이 취소되었습니다')
+ * })
+ * cancelPlan({ planId: 1 })
+ */
+export const useCancelPlan = (options: MutationOptions<NoContent> = {}) => {
+    const queryClient = useQueryClient()
+    const { mutate, isPending, error } = useMutation({
+        mutationFn: ({ planId }: { planId: number }) =>
+            meetingApi.cancelPlan(planId),
+        onSuccess: data => {
+            queryClient.invalidateQueries({ queryKey: queryKeys.meetings.all })
+            options.onSuccess?.(data)
+        },
+        onError: options.onError,
+        onSettled: options.onSettled
+    })
+    return { mutate, isPending, error }
 }

@@ -9,7 +9,7 @@ import { domainId } from '@/domain/factories'
 import { queryKeys } from './keys'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { MutationOptions } from './types'
-export const notificationApi = {
+const notificationApi = {
     getAll: async (): Promise<MatchingNotification[]> => {
         const res = await contractClient.get(apiContract.notifications.list)
         return res
@@ -80,7 +80,7 @@ export const useMarkRead = (options: MutationOptions<NoContent> = {}) => {
         mutationFn: notificationApi.markRead,
         onSuccess: data => {
             queryClient.invalidateQueries({
-                queryKey: queryKeys.notifications.markRead(data.notificationId)
+                queryKey: queryKeys.notifications.all
             })
             options.onSuccess?.()
         },
