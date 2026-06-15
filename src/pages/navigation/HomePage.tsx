@@ -19,7 +19,7 @@ export function HomePage() {
     const { setLeftElement, hideCenterElement, resetHeader, showRightButton } =
         useHeaderStore()
     const { data: postListData } = useGetHomeArticles()
-    const postList = (postListData?.content ?? []).map(toPostCardView)
+    const postList = (postListData?.items ?? []).map(toPostCardView)
 
     const { pullPosition, menu } = usePullToRefresh()
 

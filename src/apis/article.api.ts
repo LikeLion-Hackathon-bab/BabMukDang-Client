@@ -305,30 +305,18 @@ export const useUploadArticle = (
     options: MutationOptions<CreateArticleResult>
 ) => {
     const queryClient = useQueryClient()
+    const { mutateAsync: uploadArticlePhoto } = useUploadArticlePhoto()
     const { mutate, isPending, error } = useMutation({
-        mutationFn: async ({
-            currentUserId,
-            file,
-            buildRequest
-        }: UploadAndPostVars) => {
-            const { mutate: uploadArticlePhoto } = useUploadArticlePhoto({
-                onSuccess: url => {
-                    if (!url) {
-                        throw new Error('CDN URL이 반환되지 않았습니다.')
-                    }
-                    const req = buildRequest(url)
-                    return articleApi.create(req)
-                },
-                onError: e => {
-                    throw new Error('이미지 업로드 실패: ' + e.message)
-                }
-            })
-
-            uploadArticlePhoto(file)
+        mutationFn: async ({ file, buildRequest }: UploadAndPostVars) => {
+            const url = await uploadArticlePhoto(file)
+            if (!url) {
+                throw new Error('CDN URL이 반환되지 않았습니다.')
+            }
+            return articleApi.create(buildRequest(url))
         },
         onSuccess: data => {
             queryClient.invalidateQueries({ queryKey: queryKeys.articles.all })
-            options.onSuccess?.()
+            options.onSuccess?.(data)
         },
         onError: options.onError
     })
@@ -343,10 +331,14 @@ export const useUploadArticle = (
 export const useLikeArticle = (
     options: MutationOptions<ArticleLikeView> = {}
 ) => {
+    const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: ({ articleId }: { articleId: number }) =>
             articleApi.like(articleId),
-        onSuccess: options.onSuccess,
+        onSuccess: data => {
+            queryClient.invalidateQueries({ queryKey: queryKeys.articles.all })
+            options.onSuccess?.(data)
+        },
         onError: options.onError
     })
     return { mutate, isPending, error }
