@@ -13,6 +13,8 @@ import type {
     LocationCandidateAddUpdateResponse,
     Participant,
     PhaseDataBroadcast,
+    RoomProgress,
+    RoomTaskKey,
     RoomType
 } from '@kimdaegyu/babmukdang-shared/domain/room'
 
@@ -43,6 +45,7 @@ interface RoomContextValue {
     stage: RoomStage
     phaseData: PhaseDataBroadcast | null
     finalState: FinalState | null
+    progress: RoomProgress | null
     finalStateMessage: FinalStateMessage
     locationInitial: string | undefined
     meetingAtInitial: string | undefined
@@ -58,10 +61,51 @@ interface RoomContextValue {
         typeof useMatchStore.getState
     >['excludeMenuPicks']
     menuPicks: ReturnType<typeof useMatchStore.getState>['menuPicks']
+    menuCandidates: ReturnType<typeof useMatchStore.getState>['menuCandidates']
     restaurantPicks: ReturnType<
         typeof useMatchStore.getState
     >['restaurantPicks']
+    restaurantCandidates: ReturnType<
+        typeof useMatchStore.getState
+    >['restaurantCandidates']
 }
+
+const taskKeyByStage: Partial<Record<RoomStage, RoomTaskKey>> = {
+    date: 'schedule-date',
+    time: 'schedule-time',
+    location: 'location-candidate',
+    'location-vote': 'location-vote',
+    'exclude-menu': 'exclude-menu',
+    menu: 'menu-pick',
+    restaurant: 'restaurant-pick'
+}
+
+const TASK_PRIORITY: RoomTaskKey[] = [
+    'schedule-date',
+    'schedule-time',
+    'location-candidate',
+    'location-vote',
+    'exclude-menu',
+    'prefer-menu',
+    'menu-pick',
+    'restaurant-pick'
+]
+
+export const getReadyTaskKeyForStage = (
+    stage: RoomStage,
+    progress?: RoomProgress | null
+): RoomTaskKey => {
+    const progressTask = TASK_PRIORITY.find(taskKey =>
+        progress?.tasks.some(
+            task =>
+                task.key === taskKey &&
+                ['open', 'ready', 'stale'].includes(task.status)
+        )
+    )
+
+    return progressTask ?? taskKeyByStage[stage] ?? 'location-candidate'
+}
+
 
 const SocketContext = createContext<RoomContextValue | null>(null)
 
@@ -130,14 +174,27 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     }, [matchState.roomId, matchType, navigate, roomId])
 
     useEffect(() => {
-        if (!roomId || !matchState.phaseData) {
+        if (!roomId || !matchState.phaseData || matchState.progress) {
             return
         }
 
         navigate(`/${matchType}/${matchState.phaseData.phase}/${roomId}`, {
             replace: true
         })
-    }, [matchState.phaseData, matchType, navigate, roomId])
+    }, [matchState.phaseData, matchState.progress, matchType, navigate, roomId])
+
+    useEffect(() => {
+        if (!roomId || !matchState.progress) {
+            return
+        }
+
+        const nextRoute =
+            matchState.progress.phase === 'finished' ? 'finish' : 'active'
+
+        navigate(`/${matchType}/${nextRoute}/${roomId}`, {
+            replace: true
+        })
+    }, [matchState.progress, matchType, navigate, roomId])
 
     const finalStateMessage = useMemo<FinalStateMessage>(
         () => ({
@@ -145,7 +202,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
             'exclude-menu': matchState.finalState?.excludeMenu?.map(
                 menu => menu.label
             ),
-            menu: matchState.finalState?.menu?.label,
+            menu: matchState.finalState?.menu?.menu.label,
             restaurant: matchState.finalState?.restaurant?.placeName
         }),
         [matchState.finalState]
@@ -170,6 +227,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
             stage: matchState.stage,
             phaseData: matchState.phaseData,
             finalState: matchState.finalState,
+            progress: matchState.progress,
             finalStateMessage,
             locationInitial: waitingData?.locationInitial,
             meetingAtInitial: waitingData?.meetingAt,
@@ -183,7 +241,9 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
             timeSelections: matchState.timePicks,
             excludeMenuPicks: matchState.excludeMenuPicks,
             menuPicks: matchState.menuPicks,
-            restaurantPicks: matchState.restaurantPicks
+            menuCandidates: matchState.menuCandidates,
+            restaurantPicks: matchState.restaurantPicks,
+            restaurantCandidates: matchState.restaurantCandidates
         }),
         [
             socket,

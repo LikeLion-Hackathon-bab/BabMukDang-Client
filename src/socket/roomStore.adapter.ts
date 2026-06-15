@@ -9,14 +9,17 @@ import type {
     LocationCandidateAddUpdateResponse,
     LocationCandidateVoteUpdateResponse,
     ExcludeMenuUpdateResponse,
+    PreferMenuUpdateResponse,
     MenuPickUpdateResponse,
     RestaurantPickUpdateResponse,
     FinalState,
-    RoomSocketError
+    RoomSocketError,
+    RoomProgress,
+    DecisionCandidateUpdate,
+    MenuCandidatesUpdate,
+    RestaurantCandidatesUpdate
 } from '@kimdaegyu/babmukdang-shared/domain/room'
 
-// socket layer가 Zustand 구현에 직접 끌려가지 않도록 어댑터로 분리
-// store 전체를 노출하지 말고, socket이 필요한 action만 노출하는 인터페이스
 export interface MatchStoreActions {
     setRoomAssigned(payload: RoomAssignedResponse): void
     initializeRoom(payload: RoomInitialState): void
@@ -30,8 +33,13 @@ export interface MatchStoreActions {
     ): void
     applyLocationVoteUpdated(payload: LocationCandidateVoteUpdateResponse): void
     applyExcludeMenuUpdated(payload: ExcludeMenuUpdateResponse): void
+    applyPreferMenuUpdated(payload: PreferMenuUpdateResponse): void
     applyMenuPickUpdated(payload: MenuPickUpdateResponse): void
     applyRestaurantPickUpdated(payload: RestaurantPickUpdateResponse): void
     applyFinalState(payload: FinalState): void
+    applyRoomProgress(payload: RoomProgress): void
+    applyDecisionCandidateUpdate(payload: DecisionCandidateUpdate): void
+    applyMenuCandidatesUpdate(payload: MenuCandidatesUpdate): void
+    applyRestaurantCandidatesUpdate(payload: RestaurantCandidatesUpdate): void
     setRoomError(payload: RoomSocketError): void
 }

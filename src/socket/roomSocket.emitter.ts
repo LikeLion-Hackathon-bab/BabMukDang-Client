@@ -3,6 +3,8 @@ import {
     type RoomClientPayload,
     type RoomSocket
 } from './roomSocket.types'
+import { TimeStringSchema } from '@kimdaegyu/babmukdang-shared/domain/room'
+
 import { parseRoomClientPayload } from './roomSocket.validator'
 
 // Client
@@ -50,8 +52,8 @@ export class RoomSocketEmitter {
             ) => void
         ).call(this.socket, event, parsedPayload)
     }
-    readyState(isReady: boolean) {
-        this.emit('ready-state', { isReady })
+    readyState(isReady: boolean, taskKey: RoomClientPayload<'ready-state'>['taskKey'] = 'location-candidate') {
+        this.emit('ready-state', { taskKey, isReady })
     }
 
     sendChatMessage(message: string) {
@@ -63,7 +65,9 @@ export class RoomSocketEmitter {
     }
 
     pickTimes(times: string[]) {
-        this.emit('pick-times', { times })
+        this.emit('pick-times', {
+            times: times.map(time => TimeStringSchema.parse(time))
+        })
     }
 
     addLocationCandidate(payload: RoomClientPayload<'add-location-candidate'>) {
@@ -82,7 +86,19 @@ export class RoomSocketEmitter {
         this.emit('pick-menu', payload)
     }
 
+    preferMenu(payload: RoomClientPayload<'prefer-menu'>) {
+        this.emit('prefer-menu', payload)
+    }
+
     pickRestaurant(payload: RoomClientPayload<'pick-restaurant'>) {
         this.emit('pick-restaurant', payload)
+    }
+
+    confirmDecision(payload: RoomClientPayload<'confirm-decision'>) {
+        this.emit('confirm-decision', payload)
+    }
+
+    reopenTask(payload: RoomClientPayload<'reopen-task'>) {
+        this.emit('reopen-task', payload)
     }
 }

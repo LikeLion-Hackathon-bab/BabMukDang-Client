@@ -55,6 +55,12 @@ export function createRoomEventHandlers(
             actions.applyExcludeMenuUpdated(payload)
         },
 
+        'prefer-menu-updated': (
+            payload: RoomServerPayload<'prefer-menu-updated'>
+        ) => {
+            actions.applyPreferMenuUpdated(payload)
+        },
+
         'menu-pick-updated': (
             payload: RoomServerPayload<'menu-pick-updated'>
         ) => {
@@ -71,6 +77,36 @@ export function createRoomEventHandlers(
             payload: RoomServerPayload<'final-state-response'>
         ) => {
             actions.applyFinalState(payload)
+        },
+
+        'final-state-updated': (
+            payload: RoomServerPayload<'final-state-updated'>
+        ) => {
+            actions.applyFinalState(payload)
+        },
+
+        'room-progress-updated': (
+            payload: RoomServerPayload<'room-progress-updated'>
+        ) => {
+            actions.applyRoomProgress(payload)
+        },
+
+        'decision-candidate-updated': (
+            payload: RoomServerPayload<'decision-candidate-updated'>
+        ) => {
+            actions.applyDecisionCandidateUpdate(payload)
+        },
+
+        'menu-candidates-updated': (
+            payload: RoomServerPayload<'menu-candidates-updated'>
+        ) => {
+            actions.applyMenuCandidatesUpdate(payload)
+        },
+
+        'restaurant-candidates-updated': (
+            payload: RoomServerPayload<'restaurant-candidates-updated'>
+        ) => {
+            actions.applyRestaurantCandidatesUpdate(payload)
         },
 
         'room-error': (payload: RoomServerPayload<'room-error'>) => {
