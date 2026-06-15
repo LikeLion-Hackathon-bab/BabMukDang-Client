@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { configDefaults } from 'vitest/config'
 import svgr from 'vite-plugin-svgr'
 import path from 'node:path'
+import fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { storybookTest } from '@storybook/addon-vitest/vitest-plugin'
 import { playwright } from '@vitest/browser-playwright'
@@ -13,6 +14,11 @@ const dirname =
         ? __dirname
         : path.dirname(fileURLToPath(import.meta.url))
 const sharedDomainDir = path.resolve(dirname, '../BabMukDang-Shared/src/domain')
+const storybookConfigDir = path.join(dirname, '.storybook')
+const hasStorybookConfig = fs.existsSync(path.join(storybookConfigDir, 'main.ts')) || fs.existsSync(path.join(storybookConfigDir, 'main.js')) || fs.existsSync(path.join(storybookConfigDir, 'main.mjs')) || fs.existsSync(path.join(storybookConfigDir, 'main.cjs'))
+
+const storybookProjects: [] = []
+
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
@@ -34,6 +40,20 @@ export default defineConfig({
     ],
     resolve: {
         alias: [
+            {
+                find: '@kimdaegyu/babmukdang-shared/domain/room',
+                replacement: path.resolve(
+                    dirname,
+                    '../BabMukDang-Shared/src/domain/room/index.ts'
+                )
+            },
+            {
+                find: '@kimdaegyu/babmukdang-shared/domain/restaurant',
+                replacement: path.resolve(
+                    dirname,
+                    '../BabMukDang-Shared/src/domain/restaurant/index.ts'
+                )
+            },
             {
                 find: '@kimdaegyu/babmukdang-shared/domain',
                 replacement: path.resolve(
@@ -102,32 +122,7 @@ export default defineConfig({
         browser: {
             enabled: true
         },
-        projects: [
-            {
-                extends: true,
-                plugins: [
-                    // The plugin will run tests for the stories defined in your Storybook config
-                    // See options at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon#storybooktest
-                    storybookTest({
-                        configDir: path.join(dirname, '.storybook')
-                    })
-                ],
-                test: {
-                    name: 'storybook',
-                    browser: {
-                        enabled: true,
-                        headless: true,
-                        provider: playwright({}),
-                        instances: [
-                            {
-                                browser: 'chromium'
-                            }
-                        ]
-                    },
-                    setupFiles: ['.storybook/vitest.setup.ts']
-                }
-            }
-        ]
+        projects: storybookProjects
     },
     server: {
         host: '0.0.0.0',

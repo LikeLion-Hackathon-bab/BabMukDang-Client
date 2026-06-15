@@ -27,7 +27,7 @@
         "@capacitor/android": "^7.4.3",
         "@capacitor/core": "^7.4.3",
         "@capacitor/ios": "^7.4.3",
-        "@kimdaegyu/babmukdang-shared": "*",
+        "@kimdaegyu/babmukdang-shared": "file:../BabMukDang-Shared",
         "@radix-ui/react-slot": "^1.2.3",
         "@tanstack/react-query": "^5.75.2",
         "@types/serviceworker": "^0.0.147",
