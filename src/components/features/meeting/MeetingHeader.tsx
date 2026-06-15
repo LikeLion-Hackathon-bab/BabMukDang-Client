@@ -1,6 +1,7 @@
 import { CalendarIcon, LocationWhiteIcon } from '@/assets/icons'
 import { TagPerson } from '@/components'
 import type { MeetingHeaderView } from '@/viewModels'
+import { formatKoreanDateTime } from '@/lib/dateTime'
 
 export function MeetingHeader({ meeting }: { meeting: MeetingHeaderView }) {
     return (
@@ -48,7 +49,7 @@ export function MeetingHeader({ meeting }: { meeting: MeetingHeaderView }) {
 
                         {/* 시간 정보 */}
                         <span className="text-caption-medium text-primary-200">
-                            {meeting.time}
+                            {formatKoreanDateTime(meeting.time)}
                         </span>
                     </div>
 

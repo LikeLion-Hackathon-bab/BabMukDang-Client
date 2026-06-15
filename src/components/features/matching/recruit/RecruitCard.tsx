@@ -7,6 +7,10 @@ import {
     PeopleWhiteIcon
 } from '@/assets/icons'
 import { KebabButton } from '@/components'
+import {
+    formatKoreanDateTime,
+    formatRecruitExpiresIn
+} from '@/lib/dateTime'
 
 export function RecruitCard({
     recruit,
@@ -57,7 +61,7 @@ export function RecruitCard({
 
                 <div className="flex flex-col items-center gap-6">
                     <span className="text-caption-medium text-gray-5">
-                        {calculateTimeLeft(recruit.createdAt)}
+                        {formatRecruitExpiresIn(recruit.createdAt)}
                     </span>
                     {/* Title */}
                     <div className="flex w-218 flex-col gap-16">
@@ -73,8 +77,9 @@ export function RecruitCard({
                                 <div className="flex items-center gap-4">
                                     <TimeWhiteIcon />
                                     <span className="text-body2-semibold text-white">
-                                        {formatTime(recruit.meetingAt)}
-                                        {/* 2025-08-08T22:30 */}
+                                        {formatKoreanDateTime(
+                                            recruit.meetingAt
+                                        )}
                                     </span>
                                 </div>
                                 <div className="flex items-center gap-4">
@@ -141,32 +146,3 @@ export function EmptyRecruitCard() {
         </div>
     )
 }
-
-function calculateTimeLeft(createdAt: string) {
-    // 2025-08-08T22:30 ->1시간 30분 후 종료
-    // GMT+0 기준
-    const now = new Date()
-    const GMTNow = now.getTime() + now.getTimezoneOffset() * 60 * 1000
-    const createdAtDate = new Date(createdAt)
-    const expiresAtDate = new Date(createdAtDate.getTime() + 2 * 60 * 60 * 1000)
-    const expiresAtGMT = expiresAtDate.getTime()
-    const timeLeft = expiresAtGMT - GMTNow
-    const hours = Math.floor(timeLeft / (1000 * 60 * 60))
-    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60))
-    const timeLeftString = `${hours}시간 ${minutes}분 후 종료`
-    return timeLeftString
-}
-
-function formatTime(meetingAt: string) {
-    // 2025-08-08T22:30 -> 8월 7일 오후 7시 30분
-    const date = new Date(meetingAt)
-    const month = date.getMonth() + 1
-    const day = date.getDate()
-    const hours = date.getHours() > 12 ? date.getHours() - 12 : date.getHours()
-    const minutes = date.getMinutes()
-
-    const ampm = date.getHours() >= 12 ? '오후' : '오전'
-    const timeString = `${month}월 ${day}일 ${ampm} ${hours}시 ${minutes}분`
-    return timeString
-}
-

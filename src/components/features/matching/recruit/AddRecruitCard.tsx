@@ -1,6 +1,10 @@
 import type { RecruitFormView } from '@/viewModels'
 import { DownIcon, UpIcon } from '@/assets/icons'
 import { useRef, useState } from 'react'
+import {
+    buildKoreanOffsetDateTime,
+    getKoreanDatePart
+} from '@/lib/dateTime'
 
 export function AddRecruitCard({
     recruitAddData,
@@ -21,18 +25,21 @@ export function AddRecruitCard({
     const placeRef = useRef<HTMLInputElement>(null)
     const messageRef = useRef<HTMLTextAreaElement>(null)
     const updateMeetingAt = (
+        nextPeriod: '오전' | '오후' = period,
         nextHour: number = hour,
         nextMinute: number = minute
     ) => {
-        const datePart = (
-            recruitAddData.meetingAt || new Date().toISOString()
-        ).split('T')[0]
-        const hh = String(nextHour).padStart(2, '0')
-        const mm = String(nextMinute).padStart(2, '0')
-        console.log('updateMeetingAt', `${datePart}T${hh}:${mm}:00Z`)
+        const datePart = recruitAddData.meetingAt
+            ? recruitAddData.meetingAt.split('T')[0]
+            : getKoreanDatePart()
         setRecruitAddData({
             ...recruitAddData,
-            meetingAt: `${datePart}T${hh}:${mm}:00Z`
+            meetingAt: buildKoreanOffsetDateTime({
+                datePart,
+                period: nextPeriod,
+                hour: nextHour,
+                minute: nextMinute
+            })
         })
     }
     const decParticipants = () =>
@@ -97,9 +104,13 @@ export function AddRecruitCard({
                     <button
                         type="button"
                         className="text-body2-medium text-nowrap"
-                        onClick={() =>
-                            setPeriod(p => (p === '오전' ? '오후' : '오전'))
-                        }>
+                        onClick={() => {
+                            setPeriod(p => {
+                                const next = p === '오전' ? '오후' : '오전'
+                                updateMeetingAt(next, hour, minute)
+                                return next
+                            })
+                        }}>
                         {period}
                     </button>
                     <button
@@ -107,8 +118,8 @@ export function AddRecruitCard({
                         className="text-body2-medium"
                         onClick={() =>
                             setHour(h => {
-                                const next = h === 23 ? 0 : h + 1
-                                updateMeetingAt(next, minute)
+                                const next = h >= 12 ? 1 : h + 1
+                                updateMeetingAt(period, next, minute)
                                 return next
                             })
                         }>
@@ -120,7 +131,7 @@ export function AddRecruitCard({
                         onClick={() =>
                             setMinute(m => {
                                 const next = m >= 45 ? 0 : m + 15
-                                updateMeetingAt(hour, next)
+                                updateMeetingAt(period, hour, next)
                                 return next
                             })
                         }>

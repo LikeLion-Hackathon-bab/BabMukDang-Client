@@ -3,6 +3,7 @@ import { TagPerson } from '@/components'
 import { MenuIcon, BackIcon, LocationGrayIcon } from '@/assets/icons'
 import { COLORS } from '@/constants/colors'
 import type { MeetingCardView } from '@/viewModels'
+import { formatKoreanDateTime } from '@/lib/dateTime'
 
 export function MeetingCard({
     meeting,
@@ -14,6 +15,8 @@ export function MeetingCard({
     onCancel?: () => void
 }) {
     const [isOpen, setIsOpen] = useState(false)
+    const formattedTime = formatKoreanDateTime(meeting.time)
+    const [dateText, timeText = ''] = formattedTime.split('일 ')
     const handleClick = () => {
         setIsOpen(!isOpen)
         onClick()
@@ -30,10 +33,10 @@ export function MeetingCard({
                     <div className="rounded-12 border-gray-2 shadow-drop-1 w-fit flex-none flex-col justify-baseline overflow-hidden border-r-2 border-dashed bg-white p-16 whitespace-nowrap">
                         <div className="flex h-52 w-fit flex-col justify-between">
                             <span className="text-body2-semibold text-black">
-                                {meeting.time.split('일')[0]}
+                                {dateText}일
                             </span>
                             <span className="text-body2-semibold text-black">
-                                {meeting.time.split('일')[1]}
+                                {timeText}
                             </span>
                         </div>
                     </div>
