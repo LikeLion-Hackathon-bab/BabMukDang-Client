@@ -17,6 +17,11 @@ import type {
     RoomAssignedResponse,
     RoomInitialState,
     RoomSocketError,
+    RoomProgress,
+    DecisionCandidateUpdate,
+    MenuCandidatesUpdate,
+    RestaurantCandidatesUpdate,
+    PreferMenuUpdateResponse,
     TimePicksUpdateResponse
 } from '@kimdaegyu/babmukdang-shared/domain/room'
 import { create } from 'zustand'
@@ -34,9 +39,14 @@ interface MatchStore {
     locationCandidates: LocationCandidateAddUpdateResponse
     locationVotes: LocationCandidateVoteUpdateResponse
     excludeMenuPicks: ExcludeMenuUpdateResponse
+    preferMenuPicks: PreferMenuUpdateResponse
     menuPicks: MenuPickUpdateResponse
     restaurantPicks: RestaurantPickUpdateResponse
     finalState: FinalState | null
+    progress: RoomProgress | null
+    decisionCandidates: DecisionCandidateUpdate['snapshots']
+    menuCandidates: MenuCandidatesUpdate['candidates']
+    restaurantCandidates: RestaurantCandidatesUpdate['candidates']
     error: RoomSocketError | null
     readyCount: number
     participantCount: number
@@ -56,9 +66,14 @@ interface MatchStore {
     ): void
     applyLocationVoteUpdated(payload: LocationCandidateVoteUpdateResponse): void
     applyExcludeMenuUpdated(payload: ExcludeMenuUpdateResponse): void
+    applyPreferMenuUpdated(payload: PreferMenuUpdateResponse): void
     applyMenuPickUpdated(payload: MenuPickUpdateResponse): void
     applyRestaurantPickUpdated(payload: RestaurantPickUpdateResponse): void
     applyFinalState(payload: FinalState): void
+    applyRoomProgress(payload: RoomProgress): void
+    applyDecisionCandidateUpdate(payload: DecisionCandidateUpdate): void
+    applyMenuCandidatesUpdate(payload: MenuCandidatesUpdate): void
+    applyRestaurantCandidatesUpdate(payload: RestaurantCandidatesUpdate): void
     setRoomError(payload: RoomSocketError): void
 }
 
@@ -73,13 +88,38 @@ const initialRoomState = {
     locationCandidates: [] as LocationCandidateAddUpdateResponse,
     locationVotes: [] as LocationCandidateVoteUpdateResponse,
     excludeMenuPicks: [] as ExcludeMenuUpdateResponse,
+    preferMenuPicks: [] as PreferMenuUpdateResponse,
     menuPicks: [] as MenuPickUpdateResponse,
     restaurantPicks: [] as RestaurantPickUpdateResponse,
     finalState: null as FinalState | null,
+    progress: null as RoomProgress | null,
+    decisionCandidates: [] as DecisionCandidateUpdate['snapshots'],
+    menuCandidates: [] as MenuCandidatesUpdate['candidates'],
+    restaurantCandidates: [] as RestaurantCandidatesUpdate['candidates'],
     error: null as RoomSocketError | null,
     readyCount: 0,
     participantCount: 0,
     isSelfReady: false
+}
+
+
+const resolveLegacyStageFromProgress = (progress: RoomProgress | null): RoomStage => {
+    if (!progress) return 'waiting'
+    if (progress.phase === 'finished') return 'finish'
+
+    const isOpen = (key: RoomProgress['tasks'][number]['key']) =>
+        progress.tasks.some(
+            task => task.key === key && ['open', 'ready'].includes(task.status)
+        )
+
+    if (isOpen('restaurant-pick')) return 'restaurant'
+    if (isOpen('menu-pick') || isOpen('prefer-menu')) return 'menu'
+    if (isOpen('exclude-menu')) return 'exclude-menu'
+    if (isOpen('location-vote')) return 'location-vote'
+    if (isOpen('location-candidate')) return 'location'
+    if (isOpen('schedule-time')) return 'time'
+    if (isOpen('schedule-date')) return 'date'
+    return 'waiting'
 }
 
 export const useMatchStore = create<MatchStore>(set => ({
@@ -96,7 +136,8 @@ export const useMatchStore = create<MatchStore>(set => ({
             participants: payload.participants,
             participantCount: payload.participants.length,
             chatMessages: payload.chat,
-            finalState: payload.final
+            finalState: payload.final,
+            progress: payload.progress ?? null
         }),
 
     applyStageChanged: payload =>
@@ -161,11 +202,39 @@ export const useMatchStore = create<MatchStore>(set => ({
 
     applyExcludeMenuUpdated: payload => set({ excludeMenuPicks: payload }),
 
+    applyPreferMenuUpdated: payload => set({ preferMenuPicks: payload }),
+
     applyMenuPickUpdated: payload => set({ menuPicks: payload }),
 
     applyRestaurantPickUpdated: payload => set({ restaurantPicks: payload }),
 
     applyFinalState: payload => set({ finalState: payload }),
+
+    applyRoomProgress: payload =>
+        set(() => {
+            const stage = resolveLegacyStageFromProgress(payload)
+            const activeTask = payload.tasks.find(task =>
+                ['open', 'ready', 'stale'].includes(task.status)
+            )
+
+            return {
+                progress: payload,
+                finalState: payload.final,
+                stage,
+                readyCount: activeTask?.readyCount ?? 0,
+                participantCount:
+                    activeTask?.participantCount ?? payload.tasks[0]?.participantCount ?? 0
+            }
+        }),
+
+    applyDecisionCandidateUpdate: payload =>
+        set({ decisionCandidates: payload.snapshots }),
+
+    applyMenuCandidatesUpdate: payload =>
+        set({ menuCandidates: payload.candidates }),
+
+    applyRestaurantCandidatesUpdate: payload =>
+        set({ restaurantCandidates: payload.candidates }),
 
     setRoomError: payload => set({ error: payload })
 }))
@@ -184,9 +253,14 @@ export function getMatchStoreActions(): MatchStoreActions {
         applyLocationCandidateAdded: store.applyLocationCandidateAdded,
         applyLocationVoteUpdated: store.applyLocationVoteUpdated,
         applyExcludeMenuUpdated: store.applyExcludeMenuUpdated,
+        applyPreferMenuUpdated: store.applyPreferMenuUpdated,
         applyMenuPickUpdated: store.applyMenuPickUpdated,
         applyRestaurantPickUpdated: store.applyRestaurantPickUpdated,
         applyFinalState: store.applyFinalState,
+        applyRoomProgress: store.applyRoomProgress,
+        applyDecisionCandidateUpdate: store.applyDecisionCandidateUpdate,
+        applyMenuCandidatesUpdate: store.applyMenuCandidatesUpdate,
+        applyRestaurantCandidatesUpdate: store.applyRestaurantCandidatesUpdate,
         setRoomError: store.setRoomError
     }
 }
