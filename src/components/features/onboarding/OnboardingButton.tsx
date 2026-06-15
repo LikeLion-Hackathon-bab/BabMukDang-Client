@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useSocket } from '@/contexts/SocketContext'
+import { getReadyTaskKeyForStage, useSocket } from '@/contexts/SocketContext'
 import { COLORS } from '@/constants/colors'
 import { useNavigate } from 'react-router-dom'
 
@@ -9,6 +9,7 @@ export function OnboardingButton() {
         readyCount,
         participantCount,
         stage,
+        progress,
         isSelfReady,
         setIsSelfReady
     } = useSocket()
@@ -37,7 +38,7 @@ export function OnboardingButton() {
 
     const onClickReady = () => {
         const next = !isSelfReady
-        commands?.readyState(next)
+        commands?.readyState(next, getReadyTaskKeyForStage(stage, progress))
 
         if (stage === 'finish') {
             navigate('/')
