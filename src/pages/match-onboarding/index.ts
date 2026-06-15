@@ -7,3 +7,5 @@ export { FinishPage } from './FinishPage'
 export { TimePage } from './TimePage'
 export { DatePage } from './DatePage'
 export { RestaurantPage } from './RestaurantPage'
+
+export { RoomTaskPage } from './RoomTaskPage'

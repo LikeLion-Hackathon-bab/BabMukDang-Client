@@ -39,7 +39,8 @@ import {
     StartRegisterPage,
     FinishRegisterPage,
     ChallengePage,
-    FriendProfilePage
+    FriendProfilePage,
+    RoomTaskPage
 } from '@/pages'
 import { Layout, OnboardingLayout, RegisterLayout } from '@/components'
 import { register } from '@/lib/serviceWorkerRegistration'
@@ -195,25 +196,34 @@ function App() {
                                     path="/:matchType/waiting"
                                     element={<WaitingPage />}
                                 />
+                                
+                                <Route
+                                    path="/:matchType/active"
+                                    element={<RoomTaskPage />}
+                                />
+                                <Route
+                                    path="/:matchType/active/:roomId"
+                                    element={<RoomTaskPage />}
+                                />
                                 <Route
                                     path="/:matchType/location"
-                                    element={<LocationSelectionPage />}
+                                    element={<RoomTaskPage />}
                                 />
                                 <Route
                                     path="/:matchType/menu"
-                                    element={<MenuPage />}
+                                    element={<RoomTaskPage />}
                                 />
                                 <Route
                                     path="/:matchType/restaurant"
-                                    element={<RestaurantPage />}
+                                    element={<RoomTaskPage />}
                                 />
                                 <Route
                                     path="/:matchType/exclude-menu"
-                                    element={<MenuExcludePage />}
+                                    element={<RoomTaskPage />}
                                 />
                                 <Route
                                     path="/:matchType/location-vote"
-                                    element={<LocationVotePage />}
+                                    element={<RoomTaskPage />}
                                 />
                                 <Route
                                     path="/:matchType/finish"
@@ -221,11 +231,11 @@ function App() {
                                 />
                                 <Route
                                     path="/:matchType/time"
-                                    element={<TimePage />}
+                                    element={<RoomTaskPage />}
                                 />
                                 <Route
                                     path="/:matchType/date"
-                                    element={<DatePage />}
+                                    element={<RoomTaskPage />}
                                 />
                                 <Route
                                     path="/:matchType/waiting/:roomId"
@@ -233,23 +243,23 @@ function App() {
                                 />
                                 <Route
                                     path="/:matchType/location/:roomId"
-                                    element={<LocationSelectionPage />}
+                                    element={<RoomTaskPage />}
                                 />
                                 <Route
                                     path="/:matchType/menu/:roomId"
-                                    element={<MenuPage />}
+                                    element={<RoomTaskPage />}
                                 />
                                 <Route
                                     path="/:matchType/restaurant/:roomId"
-                                    element={<RestaurantPage />}
+                                    element={<RoomTaskPage />}
                                 />
                                 <Route
                                     path="/:matchType/exclude-menu/:roomId"
-                                    element={<MenuExcludePage />}
+                                    element={<RoomTaskPage />}
                                 />
                                 <Route
                                     path="/:matchType/location-vote/:roomId"
-                                    element={<LocationVotePage />}
+                                    element={<RoomTaskPage />}
                                 />
                                 <Route
                                     path="/:matchType/finish/:roomId"
@@ -257,11 +267,11 @@ function App() {
                                 />
                                 <Route
                                     path="/:matchType/time/:roomId"
-                                    element={<TimePage />}
+                                    element={<RoomTaskPage />}
                                 />
                                 <Route
                                     path="/:matchType/date/:roomId"
-                                    element={<DatePage />}
+                                    element={<RoomTaskPage />}
                                 />
                             </Route>
 
