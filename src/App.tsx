@@ -196,7 +196,7 @@ function App() {
                                     path="/:matchType/waiting"
                                     element={<WaitingPage />}
                                 />
-                                
+
                                 <Route
                                     path="/:matchType/active"
                                     element={<RoomTaskPage />}
@@ -294,7 +294,7 @@ function App() {
                             />
                         </Route>
                     </Route>
-                    <Route
+                    {/**<Route
                         path="*"
                         element={
                             <Navigate
@@ -302,7 +302,7 @@ function App() {
                                 replace
                             />
                         }
-                    />
+                    />*/}
                 </Routes>
             </Router>
         </QueryClientProvider>
