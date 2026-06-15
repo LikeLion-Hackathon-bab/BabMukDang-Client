@@ -11,6 +11,8 @@ export function MatchingInviteNotiCard({
     return (
         <div
             className="flex w-full flex-col gap-10 px-20 py-16"
+            role="button"
+            tabIndex={0}
             onClick={onClick}>
             <div className="flex w-full flex-row items-center justify-between">
                 <div className="flex flex-row items-center gap-8">

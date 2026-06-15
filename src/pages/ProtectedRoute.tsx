@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom'
 import { useAuthStore } from '@/store'
+import { NotificationSseProvider } from '@/contexts/NotificationSseProvider'
 
 export function ProtectedRoute() {
     const accessToken = useAuthStore(state => state.accessToken)
@@ -13,5 +14,9 @@ export function ProtectedRoute() {
         )
     }
 
-    return <Outlet />
+    return (
+        <NotificationSseProvider>
+            <Outlet />
+        </NotificationSseProvider>
+    )
 }

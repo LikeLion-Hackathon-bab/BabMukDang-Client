@@ -9,7 +9,7 @@ import { domainId } from '@/domain/factories'
 import { queryKeys } from './keys'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import type { MutationOptions } from './types'
-const notificationApi = {
+export const notificationApi = {
     getAll: async (): Promise<MatchingNotification[]> => {
         const res = await contractClient.get(apiContract.notifications.list)
         return res

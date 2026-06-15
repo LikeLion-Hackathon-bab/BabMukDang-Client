@@ -10,12 +10,12 @@ import {
 import { LOCAL_NEWS_FILTER_LIST } from '@/constants/filters'
 import { useHeaderStore, useNotificationStore } from '@/store'
 import {
-    useAccessRoom,
+    notificationApi,
     useDeleteNotification,
-    useGetNotifications,
-    useMarkRead
+    useGetNotifications
 } from '@/apis/notification.api'
 import type { MatchingInviteNoti } from '@/viewModels'
+import { formatRelativeKoreanTime } from '@/lib/dateTime'
 interface LocalNewsNoti {
     id: number
     type: 'school' | 'restaurant' | 'area'
@@ -32,10 +32,6 @@ export function NotiStoragePage() {
         state => state.removeNotification
     )
     const markRead = useNotificationStore(state => state.markRead)
-    const { mutate: readNotification } = useMarkRead({
-        onSuccess: () => {},
-        onError: () => {}
-    })
     const { mutate: deleteNotification } = useDeleteNotification({
         onSuccess: () => {},
         onError: () => {}
@@ -48,7 +44,7 @@ export function NotiStoragePage() {
                 addNotification(notification)
             })
         }
-    }, [])
+    }, [addNotification, fetchedNotifications])
 
     // 헤더 관련
     const { resetHeader, setTitle, showCenterElement } = useHeaderStore()
@@ -97,20 +93,16 @@ export function NotiStoragePage() {
     }
 
     const handleMatchingInviteNotiClick = async (noti: MatchingInviteNoti) => {
-        const notification = await readNotification(noti.notificationId)
-        markRead(noti)
+        const [notification, accessRoomData] = await Promise.all([
+            notificationApi.markRead(noti.notificationId),
+            notificationApi.accessRoom(noti.roomId)
+        ])
 
-        const {
-            data: accessRoomData,
-            isLoading,
-            error
-        } = useAccessRoom(noti.roomId)
+        markRead(notification)
 
-        if (accessRoomData && !isLoading && !error) {
-            navigate(
-                `/${accessRoomData.roomType}/${accessRoomData.phase}/${accessRoomData.roomId}`
-            )
-        }
+        navigate(
+            `/${accessRoomData.roomType}/${accessRoomData.phase}/${accessRoomData.roomId}`
+        )
     }
 
     return (
@@ -155,14 +147,5 @@ export function NotiStoragePage() {
 }
 
 const formatNotificationTime = (createdAt: string) => {
-    const diffMs = Date.now() - new Date(createdAt).getTime()
-    const diffMinutes = Math.max(0, Math.floor(diffMs / 60000))
-
-    if (diffMinutes < 1) return '방금 전'
-    if (diffMinutes < 60) return `${diffMinutes}분 전`
-
-    const diffHours = Math.floor(diffMinutes / 60)
-    if (diffHours < 24) return `${diffHours}시간 전`
-
-    return `${Math.floor(diffHours / 24)}일 전`
+    return formatRelativeKoreanTime(createdAt)
 }

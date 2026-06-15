@@ -1,13 +1,28 @@
 import React, { useEffect } from 'react'
-import type { MatchingNotification } from '@kimdaegyu/babmukdang-shared/domain'
+import {
+    CACHE_INVALIDATION_SSE_EVENT,
+    CacheInvalidationEventSchema,
+    type MatchingNotification
+} from '@kimdaegyu/babmukdang-shared/domain'
+import { useQueryClient } from '@tanstack/react-query'
 import { API_BASE_URL } from '@/apis/baseUrl'
 import { useGetNotifications } from '@/apis/notification.api'
 import { useAuthStore, useNotificationStore } from '@/store'
+import { invalidateFromCacheEvent } from '@/apis/cacheInvalidation'
 
 const parseNotification = (raw: string): MatchingNotification | null => {
     try {
         return JSON.parse(raw) as MatchingNotification
     } catch {
+        return null
+    }
+}
+
+const parseCacheInvalidationEvent = (raw: string) => {
+    try {
+        return CacheInvalidationEventSchema.parse(JSON.parse(raw))
+    } catch (error) {
+        console.warn('캐시 무효화 SSE 이벤트 파싱 실패', error)
         return null
     }
 }
@@ -18,6 +33,7 @@ export function NotificationSseProvider({
     children: React.ReactNode
 }) {
     const accessToken = useAuthStore(state => state.accessToken)
+    const queryClient = useQueryClient()
     const latest = useNotificationStore(state => state.latest)
     const addNotification = useNotificationStore(state => state.addNotification)
     const addNotifications = useNotificationStore(
@@ -27,14 +43,24 @@ export function NotificationSseProvider({
     const clearLatest = useNotificationStore(state => state.clearLatest)
 
     useEffect(() => {
-        if (!accessToken) return
-
         addNotifications(notifications ?? [])
+    }, [addNotifications, notifications])
+
+    useEffect(() => {
+        if (!accessToken) return
 
         const source = new EventSource(
             `${API_BASE_URL}/sse/notifications?token=${encodeURIComponent(accessToken)}`,
             { withCredentials: true }
         )
+
+        source.onopen = () => {
+            console.info('SSE 알림 스트림이 연결되었습니다.')
+        }
+
+        source.onerror = error => {
+            console.warn('SSE 알림 스트림 연결 오류', error)
+        }
 
         source.addEventListener('matching-notification', event => {
             const notification = parseNotification((event as MessageEvent).data)
@@ -43,10 +69,19 @@ export function NotificationSseProvider({
             }
         })
 
+        source.addEventListener(CACHE_INVALIDATION_SSE_EVENT, event => {
+            const cacheEvent = parseCacheInvalidationEvent(
+                (event as MessageEvent).data
+            )
+            if (cacheEvent) {
+                invalidateFromCacheEvent(queryClient, cacheEvent)
+            }
+        })
+
         return () => {
             source.close()
         }
-    }, [accessToken, addNotification, addNotifications, notifications])
+    }, [accessToken, addNotification, queryClient])
 
     useEffect(() => {
         if (!latest) return
