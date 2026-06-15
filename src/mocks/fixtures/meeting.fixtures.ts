@@ -1,5 +1,6 @@
 /** @fileoverview Meeting/Plan mock fixtures */
 import type { PlanResponse } from '@/apis/types'
+import { LatitudeSchema, LongitudeSchema } from '@kimdaegyu/babmukdang-shared/domain/room'
 import { mapMeeting } from '@/apis/mappers/meeting.mapper'
 
 const now = '2025-08-20T09:00:00.000Z'
@@ -29,8 +30,9 @@ const createMeeting = ({
         locationId: String(id) as NonNullable<PlanResponse['location']>['locationId'],
         placeName: location,
         address: '주소',
-        lat: 0,
-        lng: 0
+        source: 'manual',
+        lat: LatitudeSchema.parse(0),
+        lng: LongitudeSchema.parse(0)
     },
     restaurant: {
         restaurantId: String(id) as NonNullable<PlanResponse['restaurant']>['restaurantId'],
@@ -42,8 +44,8 @@ const createMeeting = ({
         addressName: '',
         phone: '',
         placeUrl: null,
-        lat: 0,
-        lng: 0
+        lat: LatitudeSchema.parse(0),
+        lng: LongitudeSchema.parse(0)
     },
     meetingAt,
     status: isCompleted ? 'COMPLETED' : 'PLANNING',

@@ -108,7 +108,7 @@ export function NotiStoragePage() {
 
         if (accessRoomData && !isLoading && !error) {
             navigate(
-                `/${accessRoomData.roomType}/${accessRoomData.stage}/${accessRoomData.roomId}`
+                `/${accessRoomData.roomType}/${accessRoomData.phase}/${accessRoomData.roomId}`
             )
         }
     }
