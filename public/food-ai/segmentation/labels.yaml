@@ -1,0 +1,3601 @@
+version: kfood-300-v1
+classes:
+  - class_id: 0
+    canonical_ko: 갈비구이
+    canonical_en: aihub_kfood_000
+    aliases: [갈비구이, aihub_kfood_000, Img_000]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 1
+    canonical_ko: 갈치구이
+    canonical_en: aihub_kfood_001
+    aliases: [갈치구이, aihub_kfood_001, Img_001]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 2
+    canonical_ko: 고등어구이
+    canonical_en: aihub_kfood_002
+    aliases: [고등어구이, aihub_kfood_002, Img_002]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 3
+    canonical_ko: 곱창구이
+    canonical_en: aihub_kfood_003
+    aliases: [곱창구이, aihub_kfood_003, Img_003]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 4
+    canonical_ko: 닭갈비
+    canonical_en: aihub_kfood_004
+    aliases: [닭갈비, aihub_kfood_004, Img_004]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 5
+    canonical_ko: 더덕구이
+    canonical_en: aihub_kfood_005
+    aliases: [더덕구이, aihub_kfood_005, Img_005]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 6
+    canonical_ko: 떡갈비
+    canonical_en: aihub_kfood_006
+    aliases: [떡갈비, aihub_kfood_006, Img_006]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 7
+    canonical_ko: 불고기
+    canonical_en: aihub_kfood_007
+    aliases: [불고기, aihub_kfood_007, Img_007]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 8
+    canonical_ko: 삼겹살
+    canonical_en: aihub_kfood_008
+    aliases: [삼겹살, aihub_kfood_008, Img_008]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 9
+    canonical_ko: 장어구이
+    canonical_en: aihub_kfood_009
+    aliases: [장어구이, aihub_kfood_009, Img_009]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 10
+    canonical_ko: 조개구이
+    canonical_en: aihub_kfood_010
+    aliases: [조개구이, aihub_kfood_010, Img_010]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 11
+    canonical_ko: 조기구이
+    canonical_en: aihub_kfood_011
+    aliases: [조기구이, aihub_kfood_011, Img_011]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 12
+    canonical_ko: 황태구이
+    canonical_en: aihub_kfood_012
+    aliases: [황태구이, aihub_kfood_012, Img_012]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 13
+    canonical_ko: 훈제오리
+    canonical_en: aihub_kfood_013
+    aliases: [훈제오리, aihub_kfood_013, Img_013]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 14
+    canonical_ko: 계란국
+    canonical_en: aihub_kfood_014
+    aliases: [계란국, aihub_kfood_014, Img_014]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 15
+    canonical_ko: 떡국_만두국
+    canonical_en: aihub_kfood_015
+    aliases: [떡국_만두국, aihub_kfood_015, Img_015]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 16
+    canonical_ko: 무국
+    canonical_en: aihub_kfood_016
+    aliases: [무국, aihub_kfood_016, Img_016]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 17
+    canonical_ko: 미역국
+    canonical_en: aihub_kfood_017
+    aliases: [미역국, aihub_kfood_017, Img_017]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 18
+    canonical_ko: 북엇국
+    canonical_en: aihub_kfood_018
+    aliases: [북엇국, aihub_kfood_018, Img_018]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 19
+    canonical_ko: 시래기국
+    canonical_en: aihub_kfood_019
+    aliases: [시래기국, aihub_kfood_019, Img_019]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 20
+    canonical_ko: 육개장
+    canonical_en: aihub_kfood_020
+    aliases: [육개장, aihub_kfood_020, Img_020]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 21
+    canonical_ko: 콩나물국
+    canonical_en: aihub_kfood_021
+    aliases: [콩나물국, aihub_kfood_021, Img_021]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 22
+    canonical_ko: 과메기
+    canonical_en: aihub_kfood_022
+    aliases: [과메기, aihub_kfood_022, Img_022]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 23
+    canonical_ko: 양념치킨
+    canonical_en: aihub_kfood_023
+    aliases: [양념치킨, aihub_kfood_023, Img_023]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 24
+    canonical_ko: 젓갈
+    canonical_en: aihub_kfood_024
+    aliases: [젓갈, aihub_kfood_024, Img_024]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 25
+    canonical_ko: 콩자반
+    canonical_en: aihub_kfood_025
+    aliases: [콩자반, aihub_kfood_025, Img_025]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 26
+    canonical_ko: 편육
+    canonical_en: aihub_kfood_026
+    aliases: [편육, aihub_kfood_026, Img_026]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 27
+    canonical_ko: 피자
+    canonical_en: aihub_kfood_027
+    aliases: [피자, aihub_kfood_027, Img_027]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 28
+    canonical_ko: 후라이드치킨
+    canonical_en: aihub_kfood_028
+    aliases: [후라이드치킨, aihub_kfood_028, Img_028]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 29
+    canonical_ko: 갓김치
+    canonical_en: aihub_kfood_029
+    aliases: [갓김치, aihub_kfood_029, Img_029]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 30
+    canonical_ko: 깍두기
+    canonical_en: aihub_kfood_030
+    aliases: [깍두기, aihub_kfood_030, Img_030]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 31
+    canonical_ko: 나박김치
+    canonical_en: aihub_kfood_031
+    aliases: [나박김치, aihub_kfood_031, Img_031]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 32
+    canonical_ko: 무생채
+    canonical_en: aihub_kfood_032
+    aliases: [무생채, aihub_kfood_032, Img_032]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 33
+    canonical_ko: 배추김치
+    canonical_en: aihub_kfood_033
+    aliases: [배추김치, aihub_kfood_033, Img_033]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 34
+    canonical_ko: 백김치
+    canonical_en: aihub_kfood_034
+    aliases: [백김치, aihub_kfood_034, Img_034]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 35
+    canonical_ko: 부추김치
+    canonical_en: aihub_kfood_035
+    aliases: [부추김치, aihub_kfood_035, Img_035]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 36
+    canonical_ko: 열무김치
+    canonical_en: aihub_kfood_036
+    aliases: [열무김치, aihub_kfood_036, Img_036]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 37
+    canonical_ko: 오이소박이
+    canonical_en: aihub_kfood_037
+    aliases: [오이소박이, aihub_kfood_037, Img_037]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 38
+    canonical_ko: 총각김치
+    canonical_en: aihub_kfood_038
+    aliases: [총각김치, aihub_kfood_038, Img_038]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 39
+    canonical_ko: 파김치
+    canonical_en: aihub_kfood_039
+    aliases: [파김치, aihub_kfood_039, Img_039]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 40
+    canonical_ko: 가지볶음
+    canonical_en: aihub_kfood_040
+    aliases: [가지볶음, aihub_kfood_040, Img_040]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 41
+    canonical_ko: 고사리나물
+    canonical_en: aihub_kfood_041
+    aliases: [고사리나물, aihub_kfood_041, Img_041]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 42
+    canonical_ko: 미역줄기볶음
+    canonical_en: aihub_kfood_042
+    aliases: [미역줄기볶음, aihub_kfood_042, Img_042]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 43
+    canonical_ko: 숙주나물
+    canonical_en: aihub_kfood_043
+    aliases: [숙주나물, aihub_kfood_043, Img_043]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 44
+    canonical_ko: 시금치나물
+    canonical_en: aihub_kfood_044
+    aliases: [시금치나물, aihub_kfood_044, Img_044]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 45
+    canonical_ko: 애호박볶음
+    canonical_en: aihub_kfood_045
+    aliases: [애호박볶음, aihub_kfood_045, Img_045]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 46
+    canonical_ko: 경단
+    canonical_en: aihub_kfood_046
+    aliases: [경단, aihub_kfood_046, Img_046]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 47
+    canonical_ko: 꿀떡
+    canonical_en: aihub_kfood_047
+    aliases: [꿀떡, aihub_kfood_047, Img_047]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 48
+    canonical_ko: 송편
+    canonical_en: aihub_kfood_048
+    aliases: [송편, aihub_kfood_048, Img_048]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 49
+    canonical_ko: 만두
+    canonical_en: aihub_kfood_049
+    aliases: [만두, aihub_kfood_049, Img_049]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 50
+    canonical_ko: 라면
+    canonical_en: aihub_kfood_050
+    aliases: [라면, aihub_kfood_050, Img_050]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 51
+    canonical_ko: 막국수
+    canonical_en: aihub_kfood_051
+    aliases: [막국수, aihub_kfood_051, Img_051]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 52
+    canonical_ko: 물냉면
+    canonical_en: aihub_kfood_052
+    aliases: [물냉면, aihub_kfood_052, Img_052]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 53
+    canonical_ko: 비빔냉면
+    canonical_en: aihub_kfood_053
+    aliases: [비빔냉면, aihub_kfood_053, Img_053]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 54
+    canonical_ko: 수제비
+    canonical_en: aihub_kfood_054
+    aliases: [수제비, aihub_kfood_054, Img_054]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 55
+    canonical_ko: 열무국수
+    canonical_en: aihub_kfood_055
+    aliases: [열무국수, aihub_kfood_055, Img_055]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 56
+    canonical_ko: 잔치국수
+    canonical_en: aihub_kfood_056
+    aliases: [잔치국수, aihub_kfood_056, Img_056]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 57
+    canonical_ko: 짜장면
+    canonical_en: aihub_kfood_057
+    aliases: [짜장면, aihub_kfood_057, Img_057]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 58
+    canonical_ko: 짬뽕
+    canonical_en: aihub_kfood_058
+    aliases: [짬뽕, aihub_kfood_058, Img_058]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 59
+    canonical_ko: 쫄면
+    canonical_en: aihub_kfood_059
+    aliases: [쫄면, aihub_kfood_059, Img_059]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 60
+    canonical_ko: 칼국수
+    canonical_en: aihub_kfood_060
+    aliases: [칼국수, aihub_kfood_060, Img_060]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 61
+    canonical_ko: 콩국수
+    canonical_en: aihub_kfood_061
+    aliases: [콩국수, aihub_kfood_061, Img_061]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 62
+    canonical_ko: 꽈리고추무침
+    canonical_en: aihub_kfood_062
+    aliases: [꽈리고추무침, aihub_kfood_062, Img_062]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 63
+    canonical_ko: 도라지무침
+    canonical_en: aihub_kfood_063
+    aliases: [도라지무침, aihub_kfood_063, Img_063]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 64
+    canonical_ko: 도토리묵
+    canonical_en: aihub_kfood_064
+    aliases: [도토리묵, aihub_kfood_064, Img_064]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 65
+    canonical_ko: 잡채
+    canonical_en: aihub_kfood_065
+    aliases: [잡채, aihub_kfood_065, Img_065]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 66
+    canonical_ko: 콩나물무침
+    canonical_en: aihub_kfood_066
+    aliases: [콩나물무침, aihub_kfood_066, Img_066]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 67
+    canonical_ko: 홍어무침
+    canonical_en: aihub_kfood_067
+    aliases: [홍어무침, aihub_kfood_067, Img_067]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 68
+    canonical_ko: 회무침
+    canonical_en: aihub_kfood_068
+    aliases: [회무침, aihub_kfood_068, Img_068]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 69
+    canonical_ko: 김밥
+    canonical_en: aihub_kfood_069
+    aliases: [김밥, aihub_kfood_069, Img_069]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 70
+    canonical_ko: 김치볶음밥
+    canonical_en: aihub_kfood_070
+    aliases: [김치볶음밥, aihub_kfood_070, Img_070]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 71
+    canonical_ko: 누룽지
+    canonical_en: aihub_kfood_071
+    aliases: [누룽지, aihub_kfood_071, Img_071]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 72
+    canonical_ko: 비빔밥
+    canonical_en: aihub_kfood_072
+    aliases: [비빔밥, aihub_kfood_072, Img_072]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 73
+    canonical_ko: 새우볶음밥
+    canonical_en: aihub_kfood_073
+    aliases: [새우볶음밥, aihub_kfood_073, Img_073]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 74
+    canonical_ko: 알밥
+    canonical_en: aihub_kfood_074
+    aliases: [알밥, aihub_kfood_074, Img_074]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 75
+    canonical_ko: 유부초밥
+    canonical_en: aihub_kfood_075
+    aliases: [유부초밥, aihub_kfood_075, Img_075]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 76
+    canonical_ko: 잡곡밥
+    canonical_en: aihub_kfood_076
+    aliases: [잡곡밥, aihub_kfood_076, Img_076]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 77
+    canonical_ko: 주먹밥
+    canonical_en: aihub_kfood_077
+    aliases: [주먹밥, aihub_kfood_077, Img_077]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 78
+    canonical_ko: 감자채볶음
+    canonical_en: aihub_kfood_078
+    aliases: [감자채볶음, aihub_kfood_078, Img_078]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 79
+    canonical_ko: 건새우볶음
+    canonical_en: aihub_kfood_079
+    aliases: [건새우볶음, aihub_kfood_079, Img_079]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 80
+    canonical_ko: 고추장진미채볶음
+    canonical_en: aihub_kfood_080
+    aliases: [고추장진미채볶음, aihub_kfood_080, Img_080]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 81
+    canonical_ko: 두부김치
+    canonical_en: aihub_kfood_081
+    aliases: [두부김치, aihub_kfood_081, Img_081]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 82
+    canonical_ko: 떡볶이
+    canonical_en: aihub_kfood_082
+    aliases: [떡볶이, aihub_kfood_082, Img_082]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 83
+    canonical_ko: 라볶이
+    canonical_en: aihub_kfood_083
+    aliases: [라볶이, aihub_kfood_083, Img_083]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 84
+    canonical_ko: 멸치볶음
+    canonical_en: aihub_kfood_084
+    aliases: [멸치볶음, aihub_kfood_084, Img_084]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 85
+    canonical_ko: 소세지볶음
+    canonical_en: aihub_kfood_085
+    aliases: [소세지볶음, aihub_kfood_085, Img_085]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 86
+    canonical_ko: 어묵볶음
+    canonical_en: aihub_kfood_086
+    aliases: [어묵볶음, aihub_kfood_086, Img_086]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 87
+    canonical_ko: 오징어채볶음
+    canonical_en: aihub_kfood_087
+    aliases: [오징어채볶음, aihub_kfood_087, Img_087]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 88
+    canonical_ko: 제육볶음
+    canonical_en: aihub_kfood_088
+    aliases: [제육볶음, aihub_kfood_088, Img_088]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 89
+    canonical_ko: 주꾸미볶음
+    canonical_en: aihub_kfood_089
+    aliases: [주꾸미볶음, aihub_kfood_089, Img_089]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 90
+    canonical_ko: 보쌈
+    canonical_en: aihub_kfood_090
+    aliases: [보쌈, aihub_kfood_090, Img_090]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 91
+    canonical_ko: 수정과
+    canonical_en: aihub_kfood_091
+    aliases: [수정과, aihub_kfood_091, Img_091]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 92
+    canonical_ko: 식혜
+    canonical_en: aihub_kfood_092
+    aliases: [식혜, aihub_kfood_092, Img_092]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 93
+    canonical_ko: 간장게장
+    canonical_en: aihub_kfood_093
+    aliases: [간장게장, aihub_kfood_093, Img_093]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 94
+    canonical_ko: 양념게장
+    canonical_en: aihub_kfood_094
+    aliases: [양념게장, aihub_kfood_094, Img_094]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 95
+    canonical_ko: 깻잎장아찌
+    canonical_en: aihub_kfood_095
+    aliases: [깻잎장아찌, aihub_kfood_095, Img_095]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 96
+    canonical_ko: 떡꼬치
+    canonical_en: aihub_kfood_096
+    aliases: [떡꼬치, aihub_kfood_096, Img_096]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 97
+    canonical_ko: 감자전
+    canonical_en: aihub_kfood_097
+    aliases: [감자전, aihub_kfood_097, Img_097]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 98
+    canonical_ko: 계란말이
+    canonical_en: aihub_kfood_098
+    aliases: [계란말이, aihub_kfood_098, Img_098]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 99
+    canonical_ko: 계란후라이
+    canonical_en: aihub_kfood_099
+    aliases: [계란후라이, aihub_kfood_099, Img_099]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 100
+    canonical_ko: 김치전
+    canonical_en: aihub_kfood_100
+    aliases: [김치전, aihub_kfood_100, Img_100]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 101
+    canonical_ko: 동그랑땡
+    canonical_en: aihub_kfood_101
+    aliases: [동그랑땡, aihub_kfood_101, Img_101]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 102
+    canonical_ko: 생선전
+    canonical_en: aihub_kfood_102
+    aliases: [생선전, aihub_kfood_102, Img_102]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 103
+    canonical_ko: 파전
+    canonical_en: aihub_kfood_103
+    aliases: [파전, aihub_kfood_103, Img_103]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 104
+    canonical_ko: 호박전
+    canonical_en: aihub_kfood_104
+    aliases: [호박전, aihub_kfood_104, Img_104]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 105
+    canonical_ko: 곱창전골
+    canonical_en: aihub_kfood_105
+    aliases: [곱창전골, aihub_kfood_105, Img_105]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 106
+    canonical_ko: 갈치조림
+    canonical_en: aihub_kfood_106
+    aliases: [갈치조림, aihub_kfood_106, Img_106]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 107
+    canonical_ko: 감자조림
+    canonical_en: aihub_kfood_107
+    aliases: [감자조림, aihub_kfood_107, Img_107]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 108
+    canonical_ko: 고등어조림
+    canonical_en: aihub_kfood_108
+    aliases: [고등어조림, aihub_kfood_108, Img_108]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 109
+    canonical_ko: 꽁치조림
+    canonical_en: aihub_kfood_109
+    aliases: [꽁치조림, aihub_kfood_109, Img_109]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 110
+    canonical_ko: 두부조림
+    canonical_en: aihub_kfood_110
+    aliases: [두부조림, aihub_kfood_110, Img_110]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 111
+    canonical_ko: 땅콩조림
+    canonical_en: aihub_kfood_111
+    aliases: [땅콩조림, aihub_kfood_111, Img_111]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 112
+    canonical_ko: 메추리알장조림
+    canonical_en: aihub_kfood_112
+    aliases: [메추리알장조림, aihub_kfood_112, Img_112]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 113
+    canonical_ko: 연근조림
+    canonical_en: aihub_kfood_113
+    aliases: [연근조림, aihub_kfood_113, Img_113]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 114
+    canonical_ko: 우엉조림
+    canonical_en: aihub_kfood_114
+    aliases: [우엉조림, aihub_kfood_114, Img_114]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 115
+    canonical_ko: 장조림
+    canonical_en: aihub_kfood_115
+    aliases: [장조림, aihub_kfood_115, Img_115]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 116
+    canonical_ko: 코다리조림
+    canonical_en: aihub_kfood_116
+    aliases: [코다리조림, aihub_kfood_116, Img_116]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 117
+    canonical_ko: 전복죽
+    canonical_en: aihub_kfood_117
+    aliases: [전복죽, aihub_kfood_117, Img_117]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 118
+    canonical_ko: 호박죽
+    canonical_en: aihub_kfood_118
+    aliases: [호박죽, aihub_kfood_118, Img_118]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 119
+    canonical_ko: 김치찌개
+    canonical_en: aihub_kfood_119
+    aliases: [김치찌개, aihub_kfood_119, Img_119]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 120
+    canonical_ko: 닭계장
+    canonical_en: aihub_kfood_120
+    aliases: [닭계장, aihub_kfood_120, Img_120]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 121
+    canonical_ko: 동태찌개
+    canonical_en: aihub_kfood_121
+    aliases: [동태찌개, aihub_kfood_121, Img_121]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 122
+    canonical_ko: 된장찌개
+    canonical_en: aihub_kfood_122
+    aliases: [된장찌개, aihub_kfood_122, Img_122]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 123
+    canonical_ko: 순두부찌개
+    canonical_en: aihub_kfood_123
+    aliases: [순두부찌개, aihub_kfood_123, Img_123]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 124
+    canonical_ko: 갈비찜
+    canonical_en: aihub_kfood_124
+    aliases: [갈비찜, aihub_kfood_124, Img_124]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 125
+    canonical_ko: 계란찜
+    canonical_en: aihub_kfood_125
+    aliases: [계란찜, aihub_kfood_125, Img_125]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 126
+    canonical_ko: 김치찜
+    canonical_en: aihub_kfood_126
+    aliases: [김치찜, aihub_kfood_126, Img_126]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 127
+    canonical_ko: 꼬막찜
+    canonical_en: aihub_kfood_127
+    aliases: [꼬막찜, aihub_kfood_127, Img_127]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 128
+    canonical_ko: 닭볶음탕
+    canonical_en: aihub_kfood_128
+    aliases: [닭볶음탕, aihub_kfood_128, Img_128]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 129
+    canonical_ko: 수육
+    canonical_en: aihub_kfood_129
+    aliases: [수육, aihub_kfood_129, Img_129]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 130
+    canonical_ko: 순대
+    canonical_en: aihub_kfood_130
+    aliases: [순대, aihub_kfood_130, Img_130]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 131
+    canonical_ko: 족발
+    canonical_en: aihub_kfood_131
+    aliases: [족발, aihub_kfood_131, Img_131]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 132
+    canonical_ko: 찜닭
+    canonical_en: aihub_kfood_132
+    aliases: [찜닭, aihub_kfood_132, Img_132]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 133
+    canonical_ko: 해물찜
+    canonical_en: aihub_kfood_133
+    aliases: [해물찜, aihub_kfood_133, Img_133]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 134
+    canonical_ko: 갈비탕
+    canonical_en: aihub_kfood_134
+    aliases: [갈비탕, aihub_kfood_134, Img_134]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 135
+    canonical_ko: 감자탕
+    canonical_en: aihub_kfood_135
+    aliases: [감자탕, aihub_kfood_135, Img_135]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 136
+    canonical_ko: 곰탕_설렁탕
+    canonical_en: aihub_kfood_136
+    aliases: [곰탕_설렁탕, aihub_kfood_136, Img_136]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 137
+    canonical_ko: 매운탕
+    canonical_en: aihub_kfood_137
+    aliases: [매운탕, aihub_kfood_137, Img_137]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 138
+    canonical_ko: 삼계탕
+    canonical_en: aihub_kfood_138
+    aliases: [삼계탕, aihub_kfood_138, Img_138]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 139
+    canonical_ko: 추어탕
+    canonical_en: aihub_kfood_139
+    aliases: [추어탕, aihub_kfood_139, Img_139]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 140
+    canonical_ko: 고추튀김
+    canonical_en: aihub_kfood_140
+    aliases: [고추튀김, aihub_kfood_140, Img_140]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 141
+    canonical_ko: 새우튀김
+    canonical_en: aihub_kfood_141
+    aliases: [새우튀김, aihub_kfood_141, Img_141]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 142
+    canonical_ko: 오징어튀김
+    canonical_en: aihub_kfood_142
+    aliases: [오징어튀김, aihub_kfood_142, Img_142]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 143
+    canonical_ko: 약과
+    canonical_en: aihub_kfood_143
+    aliases: [약과, aihub_kfood_143, Img_143]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 144
+    canonical_ko: 약식
+    canonical_en: aihub_kfood_144
+    aliases: [약식, aihub_kfood_144, Img_144]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 145
+    canonical_ko: 한과
+    canonical_en: aihub_kfood_145
+    aliases: [한과, aihub_kfood_145, Img_145]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 146
+    canonical_ko: 멍게
+    canonical_en: aihub_kfood_146
+    aliases: [멍게, aihub_kfood_146, Img_146]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 147
+    canonical_ko: 산낙지
+    canonical_en: aihub_kfood_147
+    aliases: [산낙지, aihub_kfood_147, Img_147]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 148
+    canonical_ko: 물회
+    canonical_en: aihub_kfood_148
+    aliases: [물회, aihub_kfood_148, Img_148]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 149
+    canonical_ko: 육회
+    canonical_en: aihub_kfood_149
+    aliases: [육회, aihub_kfood_149, Img_149]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 150
+    canonical_ko: 한국음식_150
+    canonical_en: korean_food_150
+    aliases: [한국음식_150, korean_food_150]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 151
+    canonical_ko: 한국음식_151
+    canonical_en: korean_food_151
+    aliases: [한국음식_151, korean_food_151]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 152
+    canonical_ko: 한국음식_152
+    canonical_en: korean_food_152
+    aliases: [한국음식_152, korean_food_152]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 153
+    canonical_ko: 한국음식_153
+    canonical_en: korean_food_153
+    aliases: [한국음식_153, korean_food_153]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 154
+    canonical_ko: 한국음식_154
+    canonical_en: korean_food_154
+    aliases: [한국음식_154, korean_food_154]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 155
+    canonical_ko: 한국음식_155
+    canonical_en: korean_food_155
+    aliases: [한국음식_155, korean_food_155]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 156
+    canonical_ko: 한국음식_156
+    canonical_en: korean_food_156
+    aliases: [한국음식_156, korean_food_156]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 157
+    canonical_ko: 한국음식_157
+    canonical_en: korean_food_157
+    aliases: [한국음식_157, korean_food_157]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 158
+    canonical_ko: 한국음식_158
+    canonical_en: korean_food_158
+    aliases: [한국음식_158, korean_food_158]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 159
+    canonical_ko: 한국음식_159
+    canonical_en: korean_food_159
+    aliases: [한국음식_159, korean_food_159]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 160
+    canonical_ko: 한국음식_160
+    canonical_en: korean_food_160
+    aliases: [한국음식_160, korean_food_160]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 161
+    canonical_ko: 한국음식_161
+    canonical_en: korean_food_161
+    aliases: [한국음식_161, korean_food_161]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 162
+    canonical_ko: 한국음식_162
+    canonical_en: korean_food_162
+    aliases: [한국음식_162, korean_food_162]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 163
+    canonical_ko: 한국음식_163
+    canonical_en: korean_food_163
+    aliases: [한국음식_163, korean_food_163]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 164
+    canonical_ko: 한국음식_164
+    canonical_en: korean_food_164
+    aliases: [한국음식_164, korean_food_164]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 165
+    canonical_ko: 한국음식_165
+    canonical_en: korean_food_165
+    aliases: [한국음식_165, korean_food_165]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 166
+    canonical_ko: 한국음식_166
+    canonical_en: korean_food_166
+    aliases: [한국음식_166, korean_food_166]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 167
+    canonical_ko: 한국음식_167
+    canonical_en: korean_food_167
+    aliases: [한국음식_167, korean_food_167]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 168
+    canonical_ko: 한국음식_168
+    canonical_en: korean_food_168
+    aliases: [한국음식_168, korean_food_168]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 169
+    canonical_ko: 한국음식_169
+    canonical_en: korean_food_169
+    aliases: [한국음식_169, korean_food_169]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 170
+    canonical_ko: 한국음식_170
+    canonical_en: korean_food_170
+    aliases: [한국음식_170, korean_food_170]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 171
+    canonical_ko: 한국음식_171
+    canonical_en: korean_food_171
+    aliases: [한국음식_171, korean_food_171]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 172
+    canonical_ko: 한국음식_172
+    canonical_en: korean_food_172
+    aliases: [한국음식_172, korean_food_172]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 173
+    canonical_ko: 한국음식_173
+    canonical_en: korean_food_173
+    aliases: [한국음식_173, korean_food_173]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 174
+    canonical_ko: 한국음식_174
+    canonical_en: korean_food_174
+    aliases: [한국음식_174, korean_food_174]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 175
+    canonical_ko: 한국음식_175
+    canonical_en: korean_food_175
+    aliases: [한국음식_175, korean_food_175]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 176
+    canonical_ko: 한국음식_176
+    canonical_en: korean_food_176
+    aliases: [한국음식_176, korean_food_176]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 177
+    canonical_ko: 한국음식_177
+    canonical_en: korean_food_177
+    aliases: [한국음식_177, korean_food_177]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 178
+    canonical_ko: 한국음식_178
+    canonical_en: korean_food_178
+    aliases: [한국음식_178, korean_food_178]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 179
+    canonical_ko: 한국음식_179
+    canonical_en: korean_food_179
+    aliases: [한국음식_179, korean_food_179]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 180
+    canonical_ko: 한국음식_180
+    canonical_en: korean_food_180
+    aliases: [한국음식_180, korean_food_180]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 181
+    canonical_ko: 한국음식_181
+    canonical_en: korean_food_181
+    aliases: [한국음식_181, korean_food_181]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 182
+    canonical_ko: 한국음식_182
+    canonical_en: korean_food_182
+    aliases: [한국음식_182, korean_food_182]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 183
+    canonical_ko: 한국음식_183
+    canonical_en: korean_food_183
+    aliases: [한국음식_183, korean_food_183]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 184
+    canonical_ko: 한국음식_184
+    canonical_en: korean_food_184
+    aliases: [한국음식_184, korean_food_184]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 185
+    canonical_ko: 한국음식_185
+    canonical_en: korean_food_185
+    aliases: [한국음식_185, korean_food_185]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 186
+    canonical_ko: 한국음식_186
+    canonical_en: korean_food_186
+    aliases: [한국음식_186, korean_food_186]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 187
+    canonical_ko: 한국음식_187
+    canonical_en: korean_food_187
+    aliases: [한국음식_187, korean_food_187]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 188
+    canonical_ko: 한국음식_188
+    canonical_en: korean_food_188
+    aliases: [한국음식_188, korean_food_188]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 189
+    canonical_ko: 한국음식_189
+    canonical_en: korean_food_189
+    aliases: [한국음식_189, korean_food_189]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 190
+    canonical_ko: 한국음식_190
+    canonical_en: korean_food_190
+    aliases: [한국음식_190, korean_food_190]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 191
+    canonical_ko: 한국음식_191
+    canonical_en: korean_food_191
+    aliases: [한국음식_191, korean_food_191]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 192
+    canonical_ko: 한국음식_192
+    canonical_en: korean_food_192
+    aliases: [한국음식_192, korean_food_192]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 193
+    canonical_ko: 한국음식_193
+    canonical_en: korean_food_193
+    aliases: [한국음식_193, korean_food_193]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 194
+    canonical_ko: 한국음식_194
+    canonical_en: korean_food_194
+    aliases: [한국음식_194, korean_food_194]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 195
+    canonical_ko: 한국음식_195
+    canonical_en: korean_food_195
+    aliases: [한국음식_195, korean_food_195]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 196
+    canonical_ko: 한국음식_196
+    canonical_en: korean_food_196
+    aliases: [한국음식_196, korean_food_196]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 197
+    canonical_ko: 한국음식_197
+    canonical_en: korean_food_197
+    aliases: [한국음식_197, korean_food_197]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 198
+    canonical_ko: 한국음식_198
+    canonical_en: korean_food_198
+    aliases: [한국음식_198, korean_food_198]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 199
+    canonical_ko: 한국음식_199
+    canonical_en: korean_food_199
+    aliases: [한국음식_199, korean_food_199]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 200
+    canonical_ko: 한국음식_200
+    canonical_en: korean_food_200
+    aliases: [한국음식_200, korean_food_200]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 201
+    canonical_ko: 한국음식_201
+    canonical_en: korean_food_201
+    aliases: [한국음식_201, korean_food_201]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 202
+    canonical_ko: 한국음식_202
+    canonical_en: korean_food_202
+    aliases: [한국음식_202, korean_food_202]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 203
+    canonical_ko: 한국음식_203
+    canonical_en: korean_food_203
+    aliases: [한국음식_203, korean_food_203]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 204
+    canonical_ko: 한국음식_204
+    canonical_en: korean_food_204
+    aliases: [한국음식_204, korean_food_204]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 205
+    canonical_ko: 한국음식_205
+    canonical_en: korean_food_205
+    aliases: [한국음식_205, korean_food_205]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 206
+    canonical_ko: 한국음식_206
+    canonical_en: korean_food_206
+    aliases: [한국음식_206, korean_food_206]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 207
+    canonical_ko: 한국음식_207
+    canonical_en: korean_food_207
+    aliases: [한국음식_207, korean_food_207]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 208
+    canonical_ko: 한국음식_208
+    canonical_en: korean_food_208
+    aliases: [한국음식_208, korean_food_208]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 209
+    canonical_ko: 한국음식_209
+    canonical_en: korean_food_209
+    aliases: [한국음식_209, korean_food_209]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 210
+    canonical_ko: 한국음식_210
+    canonical_en: korean_food_210
+    aliases: [한국음식_210, korean_food_210]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 211
+    canonical_ko: 한국음식_211
+    canonical_en: korean_food_211
+    aliases: [한국음식_211, korean_food_211]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 212
+    canonical_ko: 한국음식_212
+    canonical_en: korean_food_212
+    aliases: [한국음식_212, korean_food_212]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 213
+    canonical_ko: 한국음식_213
+    canonical_en: korean_food_213
+    aliases: [한국음식_213, korean_food_213]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 214
+    canonical_ko: 한국음식_214
+    canonical_en: korean_food_214
+    aliases: [한국음식_214, korean_food_214]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 215
+    canonical_ko: 한국음식_215
+    canonical_en: korean_food_215
+    aliases: [한국음식_215, korean_food_215]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 216
+    canonical_ko: 한국음식_216
+    canonical_en: korean_food_216
+    aliases: [한국음식_216, korean_food_216]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 217
+    canonical_ko: 한국음식_217
+    canonical_en: korean_food_217
+    aliases: [한국음식_217, korean_food_217]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 218
+    canonical_ko: 한국음식_218
+    canonical_en: korean_food_218
+    aliases: [한국음식_218, korean_food_218]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 219
+    canonical_ko: 한국음식_219
+    canonical_en: korean_food_219
+    aliases: [한국음식_219, korean_food_219]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 220
+    canonical_ko: 한국음식_220
+    canonical_en: korean_food_220
+    aliases: [한국음식_220, korean_food_220]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 221
+    canonical_ko: 한국음식_221
+    canonical_en: korean_food_221
+    aliases: [한국음식_221, korean_food_221]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 222
+    canonical_ko: 한국음식_222
+    canonical_en: korean_food_222
+    aliases: [한국음식_222, korean_food_222]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 223
+    canonical_ko: 한국음식_223
+    canonical_en: korean_food_223
+    aliases: [한국음식_223, korean_food_223]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 224
+    canonical_ko: 한국음식_224
+    canonical_en: korean_food_224
+    aliases: [한국음식_224, korean_food_224]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 225
+    canonical_ko: 한국음식_225
+    canonical_en: korean_food_225
+    aliases: [한국음식_225, korean_food_225]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 226
+    canonical_ko: 한국음식_226
+    canonical_en: korean_food_226
+    aliases: [한국음식_226, korean_food_226]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 227
+    canonical_ko: 한국음식_227
+    canonical_en: korean_food_227
+    aliases: [한국음식_227, korean_food_227]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 228
+    canonical_ko: 한국음식_228
+    canonical_en: korean_food_228
+    aliases: [한국음식_228, korean_food_228]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 229
+    canonical_ko: 한국음식_229
+    canonical_en: korean_food_229
+    aliases: [한국음식_229, korean_food_229]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 230
+    canonical_ko: 한국음식_230
+    canonical_en: korean_food_230
+    aliases: [한국음식_230, korean_food_230]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 231
+    canonical_ko: 한국음식_231
+    canonical_en: korean_food_231
+    aliases: [한국음식_231, korean_food_231]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 232
+    canonical_ko: 한국음식_232
+    canonical_en: korean_food_232
+    aliases: [한국음식_232, korean_food_232]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 233
+    canonical_ko: 한국음식_233
+    canonical_en: korean_food_233
+    aliases: [한국음식_233, korean_food_233]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 234
+    canonical_ko: 한국음식_234
+    canonical_en: korean_food_234
+    aliases: [한국음식_234, korean_food_234]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 235
+    canonical_ko: 한국음식_235
+    canonical_en: korean_food_235
+    aliases: [한국음식_235, korean_food_235]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 236
+    canonical_ko: 한국음식_236
+    canonical_en: korean_food_236
+    aliases: [한국음식_236, korean_food_236]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 237
+    canonical_ko: 한국음식_237
+    canonical_en: korean_food_237
+    aliases: [한국음식_237, korean_food_237]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 238
+    canonical_ko: 한국음식_238
+    canonical_en: korean_food_238
+    aliases: [한국음식_238, korean_food_238]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 239
+    canonical_ko: 한국음식_239
+    canonical_en: korean_food_239
+    aliases: [한국음식_239, korean_food_239]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 240
+    canonical_ko: 한국음식_240
+    canonical_en: korean_food_240
+    aliases: [한국음식_240, korean_food_240]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 241
+    canonical_ko: 한국음식_241
+    canonical_en: korean_food_241
+    aliases: [한국음식_241, korean_food_241]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 242
+    canonical_ko: 한국음식_242
+    canonical_en: korean_food_242
+    aliases: [한국음식_242, korean_food_242]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 243
+    canonical_ko: 한국음식_243
+    canonical_en: korean_food_243
+    aliases: [한국음식_243, korean_food_243]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 244
+    canonical_ko: 한국음식_244
+    canonical_en: korean_food_244
+    aliases: [한국음식_244, korean_food_244]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 245
+    canonical_ko: 한국음식_245
+    canonical_en: korean_food_245
+    aliases: [한국음식_245, korean_food_245]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 246
+    canonical_ko: 한국음식_246
+    canonical_en: korean_food_246
+    aliases: [한국음식_246, korean_food_246]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 247
+    canonical_ko: 한국음식_247
+    canonical_en: korean_food_247
+    aliases: [한국음식_247, korean_food_247]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 248
+    canonical_ko: 한국음식_248
+    canonical_en: korean_food_248
+    aliases: [한국음식_248, korean_food_248]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 249
+    canonical_ko: 한국음식_249
+    canonical_en: korean_food_249
+    aliases: [한국음식_249, korean_food_249]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 250
+    canonical_ko: 한국음식_250
+    canonical_en: korean_food_250
+    aliases: [한국음식_250, korean_food_250]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 251
+    canonical_ko: 한국음식_251
+    canonical_en: korean_food_251
+    aliases: [한국음식_251, korean_food_251]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 252
+    canonical_ko: 한국음식_252
+    canonical_en: korean_food_252
+    aliases: [한국음식_252, korean_food_252]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 253
+    canonical_ko: 한국음식_253
+    canonical_en: korean_food_253
+    aliases: [한국음식_253, korean_food_253]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 254
+    canonical_ko: 한국음식_254
+    canonical_en: korean_food_254
+    aliases: [한국음식_254, korean_food_254]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 255
+    canonical_ko: 한국음식_255
+    canonical_en: korean_food_255
+    aliases: [한국음식_255, korean_food_255]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 256
+    canonical_ko: 한국음식_256
+    canonical_en: korean_food_256
+    aliases: [한국음식_256, korean_food_256]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 257
+    canonical_ko: 한국음식_257
+    canonical_en: korean_food_257
+    aliases: [한국음식_257, korean_food_257]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 258
+    canonical_ko: 한국음식_258
+    canonical_en: korean_food_258
+    aliases: [한국음식_258, korean_food_258]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 259
+    canonical_ko: 한국음식_259
+    canonical_en: korean_food_259
+    aliases: [한국음식_259, korean_food_259]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 260
+    canonical_ko: 한국음식_260
+    canonical_en: korean_food_260
+    aliases: [한국음식_260, korean_food_260]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 261
+    canonical_ko: 한국음식_261
+    canonical_en: korean_food_261
+    aliases: [한국음식_261, korean_food_261]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 262
+    canonical_ko: 한국음식_262
+    canonical_en: korean_food_262
+    aliases: [한국음식_262, korean_food_262]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 263
+    canonical_ko: 한국음식_263
+    canonical_en: korean_food_263
+    aliases: [한국음식_263, korean_food_263]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 264
+    canonical_ko: 한국음식_264
+    canonical_en: korean_food_264
+    aliases: [한국음식_264, korean_food_264]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 265
+    canonical_ko: 한국음식_265
+    canonical_en: korean_food_265
+    aliases: [한국음식_265, korean_food_265]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 266
+    canonical_ko: 한국음식_266
+    canonical_en: korean_food_266
+    aliases: [한국음식_266, korean_food_266]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 267
+    canonical_ko: 한국음식_267
+    canonical_en: korean_food_267
+    aliases: [한국음식_267, korean_food_267]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 268
+    canonical_ko: 한국음식_268
+    canonical_en: korean_food_268
+    aliases: [한국음식_268, korean_food_268]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 269
+    canonical_ko: 한국음식_269
+    canonical_en: korean_food_269
+    aliases: [한국음식_269, korean_food_269]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 270
+    canonical_ko: 한국음식_270
+    canonical_en: korean_food_270
+    aliases: [한국음식_270, korean_food_270]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 271
+    canonical_ko: 한국음식_271
+    canonical_en: korean_food_271
+    aliases: [한국음식_271, korean_food_271]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 272
+    canonical_ko: 한국음식_272
+    canonical_en: korean_food_272
+    aliases: [한국음식_272, korean_food_272]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 273
+    canonical_ko: 한국음식_273
+    canonical_en: korean_food_273
+    aliases: [한국음식_273, korean_food_273]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 274
+    canonical_ko: 한국음식_274
+    canonical_en: korean_food_274
+    aliases: [한국음식_274, korean_food_274]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 275
+    canonical_ko: 한국음식_275
+    canonical_en: korean_food_275
+    aliases: [한국음식_275, korean_food_275]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 276
+    canonical_ko: 한국음식_276
+    canonical_en: korean_food_276
+    aliases: [한국음식_276, korean_food_276]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 277
+    canonical_ko: 한국음식_277
+    canonical_en: korean_food_277
+    aliases: [한국음식_277, korean_food_277]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 278
+    canonical_ko: 한국음식_278
+    canonical_en: korean_food_278
+    aliases: [한국음식_278, korean_food_278]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 279
+    canonical_ko: 한국음식_279
+    canonical_en: korean_food_279
+    aliases: [한국음식_279, korean_food_279]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 280
+    canonical_ko: 한국음식_280
+    canonical_en: korean_food_280
+    aliases: [한국음식_280, korean_food_280]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 281
+    canonical_ko: 한국음식_281
+    canonical_en: korean_food_281
+    aliases: [한국음식_281, korean_food_281]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 282
+    canonical_ko: 한국음식_282
+    canonical_en: korean_food_282
+    aliases: [한국음식_282, korean_food_282]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 283
+    canonical_ko: 한국음식_283
+    canonical_en: korean_food_283
+    aliases: [한국음식_283, korean_food_283]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 284
+    canonical_ko: 한국음식_284
+    canonical_en: korean_food_284
+    aliases: [한국음식_284, korean_food_284]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 285
+    canonical_ko: 한국음식_285
+    canonical_en: korean_food_285
+    aliases: [한국음식_285, korean_food_285]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 286
+    canonical_ko: 한국음식_286
+    canonical_en: korean_food_286
+    aliases: [한국음식_286, korean_food_286]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 287
+    canonical_ko: 한국음식_287
+    canonical_en: korean_food_287
+    aliases: [한국음식_287, korean_food_287]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 288
+    canonical_ko: 한국음식_288
+    canonical_en: korean_food_288
+    aliases: [한국음식_288, korean_food_288]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 289
+    canonical_ko: 한국음식_289
+    canonical_en: korean_food_289
+    aliases: [한국음식_289, korean_food_289]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 290
+    canonical_ko: 한국음식_290
+    canonical_en: korean_food_290
+    aliases: [한국음식_290, korean_food_290]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 291
+    canonical_ko: 한국음식_291
+    canonical_en: korean_food_291
+    aliases: [한국음식_291, korean_food_291]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 292
+    canonical_ko: 한국음식_292
+    canonical_en: korean_food_292
+    aliases: [한국음식_292, korean_food_292]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 293
+    canonical_ko: 한국음식_293
+    canonical_en: korean_food_293
+    aliases: [한국음식_293, korean_food_293]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 294
+    canonical_ko: 한국음식_294
+    canonical_en: korean_food_294
+    aliases: [한국음식_294, korean_food_294]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 295
+    canonical_ko: 한국음식_295
+    canonical_en: korean_food_295
+    aliases: [한국음식_295, korean_food_295]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 296
+    canonical_ko: 한국음식_296
+    canonical_en: korean_food_296
+    aliases: [한국음식_296, korean_food_296]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 297
+    canonical_ko: 한국음식_297
+    canonical_en: korean_food_297
+    aliases: [한국음식_297, korean_food_297]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 298
+    canonical_ko: 한국음식_298
+    canonical_en: korean_food_298
+    aliases: [한국음식_298, korean_food_298]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:
+
+  - class_id: 299
+    canonical_ko: 한국음식_299
+    canonical_en: korean_food_299
+    aliases: [한국음식_299, korean_food_299]
+    parent_category: unknown
+    is_main_dish: true
+    is_side_dish: false
+    is_beverage: false
+    is_sauce: false
+    active: true
+    merge_into:

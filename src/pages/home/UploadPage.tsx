@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { useArticleStore, useBottomNavStore, useHeaderStore } from '@/store'
 import { MutalButton } from '@/components'
 import { mealTimeMap, mealTimeTextArr } from '@/constants/post'
+import { useFoodAnalysis } from '@/features/food-ai'
 
 export function UploadPage() {
     const {
@@ -17,6 +18,7 @@ export function UploadPage() {
     const { showBottomNav, hideBottomNav } = useBottomNavStore()
     const { setTitle, resetHeader } = useHeaderStore()
     const [tagPerson, setTagPerson] = useState<string[]>(['태그+', '태그+'])
+    const foodAnalysis = useFoodAnalysis(imageFile)
     useEffect(() => {
         if (!imageFile) return
         const reader = new FileReader()
@@ -63,6 +65,7 @@ export function UploadPage() {
                         <TagPerson name={person} />
                     ))}
                 </div>
+                <FoodAnalysisStatus state={foodAnalysis} />
             </div>
             <div className="flex w-full flex-col items-start justify-center px-20">
                 <div className="mb-15 flex w-full gap-16">
@@ -110,4 +113,48 @@ function TagPerson({ name }: { name: string }) {
             <span className="text-body1-semibold text-gray-7">{name}</span>
         </div>
     )
+}
+
+
+function FoodAnalysisStatus({
+    state
+}: {
+    state: ReturnType<typeof useFoodAnalysis>
+}) {
+    if (state.status === 'idle') return null
+
+    if (state.status === 'analyzing') {
+        return (
+            <div className="px-20">
+                <span className="text-caption1-medium text-gray-6">
+                    음식 사진을 분석하고 있어요.
+                </span>
+            </div>
+        )
+    }
+
+    if (state.status === 'ready' && state.result?.ok) {
+        const { label, confidence } = state.result.foodAnalysis
+        const percent = Math.round(confidence * 100)
+
+        return (
+            <div className="px-20">
+                <span className="text-caption1-medium text-gray-6">
+                    인식된 음식: {label} · 신뢰도 {percent}%
+                </span>
+            </div>
+        )
+    }
+
+    if (state.status === 'failed') {
+        return (
+            <div className="px-20">
+                <span className="text-caption1-medium text-gray-6">
+                    음식 분석을 완료하지 못했어요. 사진은 그대로 업로드할 수 있어요.
+                </span>
+            </div>
+        )
+    }
+
+    return null
 }
