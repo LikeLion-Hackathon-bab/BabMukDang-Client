@@ -13,7 +13,7 @@ import { io, type Socket } from 'socket.io-client'
 import {
     RoomClientToServerEvents as ClientToServerEvents,
     RoomServerToClientEvents as ServerToClientEvents
-} from '@kimdaegyu/babmukdang-shared/domain'
+} from '@kimdaegyu/babmukdang-shared/domain/room'
 
 export const BASE =
     (process.env.BACKEND_URL ?? 'http://localhost:3000') + '/api/v1'
