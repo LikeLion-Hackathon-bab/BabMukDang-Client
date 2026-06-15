@@ -1,6 +1,6 @@
 import { domainId } from '@/domain/factories'
 import { useState, useEffect, useRef } from 'react'
-import type { LocationCandidateAddUpdateResponse } from '@kimdaegyu/babmukdang-shared/domain/room'
+import { LatitudeSchema, LongitudeSchema, type LocationCandidateAddUpdateResponse } from '@kimdaegyu/babmukdang-shared/domain/room'
 
 import { useSocket } from '@/contexts/SocketContext'
 import { KakaoMap, LocationCadidateItem } from '@/components'
@@ -71,8 +71,8 @@ export function LocationSelectionPage() {
                 locationId: domainId.location(Date.now().toString()),
                 placeName: `새로운 위치 (${lat.toFixed(4)}, ${lng.toFixed(4)})`,
                 address,
-                lat,
-                lng
+                lat: LatitudeSchema.parse(lat),
+                lng: LongitudeSchema.parse(lng)
             })
         } catch (error) {
             console.error('위치 데이터 전송 실패:', error)

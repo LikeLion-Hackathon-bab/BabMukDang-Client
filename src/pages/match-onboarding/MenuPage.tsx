@@ -1,40 +1,31 @@
-import { useEffect, useState } from 'react'
-import type { Menu } from '@kimdaegyu/babmukdang-shared/domain/room'
-type MenuInitialState = { initialMenus: Menu[] }
-
 import { useSocket } from '@/contexts/SocketContext'
 import { MenuCard } from '@/components'
 import { useAuthStore } from '@/store'
 
 export function MenuPage() {
-    const { phaseData, categories, commands, menuPicks } = useSocket()
+    const { categories, commands, menuPicks, menuCandidates } = useSocket()
     const { userId } = useAuthStore()
-    const [menus, setMenus] = useState<Menu[]>([])
-    useEffect(() => {
-        if (phaseData && phaseData.phase === 'menu') {
-            setMenus((phaseData.data as MenuInitialState).initialMenus)
-        }
-    }, [phaseData])
+    const menus = menuCandidates
 
-    const handleSelectMenu = (menuCode: Menu['code']) => {
-        commands?.pickMenu({ menuCode })
+    const handleSelectMenu = (menuCandidateId: (typeof menus)[number]['id']) => {
+        commands?.pickMenu({ menuCandidateId })
     }
 
     return (
         <>
             <div className="grid grid-cols-3 gap-10">
-                {menus.map(menu => (
+                {menus.map(candidate => (
                     <MenuCard
-                        key={menu.code}
+                        key={candidate.id}
                         selectedUsers={
-                            menuPicks.find(pick => pick.menuCode === menu.code)
+                            menuPicks.find(pick => pick.menuCandidateId === candidate.id)
                                 ?.selectedMembers.map(String)
                         }
-                        menuName={menu.label}
+                        menuName={candidate.menu.label}
                         category={categories.find(
-                            item => item.name === menu.label
+                            item => item.name === candidate.menu.label
                         )}
-                        onClick={() => handleSelectMenu(menu.code)}
+                        onClick={() => handleSelectMenu(candidate.id)}
                         currentUser={userId}
                     />
                 ))}

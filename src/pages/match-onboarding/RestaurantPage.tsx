@@ -1,6 +1,4 @@
-import { useEffect, useState } from 'react'
 import type { RestaurantResponse } from '@kimdaegyu/babmukdang-shared/domain/restaurant'
-type RestaurantInitialState = { initialRestaurants: RestaurantResponse[] }
 import type { RestaurantCardView } from '@/viewModels'
 import { useAuthStore } from '@/store'
 
@@ -8,16 +6,8 @@ import { RestaurantCard } from '@/components'
 import { useSocket } from '@/contexts/SocketContext'
 
 export function RestaurantPage() {
-    const [restaurants, setRestaurants] = useState<RestaurantResponse[]>([])
-
-    const { phaseData, commands, restaurantPicks } = useSocket()
-    useEffect(() => {
-        if (phaseData && phaseData.phase === 'restaurant') {
-            setRestaurants(
-                (phaseData.data as RestaurantInitialState).initialRestaurants
-            )
-        }
-    }, [phaseData])
+    const { commands, restaurantPicks, restaurantCandidates } = useSocket()
+    const restaurants = restaurantCandidates
 
     const userId = useAuthStore(state => state.userId)
 
@@ -44,6 +34,11 @@ export function RestaurantPage() {
 
     return (
         <>
+            {restaurants.length === 0 && (
+                <p className="text-caption-medium text-gray-500">
+                    장소와 메뉴가 정해지면 식당 후보가 표시돼요.
+                </p>
+            )}
             <div className="flex flex-col gap-10">
                 {restaurants.map(restaurant => (
                     <RestaurantCard
