@@ -31,14 +31,14 @@
 // })
 
 // test.describe('네비게이션', () => {
-//     test('매칭 페이지로 이동할 수 있어야 함', async ({ page }) => {
+//     test('내 밥약 페이지로 이동할 수 있어야 함', async ({ page }) => {
 //         await page.goto('/')
 
-//         // 매칭 탭 클릭
-//         const matchingTab = page.getByRole('link', { name: /매칭/i })
+//         // 내 밥약 탭 클릭
+//         const matchingTab = page.getByRole('link', { name: /내 밥약/i })
 //         if (await matchingTab.isVisible()) {
 //             await matchingTab.click()
-//             await expect(page).toHaveURL(/matching/)
+//             await expect(page).toHaveURL(/meal-plans/)
 //         }
 //     })
 

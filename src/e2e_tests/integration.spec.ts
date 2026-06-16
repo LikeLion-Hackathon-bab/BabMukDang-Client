@@ -55,8 +55,8 @@
 //         expect(body.data).toBe('Hello World!')
 //     })
 
-//     test('GET /api/v1/recruits (미인증) → 401', async ({ request }) => {
-//         const res = await request.get(`${BACKEND_URL}/api/v1/recruits`)
+//     test('GET /api/v1/meal-plans (미인증) → 401', async ({ request }) => {
+//         const res = await request.get(`${BACKEND_URL}/api/v1/meal-plans`)
 //         expect(res.status()).toBe(401)
 //         const body = await res.json()
 //         expect(body.success).toBe(false)
@@ -70,14 +70,14 @@
 //         expect(token.split('.').length).toBe(3)
 //     })
 
-//     test('GET /api/v1/recruits (인증) → 200 배열', async ({ request }) => {
+//     test('GET /api/v1/meal-plans (인증) → 200 배열', async ({ request }) => {
 //         // 토큰 발급
 //         const tokenRes = await request.get(`${BACKEND_URL}/api/v1/auth/test`)
 //         const tokenBody = await tokenRes.json()
 //         const token: string = tokenBody.data ?? tokenBody
 
 //         // 인증 요청
-//         const res = await request.get(`${BACKEND_URL}/api/v1/recruits`, {
+//         const res = await request.get(`${BACKEND_URL}/api/v1/meal-plans`, {
 //             headers: { Authorization: `Bearer ${token}` },
 //         })
 //         expect(res.status()).toBe(200)
@@ -103,8 +103,8 @@
 //         expect(errors).toHaveLength(0)
 //     })
 
-//     test('매칭 페이지가 로드된다', async ({ page }) => {
-//         await page.goto('/matching')
+//     test('내 밥약 페이지가 로드된다', async ({ page }) => {
+//         await page.goto('/meal-plans')
 //         await page.waitForLoadState('networkidle')
 //         await expect(page).not.toHaveURL(/error/)
 //     })
@@ -122,7 +122,7 @@
 
 //         // plans API 또는 관련 API가 호출되어야 한다
 //         const plansCalled = apiCalls.some(
-//             (url) => url.includes('/plans') || url.includes('/api/v1'),
+//             (url) => url.includes('/meal-plans') || url.includes('/api/v1'),
 //         )
 //         expect(plansCalled).toBe(true)
 //     })

@@ -27,11 +27,11 @@
 //         expect(errors).toHaveLength(0)
 //     })
 
-//     test('매칭 페이지가 로드된다', async ({ page }) => {
+//     test('내 밥약 페이지가 로드된다', async ({ page }) => {
 //         const errors: string[] = []
 //         page.on('pageerror', (err) => errors.push(err.message))
 
-//         await page.goto('/matching')
+//         await page.goto('/meal-plans')
 //         await page.waitForLoadState('networkidle')
 
 //         expect(errors).toHaveLength(0)
