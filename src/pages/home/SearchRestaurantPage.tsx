@@ -1,163 +1,132 @@
 import exifr from 'exifr'
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
-import { useArticleStore, useBottomNavStore } from '@/store'
-import { RestaurantCard, MutalButton, SearchInput } from '@/components'
-import { useKakaoMap } from '@/hooks'
-import { useUploadArticle, RestaurantInfo } from '@/apis'
-import { useAuthStore } from '@/store'
+import { useArticleStore, useAuthStore, useBottomNavStore } from '@/store'
+import { MutalButton } from '@/components'
+import { useUploadArticle, type RestaurantInfo } from '@/apis'
+import { PlaceSearchField } from '@/components/features/search'
+import type { PlaceSearchResult, SearchContext } from '@/services/search'
+
+const toRestaurantInfo = (place: PlaceSearchResult): RestaurantInfo => ({
+    addressName: place.addressName ?? '',
+    roadAddressName: place.roadAddressName ?? '',
+    phoneNumber: place.phoneNumber ?? '',
+    placeUrl: place.placeUrl ?? '',
+    categoryName: place.categoryName ?? '',
+    categoryGroupCode: place.categoryGroupCode ?? '',
+    categoryGroupName: place.categoryGroupName ?? '',
+    placeId: place.placeId,
+    placeName: place.placeName,
+    x: place.longitude,
+    y: place.latitude,
+    distance: place.distance == null ? undefined : String(place.distance)
+})
 
 export function SearchRestaurantPage() {
-    const { image, setRestaurant } = useArticleStore()
-    const gps = useRef<any>(null)
-    const [restaurants, setRestaurants] = useState<any[]>([])
-    const [selectedRestaurant, setSelectedRestaurant] = useState<any>(null)
-    const { isLoaded, kakao, createPlaces } = useKakaoMap()
-    const getGps = async () => {
-        try {
-            const result = await exifr.parse(image as File, { gps: true })
-            gps.current = result
-            if (result.latitude && result.longitude && isLoaded) {
-                places.current = createPlaces()
-                places.current.categorySearch(
-                    'FD6',
-                    (data: any, status: any, pagination: any) => {
-                        setRestaurants(data)
-                    },
-                    {
-                        x: result.longitude,
-                        y: result.latitude,
-                        radius: 1000,
-                        sort: kakao.maps.services.SortBy.DISTANCE
-                    }
-                )
-            }
-        } catch (err) {
-            console.error('EXIF parsing error:', err)
-        }
-    }
+    const [searchParams] = useSearchParams()
+    const mealPlanId = searchParams.get('mealPlanId')
+    const { image, setRestaurant, setMealPlanId } = useArticleStore()
+    const [selectedRestaurant, setSelectedRestaurant] = useState<PlaceSearchResult | null>(null)
+    const [searchContext, setSearchContext] = useState<SearchContext | undefined>()
+    const gps = useRef<{ latitude?: number; longitude?: number } | null>(null)
 
-    const places = useRef<any>(null)
     useEffect(() => {
-        if (!image || !isLoaded) return
-        getGps()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [image, isLoaded])
-
-    const handleSearch = (searchKeyword: string) => {
-        if (!searchKeyword) {
-            if (gps.current?.longitude && gps.current?.latitude) {
-                getGps()
-            } else {
-                return
+        let cancelled = false
+        const readGps = async () => {
+            if (!image) return
+            try {
+                const result = await exifr.parse(image as File, { gps: true })
+                if (cancelled) return
+                gps.current = result
+                if (result?.latitude && result?.longitude) {
+                    setSearchContext({
+                        latitude: result.latitude,
+                        longitude: result.longitude,
+                        radius: 1000,
+                        sort: 'distance'
+                    })
+                }
+            } catch (err) {
+                console.error('EXIF parsing error:', err)
             }
         }
-        if (!isLoaded) return
-        places.current = createPlaces()
-        places.current.keywordSearch(
-            searchKeyword,
-            (data: any, status: any, pagination: any) => {
-                if (status === kakao.maps.services.Status.OK) {
-                    setRestaurants(data)
-                } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
-                    setRestaurants([])
-                }
-            },
-            {
-                category_group_code: 'FD6',
-                x: gps.current?.longitude ? gps.current?.longitude : null,
-                y: gps.current?.latitude ? gps.current?.latitude : null,
-                sort:
-                    gps.current?.longitude && gps.current?.latitude
-                        ? kakao.maps.services.SortBy.DISTANCE
-                        : null
-            }
-        )
-    }
-    const handleSelectRestaurant = (restaurant: any) => {
-        setSelectedRestaurant(restaurant)
-        console.log(restaurant)
-        setRestaurant({
-            addressName: restaurant.address_name,
-            roadAddressName: restaurant.road_address_name,
-            phoneNumber: restaurant.phone,
-            placeUrl: restaurant.place_url,
-            categoryName: restaurant.category_name,
-            categoryGroupCode: restaurant.category_group_code,
-            categoryGroupName: restaurant.category_group_name,
-            placeId: restaurant.id,
-            placeName: restaurant.place_name,
-            x: restaurant.x,
-            y: restaurant.y
-        })
+        readGps()
+        return () => {
+            cancelled = true
+        }
+    }, [image])
+
+    const handleSelectRestaurant = (place: PlaceSearchResult) => {
+        setSelectedRestaurant(place)
+        setRestaurant(toRestaurantInfo(place))
     }
 
     const { showBottomNav, hideBottomNav } = useBottomNavStore()
     useEffect(() => {
         hideBottomNav()
+        setMealPlanId(mealPlanId)
         return () => {
             showBottomNav()
+            setMealPlanId(null)
         }
-    }, [])
+    }, [hideBottomNav, showBottomNav, setMealPlanId, mealPlanId])
+
     return (
-        <div className="relative flex h-full w-full flex-col overflow-y-auto pt-16">
-            <div className="fixed top-66 left-0 w-full px-20">
-                <SearchInput
-                    handleSearch={handleSearch}
+        <div className="relative flex h-full w-full flex-col overflow-y-auto px-20 pt-16 pb-120">
+            <div className="rounded-20 bg-white p-16">
+                <PlaceSearchField
+                    label="식당 검색"
                     placeholder="음식점 이름을 검색해 주세요."
+                    helperText="카카오 지도 검색을 사용합니다. 사진 GPS가 있으면 가까운 식당을 거리순으로 찾습니다."
+                    context={searchContext}
+                    selectedName={selectedRestaurant?.placeName}
+                    onSelect={handleSelectRestaurant}
                 />
             </div>
-            {/* 검색 결과 */}
-            <div className="mt-53 flex flex-col items-center gap-10">
-                {restaurants.map(restaurant => (
-                    <RestaurantCard
-                        key={restaurant.id}
-                        restaurant={restaurant}
-                        gps={gps}
-                        onClick={() => handleSelectRestaurant(restaurant)}
-                        className={`${
-                            selectedRestaurant?.id === restaurant.id
-                                ? 'bg-primary-100 border-primary-main border-1'
-                                : 'bg-white'
-                        }`}
-                    />
-                ))}
-            </div>
+            {selectedRestaurant && (
+                <div className="mt-14 rounded-20 bg-primary-100 p-14">
+                    <p className="text-body1-semibold text-primary-main">
+                        {selectedRestaurant.placeName}
+                    </p>
+                    <p className="text-caption-regular text-gray-6">
+                        {selectedRestaurant.roadAddressName || selectedRestaurant.addressName}
+                    </p>
+                </div>
+            )}
             <div className="fixed bottom-40 left-0 w-full px-20">
-                <UploadButton />
+                <UploadButton mealPlanId={mealPlanId} />
             </div>
         </div>
     )
 }
 
-function UploadButton() {
-    const { image, buildRequest } = useArticleStore()
+function UploadButton({ mealPlanId }: { mealPlanId: string | null }) {
+    const navigate = useNavigate()
+    const { image, buildRequest, restaurant } = useArticleStore()
     const { userId } = useAuthStore()
     const { mutate: uploadAndPost, isPending } = useUploadArticle({
-        onSuccess: () => console.log('업로드 완료'),
+        onSuccess: () => {
+            navigate(mealPlanId ? `/meal-plans/${mealPlanId}` : '/', { replace: true })
+        },
         onError: (e: Error) => console.error(e.message)
     })
     const onClickUpload = () => {
-        if (buildRequest && image) {
+        if (buildRequest && image && userId && restaurant) {
             uploadAndPost({
-                currentUserId: userId!,
+                currentUserId: userId,
                 file: image,
-                buildRequest: buildRequest
+                buildRequest
             })
         }
     }
 
     return (
-        <Link
-            className="w-full"
-            replace
-            to="/">
-            <MutalButton
-                text="게시물 업로드 하기"
-                onClick={onClickUpload}
-                hasArrow={true}
-            />
-        </Link>
+        <MutalButton
+            text={mealPlanId ? 'MealPlan 기록 업로드 하기' : '게시물 업로드 하기'}
+            onClick={onClickUpload}
+            disabled={isPending || !image || !restaurant}
+            hasArrow={true}
+        />
     )
 }

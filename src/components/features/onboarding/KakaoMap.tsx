@@ -9,12 +9,6 @@ interface KakaoMapProps {
     children?: React.ReactNode
 }
 
-declare global {
-    interface Window {
-        kakao: any
-    }
-}
-
 export function KakaoMap({
     onLocationSelect,
     ref,

@@ -87,6 +87,10 @@ export default defineConfig({
             },
             { find: '@/meal', replacement: path.join(sharedDomainDir, 'meal') },
             {
+                find: '@/meal-plan',
+                replacement: path.join(sharedDomainDir, 'meal-plan')
+            },
+            {
                 find: '@/member',
                 replacement: path.join(sharedDomainDir, 'member')
             },

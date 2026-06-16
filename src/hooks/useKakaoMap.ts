@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 declare global {
     interface Window {
-        kakao: any
+        kakao?: any
     }
 }
 
