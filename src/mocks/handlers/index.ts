@@ -9,14 +9,13 @@
 import { articleHandlers } from './article.handlers'
 import { authHandlers } from './auth.handlers'
 import { profileHandlers } from './profile.handlers'
-import { postHandlers } from './post.handlers'
-import { invitationHandlers } from './invitation.handlers'
-import { meetingHandlers } from './meeting.handlers'
 import { friendHandlers } from './friend.handlers'
 import { preferenceHandlers } from './preference.handlers'
 import { mealStatusHandlers } from './meal-status.handlers'
 import { challengeHandlers } from './challenge.handlers'
 import { couponHandlers } from './coupon.handlers'
+import { mealPlanHandlers } from './mealPlan.handlers'
+import { mealGroupHandlers } from './mealGroup.handlers'
 
 /**
  * 모든 MSW request handler 배열
@@ -36,15 +35,6 @@ export const handlers = [
     // Profile (프로필)
     ...profileHandlers,
 
-    // Posts (모집글/공지)
-    ...postHandlers,
-
-    // Invitations (초대)
-    ...invitationHandlers,
-
-    // Meetings (모임)
-    ...meetingHandlers,
-
     // Friends (친구)
     ...friendHandlers,
 
@@ -58,7 +48,13 @@ export const handlers = [
     ...challengeHandlers,
 
     // Coupons (쿠폰)
-    ...couponHandlers
+    ...couponHandlers,
+
+    // MealPlan (밥약)
+    ...mealPlanHandlers,
+
+    // MealGroup (밥그룹)
+    ...mealGroupHandlers
 ]
 
 // 개별 핸들러 export (테스트에서 선택적 사용)
@@ -66,12 +62,11 @@ export {
     articleHandlers,
     authHandlers,
     profileHandlers,
-    postHandlers,
-    invitationHandlers,
-    meetingHandlers,
     friendHandlers,
     preferenceHandlers,
     mealStatusHandlers,
     challengeHandlers,
-    couponHandlers
+    couponHandlers,
+    mealPlanHandlers,
+    mealGroupHandlers
 }

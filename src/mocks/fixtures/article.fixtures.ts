@@ -43,6 +43,7 @@ const summaryOne: PageArticleSummaryDto['items'][number] = {
     imageUrl: 'https://picsum.photos/400/400?random=1',
     mealDate,
     restaurant,
+    mealPlanId: null,
     createdAt: now,
     updatedAt: now,
     expiresAt,

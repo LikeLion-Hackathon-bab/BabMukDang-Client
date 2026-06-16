@@ -13,14 +13,12 @@ export * from './profile.fixtures'
 // Auth (인증)
 export * from './auth.fixtures'
 
-// Post (모집글/공지)
+// Post (게시글 호환 데이터)
 export * from './post.fixtures'
 
-// Invitation (초대)
-export * from './invitation.fixtures'
-
-// Meeting (모임)
-export * from './meeting.fixtures'
+// MealPlan / MealGroup
+export * from './mealPlan.fixtures'
+export * from './mealGroup.fixtures'
 
 // Friend (친구)
 export * from './friend.fixtures'

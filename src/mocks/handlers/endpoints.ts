@@ -26,14 +26,10 @@ import type {
     OnboardingPreferenceRequest,
     PageArticleSummaryDto,
     ArticlePageView,
-    RecruitFormView,
-    RecruitCardView,
     PreferenceMetaResponse,
     PreferenceSummaryResponse,
     ProfileDetailView,
     ProfileDto,
-    RecruitDto,
-    RecruitListResponse,
     TokenResponse,
     UpdateMealStatusRequest,
     UpdateProfileRequest
@@ -147,57 +143,20 @@ export const endpoints = {
     },
 
     // =========================================================================
-    // Recruits (모집글/공지)
-    // =========================================================================
-    recruits: {
-        /** 모집글 목록 */
-        list: '/recruits',
-        /** 모집글 생성 */
-        create: '/recruits',
-        /** 모집글 마감 */
-        close: (id: number) => `/recruits/${id}/close`,
-        /** 모집글 참여 */
-        join: (id: number) => `/recruits/${id}/join`
-    },
-
-    // =========================================================================
     // Subscriptions (구독)
     // =========================================================================
     subscriptions: {
-        /** 모집글 구독 (알림) */
-        recruit: (recruitId: number) => `/subscriptions/recruits/${recruitId}`,
         /** 게시물(모집글) 직접 구독 */
         direct: (postId: number) => `/subscribe/${postId}`
     },
 
     // =========================================================================
-    // Invitations (초대)
+    // MealPlans (밥약)
     // =========================================================================
-    invitations: {
-        /** 초대 목록 */
-        list: '/invitations',
-        /** 내가 받은 초대 목록 */
-        me: '/invitations/me',
-        /** 초대 전송 */
-        send: '/invitations/send',
-        /** 초대 수락 */
-        accept: (id: number) => `/invitations/${id}/accept`,
-        /** 초대 거절 */
-        reject: (id: number) => `/invitations/${id}/reject`
-    },
-
-    // =========================================================================
-    // Plans (모임)
-    // =========================================================================
-    plans: {
-        /** 모임 목록 */
-        list: '/plans',
-        /** 모임 생성 */
-        create: '/plans',
-        /** 진행 예정 모임 목록 */
-        uncompleted: '/plans/uncompleted',
-        /** 완료된 모임 목록 */
-        completed: '/plans/completed'
+    mealPlans: {
+        my: '/meal-plans/me',
+        detail: (mealPlanId: string) => `/meal-plans/${mealPlanId}`,
+        create: '/meal-plans'
     },
 
     // =========================================================================
@@ -327,12 +286,6 @@ export const api = {
         ProfileDetailResponse: {} as ProfileDetailView,
         /** 프로필 수정 요청 */
         UpdateRequest: {} as UpdateProfileRequest
-    },
-    recruits: {
-        /** 모집글 목록 응답 */
-        ListResponse: {} as RecruitListResponse,
-        /** 모집글 생성 요청 */
-        CreateRequest: {} as RecruitFormView
     },
     preferences: {
         /** 선호도 요약 응답 */
