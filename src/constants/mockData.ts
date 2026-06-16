@@ -6,7 +6,6 @@
  *
  * @example
  * // 기존 (deprecated)
- * import { MockRecruits } from '@/constants/mockData'
  *
  * // 새로운 방식
  * import { mockPostResponses } from '@/mocks/fixtures'
@@ -17,7 +16,6 @@
 // ============================================================================
 
 // Post (모집글/공지)
-export { mockPostResponses as MockRecruits } from '@/mocks/fixtures/post.fixtures'
 
 // Coupon (쿠폰)
 export { mockCouponResponses as MockCouponList } from '@/mocks/fixtures/coupon.fixtures'
@@ -41,27 +39,29 @@ import type {
 import { domainFood } from '@/domain/factories'
 
 /**
- * 매칭 초대 알림 mock 데이터
+ * MealPlan 알림 mock 데이터
  * @deprecated fixtures로 마이그레이션 예정
  */
-export const MockMatchingInviteNotis = [
+export const MockMealPlanNotifications = [
     {
-        id: 1,
-        type: 'invitation',
-        title: '매칭하기 초대장',
-        time: '20분 전',
-        message: '가은님이 초대장을 보냈어요! 지금 확인해보고, 답장해봐요!',
-        period: '',
-        imageUrl: ''
+        notificationId: 'noti-1',
+        kind: 'MEAL_PLAN_INVITE_RECEIVED',
+        mealPlanId: 'meal-plan-1',
+        deepLink: '/meal-plans/meal-plan-1',
+        title: '새 밥약 초대가 도착했어요',
+        createdAt: '2026-06-16T09:00:00.000Z',
+        message: '가은님이 점심 밥약에 초대했어요.',
+        readAt: null
     },
     {
-        id: 2,
-        type: 'recruit',
-        title: '공고 알림',
-        time: '20분 전',
-        message: '가은님이 초대장을 보냈어요! 지금 확인해보고, 답장해봐요!',
-        period: '',
-        imageUrl: ''
+        notificationId: 'noti-2',
+        kind: 'MEAL_PLAN_RECORD_NEEDED',
+        mealPlanId: 'meal-plan-2',
+        deepLink: '/meal-plans/meal-plan-2/record',
+        title: '밥 기록을 남겨주세요',
+        createdAt: '2026-06-16T08:00:00.000Z',
+        message: '저녁 밥약이 완료됐어요. 같이 먹은 밥을 기록해 주세요.',
+        readAt: null
     }
 ]
 

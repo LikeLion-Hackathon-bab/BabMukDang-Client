@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export function InvitationToggleButton() {
+export function MealStatusToggleButton() {
     const [isOn, setIsOn] = useState(false)
 
     const handleToggle = () => {

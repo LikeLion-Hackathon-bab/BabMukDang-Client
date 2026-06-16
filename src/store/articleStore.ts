@@ -7,6 +7,7 @@ interface ArticleStore {
     image: File | null
     mealDate: string
     mealTime: string
+    mealPlanId: string | null
     restaurant: RestaurantInfo | null
     taggedMemberIds: number[]
     method: 'ALBUM' | 'CAMERA'
@@ -18,6 +19,7 @@ interface ArticleStore {
     foodAnalysis: FoodAnalysisResultDto | null
     // setMealDate: (mealDate: string) => void
     setMealTime: (mealTime: string) => void
+    setMealPlanId: (mealPlanId: string | null) => void
     setRestaurant: (restaurant: RestaurantInfo) => void
     setTaggedMemberIds: (taggedMemberIds: number[]) => void
     setMethod: (method: 'ALBUM' | 'CAMERA') => void
@@ -30,6 +32,7 @@ export const useArticleStore = create<ArticleStore>(set => ({
     image: null,
     mealDate: new Date().toISOString().split('T')[0],
     mealTime: '',
+    mealPlanId: null,
     restaurant: null,
     taggedMemberIds: [],
     method: 'ALBUM',
@@ -43,6 +46,7 @@ export const useArticleStore = create<ArticleStore>(set => ({
             mealDate: state.mealDate,
             restaurant: mapRestaurantInfoToKakaoRestaurant(restaurant),
             taggedMemberIds: state.taggedMemberIds.map(domainId.member),
+            ...(state.mealPlanId ? { mealPlanId: domainId.mealPlan(state.mealPlanId) } : {}),
             ...(state.foodAnalysis
                 ? { foodAnalysis: state.foodAnalysis }
                 : {})
@@ -51,6 +55,7 @@ export const useArticleStore = create<ArticleStore>(set => ({
     setImage: image => set({ image }),
     // setMealDate: mealDate => set({ mealDate }),
     setMealTime: mealTime => set({ mealTime }),
+    setMealPlanId: mealPlanId => set({ mealPlanId }),
     setRestaurant: restaurant => set({ restaurant }),
     setTaggedMemberIds: taggedMemberIds => set({ taggedMemberIds }),
     setMethod: method => set({ method }),

@@ -13,11 +13,11 @@ const meta: Meta<typeof ProgressBar> = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const InvitationStart: Story = {}
+export const MealPlanStart: Story = {}
 
-export const RecruitStart: Story = {}
+export const MealPlanDecisionStart: Story = {}
 
-export const InvitationMiddle: Story = {}
+export const MealPlanDecisionMiddle: Story = {}
 
-export const RecruitEnd: Story = {}
+export const MealPlanDecisionEnd: Story = {}
 

@@ -1,5 +1,5 @@
 export { FriendSearchInput } from './FriendSearchInput'
 export { FriendListSection } from './FriendListSection'
-export { FriendCard } from './InvitationFriendCard'
-export { InvitationToggleButton } from './HungryToggleButton'
+export { FriendCard } from './FriendMealStatusCard'
+export { MealStatusToggleButton } from './MealStatusToggleButton'
 export { FriendInviteButton } from './FriendInviteButton'

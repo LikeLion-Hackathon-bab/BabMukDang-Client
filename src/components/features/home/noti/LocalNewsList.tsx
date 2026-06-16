@@ -17,7 +17,7 @@ export function LocalNewsList({
     handleDeleteLocalNewsNoti: (id: number) => void
 }) {
     if (localNewsNotis.length === 0) {
-        return <EmptyNotiView isMatching={false} />
+        return <EmptyNotiView variant="localNews" />
     }
     return (
         <div className="flex flex-col">

@@ -1,4 +1,4 @@
-import { FriendCard } from './InvitationFriendCard'
+import { FriendCard } from './FriendMealStatusCard'
 
 export interface Friend {
     memberId: number

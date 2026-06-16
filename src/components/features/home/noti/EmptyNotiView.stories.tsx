@@ -9,9 +9,10 @@ const meta: Meta<typeof EmptyNotiView> = {
         layout: 'fullscreen'
     },
     argTypes: {
-        isMatching: {
-            control: 'boolean',
-            description: '매칭 알림 여부'
+        variant: {
+            control: 'select',
+            options: ['mealPlan', 'localNews'],
+            description: '빈 상태 종류'
         }
     }
 }
@@ -19,14 +20,14 @@ const meta: Meta<typeof EmptyNotiView> = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const MatchingEmpty: Story = {
+export const MealPlanNotificationEmpty: Story = {
     args: {
-        isMatching: true
+        variant: 'mealPlan'
     }
 }
 
 export const LocalNewsEmpty: Story = {
     args: {
-        isMatching: false
+        variant: 'localNews'
     }
 }

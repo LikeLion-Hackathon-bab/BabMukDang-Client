@@ -1,11 +1,6 @@
 import { useEffect, useMemo } from 'react'
 
-import {
-    FriendInviteModal,
-    ProfileModal,
-    ProfileButtonSection,
-    ProfileSection
-} from '@/components'
+import { ProfileModal, ProfileButtonSection, ProfileSection } from '@/components'
 import {
     useGetMemberProfile,
     useGetMemberProfileDetail,
@@ -87,7 +82,6 @@ export function ProfilePage() {
                         uncompletedMeetings={profile.uncompletedPlans}
                         challengeCount={profile.meetingCount}
                     />
-                    <FriendInviteModal id="friend-invite-notify-modal" />
                     <ProfileModal
                         id="profile-notify-modal"
                         likes={profile.likes.map(like => like.label)}

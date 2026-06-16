@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import {
     TabHeader,
     FilterList,
-    MatchingInviteList,
+    MealPlanNotificationList,
     LocalNewsList
 } from '@/components'
 import { LOCAL_NEWS_FILTER_LIST } from '@/constants/filters'
@@ -14,8 +14,9 @@ import {
     useDeleteNotification,
     useGetNotifications
 } from '@/apis/notification.api'
-import type { MatchingInviteNoti } from '@/viewModels'
+import type { MealPlanNotificationView } from '@/viewModels'
 import { formatRelativeKoreanTime } from '@/lib/dateTime'
+
 interface LocalNewsNoti {
     id: number
     type: 'school' | 'restaurant' | 'area'
@@ -25,6 +26,7 @@ interface LocalNewsNoti {
     period: string
     imageUrl?: string
 }
+
 export function NotiStoragePage() {
     const navigate = useNavigate()
     const { notifications, addNotification } = useNotificationStore()
@@ -46,44 +48,35 @@ export function NotiStoragePage() {
         }
     }, [addNotification, fetchedNotifications])
 
-    // 헤더 관련
     const { resetHeader, setTitle, showCenterElement } = useHeaderStore()
     const [tab, setTab] = useState<'noti' | 'local'>('noti')
     const tabs = [
         { key: 'noti', label: '알림' },
         { key: 'local', label: '동네소식' }
     ]
+
     useEffect(() => {
         showCenterElement()
         setTitle('알림')
         return () => {
             resetHeader()
         }
-    }, [])
+    }, [showCenterElement, setTitle, resetHeader])
 
     const [localNewsNotis, setLocalNewsNotis] = useState<LocalNewsNoti[]>([])
-
     const [activeFilter, setActiveFilter] = useState<{
         key: string
         label: string
     }>(LOCAL_NEWS_FILTER_LIST[0])
 
-    // 삭제 핸들러들
-    const matchingNotis: MatchingInviteNoti[] = notifications.map(
+    const mealPlanNotifications: MealPlanNotificationView[] = notifications.map(
         notification => ({
-            notificationId: notification.notificationId,
-            createdAt: formatNotificationTime(notification.createdAt),
-            roomId: notification.roomId,
-            roomType: notification.roomType,
-            kind: notification.kind,
-            title:
-                notification.kind === 'invitation' ? '매칭 초대' : '매칭 모집',
-            readAt: notification.readAt,
-            message: notification.message
+            ...notification,
+            createdAtLabel: formatNotificationTime(notification.createdAt)
         })
     )
 
-    const handleDeleteMatchingNoti = async (id: string) => {
+    const handleDeleteMealPlanNotification = async (id: string) => {
         await deleteNotification(id)
         removeNotification(id)
     }
@@ -92,17 +85,14 @@ export function NotiStoragePage() {
         setLocalNewsNotis(prev => prev.filter(noti => noti.id !== id))
     }
 
-    const handleMatchingInviteNotiClick = async (noti: MatchingInviteNoti) => {
-        const [notification, accessRoomData] = await Promise.all([
-            notificationApi.markRead(noti.notificationId),
-            notificationApi.accessRoom(noti.roomId)
-        ])
-
-        markRead(notification)
-
-        navigate(
-            `/${accessRoomData.roomType}/${accessRoomData.phase}/${accessRoomData.roomId}`
+    const handleMealPlanNotificationClick = async (
+        notification: MealPlanNotificationView
+    ) => {
+        const readNotification = await notificationApi.markRead(
+            notification.notificationId
         )
+        markRead(readNotification)
+        navigate(notification.deepLink)
     }
 
     return (
@@ -113,12 +103,10 @@ export function NotiStoragePage() {
                 onTabChange={tab => setTab(tab as 'noti' | 'local')}
             />
             {tab === 'noti' && (
-                <MatchingInviteList
-                    matchingNotis={matchingNotis}
-                    handleDeleteMatchingNoti={handleDeleteMatchingNoti}
-                    handleMatchingInviteNotiClick={
-                        handleMatchingInviteNotiClick
-                    }
+                <MealPlanNotificationList
+                    notifications={mealPlanNotifications}
+                    onDeleteNotification={handleDeleteMealPlanNotification}
+                    onNotificationClick={handleMealPlanNotificationClick}
                 />
             )}
             {tab === 'local' && (

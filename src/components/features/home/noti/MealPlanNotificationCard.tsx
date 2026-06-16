@@ -1,19 +1,26 @@
 import { MatchingIcon } from '@/assets/icons'
 import { COLORS } from '@/constants/colors'
-import type { MatchingInviteNoti } from '@/viewModels'
-export function MatchingInviteNotiCard({
-    noti,
+import type { MealPlanNotificationView } from '@/viewModels'
+
+export function MealPlanNotificationCard({
+    notification,
     onClick
 }: {
-    noti: MatchingInviteNoti
+    notification: MealPlanNotificationView
     onClick: () => void
 }) {
     return (
         <div
-            className="flex w-full flex-col gap-10 px-20 py-16"
+            className={`flex w-full flex-col gap-10 px-20 py-16 ${notification.readAt ? 'opacity-60' : ''}`}
             role="button"
             tabIndex={0}
-            onClick={onClick}>
+            onClick={onClick}
+            onKeyDown={event => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault()
+                    onClick()
+                }
+            }}>
             <div className="flex w-full flex-row items-center justify-between">
                 <div className="flex flex-row items-center gap-8">
                     <MatchingIcon
@@ -21,15 +28,15 @@ export function MatchingInviteNotiCard({
                         strokecolor={COLORS.primaryMain}
                     />
                     <span className="text-body1-semibold text-gray-7">
-                        {noti.title}
+                        {notification.title}
                     </span>
                 </div>
                 <span className="text-caption-medium text-gray-3">
-                    {noti.createdAt}
+                    {notification.createdAtLabel ?? notification.createdAt}
                 </span>
             </div>
             <span className="text-caption-medium text-gray-5 w-full">
-                {noti.message}
+                {notification.message}
             </span>
         </div>
     )

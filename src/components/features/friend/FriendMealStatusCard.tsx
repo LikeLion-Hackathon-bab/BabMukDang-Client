@@ -20,7 +20,7 @@ export function FriendCard({ friend }: { friend: Friend }) {
                 </div>
             </div>
             {/* 초대장 아이콘 */}
-            <Link to={`/send-invitation/${friend.memberId}`}>
+            <Link to={`/meal-plans/start?inviteeId=${friend.memberId}`}>
                 <InviteIcon />
             </Link>
         </div>

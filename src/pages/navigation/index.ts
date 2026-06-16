@@ -1,4 +1,4 @@
 export { HomePage } from './HomePage'
-export { MatchingPage } from './MatchingPage'
 export { MeetingPage } from './MeetingPage'
+export { MealMapPage } from './MealMapPage'
 export { ProfilePage } from './ProfilePage'

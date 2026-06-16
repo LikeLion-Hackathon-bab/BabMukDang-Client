@@ -11,7 +11,7 @@ const meta: Meta<typeof ProfilePage> = {
         docs: {
             description: {
                 component:
-                    '내 프로필 정보를 볼 수 있는 페이지입니다. 프로필 섹션, 버튼 섹션, 친구 초대 모달 등이 포함됩니다.'
+                    '내 프로필 정보를 볼 수 있는 페이지입니다. 프로필 섹션과 프로필 설정 모달이 포함됩니다.'
             }
         }
     }
@@ -32,12 +32,3 @@ export const WithUserProfile: Story = {
     }
 }
 
-export const WithFriendInviteModal: Story = {
-    parameters: {
-        docs: {
-            description: {
-                story: '친구 초대 모달이 표시된 상태입니다.'
-            }
-        }
-    }
-}
