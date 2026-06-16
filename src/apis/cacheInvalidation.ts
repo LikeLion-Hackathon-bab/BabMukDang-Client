@@ -13,21 +13,21 @@ const invalidateByKey = (
         case 'articles':
             queryClient.invalidateQueries({ queryKey: queryKeys.articles.all })
             return
-        case 'recruits':
-            queryClient.invalidateQueries({ queryKey: queryKeys.recruits.all })
+        case 'mealPlans':
+        case 'mealPlanDetail':
+        case 'mealPlanInvites':
+        case 'mealPlanJoinRequests':
+        case 'mealPlanNearbyFriends':
+        case 'mealPlanMessages':
+            queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.all })
             return
-        case 'invitations':
-            queryClient.invalidateQueries({
-                queryKey: queryKeys.invitations.all
-            })
+        case 'mealGroups':
+            queryClient.invalidateQueries({ queryKey: queryKeys.mealGroups.all })
             return
         case 'notifications':
             queryClient.invalidateQueries({
                 queryKey: queryKeys.notifications.all
             })
-            return
-        case 'meetings':
-            queryClient.invalidateQueries({ queryKey: queryKeys.meetings.all })
             return
         case 'friends':
         case 'friendMeals':

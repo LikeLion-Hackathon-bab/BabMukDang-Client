@@ -5,7 +5,6 @@
  * Response/ViewModel and are produced by src/apis/mappers/*.
  */
 import type {
-    AcceptInvitationResponse,
     ArticleComment,
     ArticleDetailResponse as DomainArticleDetailResponse,
     ArticleSummaryResponse as DomainArticleSummaryResponse,
@@ -16,10 +15,17 @@ import type {
     CreateArticleRequest,
     CreateCommentRequest,
     CreatedEntityIdResponse,
-    CreateInvitationRequest,
+    CreateMealGroupRequest,
+    AddMealGroupMemberRequest,
+    CreateMealPlanChangeRequest,
+    CreateMealPlanInviteRequest,
+    CreateMealPlanJoinRequest,
+    CreateMealPlanRequest,
+    CreateMealPlanShareLinkRequest,
+    ConfirmMealPlanDecisionSnapshotRequest,
+    CreateMealPlanVoteRequest,
     CreateProfileRequest,
-    CreateRecruitResponse,
-    CreateRecruitRequest,
+    ExposeMealPlanToNearbyFriendsRequest,
     Food,
     FoodAnalysisResult,
     FriendBlockItemResponse,
@@ -27,66 +33,115 @@ import type {
     FriendMealItemResponse,
     FriendRequestItemResponse,
     FriendRequestStatus,
-    InvitationResponse,
+    JoinMealPlanGuestRequest,
+    JoinMealPlanGuestResponse,
+    MealGroupResponse,
+    MealGroupPreferenceSummary,
+    MealGroupHistoryResponse,
+    MealPlanChatMessageListResponse,
+    MealPlanChatMessageResponse,
+    MealPlanDecisionProgress,
+    MealPlanDecisionStageResponse,
+    MealPlanDecisionTaskKey,
+    MealPlanDecisionTaskReadyRequest,
+    MealPlanInviteListResponse,
+    MealPlanInviteSummary,
+    MealPlanGuestSessionResponse,
+    MealPlanNotification,
+    MealPlanResponse,
+    MealPlanShareLinkSummary,
+    MealPlanSharePreviewResponse,
     MealStatus,
     MealStatusAction,
     MealStatusResponse,
     MemberFoodPreference,
     MemberResponse,
+    MyMealPlanListItem,
+    MyMealPlanListResponse,
+    NearbyFriendMealPlanSummary,
     NoContent,
     PageArticleSummaryResponse as DomainPageArticleSummaryResponse,
-    PlanResponse,
+    SendMealPlanInviteResponse,
+    StartMealPlanFromGroupRequest,
+    UpdateMealGroupMemberRoleRequest,
+    TokenResponse,
+    UpdateMealPlanContextRequest,
+    UpdateMealStatusRequest,
+    UpdatePreferenceRequest,
+    UpdateProfileRequest,
     UploadArticleImageResponse,
     UploadProfileImageResponse,
     ProfileDetailResponse as DomainProfileDetailResponse,
-    RecruitListResponse,
     RestaurantResponse,
-    SendInvitationResponse,
-    TokenResponse,
-    UpdateMealStatusRequest,
-    UpdatePreferenceRequest,
-    UpdateProfileRequest
+    CompleteMealPlanDecisionStageRequest,
+    ReopenMealPlanDecisionTaskRequest
 } from '@kimdaegyu/babmukdang-shared/domain'
 
-// ============================================================================
-// Common helpers
-// ============================================================================
-
 export type {
-    AcceptInvitationResponse,
     ChallengeStatusResponse,
     ClaimChallengeRewardResponse,
     CouponResponse,
     CouponType,
     CreatedEntityIdResponse,
-    CreateRecruitResponse,
+    CreateMealGroupRequest,
+    AddMealGroupMemberRequest,
+    CreateMealPlanChangeRequest,
+    CreateMealPlanInviteRequest,
+    CreateMealPlanJoinRequest,
+    CreateMealPlanRequest,
+    CreateMealPlanShareLinkRequest,
+    ConfirmMealPlanDecisionSnapshotRequest,
+    CreateMealPlanVoteRequest,
+    CompleteMealPlanDecisionStageRequest,
+    ReopenMealPlanDecisionTaskRequest,
+    ExposeMealPlanToNearbyFriendsRequest,
     Food,
     FriendBlockItemResponse,
     FriendListItemResponse,
     FriendMealItemResponse,
     FriendRequestItemResponse,
     FriendRequestStatus,
-    InvitationResponse,
+    JoinMealPlanGuestRequest,
+    JoinMealPlanGuestResponse,
+    MealGroupResponse,
+    MealGroupPreferenceSummary,
+    MealGroupHistoryResponse,
+    MealPlanChatMessageListResponse,
+    MealPlanChatMessageResponse,
+    MealPlanDecisionProgress,
+    MealPlanDecisionStageResponse,
+    MealPlanDecisionTaskKey,
+    MealPlanDecisionTaskReadyRequest,
+    MealPlanInviteListResponse,
+    MealPlanInviteSummary,
+    MealPlanGuestSessionResponse,
+    MealPlanNotification,
+    MealPlanResponse,
+    MealPlanShareLinkSummary,
+    MealPlanSharePreviewResponse,
     MealStatus,
     MealStatusAction,
     MealStatusResponse,
     MemberFoodPreference,
     MemberResponse,
+    MyMealPlanListItem,
+    MyMealPlanListResponse,
+    NearbyFriendMealPlanSummary,
     NoContent,
-    PlanResponse,
-    UploadArticleImageResponse,
-    UploadProfileImageResponse,
-    RecruitListResponse,
-    SendInvitationResponse,
+    SendMealPlanInviteResponse,
+    StartMealPlanFromGroupRequest,
+    UpdateMealGroupMemberRoleRequest,
     TokenResponse,
+    UpdateMealPlanContextRequest,
     UpdateMealStatusRequest,
     UpdatePreferenceRequest,
-    UpdateProfileRequest
+    UpdateProfileRequest,
+    UploadArticleImageResponse,
+    UploadProfileImageResponse
 }
 
 export type WeekProgress = { days: boolean[]; completed: number; goal: number }
 export type MonthProgress = { count: number; goal: number }
-
 export type LocalTime = import('../viewModels/api').LocalTimeView
 
 export interface MutationOptions<TData = NoContent> {
@@ -95,10 +150,6 @@ export interface MutationOptions<TData = NoContent> {
     onError?: (error: Error) => void
     onSettled?: () => void
 }
-
-// ============================================================================
-// Article API DTO aliases
-// ============================================================================
 
 export type ArticleSummaryDto = DomainArticleSummaryResponse
 export type ArticleDetailDto = DomainArticleDetailResponse
@@ -116,20 +167,15 @@ export type {
     ArticlePageView,
     ArticleSummaryView,
     CommentView,
-    MeetingCardView,
-    MeetingParticipantView,
+    MealPlanCardView,
+    MealPlanParticipantView,
     PreferenceMetaView,
     ProfileDetailView,
     ProfileSummaryView,
-    RecruitCardView,
-    RecruitFormView,
     RestaurantCardView,
     RestaurantInputView
 } from '../viewModels/api'
 
-// Backward-compatible type aliases. API adapters should migrate to the View names
-// above; these aliases remain so existing screens do not confuse server DTOs with
-// client-side view models during the migration.
 export type RestaurantInfo = import('../viewModels/api').RestaurantInputView
 export type ArticleSummaryResponse =
     import('../viewModels/api').ArticleSummaryView
@@ -140,35 +186,16 @@ export type PageArticleSummaryResponse =
     import('../viewModels/api').ArticlePageView
 export type LikePostResponse = import('../viewModels/api').ArticleLikeView
 
-// ============================================================================
-// Recruit DTO aliases and view models
-// ============================================================================
-
-export type RecruitDto = RecruitListResponse['items'][number]
-export type PostRequest = CreateRecruitRequest
-export type Post = import('../viewModels/api').RecruitFormView
-export type PostResponse = import('../viewModels/api').RecruitCardView
-
-// ============================================================================
-// Profile view models
-// ============================================================================
-
 export type ProfileDto = MemberResponse
 export type ProfileResponse = import('../viewModels/api').ProfileSummaryView
-
-// ============================================================================
-// Invitation / meeting / preference
-// ============================================================================
-
 export type ProfileDetailDto = DomainProfileDetailResponse
 export type ProfileDetailResponse =
     import('../viewModels/api').ProfileDetailView
 
-export type InvitationPostRequest = CreateInvitationRequest
-export type MeetingDto = PlanResponse
-export type MeetingParticipant =
-    import('../viewModels/api').MeetingParticipantView
-export type MeetingResponse = import('../viewModels/api').MeetingCardView
+export type MealPlanDto = MealPlanResponse
+export type MealPlanCardResponse = import('../viewModels/api').MealPlanCardView
+export type MealPlanParticipant =
+    import('../viewModels/api').MealPlanParticipantView
 
 export type OnboardingPreferenceRequest = CreateProfileRequest
 export type OnboardingPreferenceResponse = NoContent

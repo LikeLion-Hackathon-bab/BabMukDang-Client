@@ -316,6 +316,8 @@ export const useUploadArticle = (
         },
         onSuccess: data => {
             queryClient.invalidateQueries({ queryKey: queryKeys.articles.all })
+            queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.all })
+            queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
             options.onSuccess?.(data)
         },
         onError: options.onError
@@ -337,6 +339,8 @@ export const useLikeArticle = (
             articleApi.like(articleId),
         onSuccess: data => {
             queryClient.invalidateQueries({ queryKey: queryKeys.articles.all })
+            queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.all })
+            queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
             options.onSuccess?.(data)
         },
         onError: options.onError
@@ -382,6 +386,8 @@ export const useDeleteArticle = (options: MutationOptions<NoContent> = {}) => {
             articleApi.delete(articleId),
         onSuccess: data => {
             queryClient.invalidateQueries({ queryKey: queryKeys.articles.all })
+            queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.all })
+            queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
             options.onSuccess?.(data)
         },
         onError: options.onError
@@ -407,6 +413,8 @@ export const useDeleteArticleComment = (
         }) => articleApi.deleteComment(articleId, commentId),
         onSuccess: data => {
             queryClient.invalidateQueries({ queryKey: queryKeys.articles.all })
+            queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.all })
+            queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
             options.onSuccess?.(data)
         },
         onError: options.onError

@@ -1,3 +1,5 @@
-import type { MatchingNotification } from '@kimdaegyu/babmukdang-shared/domain'
+import type { MealPlanNotification } from '@kimdaegyu/babmukdang-shared/domain'
 
-export type MatchingInviteNoti = MatchingNotification
+export type MealPlanNotificationView = MealPlanNotification & {
+    createdAtLabel?: string
+}

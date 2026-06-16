@@ -88,27 +88,6 @@ export interface ArticlePageView {
 
 export type ArticleLikeView = ArticleLikeResponse
 
-export interface RecruitFormView {
-    targetCount: number
-    meetingAt: string
-    location: string
-    message: string
-}
-
-export interface RecruitCardView extends RecruitFormView {
-    postId: number
-    author: {
-        authorId: number
-        name: string
-        profileImageUrl: string
-    }
-    createdAt: string
-    participants: {
-        memberId?: number
-        name: string
-        profileImageUrl: string
-    }[]
-}
 
 export interface ProfileSummaryView {
     memberId: number
@@ -134,19 +113,27 @@ export interface ProfileDetailView {
     uncompletedPlans: number
 }
 
-export interface MeetingParticipantView {
-    userId: number
+export interface MealPlanParticipantView {
+    participantId: string
+    memberId: number | null
+    guestId: string | null
     name: string
+    profileImageUrl: string | null
+    role: 'OWNER' | 'FRIEND' | 'GUEST'
+    status: string
 }
 
-export interface MeetingCardView {
-    id: number
-    participants: MeetingParticipantView[]
-    location: string
-    time: string
-    restaurant: string
-    isCompleted: boolean
-    restaurantType: string
+export interface MealPlanCardView {
+    mealPlanId: string
+    title: string
+    status: string
+    group: string
+    participantCount: number
+    scheduleText: string
+    placeText: string
+    primaryActionLabel: string
+    primaryActionHref: string
+    updatedAt: string
 }
 
 export type PreferenceMetaView = {

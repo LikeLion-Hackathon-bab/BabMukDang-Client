@@ -1,16 +1,11 @@
-import type { MeetingCardView as ApiMeetingCardView } from './api'
+import type { MealPlanCardView } from './api'
 
 /**
- * 모임 카드 화면 view model.
- * API adapter가 만든 client-side MeetingCardView를 그대로 사용한다.
+ * Phase 4 화면 교체 전까지 파일명만 남아 있는 compatibility view model.
+ * 데이터 모델은 MealPlanCardView를 사용한다.
  */
-export type MeetingCardView = ApiMeetingCardView
-
-/**
- * 모임 헤더 화면 view model.
- * 헤더는 참여자/장소/시간만 사용하므로 좁혀서 노출한다.
- */
+export type MeetingCardView = MealPlanCardView
 export type MeetingHeaderView = Pick<
-    ApiMeetingCardView,
-    'participants' | 'location' | 'time'
+    MealPlanCardView,
+    'title' | 'scheduleText' | 'placeText'
 >

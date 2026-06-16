@@ -194,15 +194,14 @@ export const useOutgoingFriendRequests = () => {
 
 /**
  * 친구 관계 변화 시 함께 갱신해야 하는 query 묶음을 무효화한다.
- * (친구/친구 식사 상태/초대/게시글/모집글)
+ * (친구/친구 식사 상태/MealPlan/게시글)
  */
 const invalidateFriendGraph = (
     queryClient: ReturnType<typeof useQueryClient>
 ) => {
     queryClient.invalidateQueries({ queryKey: queryKeys.friends.all })
-    queryClient.invalidateQueries({ queryKey: queryKeys.invitations.all })
+    queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.all })
     queryClient.invalidateQueries({ queryKey: queryKeys.articles.all })
-    queryClient.invalidateQueries({ queryKey: queryKeys.recruits.all })
 }
 
 /**
@@ -227,7 +226,7 @@ export const useSendFriendRequest = (
 
 /**
  * 친구 요청 수락 Hook
- * 수락 성공 시 friends/friend meals/invitations/articles/recruits를 무효화한다.
+ * 수락 성공 시 friends/friend meals/mealPlans/articles를 무효화한다.
  */
 export const useAcceptFriendRequest = (
     options: MutationOptions<NoContent> = {}
