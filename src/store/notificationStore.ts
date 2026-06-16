@@ -1,22 +1,22 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { MatchingNotification } from '@kimdaegyu/babmukdang-shared/domain'
+import type { MealPlanNotification } from '@kimdaegyu/babmukdang-shared/domain'
 
 interface NotificationState {
-    notifications: MatchingNotification[]
-    latest: MatchingNotification | null
-    addNotification: (notification: MatchingNotification) => void
-    addNotifications: (notifications: MatchingNotification[]) => void
-    markRead: (notification: MatchingNotification) => void
+    notifications: MealPlanNotification[]
+    latest: MealPlanNotification | null
+    addNotification: (notification: MealPlanNotification) => void
+    addNotifications: (notifications: MealPlanNotification[]) => void
+    markRead: (notification: MealPlanNotification) => void
     removeNotification: (notificationId: string) => void
     clearLatest: () => void
 }
 
 const mergeNotifications = (
-    current: MatchingNotification[],
-    incoming: MatchingNotification[]
+    current: MealPlanNotification[],
+    incoming: MealPlanNotification[]
 ) => {
-    const byId = new Map<string, MatchingNotification>()
+    const byId = new Map<string, MealPlanNotification>()
 
     for (const notification of [...incoming, ...current]) {
         byId.set(notification.notificationId, notification)
@@ -64,7 +64,7 @@ export const useNotificationStore = create<NotificationState>()(
             clearLatest: () => set({ latest: null })
         }),
         {
-            name: 'matching-notification-storage',
+            name: 'meal-plan-notification-storage',
             partialize: state => ({ notifications: state.notifications })
         }
     )

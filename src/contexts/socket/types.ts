@@ -1,7 +1,3 @@
-import type { Socket } from 'socket.io-client'
-import type {
-    RoomClientToServerEvents,
-    RoomServerToClientEvents
-} from '@kimdaegyu/babmukdang-shared/domain/room'
+import type { MealPlanSocket } from '@/socket/mealPlanSocket.types'
 
-export type AppSocket = Socket<RoomServerToClientEvents, RoomClientToServerEvents>
+export type AppSocket = MealPlanSocket

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import {
     CACHE_INVALIDATION_SSE_EVENT,
     CacheInvalidationEventSchema,
-    type MatchingNotification
+    type MealPlanNotification
 } from '@kimdaegyu/babmukdang-shared/domain'
 import { useQueryClient } from '@tanstack/react-query'
 import { API_BASE_URL } from '@/apis/baseUrl'
@@ -10,9 +10,9 @@ import { useGetNotifications } from '@/apis/notification.api'
 import { useAuthStore, useNotificationStore } from '@/store'
 import { invalidateFromCacheEvent } from '@/apis/cacheInvalidation'
 
-const parseNotification = (raw: string): MatchingNotification | null => {
+const parseNotification = (raw: string): MealPlanNotification | null => {
     try {
-        return JSON.parse(raw) as MatchingNotification
+        return JSON.parse(raw) as MealPlanNotification
     } catch {
         return null
     }
@@ -62,7 +62,7 @@ export function NotificationSseProvider({
             console.warn('SSE 알림 스트림 연결 오류', error)
         }
 
-        source.addEventListener('matching-notification', event => {
+        source.addEventListener('meal-plan-notification', event => {
             const notification = parseNotification((event as MessageEvent).data)
             if (notification) {
                 addNotification(notification)
