@@ -2,19 +2,19 @@ import {
     FoodCodeSchema,
     FoodLabelSchema,
     FoodSchema,
-    LocationIdSchema,
     type Food,
-    type LocationId,
     toArticleId,
     toCommentId,
     toCouponId,
     toFriendRequestId,
-    toInvitationId,
+    toMealGroupId,
+    toMealPlanChangeRequestId,
+    toMealPlanId,
+    toMealPlanInviteId,
+    toMealPlanJoinRequestId,
+    toMealPlanShareLinkToken,
     toMemberId,
-    toPlanId,
-    toRecruitId,
     toRestaurantId,
-    toRoomId,
     toSubscriptionId
 } from '@kimdaegyu/babmukdang-shared/domain'
 
@@ -28,15 +28,16 @@ export const domainId = {
     member: toMemberId,
     article: toArticleId,
     comment: toCommentId,
-    recruit: toRecruitId,
-    invitation: toInvitationId,
-    room: toRoomId,
+    mealPlan: toMealPlanId,
+    mealPlanInvite: toMealPlanInviteId,
+    mealPlanJoinRequest: toMealPlanJoinRequestId,
+    mealPlanChangeRequest: toMealPlanChangeRequestId,
+    mealPlanShareToken: toMealPlanShareLinkToken,
+    mealGroup: toMealGroupId,
     restaurant: toRestaurantId,
     coupon: toCouponId,
     subscription: toSubscriptionId,
-    friendRequest: toFriendRequestId,
-    plan: toPlanId,
-    location: (value: string): LocationId => LocationIdSchema.parse(value)
+    friendRequest: toFriendRequestId
 }
 
 export const domainFood = (code: string, label: string): Food =>

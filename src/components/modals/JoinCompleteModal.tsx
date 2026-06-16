@@ -11,7 +11,7 @@ type JoinCompleteModalProps = {
     title: string
     description: string
     acceptText: string
-    recruitId?: string
+    mealPlanId?: string
 }
 
 export function JoinCompleteModal({
@@ -20,7 +20,7 @@ export function JoinCompleteModal({
     onClose,
     onAccept,
     title,
-    recruitId,
+    mealPlanId,
     description,
     acceptText
 }: JoinCompleteModalProps & BaseModalChildrenProps) {
@@ -34,7 +34,7 @@ export function JoinCompleteModal({
                 title={title}
                 description={description}
                 acceptText={acceptText}
-                recruitId={recruitId}
+                mealPlanId={mealPlanId}
                 onAccept={onAccept}
             />
         </BaseModal>
@@ -47,7 +47,7 @@ function JoinCompleteModalContent({
     title,
     description,
     acceptText,
-    recruitId
+    mealPlanId
 }: BaseModalChildrenProps & JoinCompleteModalProps) {
     return (
         <div className="shadow-drop-1 rounded-16 mx-auto w-full max-w-400 bg-white px-20 py-24">
@@ -75,7 +75,7 @@ function JoinCompleteModalContent({
                 {/* CTA */}
                 <MutalButtonSmall
                     text={acceptText}
-                    onClick={() => onAccept?.(recruitId)}
+                    onClick={() => onAccept?.(mealPlanId)}
                 />
             </div>
         </div>

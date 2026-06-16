@@ -12,14 +12,14 @@ interface BaseModalProps {
     className?: string
     style?: React.CSSProperties
     onClose?: () => void
-    onAccept?: (recruitId?: string) => void
+    onAccept?: (mealPlanId?: string) => void
     children?: React.ReactElement<BaseModalChildrenProps>
 }
 export interface BaseModalChildrenProps {
     open?: boolean
     id?: string
     onClose?: () => void
-    onAccept?: (recruitId?: string) => void
+    onAccept?: (mealPlanId?: string) => void
 }
 
 export function BaseModal({

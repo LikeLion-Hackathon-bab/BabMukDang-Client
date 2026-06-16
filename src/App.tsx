@@ -1,58 +1,43 @@
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-    useNavigate,
-    Navigate
-} from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import {
-    TestPage,
-    GPSPage,
-    NotificationPage,
-    PushNotificationPage,
-    LocationSelectionPage,
-    HomePage,
-    ProfilePage,
-    RestaurantPage,
-    MatchingPage,
-    UploadPage,
-    WaitingPage,
-    SearchRestaurantPage,
-    MeetingPage,
-    MenuPage,
-    MenuExcludePage,
-    LocationVotePage,
-    FinishPage,
-    TimePage,
-    DatePage,
-    SendInvitationPage,
-    ReadInvitationPage,
-    CouponStoragePage,
-    NotiStoragePage,
-    CommentPage,
-    ProfileEditPage,
-    BobCheckHistoryPage,
     AllergicMenuPage,
-    PreferMenuPage,
-    MakeProfilePage,
-    StartRegisterPage,
-    FinishRegisterPage,
+    BobCheckHistoryPage,
     ChallengePage,
+    CommentPage,
+    CouponStoragePage,
+    FinishRegisterPage,
     FriendProfilePage,
-    RoomTaskPage
+    GPSPage,
+    HomePage,
+    MakeProfilePage,
+    MealGroupDetailPage,
+    MealGroupListPage,
+    MealMapPage,
+    MealPlanDecisionPage,
+    MealPlanDetailPage,
+    MealPlanGuestJoinPage,
+    MealPlanGuestSessionPage,
+    MealPlanRecordEntryPage,
+    MealPlanSharePreviewPage,
+    MealPlanStartPage,
+    MeetingPage,
+    NotiStoragePage,
+    NotificationPage,
+    PreferMenuPage,
+    ProfileEditPage,
+    ProfilePage,
+    PushNotificationPage,
+    SearchRestaurantPage,
+    StartRegisterPage,
+    TestPage,
+    UploadPage
 } from '@/pages'
-import { Layout, OnboardingLayout, RegisterLayout } from '@/components'
-import { register } from '@/lib/serviceWorkerRegistration'
+import { Layout, RegisterLayout } from '@/components'
 import { useEffect } from 'react'
 import { IntroStart } from './pages/intro/IntroStart'
 import { IntroTutorial } from './pages/intro/IntroTutorial'
-import WithMockServer from './mocks/WithMockServer'
 import { FriendPage } from './pages/navigation/FriendPage'
-import { isAuthorized } from './lib/utils'
-import { HomeIcon } from 'lucide-react'
-import { useAuthStore } from './store'
-import { useRefreshToken } from './apis'
 import { AuthGate } from './pages/AuthGate'
 import { PublicOnlyRoute } from './pages/PublicOnlyRoute'
 import { ProtectedRoute } from './pages/ProtectedRoute'
@@ -65,13 +50,14 @@ const queryClient = new QueryClient({
         }
     }
 })
+
 function App() {
     useEffect(() => {
         // register()
     }, [])
+
     return (
         <QueryClientProvider client={queryClient}>
-            {/* <WithMockServer /> */}
             <Router>
                 <Routes>
                     <Route
@@ -95,9 +81,24 @@ function App() {
                         />
                     </Route>
 
+
+                    <Route element={<RegisterLayout />}>
+                        <Route
+                            path="/meal-plan-links/:token"
+                            element={<MealPlanSharePreviewPage />}
+                        />
+                        <Route
+                            path="/meal-plan-links/:token/join"
+                            element={<MealPlanGuestJoinPage />}
+                        />
+                        <Route
+                            path="/meal-plan-links/:token/session"
+                            element={<MealPlanGuestSessionPage />}
+                        />
+                    </Route>
+
                     <Route element={<ProtectedRoute />}>
                         <Route element={<Layout />}>
-                            {/* 네비게이션 페이지 */}
                             <Route
                                 path="/home"
                                 element={<HomePage />}
@@ -115,11 +116,39 @@ function App() {
                                 element={<MeetingPage />}
                             />
                             <Route
-                                path="/matching"
-                                element={<MatchingPage />}
+                                path="/meal-map"
+                                element={<MealMapPage />}
                             />
 
-                            {/* 홈 페이지 */}
+                            <Route
+                                path="/meal-plans"
+                                element={<MeetingPage />}
+                            />
+                            <Route
+                                path="/meal-plans/start"
+                                element={<MealPlanStartPage />}
+                            />
+                            <Route
+                                path="/meal-plans/:mealPlanId"
+                                element={<MealPlanDetailPage />}
+                            />
+                            <Route
+                                path="/meal-plans/:mealPlanId/decision"
+                                element={<MealPlanDecisionPage />}
+                            />
+                            <Route
+                                path="/meal-plans/:mealPlanId/record"
+                                element={<MealPlanRecordEntryPage />}
+                            />
+                            <Route
+                                path="/meal-groups"
+                                element={<MealGroupListPage />}
+                            />
+                            <Route
+                                path="/meal-groups/:mealGroupId"
+                                element={<MealGroupDetailPage />}
+                            />
+
                             <Route
                                 path="/search-restaurant"
                                 element={<SearchRestaurantPage />}
@@ -137,17 +166,6 @@ function App() {
                                 element={<CommentPage />}
                             />
 
-                            {/* 매치 페이지 */}
-                            <Route
-                                path="/send-invitation/:userId"
-                                element={<SendInvitationPage />}
-                            />
-                            <Route
-                                path="/read-invitation/:invitationId"
-                                element={<ReadInvitationPage />}
-                            />
-
-                            {/* 프로필 페이지 */}
                             <Route
                                 path="/coupon"
                                 element={<CouponStoragePage />}
@@ -169,7 +187,6 @@ function App() {
                                 element={<FriendProfilePage />}
                             />
 
-                            {/* 회원가입 온보딩 페이지 */}
                             <Route element={<RegisterLayout />}>
                                 <Route
                                     path="/allergic-menu"
@@ -189,93 +206,6 @@ function App() {
                                 />
                             </Route>
 
-                            {/* 매칭 온보딩 페이지 */}
-                            <Route element={<OnboardingLayout />}>
-                                {/* Auto-join routes without explicit roomId */}
-                                <Route
-                                    path="/:matchType/waiting"
-                                    element={<WaitingPage />}
-                                />
-
-                                <Route
-                                    path="/:matchType/active"
-                                    element={<RoomTaskPage />}
-                                />
-                                <Route
-                                    path="/:matchType/active/:roomId"
-                                    element={<RoomTaskPage />}
-                                />
-                                <Route
-                                    path="/:matchType/location"
-                                    element={<RoomTaskPage />}
-                                />
-                                <Route
-                                    path="/:matchType/menu"
-                                    element={<RoomTaskPage />}
-                                />
-                                <Route
-                                    path="/:matchType/restaurant"
-                                    element={<RoomTaskPage />}
-                                />
-                                <Route
-                                    path="/:matchType/exclude-menu"
-                                    element={<RoomTaskPage />}
-                                />
-                                <Route
-                                    path="/:matchType/location-vote"
-                                    element={<RoomTaskPage />}
-                                />
-                                <Route
-                                    path="/:matchType/finish"
-                                    element={<FinishPage />}
-                                />
-                                <Route
-                                    path="/:matchType/time"
-                                    element={<RoomTaskPage />}
-                                />
-                                <Route
-                                    path="/:matchType/date"
-                                    element={<RoomTaskPage />}
-                                />
-                                <Route
-                                    path="/:matchType/waiting/:roomId"
-                                    element={<WaitingPage />}
-                                />
-                                <Route
-                                    path="/:matchType/location/:roomId"
-                                    element={<RoomTaskPage />}
-                                />
-                                <Route
-                                    path="/:matchType/menu/:roomId"
-                                    element={<RoomTaskPage />}
-                                />
-                                <Route
-                                    path="/:matchType/restaurant/:roomId"
-                                    element={<RoomTaskPage />}
-                                />
-                                <Route
-                                    path="/:matchType/exclude-menu/:roomId"
-                                    element={<RoomTaskPage />}
-                                />
-                                <Route
-                                    path="/:matchType/location-vote/:roomId"
-                                    element={<RoomTaskPage />}
-                                />
-                                <Route
-                                    path="/:matchType/finish/:roomId"
-                                    element={<FinishPage />}
-                                />
-                                <Route
-                                    path="/:matchType/time/:roomId"
-                                    element={<RoomTaskPage />}
-                                />
-                                <Route
-                                    path="/:matchType/date/:roomId"
-                                    element={<RoomTaskPage />}
-                                />
-                            </Route>
-
-                            {/* 테스트 페이지 */}
                             <Route
                                 path="/gps"
                                 element={<GPSPage />}
@@ -294,15 +224,6 @@ function App() {
                             />
                         </Route>
                     </Route>
-                    {/**<Route
-                        path="*"
-                        element={
-                            <Navigate
-                                to="/"
-                                replace
-                            />
-                        }
-                    />*/}
                 </Routes>
             </Router>
         </QueryClientProvider>

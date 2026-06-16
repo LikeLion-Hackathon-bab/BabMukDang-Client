@@ -1,6 +1,5 @@
 export { JoinCompleteModal } from './JoinCompleteModal'
 export { CouponModal } from './CouponModal'
 export { ProfileModal } from './ProfileModal'
-export { FriendInviteModal } from './FriendInviteModal'
 export { BaseModal } from './BaseModal'
 export type { BaseModalChildrenProps } from './BaseModal'
