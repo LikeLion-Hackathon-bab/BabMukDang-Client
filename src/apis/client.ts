@@ -276,6 +276,9 @@ export const contractClient = {
             body,
             toAxiosConfig(config, query)
         )
+        if (res.status === 204) {
+            return null as ContractResponseOf<E>
+        }
         return parseResponseForDev(contract, unwrapBaseResponse(res.data))
     },
 
@@ -291,6 +294,9 @@ export const contractClient = {
             body,
             toAxiosConfig(config, query)
         )
+        if (res.status === 204) {
+            return null as ContractResponseOf<E>
+        }
         return parseResponseForDev(contract, unwrapBaseResponse(res.data))
     },
 
@@ -306,6 +312,9 @@ export const contractClient = {
             resolveContractPath(contract, pathParams),
             toAxiosConfig(config, query)
         )
+        if (res.status === 204) {
+            return null as ContractResponseOf<E>
+        }
         return parseResponseForDev(contract, unwrapBaseResponse(res.data))
     }
 }

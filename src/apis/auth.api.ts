@@ -184,10 +184,21 @@ export const useLogout = (options: MutationOptions<NoContent> = {}) => {
 
     return useMutation({
         mutationFn: authApi.logout,
-        onSuccess: data => {
+
+        onMutate: () => {
             flushAuthStore()
+        },
+
+        onSuccess: data => {
             options.onSuccess?.(data)
         },
-        onError: options.onError
+
+        onError: error => {
+            options.onError?.(
+                error instanceof Error ? error : new Error('Logout failed')
+            )
+        },
+
+        onSettled: options.onSettled
     })
 }
