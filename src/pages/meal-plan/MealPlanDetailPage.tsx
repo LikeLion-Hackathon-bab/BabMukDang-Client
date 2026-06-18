@@ -4,6 +4,8 @@ import {
     MealPlanChatPanel,
     MealPlanCompleteCTA,
     MealPlanInvitePanel,
+    MealPlanJoinRequestPanel,
+    MealPlanLiveActivityPanel,
     MealPlanParticipantPanel,
     MealPlanReadyBar,
     MealPlanRecommendationPanel,
@@ -107,6 +109,10 @@ function MealPlanDetailContent() {
                             pendingInvites={mealPlan.pendingInvites}
                         />
                     )}
+                    <MealPlanJoinRequestPanel
+                        requests={mealPlan.pendingJoinRequests}
+                        canManageParticipants={permissions?.canManageParticipants}
+                    />
                     {permissions?.canCreateShareLink && (
                         <MealPlanShareLinkPanel mealPlanId={mealPlanId} />
                     )}
@@ -114,6 +120,9 @@ function MealPlanDetailContent() {
                         <NearbyFriendExposurePanel mealPlanId={mealPlanId} />
                     )}
                 </>
+            )}
+            {!['CANCELLED', 'RECORDED'].includes(mealPlan.status) && (
+                <MealPlanLiveActivityPanel mealPlanId={mealPlanId} />
             )}
             <MealPlanChatPanel
                 mealPlanId={mealPlanId}

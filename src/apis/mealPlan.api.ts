@@ -14,6 +14,10 @@ import type {
     CreateMealPlanShareLinkRequest,
     CreateMealPlanVoteRequest,
     ExposeMealPlanToNearbyFriendsRequest,
+    ExposeMealPlanToNearbyFriendsResponse,
+    HomeMealPlanDashboardResponse,
+    MealMapResponse,
+    MealMapQuery,
     JoinMealPlanGuestRequest,
     MealPlanCardResponse,
     MealPlanChatMessageListResponse,
@@ -27,6 +31,7 @@ import type {
     MealPlanSharePreviewResponse,
     MutationOptions,
     MyMealPlanListResponse,
+    NearbyFriendExposureEligibility,
     NearbyFriendMealPlanSummary,
     NoContent,
     ReopenMealPlanDecisionTaskRequest,
@@ -40,6 +45,8 @@ const invalidateMealPlanQueries = (
 ) => {
     queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.all })
     queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
+    queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.homeDashboard })
+    queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.map })
     if (mealPlanId) {
         queryClient.invalidateQueries({
             queryKey: queryKeys.mealPlans.detail(mealPlanId)
@@ -59,6 +66,14 @@ export const mealPlanApi = {
 
     getMine: async (): Promise<MyMealPlanListResponse> => {
         return contractClient.get(apiContract.mealPlans.my)
+    },
+
+    getHomeDashboard: async (): Promise<HomeMealPlanDashboardResponse> => {
+        return contractClient.get(apiContract.mealPlans.homeDashboard)
+    },
+
+    getMap: async (query: MealMapQuery = { friendRecordDays: 7 }): Promise<MealMapResponse> => {
+        return contractClient.get(apiContract.mealPlans.map, { query })
     },
 
     getMyCards: async (): Promise<Record<string, MealPlanCardResponse[]>> => {
@@ -230,7 +245,7 @@ export const mealPlanApi = {
     }: {
         mealPlanId: string
         body: ExposeMealPlanToNearbyFriendsRequest
-    }): Promise<MealPlanResponse> => {
+    }): Promise<ExposeMealPlanToNearbyFriendsResponse> => {
         return contractClient.post(apiContract.mealPlans.exposeNearbyFriends, {
             pathParams: { mealPlanId: domainId.mealPlan(mealPlanId) },
             body
@@ -241,6 +256,12 @@ export const mealPlanApi = {
         return contractClient.delete(apiContract.mealPlans.closeNearbyFriends, {
             pathParams: { mealPlanId: domainId.mealPlan(mealPlanId) }
         })
+    },
+
+    getNearbyFriendExposureEligibility: async (): Promise<NearbyFriendExposureEligibility> => {
+        return contractClient.get(
+            apiContract.mealPlans.nearbyFriendExposureEligibility
+        )
     },
 
     getNearbyFriends: async (): Promise<NearbyFriendMealPlanSummary[]> => {
@@ -434,6 +455,18 @@ export const useMyMealPlanCards = () => {
     })
 }
 
+export const useMealPlanHomeDashboard = () =>
+    useQuery({
+        queryKey: queryKeys.mealPlans.homeDashboard,
+        queryFn: mealPlanApi.getHomeDashboard
+    })
+
+export const useMealMap = (query: MealMapQuery = { friendRecordDays: 7 }) =>
+    useQuery({
+        queryKey: [...queryKeys.mealPlans.map, query] as const,
+        queryFn: () => mealPlanApi.getMap(query)
+    })
+
 export const useMealPlanDetail = (
     mealPlanId: string,
     options?: { enabled?: boolean }
@@ -484,6 +517,13 @@ export const useSentMealPlanInvites = () =>
     useQuery({
         queryKey: queryKeys.mealPlans.sentInvites,
         queryFn: mealPlanApi.getSentInvites
+    })
+
+export const useNearbyFriendExposureEligibility = (options?: { enabled?: boolean }) =>
+    useQuery({
+        queryKey: queryKeys.mealPlans.nearbyFriendExposureEligibility,
+        queryFn: mealPlanApi.getNearbyFriendExposureEligibility,
+        enabled: options?.enabled ?? true
     })
 
 export const useNearbyFriendMealPlans = () =>
@@ -613,7 +653,7 @@ export const useJoinMealPlanGuest = (
     )
 
 export const useExposeMealPlanToNearbyFriends = (
-    options: MutationOptions<MealPlanResponse> = {}
+    options: MutationOptions<ExposeMealPlanToNearbyFriendsResponse> = {}
 ) =>
     useMealPlanMutation(mealPlanApi.exposeNearbyFriends, options, variables =>
         variables.mealPlanId
@@ -643,9 +683,58 @@ export const useAcceptMealPlanJoinRequest = (
         (_requestId, data) => data.mealPlanId
     )
 
+const removePendingJoinRequestFromCache = <TData,>(
+    data: TData,
+    requestId: string
+): TData => {
+    if (!data || typeof data !== 'object') return data
+    const maybeMealPlan = data as {
+        pendingJoinRequests?: Array<{ joinRequestId: string }>
+    }
+    if (!Array.isArray(maybeMealPlan.pendingJoinRequests)) return data
+    return {
+        ...data,
+        pendingJoinRequests: maybeMealPlan.pendingJoinRequests.filter(
+            request => request.joinRequestId !== requestId
+        )
+    }
+}
+
 export const useRejectMealPlanJoinRequest = (
     options: MutationOptions<NoContent> = {}
-) => useMealPlanMutation(mealPlanApi.rejectJoinRequest, options)
+) => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: mealPlanApi.rejectJoinRequest,
+        onMutate: async requestId => {
+            await queryClient.cancelQueries({ queryKey: queryKeys.mealPlans.all })
+            const snapshots = queryClient.getQueriesData({
+                queryKey: queryKeys.mealPlans.all
+            })
+            queryClient.setQueriesData(
+                { queryKey: queryKeys.mealPlans.all },
+                old => removePendingJoinRequestFromCache(old, requestId)
+            )
+            return { snapshots }
+        },
+        onError: (error, requestId, context) => {
+            context?.snapshots.forEach(([queryKey, data]) => {
+                queryClient.setQueryData(queryKey, data)
+            })
+            options.onError?.(error instanceof Error ? error : new Error('Join request reject failed'))
+        },
+        onSuccess: data => {
+            queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
+    queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.homeDashboard })
+    queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.map })
+            options.onSuccess?.(data)
+        },
+        onSettled: (data, error, requestId, context) => {
+            queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.all })
+            options.onSettled?.()
+        }
+    })
+}
 
 export const useCreateMealPlanVote = (
     options: MutationOptions<MealPlanResponse> = {}

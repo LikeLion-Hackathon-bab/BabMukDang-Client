@@ -20,6 +20,7 @@ export const queryKeys = {
         all: ['profile'] as const,
         my: ['profile', 'my'] as const,
         myDetail: ['profile', 'my', 'detail'] as const,
+        locationSettings: ['profile', 'my', 'location-settings'] as const,
         member: (id: number) => ['profile', id] as const,
         memberDetail: (id: number) => ['profile', id, 'detail'] as const,
         members: (ids: number[]) => ['profile', 'members', ids] as const
@@ -28,6 +29,8 @@ export const queryKeys = {
     mealPlans: {
         all: ['mealPlans'] as const,
         my: ['mealPlans', 'my'] as const,
+        homeDashboard: ['mealPlans', 'homeDashboard'] as const,
+        map: ['mealPlans', 'map'] as const,
         detail: (mealPlanId: string) => ['mealPlans', mealPlanId] as const,
         chatMessages: (mealPlanId: string) =>
             ['mealPlans', mealPlanId, 'chatMessages'] as const,
@@ -35,6 +38,7 @@ export const queryKeys = {
             ['mealPlans', 'guestChatMessages', token, sessionToken ?? ''] as const,
         receivedInvites: ['mealPlans', 'invites', 'received'] as const,
         sentInvites: ['mealPlans', 'invites', 'sent'] as const,
+        nearbyFriendExposureEligibility: ['mealPlans', 'nearbyFriends', 'eligibility'] as const,
         nearbyFriends: ['mealPlans', 'nearbyFriends'] as const,
         sharePreview: (token: string) =>
             ['mealPlans', 'sharePreview', token] as const,
@@ -69,6 +73,16 @@ export const queryKeys = {
 
     notifications: {
         all: ['notifications'] as const
+    },
+
+    pushTokens: {
+        all: ['pushTokens'] as const
+    },
+
+    liveActivities: {
+        all: ['liveActivities'] as const,
+        mealPlan: (mealPlanId: string) =>
+            ['liveActivities', 'mealPlan', mealPlanId] as const
     }
 } as const
 
