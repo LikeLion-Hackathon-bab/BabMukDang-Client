@@ -319,8 +319,7 @@ const parseSegmentationOutput = (
         })
     )
 
-    console.log(import.meta.env.DEV)
-    if (import.meta.env.DEV) {
+    if (import.meta.env.VITE_ENV === 'develop') {
         console.debug('food-ai segmentation postprocess', {
             outputShape: output0.dims,
             classCount,

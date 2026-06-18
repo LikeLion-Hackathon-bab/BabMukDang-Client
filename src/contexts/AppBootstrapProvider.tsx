@@ -254,7 +254,7 @@ export function AppBootstrapProvider({
         }
     }, [accessToken])
 
-    if (import.meta.env.DEV)
+    if (import.meta.env.VITE_ENV === 'develop')
         console.table(
             tasks.map(task => {
                 const key = taskAttemptKey(task, bootstrapContext)

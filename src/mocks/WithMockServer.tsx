@@ -16,7 +16,7 @@ export default function WithMockServer() {
     const [ready, setReady] = useState(false)
 
     useEffect(() => {
-        const shouldMock = import.meta.env.MODE === 'development'
+        const shouldMock = import.meta.env.VITE_MOCK_SERVER_ENABLE === true
 
         if (!shouldMock) return
 
@@ -30,7 +30,7 @@ export default function WithMockServer() {
         }
     }, [ready])
 
-    if (!ready && import.meta.env.MODE === 'development') {
+    if (!ready && import.meta.env.VITE_MOCK_SERVER_ENABLE === true) {
         return (
             <p className="text-sm text-gray-500">
                 🧪 Mock server initializing...
@@ -38,7 +38,7 @@ export default function WithMockServer() {
         )
     }
 
-    if (ready && import.meta.env.MODE === 'development') {
+    if (ready && import.meta.env.VITE_MOCK_SERVER_ENABLE === true) {
         return (
             <p className="text-sm text-gray-500">🎉 Mock server initialized</p>
         )

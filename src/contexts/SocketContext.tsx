@@ -84,7 +84,7 @@ export function SocketProvider({
         }
 
         const nextSocket: MealPlanSocket = io(
-            `${import.meta.env.VITE_WEBSOCKET_URL}/meal-plans`,
+            `${import.meta.env.VITE_WEBSOCKET_SERVER_URL}/meal-plans`,
             {
                 auth: accessToken
                     ? { token: accessToken }
@@ -137,7 +137,14 @@ export function SocketProvider({
             setIsSelfReady: mealPlanState.setIsSelfReady,
             error: mealPlanState.error
         }),
-        [socket, commands, mealPlanId, guestSessionToken, shareLinkToken, mealPlanState]
+        [
+            socket,
+            commands,
+            mealPlanId,
+            guestSessionToken,
+            shareLinkToken,
+            mealPlanState
+        ]
     )
 
     return (

@@ -239,11 +239,12 @@ const parseBody = <E extends AnyContractEndpoint>(
     return contract.body.parse(body) as ContractBodyOf<E>
 }
 
+// develop 환경일 때만, zod 런타임 검증 실행
 const parseResponseForDev = <E extends AnyContractEndpoint>(
     contract: E,
     data: unknown
 ): ContractResponseOf<E> => {
-    if (import.meta.env.DEV) {
+    if (import.meta.env.VITE_ENV === 'develop') {
         return contract.response.parse(data) as ContractResponseOf<E>
     }
 
