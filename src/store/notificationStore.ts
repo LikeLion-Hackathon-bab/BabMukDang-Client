@@ -1,6 +1,9 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import type { MealPlanNotification } from '@kimdaegyu/babmukdang-shared/domain'
+import {
+    compareMealPlanNotificationsByPriority,
+    type MealPlanNotification
+} from '@kimdaegyu/babmukdang-shared/domain'
 
 interface NotificationState {
     notifications: MealPlanNotification[]
@@ -23,9 +26,7 @@ const mergeNotifications = (
     }
 
     return Array.from(byId.values()).sort(
-        (left, right) =>
-            new Date(right.createdAt).getTime() -
-            new Date(left.createdAt).getTime()
+        compareMealPlanNotificationsByPriority('NOTIFICATION_INBOX')
     )
 }
 

@@ -5,7 +5,8 @@ import {
     TabHeader,
     FilterList,
     MealPlanNotificationList,
-    LocalNewsList
+    LocalNewsList,
+    PushPermissionCta
 } from '@/components'
 import { LOCAL_NEWS_FILTER_LIST } from '@/constants/filters'
 import { useHeaderStore, useNotificationStore } from '@/store'
@@ -103,11 +104,14 @@ export function NotiStoragePage() {
                 onTabChange={tab => setTab(tab as 'noti' | 'local')}
             />
             {tab === 'noti' && (
-                <MealPlanNotificationList
+                <>
+                    <PushPermissionCta />
+                    <MealPlanNotificationList
                     notifications={mealPlanNotifications}
                     onDeleteNotification={handleDeleteMealPlanNotification}
                     onNotificationClick={handleMealPlanNotificationClick}
                 />
+                </>
             )}
             {tab === 'local' && (
                 <>

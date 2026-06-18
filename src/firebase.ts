@@ -1,80 +1,70 @@
-import { initializeApp, FirebaseApp } from 'firebase/app'
+import { initializeApp, getApps, type FirebaseApp } from 'firebase/app'
 import {
     getMessaging,
     getToken,
     onMessage,
-    Messaging
+    type Messaging,
+    isSupported
 } from 'firebase/messaging'
 
-// 기본 Firebase 설정 - 실제 프로젝트에서 Firebase Console에서 가져온 설정으로 교체하세요
 export const firebaseConfig = {
-    apiKey: 'AIzaSyBcVrmabmGK92icv3UIZJHECw1HCxerEFg',
-    authDomain: 'firbase-cloud-message-38064.firebaseapp.com',
-    projectId: 'firbase-cloud-message-38064',
-    storageBucket: 'firbase-cloud-message-38064.firebasestorage.app',
-    messagingSenderId: '73789941762',
-    appId: '1:73789941762:web:45edf9adcd9630aa7bdf1b'
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY ?? '',
+    authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ?? '',
+    projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID ?? '',
+    storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET ?? '',
+    messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID ?? '',
+    appId: import.meta.env.VITE_FIREBASE_APP_ID ?? ''
 }
+
+const hasFirebaseConfig = () =>
+    Boolean(
+        firebaseConfig.apiKey &&
+            firebaseConfig.projectId &&
+            firebaseConfig.messagingSenderId &&
+            firebaseConfig.appId
+    )
 
 let app: FirebaseApp | null = null
 let messaging: Messaging | null = null
 
-// Firebase 앱 초기화
-export const initializeFirebase = (config: any) => {
-    if (app) {
-        // 이미 초기화된 경우 기존 앱 반환
-        return app
+export const initializeFirebase = async (
+    config = firebaseConfig
+): Promise<FirebaseApp | null> => {
+    if (app) return app
+    if (!hasFirebaseConfig()) return null
+
+    app = getApps().length > 0 ? getApps()[0] : initializeApp(config)
+
+    if (await isSupported()) {
+        messaging = getMessaging(app)
     }
 
-    app = initializeApp(config)
-    messaging = getMessaging(app)
     return app
 }
 
-// FCM 메시징 인스턴스 가져오기
-export const getMessagingInstance = (): Messaging | null => {
-    return messaging
-}
+export const getMessagingInstance = (): Messaging | null => messaging
 
-// FCM 토큰 가져오기
 export const getFCMToken = async (
     vapidKey?: string
 ): Promise<string | null> => {
-    if (!messaging) {
-        console.error('Firebase가 초기화되지 않았습니다.')
-        return null
-    }
+    const appInstance = await initializeFirebase()
+    if (!appInstance || !messaging || !vapidKey) return null
 
     try {
-        const currentToken = await getToken(messaging, {
-            vapidKey: vapidKey || 'your-vapid-key' // Firebase Console에서 생성한 VAPID 키
-        })
-
-        if (currentToken) {
-            console.log('FCM 토큰:', currentToken)
-            return currentToken
-        } else {
-            console.log('FCM 토큰을 가져올 수 없습니다.')
-            return null
-        }
+        const currentToken = await getToken(messaging, { vapidKey })
+        return currentToken || null
     } catch (error) {
-        console.error('FCM 토큰 가져오기 실패:', error)
+        console.warn('[push] FCM token registration failed', error)
         return null
     }
 }
 
-// 포그라운드 메시지 처리
-export const onForegroundMessage = (callback: (payload: any) => void) => {
-    if (!messaging) {
-        console.error('Firebase가 초기화되지 않았습니다.')
-        return () => {}
-    }
-
-    return onMessage(messaging, payload => {
-        console.log('포그라운드 메시지 수신:', payload)
-        callback(payload)
-    })
+export const onForegroundMessage = async (
+    callback: (payload: unknown) => void
+) => {
+    await initializeFirebase()
+    if (!messaging) return () => {}
+    return onMessage(messaging, payload => callback(payload))
 }
 
-// 기본 앱 인스턴스 (기존 코드와의 호환성을 위해)
 export default app
