@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useMealPlanDetail } from '@/apis'
 
-import { useArticleStore, useBottomNavStore, useHeaderStore } from '@/store'
-import { FoodSearchField, FriendSearchField } from '@/components/features/search'
+import { useArticleStore } from '@/store'
+import {
+    FoodSearchField,
+    FriendSearchField
+} from '@/components/features/search'
 import type { FoodSearchResult, FriendSearchResult } from '@/services/search'
 import { MutalButton } from '@/components'
 import { mealTimeMap, mealTimeTextArr } from '@/constants/post'
@@ -12,7 +15,9 @@ import { useFoodAnalysis } from '@/features/food-ai'
 export function UploadPage() {
     const [searchParams] = useSearchParams()
     const mealPlanId = searchParams.get('mealPlanId')
-    const { data: mealPlan } = useMealPlanDetail(mealPlanId ?? '', { enabled: Boolean(mealPlanId) })
+    const { data: mealPlan } = useMealPlanDetail(mealPlanId ?? '', {
+        enabled: Boolean(mealPlanId)
+    })
     const {
         image: imageFile,
         mealDate,
@@ -24,9 +29,9 @@ export function UploadPage() {
         foodAnalysis: selectedFoodAnalysis
     } = useArticleStore()
     const [image, setImage] = useState<string | null>(null)
-    const [selectedTaggedFriends, setSelectedTaggedFriends] = useState<FriendSearchResult[]>([])
-    const { showBottomNav, hideBottomNav } = useBottomNavStore()
-    const { setTitle, resetHeader } = useHeaderStore()
+    const [selectedTaggedFriends, setSelectedTaggedFriends] = useState<
+        FriendSearchResult[]
+    >([])
     const foodAnalysis = useFoodAnalysis(imageFile)
 
     useEffect(() => {
@@ -49,23 +54,23 @@ export function UploadPage() {
     }, [mealTimeNumber, setMealTime])
 
     useEffect(() => {
-        hideBottomNav()
-        setTitle(mealPlanId ? '밥약 기록 업로드' : '사진 업로드')
         setMealPlanId(mealPlanId)
         if (!mealPlanId) setTaggedMemberIds([])
         return () => {
-            showBottomNav()
-            resetHeader()
             setMealPlanId(null)
         }
-    }, [hideBottomNav, showBottomNav, setTitle, resetHeader, setTaggedMemberIds, setMealPlanId, mealPlanId])
+    }, [setTaggedMemberIds, setMealPlanId, mealPlanId])
 
     useEffect(() => {
         if (!mealPlanId || !mealPlan) return
         const friends = mealPlan.participants
-            .filter(participant => ['JOINED', 'READY'].includes(participant.status))
+            .filter(participant =>
+                ['JOINED', 'READY'].includes(participant.status)
+            )
             .map(participant => participant.member)
-            .filter((member): member is NonNullable<typeof member> => member != null)
+            .filter(
+                (member): member is NonNullable<typeof member> => member != null
+            )
             .map(member => ({
                 memberId: member.memberId,
                 nickname: member.username,
@@ -88,7 +93,11 @@ export function UploadPage() {
 
     const selectTaggedFriend = (friend: FriendSearchResult) => {
         setSelectedTaggedFriends(current => {
-            if (current.some(item => String(item.memberId) === String(friend.memberId))) {
+            if (
+                current.some(
+                    item => String(item.memberId) === String(friend.memberId)
+                )
+            ) {
                 return current
             }
             const next = [...current, friend]
@@ -103,7 +112,9 @@ export function UploadPage() {
 
     const removeTaggedFriend = (friend: FriendSearchResult) => {
         setSelectedTaggedFriends(current => {
-            const next = current.filter(item => String(item.memberId) !== String(friend.memberId))
+            const next = current.filter(
+                item => String(item.memberId) !== String(friend.memberId)
+            )
             setTaggedMemberIds(
                 next
                     .map(item => Number(item.memberId))
@@ -131,7 +142,9 @@ export function UploadPage() {
                             MealPlan 기록 연결
                         </span>
                         <p className="text-body2-medium text-gray-7">
-                            이 기록은 {mealPlan?.title ?? '이 밥약'}에 연결됩니다. 기록 완료 후 밥약 상태가 RECORDED로 전환됩니다.
+                            이 기록은 {mealPlan?.title ?? '이 밥약'}에
+                            연결됩니다. 기록 완료 후 밥약 상태가 RECORDED로
+                            전환됩니다.
                         </p>
                     </div>
                 )}
@@ -147,7 +160,9 @@ export function UploadPage() {
                         label="친구 태그 추가"
                         helperText="서버 검색 결과를 신뢰해서 태그할 친구를 선택합니다. 게스트 참여자는 Article 태그에서 제외됩니다."
                         selected={selectedTaggedFriends}
-                        excludedMemberIds={selectedTaggedFriends.map(friend => friend.memberId)}
+                        excludedMemberIds={selectedTaggedFriends.map(
+                            friend => friend.memberId
+                        )}
                         onSelect={selectTaggedFriend}
                         onRemove={removeTaggedFriend}
                     />
@@ -162,7 +177,11 @@ export function UploadPage() {
                     <FoodSearchField
                         label="인식된 음식 메뉴 수정·추가"
                         helperText="사진 인식 결과가 틀렸다면 manifest 기반 음식 검색으로 메뉴를 바꿀 수 있습니다."
-                        selected={selectedFoodAnalysis ? [selectedFoodAnalysis.label] : []}
+                        selected={
+                            selectedFoodAnalysis
+                                ? [selectedFoodAnalysis.label]
+                                : []
+                        }
                         onSelect={selectFood}
                         onRemove={() => setFoodAnalysis(null)}
                     />
@@ -209,7 +228,11 @@ function UploadButton({
             to={nextHref}
             className="w-full">
             <MutalButton
-                text={mealPlanId ? 'MealPlan 기록 이어가기' : '다음 단계로 넘어가기'}
+                text={
+                    mealPlanId
+                        ? 'MealPlan 기록 이어가기'
+                        : '다음 단계로 넘어가기'
+                }
                 onClick={() => undefined}
                 disabled={disabled}
                 hasArrow={true}
@@ -252,7 +275,8 @@ function FoodAnalysisStatus({
         return (
             <div className="px-20">
                 <span className="text-caption1-medium text-gray-6">
-                    음식 분석을 완료하지 못했어요. 사진은 그대로 업로드할 수 있어요.
+                    음식 분석을 완료하지 못했어요. 사진은 그대로 업로드할 수
+                    있어요.
                 </span>
             </div>
         )

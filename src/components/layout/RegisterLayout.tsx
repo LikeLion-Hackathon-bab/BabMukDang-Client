@@ -1,17 +1,18 @@
-import { useBottomNavStore, useHeaderStore } from '@/store'
-import { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
+import { usePageChrome } from '@/hooks/usePageChrome'
+import type { LayoutChromeConfig } from '@/store/layoutChromeStore'
+
+const registerChromeConfig: LayoutChromeConfig = {
+    header: {
+        visible: false
+    },
+    bottomNav: {
+        visible: false
+    }
+}
 
 export function RegisterLayout() {
-    const { hideHeader, resetHeader } = useHeaderStore()
-    const { hideBottomNav, resetBottomNav } = useBottomNavStore()
-    useEffect(() => {
-        hideHeader()
-        hideBottomNav()
-        return () => {
-            resetHeader()
-            resetBottomNav()
-        }
-    }, [])
+    usePageChrome(registerChromeConfig)
+
     return <Outlet />
 }

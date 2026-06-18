@@ -10,17 +10,9 @@ import {
     RandomCouponGraphic
 } from '@/assets/graphics'
 import { MutalButton } from '@/components'
-import { useHeaderStore } from '@/store'
 import { useEffect, useState } from 'react'
 
 export function ChallengePage() {
-    const { setTitle, resetHeader } = useHeaderStore()
-    useEffect(() => {
-        setTitle('챌린지')
-        return () => {
-            resetHeader()
-        }
-    }, [])
     const [currentDay, setCurrentDay] = useState(1)
     const challengDays: Record<number, React.ReactNode> = {
         0: <ChallengeDay0 className="h-full w-full max-w-800" />,

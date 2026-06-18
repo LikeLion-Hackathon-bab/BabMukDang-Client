@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useCreateMealPlan, useSendMealPlanInvite } from '@/apis'
-import { useHeaderStore } from '@/store'
 import { FoodSearchField, PlaceSearchField } from '@/components/features/search'
 import type { FoodSearchResult, PlaceSearchResult } from '@/services/search'
-import { toMemberId, type MealPlanChannel, type MealPlanLocationCandidate } from '@kimdaegyu/babmukdang-shared/domain'
+import {
+    toMemberId,
+    type MealPlanChannel,
+    type MealPlanLocationCandidate
+} from '@kimdaegyu/babmukdang-shared/domain'
 
 const channelOptions: Array<{
     value: MealPlanChannel
@@ -51,9 +54,9 @@ export function MealPlanStartPage() {
     const initialInviteeId = searchParams.get('inviteeId')
     const initialMealGroupId = searchParams.get('mealGroupId')
     const [title, setTitleValue] = useState('오늘 뭐 먹지?')
-    const [selectedChannels, setSelectedChannels] = useState<MealPlanChannel[]>([
-        initialInviteeId ? 'FRIEND_INVITE' : 'OWNER_ONLY'
-    ])
+    const [selectedChannels, setSelectedChannels] = useState<MealPlanChannel[]>(
+        [initialInviteeId ? 'FRIEND_INVITE' : 'OWNER_ONLY']
+    )
     const [mealDate, setMealDate] = useState('')
     const [mealTime, setMealTime] = useState('')
     const [preferredMenus, setPreferredMenus] = useState('한식, 일식')
@@ -68,15 +71,9 @@ export function MealPlanStartPage() {
     const [areaLat, setAreaLat] = useState('')
     const [areaLng, setAreaLng] = useState('')
     const [memo, setMemo] = useState('')
-    const { setTitle, resetHeader } = useHeaderStore()
     const createMealPlan = useCreateMealPlan()
     const sendMealPlanInvite = useSendMealPlanInvite()
     const isPending = createMealPlan.isPending || sendMealPlanInvite.isPending
-
-    useEffect(() => {
-        setTitle('밥약 시작')
-        return () => resetHeader()
-    }, [setTitle, resetHeader])
 
     const initialMemo = useMemo(() => {
         const parts = []
@@ -94,7 +91,6 @@ export function MealPlanStartPage() {
         })
     }
 
-
     const appendCsvValue = (current: string, value: string): string => {
         const items = splitCsv(current)
         if (items.includes(value)) return current
@@ -102,7 +98,9 @@ export function MealPlanStartPage() {
     }
 
     const removeCsvValue = (current: string, value: string): string =>
-        splitCsv(current).filter(item => item !== value).join(', ')
+        splitCsv(current)
+            .filter(item => item !== value)
+            .join(', ')
 
     const addPreferredMenu = (food: FoodSearchResult) => {
         setPreferredMenus(current => appendCsvValue(current, food.name))
@@ -141,7 +139,9 @@ export function MealPlanStartPage() {
     const submit = () => {
         const min = toNumberOrNull(budgetMin)
         const max = toNumberOrNull(budgetMax)
-        const combinedMemo = [initialMemo, memo.trim()].filter(Boolean).join('\n')
+        const combinedMemo = [initialMemo, memo.trim()]
+            .filter(Boolean)
+            .join('\n')
         const inviteeId = initialInviteeId ? Number(initialInviteeId) : null
 
         createMealPlan.mutate(
@@ -162,7 +162,11 @@ export function MealPlanStartPage() {
             },
             {
                 onSuccess: data => {
-                    if (inviteeId && Number.isFinite(inviteeId) && inviteeId > 0) {
+                    if (
+                        inviteeId &&
+                        Number.isFinite(inviteeId) &&
+                        inviteeId > 0
+                    ) {
                         sendMealPlanInvite.mutate(
                             {
                                 mealPlanId: data.mealPlanId,
@@ -172,7 +176,8 @@ export function MealPlanStartPage() {
                                 }
                             },
                             {
-                                onSettled: () => navigate(`/meal-plans/${data.mealPlanId}`)
+                                onSettled: () =>
+                                    navigate(`/meal-plans/${data.mealPlanId}`)
                             }
                         )
                         return
@@ -190,8 +195,12 @@ export function MealPlanStartPage() {
                     어떤 방식으로 밥약을 시작할까요?
                 </h1>
                 <p className="text-body2-medium text-gray-5">
-                    추천 조건을 먼저 저장하면 MealPlan 상세에 메뉴 후보가 만들어지고, 이후 같은 MealPlan에 친구와 게스트를 추가할 수 있습니다.
-                    {initialInviteeId ? ` 선택한 친구(${initialInviteeId})에게는 생성 직후 초대를 보냅니다.` : ''}
+                    추천 조건을 먼저 저장하면 MealPlan 상세에 메뉴 후보가
+                    만들어지고, 이후 같은 MealPlan에 친구와 게스트를 추가할 수
+                    있습니다.
+                    {initialInviteeId
+                        ? ` 선택한 친구(${initialInviteeId})에게는 생성 직후 초대를 보냅니다.`
+                        : ''}
                 </p>
             </section>
 
@@ -231,9 +240,12 @@ export function MealPlanStartPage() {
 
             <section className="rounded-24 flex flex-col gap-14 bg-white p-18">
                 <div>
-                    <h2 className="text-body1-semibold text-gray-8">추천 조건</h2>
+                    <h2 className="text-body1-semibold text-gray-8">
+                        추천 조건
+                    </h2>
                     <p className="text-caption-regular text-gray-5">
-                        쉼표로 메뉴 후보와 제외 메뉴를 입력하면 서버가 MealPlan 메뉴 후보를 저장합니다.
+                        쉼표로 메뉴 후보와 제외 메뉴를 입력하면 서버가 MealPlan
+                        메뉴 후보를 저장합니다.
                     </p>
                 </div>
                 <div className="grid grid-cols-2 gap-10">
@@ -262,7 +274,11 @@ export function MealPlanStartPage() {
                     helperText="검색 결과를 선택하면 선호 메뉴 목록에 추가됩니다."
                     selected={splitCsv(preferredMenus)}
                     onSelect={addPreferredMenu}
-                    onRemove={name => setPreferredMenus(current => removeCsvValue(current, name))}
+                    onRemove={name =>
+                        setPreferredMenus(current =>
+                            removeCsvValue(current, name)
+                        )
+                    }
                 />
                 <FoodSearchField
                     label="제외 메뉴"
@@ -270,7 +286,11 @@ export function MealPlanStartPage() {
                     helperText="검색 결과를 선택하면 제외 메뉴 목록에 추가됩니다."
                     selected={splitCsv(excludedMenus)}
                     onSelect={addExcludedMenu}
-                    onRemove={name => setExcludedMenus(current => removeCsvValue(current, name))}
+                    onRemove={name =>
+                        setExcludedMenus(current =>
+                            removeCsvValue(current, name)
+                        )
+                    }
                 />
                 <FoodSearchField
                     label="추천 후보 풀"
@@ -278,7 +298,11 @@ export function MealPlanStartPage() {
                     helperText="검색 결과를 선택하면 추천 후보 풀에 추가됩니다."
                     selected={splitCsv(candidateMenus)}
                     onSelect={addCandidateMenu}
-                    onRemove={name => setCandidateMenus(current => removeCsvValue(current, name))}
+                    onRemove={name =>
+                        setCandidateMenus(current =>
+                            removeCsvValue(current, name)
+                        )
+                    }
                 />
                 <div className="grid grid-cols-2 gap-10">
                     <label className="flex flex-col gap-6 text-caption-medium text-gray-7">
@@ -311,7 +335,9 @@ export function MealPlanStartPage() {
                         onSelect={selectArea}
                     />
                     <div className="grid grid-cols-1 gap-8 rounded-16 bg-gray-1 p-12">
-                        <span className="text-caption-medium text-gray-6">선택된 지역 정보</span>
+                        <span className="text-caption-medium text-gray-6">
+                            선택된 지역 정보
+                        </span>
                         <input
                             value={areaName}
                             onChange={event => setAreaName(event.target.value)}
@@ -320,20 +346,26 @@ export function MealPlanStartPage() {
                         />
                         <input
                             value={areaAddress}
-                            onChange={event => setAreaAddress(event.target.value)}
+                            onChange={event =>
+                                setAreaAddress(event.target.value)
+                            }
                             className="rounded-14 bg-white px-12 py-10 outline-none"
                             placeholder="주소"
                         />
                         <div className="grid grid-cols-2 gap-10">
                             <input
                                 value={areaLat}
-                                onChange={event => setAreaLat(event.target.value)}
+                                onChange={event =>
+                                    setAreaLat(event.target.value)
+                                }
                                 className="rounded-14 bg-white px-12 py-10 outline-none"
                                 placeholder="위도"
                             />
                             <input
                                 value={areaLng}
-                                onChange={event => setAreaLng(event.target.value)}
+                                onChange={event =>
+                                    setAreaLng(event.target.value)
+                                }
                                 className="rounded-14 bg-white px-12 py-10 outline-none"
                                 placeholder="경도"
                             />

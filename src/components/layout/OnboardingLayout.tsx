@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useState } from 'react'
+import { type ReactNode, useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
 import { SocketProvider, useSocket } from '@/contexts/SocketContext'
@@ -8,24 +8,24 @@ import {
     ToastMessage,
     OnboardingButton,
     ProgressBar,
-    OnboardingHeader,
-    Header
+    OnboardingHeader
 } from '@/components'
-import { useBottomNavStore, useHeaderStore } from '@/store'
+import { usePageChrome } from '@/hooks/usePageChrome'
+import type { LayoutChromeConfig } from '@/store/layoutChromeStore'
+
+const onboardingChromeConfig: LayoutChromeConfig = {
+    header: {
+        visible: false
+    },
+    bottomNav: {
+        visible: false
+    }
+}
 
 export const OnboardingLayout = () => {
     const [isChatOpen, setIsChatOpen] = useState(false)
-    const { hideHeader, resetHeader } = useHeaderStore()
-    const { hideBottomNav, resetBottomNav } = useBottomNavStore()
 
-    useEffect(() => {
-        hideHeader()
-        hideBottomNav()
-        return () => {
-            resetHeader()
-            resetBottomNav()
-        }
-    }, [])
+    usePageChrome(onboardingChromeConfig)
 
     return (
         <SocketProvider>

@@ -12,7 +12,6 @@ import {
 } from '@/components/features/meal-plan'
 import { LocationSyncService, permissionAdapter } from '@/features/permissions'
 import { MealMapDataProvider, useMealMapData } from '@/features/meal-map'
-import { useHeaderStore } from '@/store'
 
 const friendRecordDayOptions = [7, 14, 30] as const
 
@@ -25,14 +24,7 @@ const joinRequestLabel = (status: string | null | undefined) => {
 }
 
 export function MealMapPage() {
-    const { hideLeftButton, setTitle, resetHeader } = useHeaderStore()
     const [friendRecordDays, setFriendRecordDays] = useState<number>(7)
-
-    useEffect(() => {
-        hideLeftButton()
-        setTitle('밥지도')
-        return () => resetHeader()
-    }, [hideLeftButton, setTitle, resetHeader])
 
     return (
         <MealMapDataProvider query={{ friendRecordDays }}>
@@ -56,8 +48,7 @@ function MealMapContent({
     const { data: nearbyFriendMealPlans } = useNearbyFriendMealPlans()
     const { data: locationSettings, refetch: refetchLocationSettings } =
         useGetLocationSettings()
-    const { mutateAsync: updateMemberLocationAsync } =
-        useUpdateMemberLocation()
+    const { mutateAsync: updateMemberLocationAsync } = useUpdateMemberLocation()
     const locationSyncService = useMemo(
         () => new LocationSyncService(permissionAdapter),
         []
@@ -89,20 +80,27 @@ function MealMapContent({
     return (
         <div className="flex flex-col gap-20 py-20">
             <section className="rounded-24 bg-primary-100 border-primary-300 border p-18">
-                <h1 className="text-title2-semibold text-gray-8">친구 기반 밥지도</h1>
+                <h1 className="text-title2-semibold text-gray-8">
+                    친구 기반 밥지도
+                </h1>
                 <p className="text-body2-medium text-gray-6">
-                    공개 모집 지도가 아니라 내 밥약 장소, 근처 친구 밥약, 친구 기록 위치, 식당 후보를 함께 보여줍니다.
+                    공개 모집 지도가 아니라 내 밥약 장소, 근처 친구 밥약, 친구
+                    기록 위치, 식당 후보를 함께 보여줍니다.
                 </p>
                 {mealMap && (
                     <p className="text-caption-regular text-gray-5 mt-8">
-                        중심 좌표 {mealMap.center.lat.toFixed(4)}, {mealMap.center.lng.toFixed(4)} · {allMarkers.length}개 표시
+                        중심 좌표 {mealMap.center.lat.toFixed(4)},{' '}
+                        {mealMap.center.lng.toFixed(4)} · {allMarkers.length}개
+                        표시
                     </p>
                 )}
             </section>
 
             <section className="rounded-20 flex flex-col gap-10 bg-white p-16">
                 <div>
-                    <h2 className="text-body1-semibold text-gray-8">친구 기록 기간</h2>
+                    <h2 className="text-body1-semibold text-gray-8">
+                        친구 기록 기간
+                    </h2>
                     <p className="text-caption-regular text-gray-5">
                         지도에 표시할 친구 기록 위치 기간을 선택합니다.
                     </p>
@@ -154,7 +152,9 @@ function MealMapContent({
             ) : null}
 
             <section className="flex flex-col gap-12">
-                <h2 className="text-body1-semibold text-gray-8">근처 친구 밥약</h2>
+                <h2 className="text-body1-semibold text-gray-8">
+                    근처 친구 밥약
+                </h2>
                 {nearbyFriendMealPlans?.length ? (
                     <div className="flex flex-col gap-10">
                         {nearbyFriendMealPlans.map(mealPlan => (
@@ -166,15 +166,19 @@ function MealMapContent({
                                         {mealPlan.title}
                                     </span>
                                     <p className="text-caption-regular text-gray-5">
-                                        {mealPlan.owner.username} · {mealPlan.distanceMeters}m · {mealPlan.participantCount}명
+                                        {mealPlan.owner.username} ·{' '}
+                                        {mealPlan.distanceMeters}m ·{' '}
+                                        {mealPlan.participantCount}명
                                     </p>
                                 </Link>
                                 <button
                                     type="button"
                                     disabled={
                                         isRequesting ||
-                                        mealPlan.joinRequestStatus === 'PENDING' ||
-                                        mealPlan.joinRequestStatus === 'ACCEPTED'
+                                        mealPlan.joinRequestStatus ===
+                                            'PENDING' ||
+                                        mealPlan.joinRequestStatus ===
+                                            'ACCEPTED'
                                     }
                                     onClick={() =>
                                         requestJoin({
@@ -183,7 +187,9 @@ function MealMapContent({
                                         })
                                     }
                                     className="rounded-24 bg-gray-8 px-14 py-9 text-caption-medium text-white disabled:bg-gray-3 disabled:text-gray-5">
-                                    {joinRequestLabel(mealPlan.joinRequestStatus)}
+                                    {joinRequestLabel(
+                                        mealPlan.joinRequestStatus
+                                    )}
                                 </button>
                             </article>
                         ))}

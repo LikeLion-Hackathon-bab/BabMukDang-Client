@@ -1,12 +1,15 @@
 export { useAuthStore } from './authStore'
-export { useHeaderStore } from './headerStore'
-export { useBottomNavStore } from './bottomNavStore'
 export { useMealPlanStore } from './mealPlanStore'
 export { useArticleStore } from './articleStore'
 export { useNotificationStore } from './notificationStore'
 export { useOnboardingStore } from './onboardingStore'
 
-export type { HeaderConfig } from './headerStore'
-export type { BottomNavConfig } from './bottomNavStore'
+export { useLayoutChromeStore } from './layoutChromeStore'
+export type {
+    HeaderConfig,
+    BottomNavConfig,
+    LayoutChromeConfig,
+    ResolvedLayoutChromeConfig
+} from './layoutChromeStore'
 export type { MealPlanStore } from './mealPlanStore'
 export type { OnboardingDraftState } from './onboardingStore'

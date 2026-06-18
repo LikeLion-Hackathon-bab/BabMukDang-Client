@@ -1,11 +1,9 @@
 import { useEffect, useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useMealPlanSharePreview } from '@/apis'
-import { useHeaderStore } from '@/store'
 
 export function MealPlanSharePreviewPage() {
     const { token = '' } = useParams<{ token: string }>()
-    const { setTitle, resetHeader } = useHeaderStore()
     const guestSession = useMemo(
         () => window.localStorage.getItem(`mealPlanGuestSession:${token}`),
         [token]
@@ -14,13 +12,18 @@ export function MealPlanSharePreviewPage() {
         enabled: Boolean(token)
     })
 
-    useEffect(() => {
-        setTitle('밥약 링크')
-        return () => resetHeader()
-    }, [setTitle, resetHeader])
-
-    if (isLoading) return <div className="py-40 text-center text-gray-5">링크를 확인하는 중입니다.</div>
-    if (error || !data) return <div className="py-40 text-center text-red-500">사용할 수 없는 링크입니다.</div>
+    if (isLoading)
+        return (
+            <div className="py-40 text-center text-gray-5">
+                링크를 확인하는 중입니다.
+            </div>
+        )
+    if (error || !data)
+        return (
+            <div className="py-40 text-center text-red-500">
+                사용할 수 없는 링크입니다.
+            </div>
+        )
 
     return (
         <div className="flex flex-col gap-20 py-20">

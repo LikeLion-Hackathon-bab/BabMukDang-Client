@@ -7,7 +7,7 @@ import {
 } from '@/components/features/meal-plan'
 import { useCreateMealPlanVote, useMealPlanDetail } from '@/apis'
 import { SocketProvider } from '@/contexts/SocketContext'
-import { useMealPlanStore, useHeaderStore } from '@/store'
+import { useMealPlanStore } from '@/store'
 import { FoodSearchField, PlaceSearchField } from '@/components/features/search'
 import type { FoodSearchResult, PlaceSearchResult } from '@/services/search'
 import type {
@@ -82,7 +82,6 @@ export function MealPlanDecisionPage() {
 
 function MealPlanDecisionContent() {
     const { mealPlanId = '' } = useParams<{ mealPlanId: string }>()
-    const { setTitle, resetHeader } = useHeaderStore()
     const { data } = useMealPlanDetail(mealPlanId, {
         enabled: Boolean(mealPlanId)
     })
@@ -100,11 +99,6 @@ function MealPlanDecisionContent() {
     const { mutate: createVote, isPending: isVotePending } =
         useCreateMealPlanVote()
     const isOwner = currentMealPlan?.viewerRole === 'OWNER'
-
-    useEffect(() => {
-        setTitle('밥약 결정')
-        return () => resetHeader()
-    }, [setTitle, resetHeader])
 
     useEffect(() => {
         if (data) setCurrentMealPlan(data)

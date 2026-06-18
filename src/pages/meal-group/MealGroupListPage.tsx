@@ -1,29 +1,27 @@
-import { useEffect } from 'react'
 import { MealGroupCard } from '@/components/features/meal-group'
 import { useMealGroups } from '@/apis'
-import { useHeaderStore } from '@/store'
 
 export function MealGroupListPage() {
-    const { setTitle, resetHeader } = useHeaderStore()
     const { data, isLoading, error } = useMealGroups()
-
-    useEffect(() => {
-        setTitle('MealGroup')
-        return () => resetHeader()
-    }, [setTitle, resetHeader])
 
     return (
         <div className="flex flex-col gap-20 py-20">
             <section className="rounded-20 bg-white p-16">
-                <h1 className="text-title2-semibold text-gray-8">반복 식사 그룹</h1>
+                <h1 className="text-title2-semibold text-gray-8">
+                    반복 식사 그룹
+                </h1>
                 <p className="text-body2-medium text-gray-5">
                     MealGroup은 전체 개편 마지막 Phase에서 완성됩니다.
                 </p>
             </section>
             {isLoading ? (
-                <div className="text-caption-regular text-gray-5">불러오는 중입니다.</div>
+                <div className="text-caption-regular text-gray-5">
+                    불러오는 중입니다.
+                </div>
             ) : error ? (
-                <div className="text-caption-regular text-red-500">MealGroup을 불러오지 못했습니다.</div>
+                <div className="text-caption-regular text-red-500">
+                    MealGroup을 불러오지 못했습니다.
+                </div>
             ) : data?.length ? (
                 data.map(group => (
                     <MealGroupCard

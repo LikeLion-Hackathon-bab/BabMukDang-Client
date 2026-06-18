@@ -1,21 +1,25 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 
-import { ProfileModal, ProfileButtonSection, ProfileSection } from '@/components'
+import {
+    ProfileModal,
+    ProfileButtonSection,
+    ProfileSection
+} from '@/components'
 import {
     useGetMemberProfile,
     useGetMemberProfileDetail,
     useGetMyPreference,
     useLogout
 } from '@/apis'
-import { useAuthStore, useHeaderStore } from '@/store'
+import { useAuthStore } from '@/store'
 import { useNavigate } from 'react-router-dom'
 
 export function ProfilePage() {
-    const { hideHeader, resetHeader } = useHeaderStore()
     const { userId } = useAuthStore()
     const navigate = useNavigate()
     const currentMemberId = Number(userId)
-    const canLoadMember = Number.isFinite(currentMemberId) && currentMemberId > 0
+    const canLoadMember =
+        Number.isFinite(currentMemberId) && currentMemberId > 0
     const { data: profileSummary } = useGetMemberProfile(currentMemberId, {
         enabled: canLoadMember
     })
@@ -42,13 +46,6 @@ export function ProfilePage() {
             allergies: preferenceData?.allergy ?? profileData.allergies
         }
     }, [preferenceData, profileData, profileSummary])
-
-    useEffect(() => {
-        hideHeader()
-        return () => {
-            resetHeader()
-        }
-    }, [])
 
     return (
         <main className="relative h-full min-h-full">

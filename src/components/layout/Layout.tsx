@@ -1,10 +1,34 @@
-import { Outlet } from 'react-router-dom'
+import { Outlet, matchPath, useLocation } from 'react-router-dom'
 import { Header, BottomNavigation } from '@/components'
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect, useMemo } from 'react'
 import { useAuthStore } from '@/store'
 import { useAppBootstrap } from '@/contexts'
+import { useLayoutChromeStore } from '@/store/layoutChromeStore'
+import {
+    resolveRouteChromeConfig,
+    routeChromeConfigEntries
+} from '@/routes/pageChromeConfig'
 
 export function Layout() {
+    const location = useLocation()
+    const setRouteChromeConfig = useLayoutChromeStore(
+        state => state.setRouteChromeConfig
+    )
+    const routeChromeConfig = useMemo(() => {
+        const entry = routeChromeConfigEntries.find(config =>
+            matchPath(
+                { path: config.path, end: config.end ?? true },
+                location.pathname
+            )
+        )
+
+        return entry ? resolveRouteChromeConfig(entry, location) : undefined
+    }, [location])
+
+    useLayoutEffect(() => {
+        setRouteChromeConfig(routeChromeConfig)
+    }, [routeChromeConfig, setRouteChromeConfig])
+
     return (
         <ProfileBootstrap>
             <div className="bg-gray-1 flex h-screen min-h-screen w-screen min-w-screen flex-col">

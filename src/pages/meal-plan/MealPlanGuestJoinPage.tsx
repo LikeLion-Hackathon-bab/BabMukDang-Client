@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useJoinMealPlanGuest, useMealPlanSharePreview } from '@/apis'
-import { useHeaderStore } from '@/store'
 
 export function MealPlanGuestJoinPage() {
     const { token = '' } = useParams<{ token: string }>()
     const navigate = useNavigate()
     const [nickname, setNickname] = useState('')
     const [password, setPassword] = useState('')
-    const { setTitle, resetHeader } = useHeaderStore()
     const { data } = useMealPlanSharePreview(token, { enabled: Boolean(token) })
     const { mutate, isPending } = useJoinMealPlanGuest({
         onSuccess: response => {
@@ -23,11 +21,6 @@ export function MealPlanGuestJoinPage() {
             navigate(`/meal-plan-links/${token}/session`)
         }
     })
-
-    useEffect(() => {
-        setTitle('게스트 참여')
-        return () => resetHeader()
-    }, [setTitle, resetHeader])
 
     const join = () => {
         const trimmed = nickname.trim()
@@ -48,7 +41,8 @@ export function MealPlanGuestJoinPage() {
                     {data?.title ?? '밥약'}에 참여할 닉네임을 알려주세요.
                 </h1>
                 <p className="text-body2-medium text-gray-5">
-                    게스트는 친구 목록, 프로필 상세, 내 밥그릇 기능에 접근하지 않습니다.
+                    게스트는 친구 목록, 프로필 상세, 내 밥그릇 기능에 접근하지
+                    않습니다.
                 </p>
             </section>
             <input
@@ -65,7 +59,9 @@ export function MealPlanGuestJoinPage() {
                 type="password"
             />
             <p className="px-4 text-caption-regular text-gray-5">
-                같은 닉네임으로 이미 참여한 경우, 비밀번호가 일치하면 이전 게스트 세션을 다시 발급합니다. 비밀번호를 설정하지 않았다면 닉네임만으로 다시 입장할 수 있습니다.
+                같은 닉네임으로 이미 참여한 경우, 비밀번호가 일치하면 이전
+                게스트 세션을 다시 발급합니다. 비밀번호를 설정하지 않았다면
+                닉네임만으로 다시 입장할 수 있습니다.
             </p>
             <button
                 type="button"

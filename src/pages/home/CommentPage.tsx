@@ -10,12 +10,9 @@ import {
     CommentPostRequest
 } from '@/apis'
 import { buildCommentTree } from '@/lib'
-import { useBottomNavStore, useHeaderStore } from '@/store'
 import { toPostCardView } from '@/viewModels'
 type TreeComment = ReturnType<typeof buildCommentTree>[number]
 export function CommentPage() {
-    const { resetHeader, setTitle } = useHeaderStore()
-    const { hideBottomNav, resetBottomNav } = useBottomNavStore()
     const { postId } = useParams()
     const navigate = useNavigate()
     const articleId = Number(postId)
@@ -45,15 +42,6 @@ export function CommentPage() {
                 refetchArticle()
             }
         })
-    useEffect(() => {
-        setTitle('게시물')
-        hideBottomNav()
-        return () => {
-            resetHeader()
-            resetBottomNav()
-        }
-    }, [])
-
     const handleKeyPress = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
             handleSendMessage()
@@ -81,9 +69,10 @@ export function CommentPage() {
             articleId,
             comment: {
                 content: newMessage,
-                parentCommentId: replyCommentId == null
-                    ? null
-                    : (replyCommentId as CommentPostRequest['parentCommentId'])
+                parentCommentId:
+                    replyCommentId == null
+                        ? null
+                        : (replyCommentId as CommentPostRequest['parentCommentId'])
             }
         })
         setNewMessage('')

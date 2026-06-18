@@ -1,6 +1,6 @@
 import type { ElementType } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { useBottomNavStore } from '@/store/bottomNavStore'
+import { useLayoutChromeStore } from '@/store/layoutChromeStore'
 import { BOTTOM_NAVIGATION_HEIGHT } from '@/constants/bottomNav'
 
 interface BottomNavigationProps {
@@ -12,7 +12,9 @@ interface BottomNavigationProps {
 }
 export function BottomNavigation({ items }: BottomNavigationProps) {
     const location = useLocation()
-    const bottomNavConfig = useBottomNavStore(state => state.config)
+    const bottomNavConfig = useLayoutChromeStore(
+        state => state.resolvedConfig.bottomNav
+    )
     const finalItems = items || bottomNavConfig.items || []
 
     if (!bottomNavConfig.visible) return null
@@ -66,7 +68,8 @@ export function BottomNavigation({ items }: BottomNavigationProps) {
                             strokecolor={strokecolor(item.path)}
                             bgcolor={bgcolor(item.path)}
                         />
-                        <span className={`text-caption-medium ${textColor(item.path)}`}>
+                        <span
+                            className={`text-caption-medium ${textColor(item.path)}`}>
                             {item.label}
                         </span>
                     </Link>

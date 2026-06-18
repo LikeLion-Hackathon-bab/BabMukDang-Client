@@ -2,7 +2,7 @@ import exifr from 'exifr'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
-import { useArticleStore, useAuthStore, useBottomNavStore } from '@/store'
+import { useArticleStore, useAuthStore } from '@/store'
 import { MutalButton } from '@/components'
 import { useUploadArticle, type RestaurantInfo } from '@/apis'
 import { PlaceSearchField } from '@/components/features/search'
@@ -27,8 +27,11 @@ export function SearchRestaurantPage() {
     const [searchParams] = useSearchParams()
     const mealPlanId = searchParams.get('mealPlanId')
     const { image, setRestaurant, setMealPlanId } = useArticleStore()
-    const [selectedRestaurant, setSelectedRestaurant] = useState<PlaceSearchResult | null>(null)
-    const [searchContext, setSearchContext] = useState<SearchContext | undefined>()
+    const [selectedRestaurant, setSelectedRestaurant] =
+        useState<PlaceSearchResult | null>(null)
+    const [searchContext, setSearchContext] = useState<
+        SearchContext | undefined
+    >()
     const gps = useRef<{ latitude?: number; longitude?: number } | null>(null)
 
     useEffect(() => {
@@ -62,15 +65,12 @@ export function SearchRestaurantPage() {
         setRestaurant(toRestaurantInfo(place))
     }
 
-    const { showBottomNav, hideBottomNav } = useBottomNavStore()
     useEffect(() => {
-        hideBottomNav()
         setMealPlanId(mealPlanId)
         return () => {
-            showBottomNav()
             setMealPlanId(null)
         }
-    }, [hideBottomNav, showBottomNav, setMealPlanId, mealPlanId])
+    }, [setMealPlanId, mealPlanId])
 
     return (
         <div className="relative flex h-full w-full flex-col overflow-y-auto px-20 pt-16 pb-120">
@@ -90,7 +90,8 @@ export function SearchRestaurantPage() {
                         {selectedRestaurant.placeName}
                     </p>
                     <p className="text-caption-regular text-gray-6">
-                        {selectedRestaurant.roadAddressName || selectedRestaurant.addressName}
+                        {selectedRestaurant.roadAddressName ||
+                            selectedRestaurant.addressName}
                     </p>
                 </div>
             )}
@@ -107,7 +108,9 @@ function UploadButton({ mealPlanId }: { mealPlanId: string | null }) {
     const { userId } = useAuthStore()
     const { mutate: uploadAndPost, isPending } = useUploadArticle({
         onSuccess: () => {
-            navigate(mealPlanId ? `/meal-plans/${mealPlanId}` : '/', { replace: true })
+            navigate(mealPlanId ? `/meal-plans/${mealPlanId}` : '/', {
+                replace: true
+            })
         },
         onError: (e: Error) => console.error(e.message)
     })
@@ -123,7 +126,9 @@ function UploadButton({ mealPlanId }: { mealPlanId: string | null }) {
 
     return (
         <MutalButton
-            text={mealPlanId ? 'MealPlan 기록 업로드 하기' : '게시물 업로드 하기'}
+            text={
+                mealPlanId ? 'MealPlan 기록 업로드 하기' : '게시물 업로드 하기'
+            }
             onClick={onClickUpload}
             disabled={isPending || !image || !restaurant}
             hasArrow={true}

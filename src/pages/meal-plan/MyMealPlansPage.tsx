@@ -1,8 +1,6 @@
-import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { MyMealPlanSection } from '@/components/features/meal-plan'
 import { useMyMealPlanCards } from '@/apis'
-import { useHeaderStore } from '@/store'
 
 const emptyGroups = {
     deciding: [],
@@ -12,17 +10,8 @@ const emptyGroups = {
 }
 
 export function MyMealPlansPage() {
-    const { hideLeftButton, setTitle, showRightButton, resetHeader } =
-        useHeaderStore()
     const { data, isLoading, error } = useMyMealPlanCards()
     const groups = data ?? emptyGroups
-
-    useEffect(() => {
-        hideLeftButton()
-        setTitle('내 밥약')
-        showRightButton()
-        return () => resetHeader()
-    }, [hideLeftButton, setTitle, showRightButton, resetHeader])
 
     return (
         <div className="flex flex-col gap-24 py-20">

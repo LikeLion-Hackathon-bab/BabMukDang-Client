@@ -9,9 +9,10 @@ import {
     useUploadProfilePhoto
 } from '@/apis'
 import { domainFood } from '@/domain/factories'
-import { useAuthStore, useHeaderStore } from '@/store'
+import { useAuthStore } from '@/store'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { usePageChrome } from '@/hooks/usePageChrome'
 
 type ChipVariant = 'good' | 'bad'
 
@@ -126,8 +127,6 @@ export function ProfileEditPage() {
     const [profileImageUrl, setProfileImageUrl] = useState('')
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
     const [previewUrl, setPreviewUrl] = useState<string>('')
-    const { setTitle, resetHeader, setRightElement } = useHeaderStore()
-
     const isSaving =
         isProfileUpdating || isPreferenceUpdating || isPhotoUploading
 
@@ -201,9 +200,8 @@ export function ProfileEditPage() {
         uploadProfilePhoto
     ])
 
-    useEffect(() => {
-        setTitle('내 정보 수정')
-        setRightElement(
+    const headerRightElement = useMemo(
+        () => (
             <button
                 type="button"
                 disabled={isSaving || name.trim().length === 0}
@@ -211,11 +209,20 @@ export function ProfileEditPage() {
                 className="text-body1-semibold text-gray-8 disabled:opacity-40">
                 {isSaving ? '저장 중' : '저장'}
             </button>
-        )
-        return () => {
-            resetHeader()
-        }
-    }, [handleSave, isSaving, name, resetHeader, setRightElement, setTitle])
+        ),
+        [handleSave, isSaving, name]
+    )
+
+    const pageChromeConfig = useMemo(
+        () => ({
+            header: {
+                right: headerRightElement
+            }
+        }),
+        [headerRightElement]
+    )
+
+    usePageChrome(pageChromeConfig)
 
     const imageSrc = previewUrl || profileImageUrl
 

@@ -19,7 +19,7 @@ import {
 import { MealGroupCreateFromMealPlanButton } from '@/components/features/meal-group'
 import { useMealPlanDetail } from '@/apis'
 import { SocketProvider } from '@/contexts/SocketContext'
-import { useMealPlanStore, useHeaderStore } from '@/store'
+import { useMealPlanStore } from '@/store'
 
 export function MealPlanDetailPage() {
     return (
@@ -32,11 +32,12 @@ export function MealPlanDetailPage() {
 function MealPlanDetailContent() {
     const { mealPlanId = '' } = useParams<{ mealPlanId: string }>()
     const navigate = useNavigate()
-    const { setTitle, resetHeader } = useHeaderStore()
     const { data, isLoading, error } = useMealPlanDetail(mealPlanId, {
         enabled: Boolean(mealPlanId)
     })
-    const setCurrentMealPlan = useMealPlanStore(state => state.setCurrentMealPlan)
+    const setCurrentMealPlan = useMealPlanStore(
+        state => state.setCurrentMealPlan
+    )
     const storeCurrent = useMealPlanStore(state => state.current)
     const participants = useMealPlanStore(state => state.participants)
     const decisionStages = useMealPlanStore(state => state.decisionStages)
@@ -48,28 +49,36 @@ function MealPlanDetailContent() {
     const isOwner = mealPlan?.viewerRole === 'OWNER'
 
     useEffect(() => {
-        setTitle('밥약방')
-        return () => resetHeader()
-    }, [setTitle, resetHeader])
-
-    useEffect(() => {
         if (data) setCurrentMealPlan(data)
     }, [data, setCurrentMealPlan])
 
     if (isLoading) {
-        return <div className="py-40 text-center text-gray-5">밥약을 불러오는 중입니다.</div>
+        return (
+            <div className="py-40 text-center text-gray-5">
+                밥약을 불러오는 중입니다.
+            </div>
+        )
     }
 
     if (error || !mealPlan) {
-        return <div className="py-40 text-center text-red-500">밥약을 불러오지 못했습니다.</div>
+        return (
+            <div className="py-40 text-center text-red-500">
+                밥약을 불러오지 못했습니다.
+            </div>
+        )
     }
 
-    const shouldShowCompleteCta = ['CONFIRMED', 'LOCKED'].includes(mealPlan.status)
-    const shouldShowRecordCta = ['COMPLETED', 'RECORDED'].includes(mealPlan.status)
+    const shouldShowCompleteCta = ['CONFIRMED', 'LOCKED'].includes(
+        mealPlan.status
+    )
+    const shouldShowRecordCta = ['COMPLETED', 'RECORDED'].includes(
+        mealPlan.status
+    )
     const activeParticipantCount = participants.filter(participant =>
         ['JOINED', 'READY'].includes(participant.status)
     ).length
-    const isChatActive = Boolean(mealPlan.chatRoom) || activeParticipantCount >= 2
+    const isChatActive =
+        Boolean(mealPlan.chatRoom) || activeParticipantCount >= 2
 
     return (
         <div className="flex flex-col gap-20 py-20">
@@ -89,7 +98,9 @@ function MealPlanDetailContent() {
             />
             <MealPlanVotePanel
                 stages={decisionStages}
-                onOpenDecision={() => navigate(`/meal-plans/${mealPlanId}/decision`)}
+                onOpenDecision={() =>
+                    navigate(`/meal-plans/${mealPlanId}/decision`)
+                }
             />
             <MealPlanReadyBar
                 mealPlanId={mealPlanId}
@@ -111,7 +122,9 @@ function MealPlanDetailContent() {
                     )}
                     <MealPlanJoinRequestPanel
                         requests={mealPlan.pendingJoinRequests}
-                        canManageParticipants={permissions?.canManageParticipants}
+                        canManageParticipants={
+                            permissions?.canManageParticipants
+                        }
                     />
                     {permissions?.canCreateShareLink && (
                         <MealPlanShareLinkPanel mealPlanId={mealPlanId} />
@@ -134,8 +147,12 @@ function MealPlanDetailContent() {
                     canComplete={permissions?.canCompleteMealPlan}
                 />
             )}
-            {shouldShowRecordCta && permissions?.canRecordMealPlan && <MealPlanRecordCTA mealPlanId={mealPlanId} />}
-            {mealPlan.status === 'RECORDED' && <MealGroupCreateFromMealPlanButton mealPlan={mealPlan} />}
+            {shouldShowRecordCta && permissions?.canRecordMealPlan && (
+                <MealPlanRecordCTA mealPlanId={mealPlanId} />
+            )}
+            {mealPlan.status === 'RECORDED' && (
+                <MealGroupCreateFromMealPlanButton mealPlan={mealPlan} />
+            )}
         </div>
     )
 }

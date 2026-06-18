@@ -2,6 +2,14 @@
 module.exports = {
     forbidden: [
         {
+            name: 'no-layout-chrome-store-in-pages',
+            from: { path: '^src/pages' },
+            to: {
+                path: '^src/store/(headerStore|bottomNavStore|layoutChromeStore)'
+            },
+            severity: 'error'
+        },
+        {
             name: 'no-api-in-components',
             from: { path: '^src/components' },
             to: { path: '^src/apis' },

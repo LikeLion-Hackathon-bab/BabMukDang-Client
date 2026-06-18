@@ -1,16 +1,7 @@
-import { useEffect } from 'react'
 import { ArticleSummaryResponse, useGetMyArticles } from '@/apis'
-import { useHeaderStore } from '@/store'
 
 export function BobCheckHistoryPage() {
-    const { setTitle, resetHeader } = useHeaderStore()
     const { data: articles } = useGetMyArticles()
-    useEffect(() => {
-        setTitle('지난 밥 인증 내역')
-        return () => {
-            resetHeader()
-        }
-    }, [])
     return (
         <div className="grid grid-cols-3 justify-items-center gap-12 pt-20">
             {articles?.content.map((article, index) => {

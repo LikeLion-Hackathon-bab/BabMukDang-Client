@@ -9,7 +9,7 @@ import {
     PushPermissionCta
 } from '@/components'
 import { LOCAL_NEWS_FILTER_LIST } from '@/constants/filters'
-import { useHeaderStore, useNotificationStore } from '@/store'
+import { useNotificationStore } from '@/store'
 import {
     notificationApi,
     useDeleteNotification,
@@ -49,20 +49,11 @@ export function NotiStoragePage() {
         }
     }, [addNotification, fetchedNotifications])
 
-    const { resetHeader, setTitle, showCenterElement } = useHeaderStore()
     const [tab, setTab] = useState<'noti' | 'local'>('noti')
     const tabs = [
         { key: 'noti', label: '알림' },
         { key: 'local', label: '동네소식' }
     ]
-
-    useEffect(() => {
-        showCenterElement()
-        setTitle('알림')
-        return () => {
-            resetHeader()
-        }
-    }, [showCenterElement, setTitle, resetHeader])
 
     const [localNewsNotis, setLocalNewsNotis] = useState<LocalNewsNoti[]>([])
     const [activeFilter, setActiveFilter] = useState<{
@@ -107,10 +98,10 @@ export function NotiStoragePage() {
                 <>
                     <PushPermissionCta />
                     <MealPlanNotificationList
-                    notifications={mealPlanNotifications}
-                    onDeleteNotification={handleDeleteMealPlanNotification}
-                    onNotificationClick={handleMealPlanNotificationClick}
-                />
+                        notifications={mealPlanNotifications}
+                        onDeleteNotification={handleDeleteMealPlanNotification}
+                        onNotificationClick={handleMealPlanNotificationClick}
+                    />
                 </>
             )}
             {tab === 'local' && (

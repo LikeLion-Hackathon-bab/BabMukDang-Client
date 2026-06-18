@@ -1,19 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { FilterList } from '@/components'
 import { COUPON_FILTER_LIST } from '@/constants/filters'
-import { useHeaderStore } from '@/store'
 
 export function CouponStoragePage() {
-    const { setTitle } = useHeaderStore()
     const [activeFilter, setActiveFilter] = useState<{
         key: string
         label: string
     }>(COUPON_FILTER_LIST[0])
-
-    useEffect(() => {
-        setTitle('쿠폰 보관함')
-    }, [])
 
     return (
         <div className="flex w-full flex-col gap-16 pt-16">
