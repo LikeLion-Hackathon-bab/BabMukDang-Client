@@ -1,14 +1,20 @@
 import { Navigate, Outlet } from 'react-router-dom'
-import { useAuthStore } from '@/store'
+import { useAppBootstrap } from '@/contexts'
+import { onboardingFlowController } from '@/features/onboarding'
 
 export function PublicOnlyRoute() {
-    const accessToken = useAuthStore(state => state.accessToken)
+    const { profile, isBootstrapping } = useAppBootstrap()
 
-    console.log('PublicOnlyRoute', accessToken)
-    if (accessToken) {
+    if (isBootstrapping) {
+        return <div>로그인 상태를 확인하는 중입니다.</div>
+    }
+
+    if (profile) {
         return (
             <Navigate
-                to="/home"
+                to={onboardingFlowController.routeAfterAuth(
+                    profile.onboardingStatus
+                )}
                 replace
             />
         )

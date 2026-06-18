@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom'
 import { Header, BottomNavigation } from '@/components'
 import { useEffect } from 'react'
 import { useAuthStore } from '@/store'
-import { useGetMyProfile } from '@/apis'
+import { useAppBootstrap } from '@/contexts'
 
 export function Layout() {
     return (
@@ -23,7 +23,6 @@ type Props = {
 }
 
 function ProfileBootstrap({ children }: Props) {
-    const accessToken = useAuthStore(state => state.accessToken)
     const userId = useAuthStore(state => state.userId)
     const username = useAuthStore(state => state.username)
 
@@ -31,21 +30,19 @@ function ProfileBootstrap({ children }: Props) {
     const setUsername = useAuthStore(state => state.setUsername)
     const setProfile = useAuthStore(state => state.setProfile)
 
-    const { data: myProfile } = useGetMyProfile({
-        enabled: !!accessToken
-    })
+    const { profile: myProfile } = useAppBootstrap()
 
     useEffect(() => {
         if (!myProfile) {
             return
         }
 
-        if (userId && username) {
-            return
-        }
-
         const { memberId, userName, profileImageUrl, bio, meetingCount } =
             myProfile
+
+        if (userId === memberId.toString() && username === userName) {
+            return
+        }
 
         setUserId(memberId.toString())
         setUsername(userName)

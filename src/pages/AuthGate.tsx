@@ -1,32 +1,29 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useRefreshToken } from '@/apis'
-import { useAuthStore } from '@/store'
+import { useAppBootstrap } from '@/contexts'
+import { onboardingFlowController } from '@/features/onboarding'
 
 export function AuthGate() {
     const navigate = useNavigate()
-
-    const { accessToken } = useAuthStore()
-
-    const { mutate, isPending, isError } = useRefreshToken({
-        onSuccess: () => {
-            navigate('/home', { replace: true })
-        },
-        onError: () => {
-            navigate('/login', { replace: true })
-        }
-    })
+    const { profile, isBootstrapping, authError } = useAppBootstrap()
 
     useEffect(() => {
-        console.log('AuthGate', accessToken)
-        if (accessToken) {
-            navigate('/home', { replace: true })
-        } else if (!isPending && !isError) {
-            mutate()
+        if (authError) {
+            navigate('/login', { replace: true })
         }
-    }, [accessToken, mutate, navigate, isPending, isError])
+    }, [authError, navigate])
 
-    if (isPending) {
+    useEffect(() => {
+        if (!profile) {
+            return
+        }
+
+        navigate(onboardingFlowController.routeAfterAuth(profile.onboardingStatus), {
+            replace: true
+        })
+    }, [profile, navigate])
+
+    if (isBootstrapping) {
         return <div>로그인 상태를 확인하는 중입니다.</div>
     }
 

@@ -9,7 +9,9 @@ export const profileFixtures = {
     myProfile: {
         memberId: domainId.member(1),
         username: 'testUser',
-        profileImageUrl: 'https://picsum.photos/100/100'
+        profileImageUrl: 'https://picsum.photos/100/100',
+        onboardingStatus: 'COMPLETED',
+        onboardingCompletedAt: '2026-06-17T00:00:00.000Z'
     } satisfies ProfileDto,
 
     myProfileDetail: {
@@ -24,6 +26,8 @@ export const profileFixtures = {
         uncompletedPlans: 3,
         likes: [domainFood('KOREAN', '한식'), domainFood('JAPANESE', '일식')],
         dislikes: [domainFood('SPICY', '매운 음식')],
-        allergies: [domainFood('PEANUT', '땅콩')]
+        allergies: [domainFood('PEANUT', '땅콩')],
+        onboardingStatus: 'COMPLETED',
+        onboardingCompletedAt: '2026-06-17T00:00:00.000Z'
     } satisfies ProfileDetailResponse
 }

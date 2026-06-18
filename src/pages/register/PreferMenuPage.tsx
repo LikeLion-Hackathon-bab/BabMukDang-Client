@@ -1,29 +1,23 @@
-import { cn } from '@/lib'
 import { useNavigate } from 'react-router-dom'
 import { useMemo, useState } from 'react'
-import { CardChoice, NextButton, SearchInput } from '@/components'
+import { CardChoice, NextButton } from '@/components'
+import {
+    findOnboardingMenuOptions,
+    ONBOARDING_MENU_OPTIONS
+} from '@/constants/onboardingMenuOptions'
+import { useOnboardingStore } from '@/store'
+import { onboardingFlowController } from '@/features/onboarding'
 
-type MenuOption = {
-    key: string
-    label: string
-}
 export function PreferMenuPage() {
     const navigate = useNavigate()
-    const options: MenuOption[] = useMemo(
-        () => [
-            { key: 'korean', label: '한식' },
-            { key: 'chinese', label: '중식' },
-            { key: 'japanese', label: '일식' },
-            { key: 'western', label: '양식' },
-            { key: 'snack', label: '분식' },
-            { key: 'chicken', label: '치킨' },
-            { key: 'pizza', label: '피자' },
-            { key: 'burger', label: '버거' },
-            { key: 'dessert', label: '디저트' }
-        ],
-        []
+    const { liked, setLikedFoods } = useOnboardingStore()
+    const initialSelectedKeys = useMemo(
+        () => new Set(liked.map(item => String(item.code))),
+        [liked]
     )
-    const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set())
+    const [selectedKeys, setSelectedKeys] = useState<Set<string>>(
+        initialSelectedKeys
+    )
 
     const toggle = (key: string) => {
         setSelectedKeys(prev => {
@@ -32,6 +26,11 @@ export function PreferMenuPage() {
             else next.add(key)
             return next
         })
+    }
+
+    const goNext = () => {
+        setLikedFoods(findOnboardingMenuOptions(selectedKeys))
+        navigate(onboardingFlowController.nextPathFrom('PREFER_MENU'))
     }
 
     return (
@@ -47,7 +46,7 @@ export function PreferMenuPage() {
             </div>
 
             <div className="grid grid-cols-3 justify-items-center gap-12">
-                {options.map(option => (
+                {ONBOARDING_MENU_OPTIONS.map(option => (
                     <CardChoice
                         key={option.key}
                         label={option.label}
@@ -57,13 +56,7 @@ export function PreferMenuPage() {
                 ))}
             </div>
 
-            {/* <div className="mb-30">
-                <SearchInput
-                    handleSearch={() => {}}
-                    placeholder="직접 입력하기"
-                />
-            </div> */}
-            <NextButton onClick={() => navigate('/allergic-menu')} />
+            <NextButton onClick={goNext} />
         </div>
     )
 }

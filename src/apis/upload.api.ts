@@ -19,6 +19,26 @@ import type {
     UploadProfileImageResponse
 } from './types'
 
+
+export type ProfileImageUploadStage = 'PRESIGN' | 'S3_UPLOAD'
+
+export class ProfileImageUploadError extends Error {
+    readonly stage: ProfileImageUploadStage
+    readonly userMessage: string
+
+    constructor(stage: ProfileImageUploadStage, cause?: unknown) {
+        const baseMessage =
+            stage === 'PRESIGN'
+                ? '프로필 이미지 업로드 주소를 발급받지 못했습니다.'
+                : '프로필 이미지를 저장소에 업로드하지 못했습니다.'
+        const causeMessage = cause instanceof Error ? cause.message : undefined
+        super(causeMessage ? `${baseMessage} ${causeMessage}` : baseMessage)
+        this.name = 'ProfileImageUploadError'
+        this.stage = stage
+        this.userMessage = baseMessage
+    }
+}
+
 // ============================================================================
 // 유틸리티 함수
 // ============================================================================
@@ -162,13 +182,21 @@ export const useUploadProfilePhoto = (
 ) => {
     const { mutate, mutateAsync, isPending, error } = useMutation({
         mutationFn: async (file: File) => {
-            // 1) presign
-            const { putUrl, cdnUrl } = await uploadApi.presignProfile(file)
+            let presign: UploadProfileImageResponse
 
-            // 2) S3 업로드
-            await uploadApi.uploadProfileS3({ putUrl, file })
+            try {
+                presign = await uploadApi.presignProfile(file)
+            } catch (error) {
+                throw new ProfileImageUploadError('PRESIGN', error)
+            }
 
-            return cdnUrl
+            try {
+                await uploadApi.uploadProfileS3({ putUrl: presign.putUrl, file })
+            } catch (error) {
+                throw new ProfileImageUploadError('S3_UPLOAD', error)
+            }
+
+            return presign.cdnUrl
         },
         onSuccess: options.onSuccess,
         onError: options.onError

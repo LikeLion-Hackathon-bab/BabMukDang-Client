@@ -11,7 +11,9 @@ export const mapProfile = (profile: ProfileDto | ProfileDetailDto): ProfileSumma
     username: profile.username,
     profileImageUrl: profile.profileImageUrl ?? '',
     bio: '',
-    meetingCount: 0
+    meetingCount: 0,
+    onboardingStatus: profile.onboardingStatus ?? 'REQUIRED',
+    onboardingCompletedAt: profile.onboardingCompletedAt ?? null
 })
 
 export const mapProfileDetail = (
@@ -28,5 +30,7 @@ export const mapProfileDetail = (
     allergies: [],
     friendConunt: profile.friendConunt,
     completedPlans: profile.completedPlans,
-    uncompletedPlans: profile.uncompletedPlans
+    uncompletedPlans: profile.uncompletedPlans,
+    onboardingStatus: profile.onboardingStatus ?? 'REQUIRED',
+    onboardingCompletedAt: profile.onboardingCompletedAt ?? null
 })

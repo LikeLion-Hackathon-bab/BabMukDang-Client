@@ -23,6 +23,8 @@ import type {
     LoginRequest
 } from '@kimdaegyu/babmukdang-shared/domain'
 import { API_BASE_URL } from './baseUrl'
+import { pushTokenApi } from './pushToken.api'
+import { getOrCreateDeviceId } from '@/features/push/deviceId'
 
 type EmailAuthRequest = LoginRequest
 
@@ -69,6 +71,14 @@ const authApi = {
      * @returns 성공 응답
      */
     logout: async (): Promise<NoContent> => {
+        try {
+            await pushTokenApi.revoke({
+                provider: 'FCM',
+                deviceId: getOrCreateDeviceId()
+            })
+        } catch (error) {
+            console.warn('[auth] current device push token revoke failed', error)
+        }
         return contractClient.post(apiContract.auth.logout)
     },
 
@@ -185,10 +195,6 @@ export const useLogout = (options: MutationOptions<NoContent> = {}) => {
     return useMutation({
         mutationFn: authApi.logout,
 
-        onMutate: () => {
-            flushAuthStore()
-        },
-
         onSuccess: data => {
             options.onSuccess?.(data)
         },
@@ -199,6 +205,9 @@ export const useLogout = (options: MutationOptions<NoContent> = {}) => {
             )
         },
 
-        onSettled: options.onSettled
+        onSettled: (...args) => {
+            flushAuthStore()
+            options.onSettled?.()
+        }
     })
 }

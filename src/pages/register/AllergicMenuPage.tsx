@@ -1,29 +1,81 @@
-import { CardChoice, NextButton, SearchInput } from '@/components'
+import { CardChoice, NextButton } from '@/components'
 import { useNavigate } from 'react-router-dom'
 import { useMemo, useState } from 'react'
+import {
+    findOnboardingMenuOptions,
+    ONBOARDING_MENU_OPTIONS
+} from '@/constants/onboardingMenuOptions'
+import {
+    ProfileImageUploadError,
+    useCompleteOnboarding,
+    useUploadProfilePhoto
+} from '@/apis'
+import { useOnboardingStore } from '@/store'
+import { onboardingFlowController } from '@/features/onboarding'
 
-type MenuOption = {
-    key: string
-    label: string
+type SubmitErrorKind = 'IMAGE_PRESIGN' | 'IMAGE_S3_UPLOAD' | 'ONBOARDING'
+
+type SubmitErrorState = {
+    kind: SubmitErrorKind
+    message: string
+} | null
+
+const toSubmitError = (error: unknown): SubmitErrorState => {
+    if (error instanceof ProfileImageUploadError) {
+        return {
+            kind: error.stage === 'PRESIGN' ? 'IMAGE_PRESIGN' : 'IMAGE_S3_UPLOAD',
+            message: error.userMessage
+        }
+    }
+
+    return {
+        kind: 'ONBOARDING',
+        message:
+            error instanceof Error
+                ? error.message
+                : '온보딩 저장에 실패했습니다.'
+    }
 }
 
 export function AllergicMenuPage() {
     const navigate = useNavigate()
-    const options: MenuOption[] = useMemo(
-        () => [
-            { key: 'korean', label: '한식' },
-            { key: 'chinese', label: '중식' },
-            { key: 'japanese', label: '일식' },
-            { key: 'western', label: '양식' },
-            { key: 'snack', label: '분식' },
-            { key: 'chicken', label: '치킨' },
-            { key: 'pizza', label: '피자' },
-            { key: 'burger', label: '버거' },
-            { key: 'dessert', label: '디저트' }
-        ],
-        []
+    const {
+        username,
+        profileImageUrl,
+        profileImageFile,
+        bio,
+        liked,
+        disliked,
+        allergy,
+        setAllergyFoods,
+        setProfileDraft,
+        setProfileImageFile,
+        resetOnboardingDraft
+    } = useOnboardingStore()
+    const initialSelectedKeys = useMemo(
+        () => new Set(allergy.map(item => String(item.code))),
+        [allergy]
     )
-    const [selectedKeys, setSelectedKeys] = useState<Set<string>>(new Set())
+    const [selectedKeys, setSelectedKeys] = useState<Set<string>>(
+        initialSelectedKeys
+    )
+    const [submitError, setSubmitError] = useState<SubmitErrorState>(null)
+
+    const { mutateAsync: uploadProfilePhoto, isPending: isImageUploading } =
+        useUploadProfilePhoto()
+
+    const { mutateAsync: completeOnboarding, isPending: isOnboardingPending } =
+        useCompleteOnboarding({
+            onSuccess: () => {
+                resetOnboardingDraft()
+                navigate(onboardingFlowController.getStepPath('FINISH'), {
+                    replace: true
+                })
+            },
+            onError: error => {
+                setSubmitError(toSubmitError(error))
+            }
+        })
 
     const toggle = (key: string) => {
         setSelectedKeys(prev => {
@@ -33,6 +85,56 @@ export function AllergicMenuPage() {
             return next
         })
     }
+
+    const submit = async ({ skipProfileImage = false } = {}) => {
+        const nextAllergies = findOnboardingMenuOptions(selectedKeys)
+        setAllergyFoods(nextAllergies)
+
+        const trimmedName = username.trim()
+        if (!trimmedName) {
+            navigate(onboardingFlowController.getStepPath('PROFILE'))
+            return
+        }
+
+        setSubmitError(null)
+
+        try {
+            const uploadedProfileImageUrl =
+                profileImageFile && !skipProfileImage
+                    ? await uploadProfilePhoto(profileImageFile)
+                    : skipProfileImage
+                      ? null
+                      : profileImageUrl
+
+            setProfileDraft({ profileImageUrl: uploadedProfileImageUrl ?? null })
+            if (profileImageFile && uploadedProfileImageUrl) {
+                setProfileImageFile(null)
+            }
+
+            await completeOnboarding({
+                username: trimmedName,
+                profileImageUrl: uploadedProfileImageUrl ?? null,
+                bio,
+                liked,
+                disliked,
+                allergy: nextAllergies
+            })
+        } catch (error) {
+            setSubmitError(toSubmitError(error))
+        }
+    }
+
+    const continueWithoutImage = () => {
+        setProfileImageFile(null)
+        setProfileDraft({ profileImageUrl: null })
+        void submit({ skipProfileImage: true })
+    }
+
+    const isPending = isImageUploading || isOnboardingPending
+    const isImageUploadError =
+        submitError?.kind === 'IMAGE_PRESIGN' ||
+        submitError?.kind === 'IMAGE_S3_UPLOAD'
+
     return (
         <div className="flex h-full w-full flex-col justify-between">
             <div className="flex flex-col gap-12 pt-24">
@@ -47,7 +149,7 @@ export function AllergicMenuPage() {
             </div>
 
             <div className="grid grid-cols-3 justify-items-center gap-12">
-                {options.map(option => (
+                {ONBOARDING_MENU_OPTIONS.map(option => (
                     <CardChoice
                         key={option.key}
                         label={option.label}
@@ -56,13 +158,35 @@ export function AllergicMenuPage() {
                     />
                 ))}
             </div>
-            {/* <div className="mb-30">
-                <SearchInput
-                    handleSearch={() => {}}
-                    placeholder="직접 입력하기"
-                />
-            </div> */}
-            <NextButton onClick={() => navigate('/finish-register')} />
+            {submitError && (
+                <div className="pb-96">
+                    <p className="text-caption-medium text-red-500">
+                        {submitError.message}
+                    </p>
+                    {isImageUploadError && (
+                        <div className="mt-8 flex gap-8">
+                            <button
+                                type="button"
+                                className="text-caption-semibold text-gray-7 underline"
+                                onClick={() => void submit()}
+                                disabled={isPending}>
+                                다시 업로드하기
+                            </button>
+                            <button
+                                type="button"
+                                className="text-caption-semibold text-gray-5 underline"
+                                onClick={continueWithoutImage}
+                                disabled={isPending}>
+                                이미지 없이 완료하기
+                            </button>
+                        </div>
+                    )}
+                </div>
+            )}
+            <NextButton
+                className={isPending ? 'pointer-events-none opacity-50' : ''}
+                onClick={() => void submit()}
+            />
         </div>
     )
 }

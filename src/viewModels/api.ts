@@ -1,6 +1,7 @@
 import type {
     ArticleLikeResponse,
     Food,
+    OnboardingStatus,
     PageArticleSummaryResponse as DomainPageArticleSummaryResponse
 } from '@kimdaegyu/babmukdang-shared/domain'
 
@@ -96,6 +97,8 @@ export interface ProfileSummaryView {
     profileImageUrl: string
     bio: string
     meetingCount: number
+    onboardingStatus: OnboardingStatus
+    onboardingCompletedAt: string | null
 }
 
 export interface ProfileDetailView {
@@ -111,6 +114,8 @@ export interface ProfileDetailView {
     friendConunt: number
     completedPlans: number
     uncompletedPlans: number
+    onboardingStatus: OnboardingStatus
+    onboardingCompletedAt: string | null
 }
 
 export interface MealPlanParticipantView {

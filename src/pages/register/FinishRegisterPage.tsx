@@ -1,6 +1,7 @@
 import { CongratsGraphic } from '@/assets/graphics'
 import { MutalButton } from '@/components'
 import { useNavigate } from 'react-router-dom'
+import { onboardingFlowController } from '@/features/onboarding'
 
 export function FinishRegisterPage() {
     const navigate = useNavigate()
@@ -14,9 +15,11 @@ export function FinishRegisterPage() {
                 </span>
             </div>
             <MutalButton
-                text="친구 추가하러 가기"
+                text="밥먹당 시작하기"
                 onClick={() => {
-                    navigate('/')
+                    navigate(onboardingFlowController.completedHomePath, {
+                        replace: true
+                    })
                 }}
                 hasArrow={true}
             />

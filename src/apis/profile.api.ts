@@ -23,7 +23,12 @@ import type {
     MutationOptions,
     ProfileSummaryView,
     ProfileDetailView,
-    UpdateProfileRequest
+    UpdateProfileRequest,
+    CompleteOnboardingRequestDto,
+    MemberLocationSettingsResponse,
+    UpdateMemberLocationConsentRequest,
+    UpdateMemberLocationRequest,
+    NoContent
 } from './types'
 
 // ============================================================================
@@ -96,6 +101,37 @@ const profileApi = {
             body: data
         })
         return profileApi.getMyProfile()
+    },
+
+    /**
+     * 신규 회원 온보딩 완료
+     */
+    completeOnboarding: async (
+        data: CompleteOnboardingRequestDto
+    ): Promise<NoContent> => {
+        return contractClient.post(apiContract.members.createProfile, {
+            body: data
+        })
+    },
+
+    getLocationSettings: async (): Promise<MemberLocationSettingsResponse> => {
+        return contractClient.get(apiContract.members.locationSettings)
+    },
+
+    updateLocationConsent: async (
+        data: UpdateMemberLocationConsentRequest
+    ): Promise<MemberLocationSettingsResponse> => {
+        return contractClient.patch(apiContract.members.updateLocationConsent, {
+            body: data
+        })
+    },
+
+    updateLocation: async (
+        data: UpdateMemberLocationRequest
+    ): Promise<MemberLocationSettingsResponse> => {
+        return contractClient.patch(apiContract.members.updateLocation, {
+            body: data
+        })
     }
 }
 
@@ -127,6 +163,14 @@ export const useGetMyProfileDetail = () => {
     return useQuery({
         queryKey: queryKeys.profile.myDetail,
         queryFn: profileApi.getMyProfileDetail
+    })
+}
+
+export const useGetLocationSettings = (options?: { enabled?: boolean }) => {
+    return useQuery({
+        queryKey: queryKeys.profile.locationSettings,
+        queryFn: profileApi.getLocationSettings,
+        enabled: options?.enabled ?? true
     })
 }
 
@@ -216,5 +260,57 @@ export const useUpdateMyProfile = (
             options.onSuccess?.(data)
         },
         onError: options.onError
+    })
+}
+
+
+export const useUpdateLocationConsent = (
+    options: MutationOptions<MemberLocationSettingsResponse> = {}
+) => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: (data: UpdateMemberLocationConsentRequest) =>
+            profileApi.updateLocationConsent(data),
+        onSuccess: data => {
+            queryClient.invalidateQueries({ queryKey: queryKeys.profile.all })
+            options.onSuccess?.(data)
+        },
+        onError: options.onError,
+        onSettled: options.onSettled
+    })
+}
+
+export const useUpdateMemberLocation = (
+    options: MutationOptions<MemberLocationSettingsResponse> = {}
+) => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: (data: UpdateMemberLocationRequest) =>
+            profileApi.updateLocation(data),
+        onSuccess: data => {
+            queryClient.invalidateQueries({ queryKey: queryKeys.profile.all })
+            options.onSuccess?.(data)
+        },
+        onError: options.onError,
+        onSettled: options.onSettled
+    })
+}
+
+/**
+ * 신규 회원 온보딩 완료 Hook
+ */
+export const useCompleteOnboarding = (
+    options: MutationOptions<NoContent> = {}
+) => {
+    const queryClient = useQueryClient()
+    return useMutation({
+        mutationFn: (data: CompleteOnboardingRequestDto) =>
+            profileApi.completeOnboarding(data),
+        onSuccess: data => {
+            queryClient.invalidateQueries({ queryKey: queryKeys.profile.all })
+            options.onSuccess?.(data)
+        },
+        onError: options.onError,
+        onSettled: options.onSettled
     })
 }
