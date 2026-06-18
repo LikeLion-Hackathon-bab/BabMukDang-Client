@@ -4,10 +4,11 @@
  * endpoints 객체와 api 타입 패턴을 사용합니다.
  */
 
-import { http, HttpResponse } from 'msw'
+import { http } from 'msw'
 import { endpoints, api } from './endpoints'
 import { API_BASE_URL } from '@/apis/baseUrl'
 import { mockChallengeStatus } from '@/mocks/fixtures'
+import { apiSuccess } from './response'
 
 const BASE_URL = API_BASE_URL
 
@@ -21,6 +22,6 @@ export const challengeHandlers = [
     http.get(`${BASE_URL}${endpoints.challenges.me}`, () => {
         const response: typeof api.challenges.StatusResponse =
             mockChallengeStatus
-        return HttpResponse.json(response)
+        return apiSuccess(response)
     })
 ]

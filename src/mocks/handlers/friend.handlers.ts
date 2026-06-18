@@ -4,7 +4,7 @@
  * endpoints 객체와 api 타입 패턴을 사용합니다.
  */
 
-import { http, HttpResponse } from 'msw'
+import { http } from 'msw'
 import { endpoints } from './endpoints'
 import { API_BASE_URL } from '@/apis/baseUrl'
 import type { FriendRequestItemResponse } from '@/apis'
@@ -18,6 +18,8 @@ import {
     mockIncomingFriendRequests,
     mockOutgoingFriendRequests
 } from '@/mocks/fixtures'
+
+import { apiNoContent, apiSuccess } from './response'
 
 const BASE_URL = API_BASE_URL
 
@@ -59,14 +61,14 @@ export const friendHandlers = [
             data = mockFedFriends
         }
 
-        return HttpResponse.json(data)
+        return apiSuccess(data)
     }),
 
     /**
      * GET /friends/me - 내 친구 목록
      */
     http.get(`${BASE_URL}${endpoints.friends.list}`, () => {
-        return HttpResponse.json(mockFriendListItems)
+        return apiSuccess(mockFriendListItems)
     }),
 
     /**
@@ -77,28 +79,28 @@ export const friendHandlers = [
         const data = mockFriendListItems.filter(friend =>
             friend.username.includes(keyword)
         )
-        return HttpResponse.json(data)
+        return apiSuccess(data)
     }),
 
     /**
      * GET /friends/blocks/me - 차단 목록
      */
     http.get(`${BASE_URL}${endpoints.friends.blocks}`, () => {
-        return HttpResponse.json(mockFriendBlocks)
+        return apiSuccess(mockFriendBlocks)
     }),
 
     /**
      * GET /friends/requests/incoming - 받은 친구 요청
      */
     http.get(`${BASE_URL}${endpoints.friends.requestsIncoming}`, () => {
-        return HttpResponse.json(mockIncomingFriendRequests)
+        return apiSuccess(mockIncomingFriendRequests)
     }),
 
     /**
      * GET /friends/requests/outgoing - 보낸 친구 요청
      */
     http.get(`${BASE_URL}${endpoints.friends.requestsOutgoing}`, () => {
-        return HttpResponse.json(mockOutgoingFriendRequests)
+        return apiSuccess(mockOutgoingFriendRequests)
     }),
 
     /**
@@ -106,7 +108,7 @@ export const friendHandlers = [
      */
     http.post(`${BASE_URL}/friends/requests/:memberId`, ({ params }) => {
         console.log('[MSW] 친구 요청 생성:', params.memberId)
-        return HttpResponse.json(makeRequest(Date.now(), 'PENDING'))
+        return apiSuccess(makeRequest(Date.now(), 'PENDING'))
     }),
 
     /**
@@ -116,7 +118,7 @@ export const friendHandlers = [
         `${BASE_URL}/friends/requests/:requestId/accept`,
         ({ params }) => {
             const requestId = Number(params.requestId)
-            return HttpResponse.json(makeRequest(requestId, 'ACCEPTED'))
+            return apiSuccess(makeRequest(requestId, 'ACCEPTED'))
         }
     ),
 
@@ -127,7 +129,7 @@ export const friendHandlers = [
         `${BASE_URL}/friends/requests/:requestId/reject`,
         ({ params }) => {
             const requestId = Number(params.requestId)
-            return HttpResponse.json(makeRequest(requestId, 'REJECTED'))
+            return apiSuccess(makeRequest(requestId, 'REJECTED'))
         }
     ),
 
@@ -135,27 +137,27 @@ export const friendHandlers = [
      * DELETE /friends/requests/:requestId - 친구 요청 취소
      */
     http.delete(`${BASE_URL}/friends/requests/:requestId`, () => {
-        return new HttpResponse(null, { status: 204 })
+        return apiNoContent()
     }),
 
     /**
      * POST /friends/blocks/:memberId - 멤버 차단
      */
     http.post(`${BASE_URL}/friends/blocks/:memberId`, () => {
-        return new HttpResponse(null, { status: 204 })
+        return apiNoContent()
     }),
 
     /**
      * DELETE /friends/blocks/:memberId - 차단 해제
      */
     http.delete(`${BASE_URL}/friends/blocks/:memberId`, () => {
-        return new HttpResponse(null, { status: 204 })
+        return apiNoContent()
     }),
 
     /**
      * DELETE /friends/:memberId - 친구 삭제
      */
     http.delete(`${BASE_URL}/friends/:memberId`, () => {
-        return new HttpResponse(null, { status: 204 })
+        return apiNoContent()
     })
 ]

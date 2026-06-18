@@ -13,7 +13,7 @@ export default defineConfig({
 
     use: {
         ...devices['Desktop Chrome'],
-        baseURL: 'http://localhost:5173',
+        baseURL: 'http://localhost:3001',
         headless: true,
         viewport: { width: 1280, height: 720 },
         screenshot: 'only-on-failure',
@@ -23,7 +23,7 @@ export default defineConfig({
 
     webServer: {
         command: 'npm run dev',
-        url: 'http://localhost:5173',
+        url: 'http://localhost:3001',
         reuseExistingServer: !isCI,
         timeout: 30_000,
         env: {

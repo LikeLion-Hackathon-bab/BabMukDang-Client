@@ -5,10 +5,11 @@
  * endpoints 객체와 api 타입 패턴을 사용합니다.
  */
 
-import { http, HttpResponse } from 'msw'
+import { http } from 'msw'
 import { endpoints, api } from './endpoints'
 import { API_BASE_URL } from '@/apis/baseUrl'
 import { mockTokenResponse } from '@/mocks/fixtures'
+import { apiNoContent, apiSuccess } from './response'
 
 const BASE_URL = API_BASE_URL
 
@@ -21,7 +22,33 @@ export const authHandlers = [
      */
     http.post(`${BASE_URL}${endpoints.auth.refresh}`, () => {
         const response: typeof api.auth.RefreshResponse = mockTokenResponse
-        return HttpResponse.json(response)
+        return apiSuccess(response)
+    }),
+
+
+
+    /**
+     * POST /auth/login - 이메일 로그인
+     */
+    http.post(`${BASE_URL}${endpoints.auth.login}`, () => {
+        return apiSuccess(mockTokenResponse)
+    }),
+
+    /**
+     * POST /auth/signup - 이메일 회원가입
+     */
+    http.post(`${BASE_URL}${endpoints.auth.signup}`, async ({ request }) => {
+        const body = (await request.json()) as typeof api.auth.SignupRequest
+        return apiSuccess(
+            {
+                member: {
+                    memberId: 1,
+                    username: body.username,
+                    profileImageUrl: body.profileImageUrl ?? null
+                }
+            },
+            { status: 201, code: 201, message: '회원가입이 완료되었습니다.' }
+        )
     }),
 
     /**
@@ -29,7 +56,7 @@ export const authHandlers = [
      */
     http.post(`${BASE_URL}${endpoints.auth.logout}`, () => {
         console.log('[MSW] 로그아웃')
-        return new HttpResponse(null, { status: 204 })
+        return apiNoContent()
     }),
 
     /**
@@ -41,7 +68,7 @@ export const authHandlers = [
             const body =
                 (await request.json()) as typeof api.auth.OnboardingRequest
             console.log('[MSW] 온보딩 선호도 저장:', body)
-            return new HttpResponse(null, { status: 204 })
+            return apiNoContent()
         }
     ),
 
@@ -51,6 +78,6 @@ export const authHandlers = [
      */
     http.get(`${BASE_URL}${endpoints.auth.kakaoLogin}`, () => {
         console.log('[MSW] 카카오 로그인 요청')
-        return HttpResponse.json(mockTokenResponse)
+        return apiSuccess(mockTokenResponse)
     })
 ]

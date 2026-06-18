@@ -5,10 +5,11 @@
  * endpoints 객체와 api 타입 패턴을 사용합니다.
  */
 
-import { http, HttpResponse } from 'msw'
+import { http } from 'msw'
 import { endpoints, api } from './endpoints'
 import { API_BASE_URL } from '@/apis/baseUrl'
 import { articleFixtures } from '@/mocks/fixtures'
+import { apiCreated, apiNoContent, apiSuccess } from './response'
 
 const BASE_URL = API_BASE_URL
 
@@ -22,7 +23,7 @@ export const articleHandlers = [
     http.get(`${BASE_URL}${endpoints.articles.home}`, () => {
         const response: typeof api.articles.ListResponse =
             articleFixtures.homeList
-        return HttpResponse.json(response)
+        return apiSuccess(response)
     }),
 
     /**
@@ -33,7 +34,7 @@ export const articleHandlers = [
         console.log(`[MSW] 게시글 상세 조회: ${id}`)
         const response: typeof api.articles.DetailResponse =
             articleFixtures.detail
-        return HttpResponse.json(response)
+        return apiSuccess(response)
     }),
 
     /**
@@ -45,14 +46,7 @@ export const articleHandlers = [
             const body =
                 (await request.json()) as typeof api.articles.CreateRequest
             console.log('[MSW] 게시글 생성:', body)
-            return HttpResponse.json(
-                {
-                    code: 201,
-                    message: '게시글이 생성되었습니다.',
-                    data: null
-                },
-                { status: 201 }
-            )
+            return apiCreated(null, '게시글이 생성되었습니다.')
         }
     ),
 
@@ -62,11 +56,7 @@ export const articleHandlers = [
     http.delete(`${BASE_URL}/articles/:id`, ({ params }) => {
         const { id } = params
         console.log(`[MSW] 게시글 삭제: ${id}`)
-        return HttpResponse.json({
-            code: 200,
-            message: '게시글이 삭제되었습니다.',
-            data: null
-        })
+        return apiNoContent()
     }),
 
     /**
@@ -79,7 +69,7 @@ export const articleHandlers = [
             liked: true,
             likeCount: 10
         }
-        return HttpResponse.json(response)
+        return apiSuccess(response)
     }),
 
     /**
@@ -88,7 +78,7 @@ export const articleHandlers = [
     http.get(`${BASE_URL}/articles/:id/comments`, ({ params }) => {
         const { id } = params
         console.log(`[MSW] 댓글 목록 조회: ${id}`)
-        return HttpResponse.json(articleFixtures.comments)
+        return apiSuccess(articleFixtures.comments)
     }),
 
     /**
@@ -101,14 +91,7 @@ export const articleHandlers = [
             const body =
                 (await request.json()) as typeof api.articles.CommentRequest
             console.log(`[MSW] 댓글 작성 (게시글 ${id}):`, body)
-            return HttpResponse.json(
-                {
-                    code: 201,
-                    message: '댓글이 작성되었습니다.',
-                    data: null
-                },
-                { status: 201 }
-            )
+            return apiCreated(null, '댓글이 작성되었습니다.')
         }
     ),
 
@@ -118,18 +101,14 @@ export const articleHandlers = [
     http.delete(`${BASE_URL}/articles/comments/:commentId`, ({ params }) => {
         const { commentId } = params
         console.log(`[MSW] 댓글 삭제: ${commentId}`)
-        return HttpResponse.json({
-            code: 200,
-            message: '댓글이 삭제되었습니다.',
-            data: null
-        })
+        return apiNoContent()
     }),
 
     /**
      * GET /members/me/articles - 내 게시글 목록
      */
     http.get(`${BASE_URL}${endpoints.articles.my}`, () => {
-        return HttpResponse.json(articleFixtures.homeList)
+        return apiSuccess(articleFixtures.homeList)
     }),
 
     /**
@@ -138,6 +117,6 @@ export const articleHandlers = [
     http.get(`${BASE_URL}/members/:memberId/articles`, ({ params }) => {
         const { memberId } = params
         console.log(`[MSW] 멤버 게시글 목록: ${memberId}`)
-        return HttpResponse.json(articleFixtures.homeList)
+        return apiSuccess(articleFixtures.homeList)
     })
 ]

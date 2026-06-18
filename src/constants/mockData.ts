@@ -120,7 +120,9 @@ export const MockMyProfileData: ProfileDetailResponse = {
     meetingCount: 0,
     friendConunt: 0,
     completedPlans: 0,
-    uncompletedPlans: 0
+    uncompletedPlans: 0,
+    onboardingStatus: 'COMPLETED',
+    onboardingCompletedAt: '2026-06-17T00:00:00.000Z'
 }
 
 /**

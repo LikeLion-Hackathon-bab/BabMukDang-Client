@@ -4,10 +4,11 @@
  * endpoints 객체와 api 타입 패턴을 사용합니다.
  */
 
-import { http, HttpResponse } from 'msw'
+import { http } from 'msw'
 import { endpoints, api } from './endpoints'
 import { API_BASE_URL } from '@/apis/baseUrl'
 import { mockCouponResponses } from '@/mocks/fixtures'
+import { apiSuccess } from './response'
 
 const BASE_URL = API_BASE_URL
 
@@ -23,7 +24,7 @@ export const couponHandlers = [
      */
     http.get(`${BASE_URL}${endpoints.coupons.my}`, () => {
         const response: typeof api.coupons.ListResponse = currentCoupons
-        return HttpResponse.json(response)
+        return apiSuccess(response)
     }),
 
     /**
@@ -46,6 +47,6 @@ export const couponHandlers = [
             }
         }
 
-        return HttpResponse.json({ used: true })
+        return apiSuccess({ used: true })
     })
 ]

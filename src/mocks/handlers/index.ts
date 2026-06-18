@@ -16,6 +16,9 @@ import { challengeHandlers } from './challenge.handlers'
 import { couponHandlers } from './coupon.handlers'
 import { mealPlanHandlers } from './mealPlan.handlers'
 import { mealGroupHandlers } from './mealGroup.handlers'
+import { uploadHandlers } from './upload.handlers'
+import { notificationHandlers } from './notification.handlers'
+import { pushTokenHandlers } from './pushToken.handlers'
 
 /**
  * 모든 MSW request handler 배열
@@ -50,11 +53,18 @@ export const handlers = [
     // Coupons (쿠폰)
     ...couponHandlers,
 
+    // Uploads (이미지 업로드)
+    ...uploadHandlers,
+
     // MealPlan (밥약)
     ...mealPlanHandlers,
 
     // MealGroup (밥그룹)
-    ...mealGroupHandlers
+    ...mealGroupHandlers,
+
+    // Notifications / Push
+    ...notificationHandlers,
+    ...pushTokenHandlers
 ]
 
 // 개별 핸들러 export (테스트에서 선택적 사용)
@@ -68,5 +78,8 @@ export {
     challengeHandlers,
     couponHandlers,
     mealPlanHandlers,
-    mealGroupHandlers
+    mealGroupHandlers,
+    uploadHandlers,
+    notificationHandlers,
+    pushTokenHandlers
 }

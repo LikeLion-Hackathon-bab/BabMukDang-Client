@@ -24,6 +24,8 @@ import type {
     ArticleLikeView,
     MealStatusResponse,
     OnboardingPreferenceRequest,
+    LoginRequest,
+    SignupRequest,
     PageArticleSummaryDto,
     ArticlePageView,
     PreferenceMetaResponse,
@@ -262,6 +264,8 @@ export const api = {
     auth: {
         /** 토큰 갱신 응답 (Backend DTO) */
         RefreshResponse: {} as TokenResponse,
+        LoginRequest: {} as LoginRequest,
+        SignupRequest: {} as SignupRequest,
         /** 온보딩 선호도 요청 */
         OnboardingRequest: {} as OnboardingPreferenceRequest
     },
