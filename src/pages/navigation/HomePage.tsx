@@ -1,25 +1,30 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { LogoTextIcon } from '@/assets/icons'
-import { PostCard, PostEmptyView, UploadButton, HomeBannerSection } from '@/components'
+import {
+    PostCard,
+    PostEmptyView,
+    UploadButton,
+    HomeBannerSection,
+    HomeMealPlanSection
+} from '@/components'
 import { COLORS } from '@/constants/colors'
-import { useGetHomeArticles, useMyMealPlanCards } from '@/apis'
+import { useGetHomeArticles, useMealPlanHomeDashboard } from '@/apis'
 import { toPostCardView } from '@/viewModels'
 import { useHeaderStore } from '@/store'
 import { usePullToRefresh } from '@/hooks'
-import { MyMealPlanCard } from '@/components/features/meal-plan'
 
 export function HomePage() {
     const { setLeftElement, hideCenterElement, resetHeader, showRightButton } =
         useHeaderStore()
     const { data: postListData } = useGetHomeArticles()
-    const { data: mealPlanCards } = useMyMealPlanCards()
+    const {
+        data: mealPlanDashboard,
+        isLoading: isMealPlanDashboardLoading,
+        error: mealPlanDashboardError
+    } = useMealPlanHomeDashboard()
     const postList = (postListData?.items ?? []).map(toPostCardView)
     const { pullPosition, menu } = usePullToRefresh()
-
-    const currentMealPlan = mealPlanCards?.deciding[0]
-    const todayMealPlan = mealPlanCards?.upcoming[0]
-    const recordNeededMealPlan = mealPlanCards?.recordNeeded[0]
 
     useEffect(() => {
         setLeftElement(<LogoTextIcon fillcolor={COLORS.primary500} />)
@@ -49,17 +54,11 @@ export function HomePage() {
                     MealPlan 시작하기
                 </Link>
             </section>
-            <section className="flex flex-col gap-12">
-                <h2 className="text-body1-semibold text-gray-8">다음 행동</h2>
-                {currentMealPlan && <MyMealPlanCard mealPlan={currentMealPlan} />}
-                {todayMealPlan && <MyMealPlanCard mealPlan={todayMealPlan} />}
-                {recordNeededMealPlan && <MyMealPlanCard mealPlan={recordNeededMealPlan} />}
-                {!currentMealPlan && !todayMealPlan && !recordNeededMealPlan && (
-                    <div className="rounded-20 bg-white p-16 text-caption-regular text-gray-5">
-                        지금 이어서 할 밥약이 없습니다.
-                    </div>
-                )}
-            </section>
+            <HomeMealPlanSection
+                dashboard={mealPlanDashboard}
+                isLoading={isMealPlanDashboardLoading}
+                error={mealPlanDashboardError}
+            />
             <section className="flex flex-col gap-12">
                 <h2 className="text-body1-semibold text-gray-8">친구들의 밥 기록</h2>
                 {postList.length === 0 ? (

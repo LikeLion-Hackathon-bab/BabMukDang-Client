@@ -17,7 +17,7 @@ const sharedDomainDir = path.resolve(dirname, '../BabMukDang-Shared/src/domain')
 const storybookConfigDir = path.join(dirname, '.storybook')
 const hasStorybookConfig = fs.existsSync(path.join(storybookConfigDir, 'main.ts')) || fs.existsSync(path.join(storybookConfigDir, 'main.js')) || fs.existsSync(path.join(storybookConfigDir, 'main.mjs')) || fs.existsSync(path.join(storybookConfigDir, 'main.cjs'))
 
-const storybookProjects: [] = []
+const storybookProjects = [] as const
 
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
@@ -87,6 +87,10 @@ export default defineConfig({
             },
             { find: '@/meal', replacement: path.join(sharedDomainDir, 'meal') },
             {
+                find: '@/live-activity',
+                replacement: path.join(sharedDomainDir, 'live-activity')
+            },
+            {
                 find: '@/meal-plan',
                 replacement: path.join(sharedDomainDir, 'meal-plan')
             },
@@ -98,6 +102,10 @@ export default defineConfig({
             {
                 find: '@/promotion',
                 replacement: path.join(sharedDomainDir, 'promotion')
+            },
+            {
+                find: '@/push',
+                replacement: path.join(sharedDomainDir, 'push')
             },
             {
                 find: '@/recruit',
@@ -123,10 +131,6 @@ export default defineConfig({
             provider: 'v8',
             reporter: ['text', 'html']
         },
-        browser: {
-            enabled: true
-        },
-        projects: storybookProjects
     },
     server: {
         host: '0.0.0.0',
@@ -138,6 +142,28 @@ export default defineConfig({
         sourcemap: true,
         minify: true,
         cssCodeSplit: true,
-        cssMinify: true
+        cssMinify: true,
+        rollupOptions: {
+            output: {
+                manualChunks(id) {
+                    if (id.includes('onnxruntime-web')) return 'food-ai-runtime'
+                    if (id.includes('/src/features/food-ai/')) return 'food-ai'
+                    if (id.includes('@capacitor')) return 'native-bridge'
+                    if (id.includes('/src/pages/navigation/HomePage')) return 'home-page'
+                    if (id.includes('/src/pages/navigation/FriendPage')) return 'friend-page'
+                    if (id.includes('/src/pages/navigation/MeetingPage')) return 'meeting-page'
+                    if (id.includes('/src/pages/navigation/ProfilePage')) return 'profile-page'
+                    if (id.includes('/src/pages/navigation/MealMapPage')) return 'meal-map-page'
+                    if (id.includes('/src/pages/meal-plan/')) return 'meal-plan-pages'
+                    if (id.includes('/src/pages/meal-group/')) return 'meal-group-pages'
+                    if (id.includes('/src/pages/home/UploadPage')) return 'upload-page'
+                    if (id.includes('/src/pages/home/')) return 'home-subpages'
+                    if (id.includes('/src/pages/profile/')) return 'profile-subpages'
+                    if (id.includes('/src/pages/register/')) return 'register-pages'
+                    if (id.includes('/src/pages/test/')) return 'test-pages'
+                    return undefined
+                }
+            }
+        }
     }
 })
