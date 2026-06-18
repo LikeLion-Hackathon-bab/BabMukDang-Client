@@ -1,46 +1,171 @@
+import {
+    Suspense,
+    lazy,
+    useEffect,
+    type ComponentType,
+    type ReactNode
+} from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import {
-    AllergicMenuPage,
-    BobCheckHistoryPage,
-    ChallengePage,
-    CommentPage,
-    CouponStoragePage,
-    FinishRegisterPage,
-    FriendProfilePage,
-    GPSPage,
-    HomePage,
-    MakeProfilePage,
-    MealGroupDetailPage,
-    MealGroupListPage,
-    MealMapPage,
-    MealPlanDecisionPage,
-    MealPlanDetailPage,
-    MealPlanGuestJoinPage,
-    MealPlanGuestSessionPage,
-    MealPlanRecordEntryPage,
-    MealPlanSharePreviewPage,
-    MealPlanStartPage,
-    MeetingPage,
-    NotiStoragePage,
-    NotificationPage,
-    PreferMenuPage,
-    ProfileEditPage,
-    ProfilePage,
-    PushNotificationPage,
-    SearchRestaurantPage,
-    StartRegisterPage,
-    TestPage,
-    UploadPage
-} from '@/pages'
 import { Layout, RegisterLayout } from '@/components'
-import { useEffect } from 'react'
-import { IntroStart } from './pages/intro/IntroStart'
-import { IntroTutorial } from './pages/intro/IntroTutorial'
-import { FriendPage } from './pages/navigation/FriendPage'
 import { AuthGate } from './pages/AuthGate'
 import { PublicOnlyRoute } from './pages/PublicOnlyRoute'
 import { ProtectedRoute } from './pages/ProtectedRoute'
+import { AppBootstrapProvider } from '@/contexts'
+import { PushProvider } from '@/features/push'
+
+const lazyNamed = <T extends ComponentType<Record<string, never>>>(
+    loader: () => Promise<Record<string, unknown>>,
+    exportName: string
+) =>
+    lazy(async () => ({
+        default: (await loader())[exportName] as T
+    }))
+
+const LazyStartRegisterPage = lazyNamed(
+    () => import('@/pages/register/StartRegisterPage'),
+    'StartRegisterPage'
+)
+const LazyMakeProfilePage = lazyNamed(
+    () => import('@/pages/register/MakeProfilePage'),
+    'MakeProfilePage'
+)
+const LazyPreferMenuPage = lazyNamed(
+    () => import('@/pages/register/PreferMenuPage'),
+    'PreferMenuPage'
+)
+const LazyAllergicMenuPage = lazyNamed(
+    () => import('@/pages/register/AllergicMenuPage'),
+    'AllergicMenuPage'
+)
+const LazyFinishRegisterPage = lazyNamed(
+    () => import('@/pages/register/FinishRegisterPage'),
+    'FinishRegisterPage'
+)
+const LazyIntroStart = lazyNamed(
+    () => import('./pages/intro/IntroStart'),
+    'IntroStart'
+)
+const LazyIntroTutorial = lazyNamed(
+    () => import('./pages/intro/IntroTutorial'),
+    'IntroTutorial'
+)
+const LazyHomePage = lazyNamed(
+    () => import('@/pages/navigation/HomePage'),
+    'HomePage'
+)
+const LazyFriendPage = lazyNamed(
+    () => import('@/pages/navigation/FriendPage'),
+    'FriendPage'
+)
+const LazyMeetingPage = lazyNamed(
+    () => import('@/pages/navigation/MeetingPage'),
+    'MeetingPage'
+)
+const LazyProfilePage = lazyNamed(
+    () => import('@/pages/navigation/ProfilePage'),
+    'ProfilePage'
+)
+const LazyMealMapPage = lazyNamed(
+    () => import('@/pages/navigation/MealMapPage'),
+    'MealMapPage'
+)
+const LazyMealPlanStartPage = lazyNamed(
+    () => import('@/pages/meal-plan/MealPlanStartPage'),
+    'MealPlanStartPage'
+)
+const LazyMealPlanDetailPage = lazyNamed(
+    () => import('@/pages/meal-plan/MealPlanDetailPage'),
+    'MealPlanDetailPage'
+)
+const LazyMealPlanDecisionPage = lazyNamed(
+    () => import('@/pages/meal-plan/MealPlanDecisionPage'),
+    'MealPlanDecisionPage'
+)
+const LazyMealPlanRecordEntryPage = lazyNamed(
+    () => import('@/pages/meal-plan/MealPlanRecordEntryPage'),
+    'MealPlanRecordEntryPage'
+)
+const LazyMealPlanSharePreviewPage = lazyNamed(
+    () => import('@/pages/meal-plan/MealPlanSharePreviewPage'),
+    'MealPlanSharePreviewPage'
+)
+const LazyMealPlanGuestJoinPage = lazyNamed(
+    () => import('@/pages/meal-plan/MealPlanGuestJoinPage'),
+    'MealPlanGuestJoinPage'
+)
+const LazyMealPlanGuestSessionPage = lazyNamed(
+    () => import('@/pages/meal-plan/MealPlanGuestSessionPage'),
+    'MealPlanGuestSessionPage'
+)
+const LazyMealGroupListPage = lazyNamed(
+    () => import('@/pages/meal-group/MealGroupListPage'),
+    'MealGroupListPage'
+)
+const LazyMealGroupDetailPage = lazyNamed(
+    () => import('@/pages/meal-group/MealGroupDetailPage'),
+    'MealGroupDetailPage'
+)
+const LazySearchRestaurantPage = lazyNamed(
+    () => import('@/pages/home/SearchRestaurantPage'),
+    'SearchRestaurantPage'
+)
+const LazyNotiStoragePage = lazyNamed(
+    () => import('@/pages/home/NotiStoragePage'),
+    'NotiStoragePage'
+)
+const LazyUploadPage = lazyNamed(
+    () => import('@/pages/home/UploadPage'),
+    'UploadPage'
+)
+const LazyCommentPage = lazyNamed(
+    () => import('@/pages/home/CommentPage'),
+    'CommentPage'
+)
+const LazyCouponStoragePage = lazyNamed(
+    () => import('@/pages/profile/CouponStoragePage'),
+    'CouponStoragePage'
+)
+const LazyProfileEditPage = lazyNamed(
+    () => import('@/pages/profile/ProfileEditPage'),
+    'ProfileEditPage'
+)
+const LazyBobCheckHistoryPage = lazyNamed(
+    () => import('@/pages/profile/BobCheckHistoryPage'),
+    'BobCheckHistoryPage'
+)
+const LazyChallengePage = lazyNamed(
+    () => import('@/pages/profile/ChallengePage'),
+    'ChallengePage'
+)
+const LazyFriendProfilePage = lazyNamed(
+    () => import('@/pages/profile/FriendProfilePage'),
+    'FriendProfilePage'
+)
+const LazyGPSPage = lazyNamed(() => import('@/pages/test/GPSPage'), 'GPSPage')
+const LazyNotificationPage = lazyNamed(
+    () => import('@/pages/test/NotificationPage'),
+    'NotificationPage'
+)
+const LazyPushNotificationPage = lazyNamed(
+    () => import('@/pages/test/PushNotificationPage'),
+    'PushNotificationPage'
+)
+const LazyTestPage = lazyNamed(
+    () => import('@/pages/test/TestPage'),
+    'TestPage'
+)
+
+const page = (element: ReactNode) => (
+    <Suspense
+        fallback={
+            <div className="rounded-20 text-caption-regular text-gray-5 bg-white p-16">
+                화면을 불러오는 중입니다.
+            </div>
+        }>
+        {element}
+    </Suspense>
+)
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -52,180 +177,217 @@ const queryClient = new QueryClient({
 })
 
 function App() {
-    useEffect(() => {
-        // register()
-    }, [])
-
     return (
         <QueryClientProvider client={queryClient}>
-            <Router>
-                <Routes>
-                    <Route
-                        path="/"
-                        element={<AuthGate />}
-                    />
-                    <Route element={<PublicOnlyRoute />}>
-                        <Route element={<RegisterLayout />}>
+            <AppBootstrapProvider>
+                <Router>
+                    <PushProvider>
+                        <Routes>
                             <Route
-                                path="/login"
-                                element={<StartRegisterPage />}
+                                path="/"
+                                element={<AuthGate />}
                             />
-                        </Route>
-                        <Route
-                            path="/intro"
-                            element={<IntroStart />}
-                        />
-                        <Route
-                            path="/intro/tutorial"
-                            element={<IntroTutorial />}
-                        />
-                    </Route>
-
-
-                    <Route element={<RegisterLayout />}>
-                        <Route
-                            path="/meal-plan-links/:token"
-                            element={<MealPlanSharePreviewPage />}
-                        />
-                        <Route
-                            path="/meal-plan-links/:token/join"
-                            element={<MealPlanGuestJoinPage />}
-                        />
-                        <Route
-                            path="/meal-plan-links/:token/session"
-                            element={<MealPlanGuestSessionPage />}
-                        />
-                    </Route>
-
-                    <Route element={<ProtectedRoute />}>
-                        <Route element={<Layout />}>
-                            <Route
-                                path="/home"
-                                element={<HomePage />}
-                            />
-                            <Route
-                                path="/profile"
-                                element={<ProfilePage />}
-                            />
-                            <Route
-                                path="/friend"
-                                element={<FriendPage />}
-                            />
-                            <Route
-                                path="/meeting"
-                                element={<MeetingPage />}
-                            />
-                            <Route
-                                path="/meal-map"
-                                element={<MealMapPage />}
-                            />
-
-                            <Route
-                                path="/meal-plans"
-                                element={<MeetingPage />}
-                            />
-                            <Route
-                                path="/meal-plans/start"
-                                element={<MealPlanStartPage />}
-                            />
-                            <Route
-                                path="/meal-plans/:mealPlanId"
-                                element={<MealPlanDetailPage />}
-                            />
-                            <Route
-                                path="/meal-plans/:mealPlanId/decision"
-                                element={<MealPlanDecisionPage />}
-                            />
-                            <Route
-                                path="/meal-plans/:mealPlanId/record"
-                                element={<MealPlanRecordEntryPage />}
-                            />
-                            <Route
-                                path="/meal-groups"
-                                element={<MealGroupListPage />}
-                            />
-                            <Route
-                                path="/meal-groups/:mealGroupId"
-                                element={<MealGroupDetailPage />}
-                            />
-
-                            <Route
-                                path="/search-restaurant"
-                                element={<SearchRestaurantPage />}
-                            />
-                            <Route
-                                path="/noti"
-                                element={<NotiStoragePage />}
-                            />
-                            <Route
-                                path="/upload"
-                                element={<UploadPage />}
-                            />
-                            <Route
-                                path="/post/:postId"
-                                element={<CommentPage />}
-                            />
-
-                            <Route
-                                path="/coupon"
-                                element={<CouponStoragePage />}
-                            />
-                            <Route
-                                path="/profile-edit"
-                                element={<ProfileEditPage />}
-                            />
-                            <Route
-                                path="/bob-check-history"
-                                element={<BobCheckHistoryPage />}
-                            />
-                            <Route
-                                path="/challenge"
-                                element={<ChallengePage />}
-                            />
-                            <Route
-                                path="/friend-profile"
-                                element={<FriendProfilePage />}
-                            />
-
-                            <Route element={<RegisterLayout />}>
+                            <Route element={<PublicOnlyRoute />}>
+                                <Route element={<RegisterLayout />}>
+                                    <Route
+                                        path="/login"
+                                        element={page(
+                                            <LazyStartRegisterPage />
+                                        )}
+                                    />
+                                </Route>
                                 <Route
-                                    path="/allergic-menu"
-                                    element={<AllergicMenuPage />}
+                                    path="/intro"
+                                    element={page(<LazyIntroStart />)}
                                 />
                                 <Route
-                                    path="/prefer-menu"
-                                    element={<PreferMenuPage />}
-                                />
-                                <Route
-                                    path="/onboarding"
-                                    element={<MakeProfilePage />}
-                                />
-                                <Route
-                                    path="/finish-register"
-                                    element={<FinishRegisterPage />}
+                                    path="/intro/tutorial"
+                                    element={page(<LazyIntroTutorial />)}
                                 />
                             </Route>
 
-                            <Route
-                                path="/gps"
-                                element={<GPSPage />}
-                            />
-                            <Route
-                                path="/notifications"
-                                element={<NotificationPage />}
-                            />
-                            <Route
-                                path="/push"
-                                element={<PushNotificationPage />}
-                            />
-                            <Route
-                                path="/test"
-                                element={<TestPage />}
-                            />
-                        </Route>
-                    </Route>
-                </Routes>
-            </Router>
+                            <Route element={<RegisterLayout />}>
+                                <Route
+                                    path="/meal-plan-links/:token"
+                                    element={page(
+                                        <LazyMealPlanSharePreviewPage />
+                                    )}
+                                />
+                                <Route
+                                    path="/meal-plan-links/:token/join"
+                                    element={page(
+                                        <LazyMealPlanGuestJoinPage />
+                                    )}
+                                />
+                                <Route
+                                    path="/meal-plan-links/:token/session"
+                                    element={page(
+                                        <LazyMealPlanGuestSessionPage />
+                                    )}
+                                />
+                            </Route>
+
+                            <Route element={<ProtectedRoute />}>
+                                <Route element={<Layout />}>
+                                    <Route
+                                        path="/home"
+                                        element={page(<LazyHomePage />)}
+                                    />
+                                    <Route
+                                        path="/profile"
+                                        element={page(<LazyProfilePage />)}
+                                    />
+                                    <Route
+                                        path="/friend"
+                                        element={page(<LazyFriendPage />)}
+                                    />
+                                    <Route
+                                        path="/meeting"
+                                        element={page(<LazyMeetingPage />)}
+                                    />
+                                    <Route
+                                        path="/meal-map"
+                                        element={page(<LazyMealMapPage />)}
+                                    />
+
+                                    <Route
+                                        path="/meal-plans"
+                                        element={page(<LazyMeetingPage />)}
+                                    />
+                                    <Route
+                                        path="/meal-plans/start"
+                                        element={page(
+                                            <LazyMealPlanStartPage />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/meal-plans/:mealPlanId"
+                                        element={page(
+                                            <LazyMealPlanDetailPage />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/meal-plans/:mealPlanId/decision"
+                                        element={page(
+                                            <LazyMealPlanDecisionPage />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/meal-plans/:mealPlanId/record"
+                                        element={page(
+                                            <LazyMealPlanRecordEntryPage />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/meal-groups"
+                                        element={page(
+                                            <LazyMealGroupListPage />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/meal-groups/:mealGroupId"
+                                        element={page(
+                                            <LazyMealGroupDetailPage />
+                                        )}
+                                    />
+
+                                    <Route
+                                        path="/search-restaurant"
+                                        element={page(
+                                            <LazySearchRestaurantPage />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/noti"
+                                        element={page(<LazyNotiStoragePage />)}
+                                    />
+                                    <Route
+                                        path="/upload"
+                                        element={page(<LazyUploadPage />)}
+                                    />
+                                    <Route
+                                        path="/post/:postId"
+                                        element={page(<LazyCommentPage />)}
+                                    />
+
+                                    <Route
+                                        path="/coupon"
+                                        element={page(
+                                            <LazyCouponStoragePage />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/profile-edit"
+                                        element={page(<LazyProfileEditPage />)}
+                                    />
+                                    <Route
+                                        path="/bob-check-history"
+                                        element={page(
+                                            <LazyBobCheckHistoryPage />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/challenge"
+                                        element={page(<LazyChallengePage />)}
+                                    />
+                                    <Route
+                                        path="/friend-profile"
+                                        element={page(
+                                            <LazyFriendProfilePage />
+                                        )}
+                                    />
+
+                                    <Route element={<RegisterLayout />}>
+                                        <Route
+                                            path="/allergic-menu"
+                                            element={page(
+                                                <LazyAllergicMenuPage />
+                                            )}
+                                        />
+                                        <Route
+                                            path="/prefer-menu"
+                                            element={page(
+                                                <LazyPreferMenuPage />
+                                            )}
+                                        />
+                                        <Route
+                                            path="/onboarding"
+                                            element={page(
+                                                <LazyMakeProfilePage />
+                                            )}
+                                        />
+                                        <Route
+                                            path="/finish-register"
+                                            element={page(
+                                                <LazyFinishRegisterPage />
+                                            )}
+                                        />
+                                    </Route>
+
+                                    <Route
+                                        path="/gps"
+                                        element={page(<LazyGPSPage />)}
+                                    />
+                                    <Route
+                                        path="/notifications"
+                                        element={page(<LazyNotificationPage />)}
+                                    />
+                                    <Route
+                                        path="/push"
+                                        element={page(
+                                            <LazyPushNotificationPage />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/test"
+                                        element={page(<LazyTestPage />)}
+                                    />
+                                </Route>
+                            </Route>
+                        </Routes>
+                    </PushProvider>
+                </Router>
+            </AppBootstrapProvider>
         </QueryClientProvider>
     )
 }

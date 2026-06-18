@@ -21,12 +21,23 @@
         "depcruise:ci": "depcruise src --config dependency-cruiser.config.cjs --output-type err",
         "depcruise:json": "depcruise src --config dependency-cruiser.config.cjs --output-type json --output-to dependency-cruiser-report.json",
         "depcruise:dot": "depcruise src --config dependency-cruiser.config.cjs --output-type dot --output-to dependency-cruiser-graph.dot",
-        "depcruise:graph": "depcruise src --config dependency-cruiser.config.cjs --output-type dot | dot -T svg > dependency-cruiser-graph.svg"
+        "depcruise:graph": "depcruise src --config dependency-cruiser.config.cjs --output-type dot | dot -T svg > dependency-cruiser-graph.svg",
+        "cap:copy": "npx cap copy",
+        "cap:sync": "npm run build && npx cap sync",
+        "cap:open:android": "npx cap open android",
+        "cap:open:ios": "npx cap open ios",
+        "native:android:debug": "npm run cap:sync && cd android && ./gradlew assembleDebug",
+        "native:android:release": "npm run cap:sync && cd android && ./gradlew assembleRelease",
+        "native:ios:sync": "npm run cap:sync"
     },
     "dependencies": {
-        "@capacitor/android": "^7.4.3",
-        "@capacitor/core": "^7.4.3",
-        "@capacitor/ios": "^7.4.3",
+        "@capacitor/android": "^8.4.0",
+        "@capacitor/camera": "^8.2.0",
+        "@capacitor/core": "^8.4.0",
+        "@capacitor/geolocation": "^8.2.0",
+        "@capacitor/ios": "^8.4.0",
+        "@capacitor/push-notifications": "^8.1.1",
+        "@capgo/capacitor-live-activities": "^1.1.3",
         "@kimdaegyu/babmukdang-shared": "file:../BabMukDang-Shared",
         "@radix-ui/react-slot": "^1.2.3",
         "@tanstack/react-query": "^5.75.2",
@@ -57,7 +68,7 @@
         "zustand": "^5.0.7"
     },
     "devDependencies": {
-        "@capacitor/cli": "^7.4.3",
+        "@capacitor/cli": "^8.4.0",
         "@chromatic-com/storybook": "^4.1.3",
         "@eslint/js": "^9.21.0",
         "@playwright/test": "^1.52.0",
