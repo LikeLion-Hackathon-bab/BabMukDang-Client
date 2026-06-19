@@ -47,10 +47,14 @@ export const mapRestaurantInputViewToRestaurant = (
 })
 
 // Backward-compatible mapper names used by older upload/article code.
-export const mapKakaoRestaurantToRestaurantInputView = mapRestaurantToRestaurantInputView
-export const mapRestaurantInputViewToKakaoRestaurant = mapRestaurantInputViewToRestaurant
-export const mapKakaoRestaurantToRestaurantInfo = mapRestaurantToRestaurantInputView
-export const mapRestaurantInfoToKakaoRestaurant = mapRestaurantInputViewToRestaurant
+export const mapKakaoRestaurantToRestaurantInputView =
+    mapRestaurantToRestaurantInputView
+export const mapRestaurantInputViewToKakaoRestaurant =
+    mapRestaurantInputViewToRestaurant
+export const mapKakaoRestaurantToRestaurantInfo =
+    mapRestaurantToRestaurantInputView
+export const mapRestaurantInfoToKakaoRestaurant =
+    mapRestaurantInputViewToRestaurant
 
 export const mapArticleSummary = (
     article: ArticleSummaryDto
@@ -67,7 +71,9 @@ export const mapArticleSummary = (
     likedByMe: article.likedByMe,
     createdAt: article.createdAt,
     expiresAt: article.expiresAt,
-    taggedMemberIds: article.taggedMembers.map((member: { memberId: number | string }) => Number(member.memberId))
+    taggedMemberIds: article.taggedMembers.map(
+        (member: { memberId: number | string }) => Number(member.memberId)
+    )
 })
 
 export const mapArticleDetail = (
@@ -102,7 +108,9 @@ export const mapComment = (comment: CommentDto): CommentView => ({
     authorId: Number(comment.author.memberId),
     authorUsername: comment.author.username,
     parentCommentId:
-        comment.parentCommentId == null ? null : Number(comment.parentCommentId),
+        comment.parentCommentId == null
+            ? null
+            : Number(comment.parentCommentId),
     content: comment.content,
     createdAt: comment.createdAt,
     profileImageUrl: comment.author.profileImageUrl ?? null

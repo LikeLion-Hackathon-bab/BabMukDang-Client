@@ -172,7 +172,8 @@ export const useMealPlanStore = create<MealPlanStore>(set => ({
             mealPlanId: payload.mealPlanId,
             current: payload.mealPlan ?? state.current,
             decisionProgress: payload.progress,
-            decisionStages: payload.mealPlan?.decisionStages ?? state.decisionStages,
+            decisionStages:
+                payload.mealPlan?.decisionStages ?? state.decisionStages,
             participants: payload.mealPlan?.participants ?? state.participants,
             status: payload.mealPlan?.status ?? state.status,
             isSelfReady:

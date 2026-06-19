@@ -77,7 +77,10 @@ const authApi = {
                 deviceId: getOrCreateDeviceId()
             })
         } catch (error) {
-            console.warn('[auth] current device push token revoke failed', error)
+            console.warn(
+                '[auth] current device push token revoke failed',
+                error
+            )
         }
         return contractClient.post(apiContract.auth.logout)
     },

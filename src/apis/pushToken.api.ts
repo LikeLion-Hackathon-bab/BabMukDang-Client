@@ -38,7 +38,9 @@ export const useRegisterPushToken = (
     const mutation = useMutation({
         mutationFn: pushTokenApi.register,
         onSuccess: data => {
-            queryClient.invalidateQueries({ queryKey: queryKeys.pushTokens.all })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.pushTokens.all
+            })
             options.onSuccess?.(data)
         },
         onError: options.onError
@@ -46,12 +48,16 @@ export const useRegisterPushToken = (
     return mutation
 }
 
-export const useRevokePushToken = (options: MutationOptions<NoContent> = {}) => {
+export const useRevokePushToken = (
+    options: MutationOptions<NoContent> = {}
+) => {
     const queryClient = useQueryClient()
     const mutation = useMutation({
         mutationFn: pushTokenApi.revoke,
         onSuccess: data => {
-            queryClient.invalidateQueries({ queryKey: queryKeys.pushTokens.all })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.pushTokens.all
+            })
             options.onSuccess?.(data)
         },
         onError: options.onError

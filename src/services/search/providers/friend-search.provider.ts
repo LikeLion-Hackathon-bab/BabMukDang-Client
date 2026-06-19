@@ -2,8 +2,15 @@ import { defer, of } from 'rxjs'
 import { tap } from 'rxjs/operators'
 
 import { TtlCache } from '../cache/ttl-cache'
-import { ContractFriendSearchClient, type FriendSearchClient } from '../clients/friend-search.client'
-import type { FriendSearchResult, SearchProvider, SearchProviderInput } from '../types'
+import {
+    ContractFriendSearchClient,
+    type FriendSearchClient
+} from '../clients/friend-search.client'
+import type {
+    FriendSearchResult,
+    SearchProvider,
+    SearchProviderInput
+} from '../types'
 
 const normalizeQuery = (query: string): string => query.trim().toLowerCase()
 

@@ -19,7 +19,6 @@ import type {
     UploadProfileImageResponse
 } from './types'
 
-
 export type ProfileImageUploadStage = 'PRESIGN' | 'S3_UPLOAD'
 
 export class ProfileImageUploadError extends Error {
@@ -191,7 +190,10 @@ export const useUploadProfilePhoto = (
             }
 
             try {
-                await uploadApi.uploadProfileS3({ putUrl: presign.putUrl, file })
+                await uploadApi.uploadProfileS3({
+                    putUrl: presign.putUrl,
+                    file
+                })
             } catch (error) {
                 throw new ProfileImageUploadError('S3_UPLOAD', error)
             }

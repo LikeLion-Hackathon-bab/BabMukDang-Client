@@ -14,17 +14,29 @@ export type MealMapSdkAdapter = {
 
 type KakaoMaps = {
     LatLng: new (lat: number, lng: number) => unknown
-    Map: new (container: HTMLElement, options: { center: unknown; level: number }) => unknown
-    Marker: new (options: { map: unknown; position: unknown; title?: string }) => unknown
+    Map: new (
+        container: HTMLElement,
+        options: { center: unknown; level: number }
+    ) => unknown
+    Marker: new (options: {
+        map: unknown
+        position: unknown
+        title?: string
+    }) => unknown
     CustomOverlay: new (options: {
         map: unknown
         position: unknown
         content: HTMLElement
         yAnchor?: number
     }) => { setMap: (map: unknown | null) => void }
-    event: { addListener: (target: unknown, type: string, handler: () => void) => void }
+    event: {
+        addListener: (
+            target: unknown,
+            type: string,
+            handler: () => void
+        ) => void
+    }
 }
-
 
 const createClusterButton = ({
     cluster,
@@ -38,7 +50,9 @@ const createClusterButton = ({
     const marker = cluster.primaryMarker
     const button = document.createElement('button')
     button.type = 'button'
-    button.textContent = cluster.hasOverlap ? `${cluster.count}` : marker.title.slice(0, 10)
+    button.textContent = cluster.hasOverlap
+        ? `${cluster.count}`
+        : marker.title.slice(0, 10)
     button.setAttribute(
         'aria-label',
         cluster.hasOverlap ? `${cluster.count}개 marker 묶음` : marker.title
@@ -50,7 +64,8 @@ const createClusterButton = ({
         'py-6',
         'text-caption-medium',
         'shadow-sm',
-        selectedMarkerId && cluster.markers.some(item => item.markerId === selectedMarkerId)
+        selectedMarkerId &&
+        cluster.markers.some(item => item.markerId === selectedMarkerId)
             ? 'border-primary-main bg-primary-100 text-primary-main'
             : 'border-gray-3 bg-white text-gray-7'
     ].join(' ')
@@ -76,12 +91,16 @@ export const cssMapSdkAdapter: MealMapSdkAdapter = {
         grid.className = 'grid grid-cols-2 gap-8 pt-38'
         for (const cluster of clusters) {
             const marker = cluster.primaryMarker
-            const selected = selectedMarkerId && cluster.markers.some(item => item.markerId === selectedMarkerId)
+            const selected =
+                selectedMarkerId &&
+                cluster.markers.some(item => item.markerId === selectedMarkerId)
             const button = document.createElement('button')
             button.type = 'button'
             button.className = [
                 'rounded-18 border p-10 text-left transition',
-                selected ? 'border-primary-main bg-primary-100 shadow-sm' : 'border-gray-2 bg-white'
+                selected
+                    ? 'border-primary-main bg-primary-100 shadow-sm'
+                    : 'border-gray-2 bg-white'
             ].join(' ')
             button.innerHTML = `
                 <span class="text-caption-medium text-primary-main">${cluster.hasOverlap ? `${cluster.count}개 묶음` : marker.layer}</span>
@@ -101,7 +120,7 @@ export const cssMapSdkAdapter: MealMapSdkAdapter = {
 
 export const kakaoMapSdkAdapter: MealMapSdkAdapter = {
     render({ container, center, clusters, selectedMarkerId, onSelectMarker }) {
-        const maps = (window.kakao?.maps as KakaoMaps | undefined)
+        const maps = window.kakao?.maps as KakaoMaps | undefined
         if (!maps) {
             return cssMapSdkAdapter.render({
                 container,
@@ -132,7 +151,11 @@ export const kakaoMapSdkAdapter: MealMapSdkAdapter = {
             const overlay = new maps.CustomOverlay({
                 map,
                 position,
-                content: createClusterButton({ cluster, selectedMarkerId, onSelectMarker }),
+                content: createClusterButton({
+                    cluster,
+                    selectedMarkerId,
+                    onSelectMarker
+                }),
                 yAnchor: 2.2
             })
             overlays.push(overlay)
@@ -145,4 +168,5 @@ export const kakaoMapSdkAdapter: MealMapSdkAdapter = {
     }
 }
 
-export const createMealMapSdkAdapter = (): MealMapSdkAdapter => kakaoMapSdkAdapter
+export const createMealMapSdkAdapter = (): MealMapSdkAdapter =>
+    kakaoMapSdkAdapter

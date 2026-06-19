@@ -39,22 +39,20 @@ const initialState: OnboardingDraftState = {
     allergy: []
 }
 
-type PersistedOnboardingState = Omit<
-    OnboardingDraftState,
-    'profileImageFile'
->
+type PersistedOnboardingState = Omit<OnboardingDraftState, 'profileImageFile'>
 
-const persistConfig: PersistOptions<OnboardingStore, PersistedOnboardingState> = {
-    name: 'onboarding-draft-storage',
-    partialize: state => ({
-        username: state.username,
-        profileImageUrl: state.profileImageUrl,
-        bio: state.bio,
-        liked: state.liked,
-        disliked: state.disliked,
-        allergy: state.allergy
-    })
-}
+const persistConfig: PersistOptions<OnboardingStore, PersistedOnboardingState> =
+    {
+        name: 'onboarding-draft-storage',
+        partialize: state => ({
+            username: state.username,
+            profileImageUrl: state.profileImageUrl,
+            bio: state.bio,
+            liked: state.liked,
+            disliked: state.disliked,
+            allergy: state.allergy
+        })
+    }
 
 export const useOnboardingStore = create<OnboardingStore>()(
     persist(

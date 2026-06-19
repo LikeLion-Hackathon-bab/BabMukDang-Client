@@ -28,18 +28,30 @@ export const nativePermissionAdapter: PermissionAdapter = {
         if (kind === 'LOCATION') {
             const permissions = await Geolocation.checkPermissions()
             const status = mapNativePermission(permissions.location)
-            return toPermissionSnapshot({ kind, status, canAskAgain: canAskAgain(status) })
+            return toPermissionSnapshot({
+                kind,
+                status,
+                canAskAgain: canAskAgain(status)
+            })
         }
 
         if (kind === 'CAMERA') {
             const permissions = await Camera.checkPermissions()
             const status = mapNativePermission(permissions.camera)
-            return toPermissionSnapshot({ kind, status, canAskAgain: canAskAgain(status) })
+            return toPermissionSnapshot({
+                kind,
+                status,
+                canAskAgain: canAskAgain(status)
+            })
         }
 
         const permissions = await PushNotifications.checkPermissions()
         const status = mapNativePermission(permissions.receive)
-        return toPermissionSnapshot({ kind, status, canAskAgain: canAskAgain(status) })
+        return toPermissionSnapshot({
+            kind,
+            status,
+            canAskAgain: canAskAgain(status)
+        })
     },
 
     async requestNotificationPermission() {
@@ -63,7 +75,9 @@ export const nativePermissionAdapter: PermissionAdapter = {
     },
 
     async requestCameraPermission() {
-        const permissions = await Camera.requestPermissions({ permissions: ['camera'] })
+        const permissions = await Camera.requestPermissions({
+            permissions: ['camera']
+        })
         const status = mapNativePermission(permissions.camera)
         return toPermissionSnapshot({
             kind: 'CAMERA',

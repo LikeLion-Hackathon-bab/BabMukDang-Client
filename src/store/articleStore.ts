@@ -1,4 +1,8 @@
-import { ArticlePostRequest, FoodAnalysisResultDto, RestaurantInfo } from '@/apis'
+import {
+    ArticlePostRequest,
+    FoodAnalysisResultDto,
+    RestaurantInfo
+} from '@/apis'
 import { mapRestaurantInfoToKakaoRestaurant } from '@/apis/mappers/article.mapper'
 import { create } from 'zustand'
 import { domainId } from '@/domain/factories'
@@ -46,10 +50,10 @@ export const useArticleStore = create<ArticleStore>(set => ({
             mealDate: state.mealDate,
             restaurant: mapRestaurantInfoToKakaoRestaurant(restaurant),
             taggedMemberIds: state.taggedMemberIds.map(domainId.member),
-            ...(state.mealPlanId ? { mealPlanId: domainId.mealPlan(state.mealPlanId) } : {}),
-            ...(state.foodAnalysis
-                ? { foodAnalysis: state.foodAnalysis }
-                : {})
+            ...(state.mealPlanId
+                ? { mealPlanId: domainId.mealPlan(state.mealPlanId) }
+                : {}),
+            ...(state.foodAnalysis ? { foodAnalysis: state.foodAnalysis } : {})
         }
     },
     setImage: image => set({ image }),

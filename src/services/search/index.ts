@@ -13,7 +13,11 @@ export type {
     SearchProviderInput,
     SearchProviderRegistry
 } from './types'
-export { FriendSearchProvider, PlaceSearchProvider, FoodSearchProvider } from './providers'
+export {
+    FriendSearchProvider,
+    PlaceSearchProvider,
+    FoodSearchProvider
+} from './providers'
 export type { FriendSearchClient } from './clients/friend-search.client'
 export type { PlaceSearchClient } from './clients/kakao-place-search.client'
 export type { FoodManifestClient } from './clients/food-manifest.client'

@@ -16,7 +16,9 @@ import type {
 } from './types'
 
 export const mealGroupApi = {
-    create: async (body: CreateMealGroupRequest): Promise<MealGroupResponse> => {
+    create: async (
+        body: CreateMealGroupRequest
+    ): Promise<MealGroupResponse> => {
         return contractClient.post(apiContract.mealGroups.create, { body })
     },
 
@@ -35,7 +37,9 @@ export const mealGroupApi = {
         })
     },
 
-    getHistory: async (mealGroupId: string): Promise<MealGroupHistoryResponse> => {
+    getHistory: async (
+        mealGroupId: string
+    ): Promise<MealGroupHistoryResponse> => {
         return contractClient.get(apiContract.mealGroups.history, {
             pathParams: { mealGroupId: domainId.mealGroup(mealGroupId) }
         })
@@ -151,12 +155,16 @@ export const useMealGroupPreferences = (
         enabled: (options?.enabled ?? true) && mealGroupId.length > 0
     })
 
-export const useCreateMealGroup = (options?: MutationOptions<MealGroupResponse>) => {
+export const useCreateMealGroup = (
+    options?: MutationOptions<MealGroupResponse>
+) => {
     const queryClient = useQueryClient()
     return useMutation({
         mutationFn: options?.mutationFn ?? mealGroupApi.create,
         onSuccess: data => {
-            queryClient.invalidateQueries({ queryKey: queryKeys.mealGroups.all })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.mealGroups.all
+            })
             options?.onSuccess?.(data)
         },
         onError: error => options?.onError?.(error),
@@ -171,7 +179,9 @@ export const useStartMealPlanFromGroup = (
     return useMutation({
         mutationFn: options?.mutationFn ?? mealGroupApi.startMealPlan,
         onSuccess: data => {
-            queryClient.invalidateQueries({ queryKey: queryKeys.mealGroups.all })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.mealGroups.all
+            })
             queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.all })
             options?.onSuccess?.(data)
         },
@@ -187,7 +197,9 @@ export const useAddMealGroupMember = (
     return useMutation({
         mutationFn: mealGroupApi.addMember,
         onSuccess: data => {
-            queryClient.invalidateQueries({ queryKey: queryKeys.mealGroups.all })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.mealGroups.all
+            })
             options?.onSuccess?.(data)
         },
         onError: error => options?.onError?.(error),
@@ -202,7 +214,9 @@ export const useUpdateMealGroupMemberRole = (
     return useMutation({
         mutationFn: mealGroupApi.updateMemberRole,
         onSuccess: data => {
-            queryClient.invalidateQueries({ queryKey: queryKeys.mealGroups.all })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.mealGroups.all
+            })
             options?.onSuccess?.(data)
         },
         onError: error => options?.onError?.(error),
@@ -217,7 +231,9 @@ export const useRemoveMealGroupMember = (
     return useMutation({
         mutationFn: mealGroupApi.removeMember,
         onSuccess: data => {
-            queryClient.invalidateQueries({ queryKey: queryKeys.mealGroups.all })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.mealGroups.all
+            })
             options?.onSuccess?.(data)
         },
         onError: error => options?.onError?.(error),

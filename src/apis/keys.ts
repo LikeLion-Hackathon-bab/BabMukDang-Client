@@ -35,10 +35,19 @@ export const queryKeys = {
         chatMessages: (mealPlanId: string) =>
             ['mealPlans', mealPlanId, 'chatMessages'] as const,
         guestChatMessages: (token: string, sessionToken?: string | null) =>
-            ['mealPlans', 'guestChatMessages', token, sessionToken ?? ''] as const,
+            [
+                'mealPlans',
+                'guestChatMessages',
+                token,
+                sessionToken ?? ''
+            ] as const,
         receivedInvites: ['mealPlans', 'invites', 'received'] as const,
         sentInvites: ['mealPlans', 'invites', 'sent'] as const,
-        nearbyFriendExposureEligibility: ['mealPlans', 'nearbyFriends', 'eligibility'] as const,
+        nearbyFriendExposureEligibility: [
+            'mealPlans',
+            'nearbyFriends',
+            'eligibility'
+        ] as const,
         nearbyFriends: ['mealPlans', 'nearbyFriends'] as const,
         sharePreview: (token: string) =>
             ['mealPlans', 'sharePreview', token] as const,
@@ -50,8 +59,10 @@ export const queryKeys = {
         all: ['mealGroups'] as const,
         list: ['mealGroups', 'list'] as const,
         detail: (mealGroupId: string) => ['mealGroups', mealGroupId] as const,
-        history: (mealGroupId: string) => ['mealGroups', mealGroupId, 'history'] as const,
-        preferences: (mealGroupId: string) => ['mealGroups', mealGroupId, 'preferences'] as const
+        history: (mealGroupId: string) =>
+            ['mealGroups', mealGroupId, 'history'] as const,
+        preferences: (mealGroupId: string) =>
+            ['mealGroups', mealGroupId, 'preferences'] as const
     },
 
     friends: {

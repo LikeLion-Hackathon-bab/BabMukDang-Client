@@ -28,8 +28,10 @@ export const clusterMealMapMarkers = (
     }
 
     return [...groups.entries()].map(([key, group]) => {
-        const lat = group.reduce((sum, marker) => sum + marker.lat, 0) / group.length
-        const lng = group.reduce((sum, marker) => sum + marker.lng, 0) / group.length
+        const lat =
+            group.reduce((sum, marker) => sum + marker.lat, 0) / group.length
+        const lng =
+            group.reduce((sum, marker) => sum + marker.lng, 0) / group.length
         const sorted = [...group]
             .sort((a, b) => a.updatedAt.localeCompare(b.updatedAt))
             .reverse()

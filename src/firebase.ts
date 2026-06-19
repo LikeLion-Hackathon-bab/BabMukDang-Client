@@ -19,9 +19,9 @@ export const firebaseConfig = {
 const hasFirebaseConfig = () =>
     Boolean(
         firebaseConfig.apiKey &&
-            firebaseConfig.projectId &&
-            firebaseConfig.messagingSenderId &&
-            firebaseConfig.appId
+        firebaseConfig.projectId &&
+        firebaseConfig.messagingSenderId &&
+        firebaseConfig.appId
     )
 
 let app: FirebaseApp | null = null

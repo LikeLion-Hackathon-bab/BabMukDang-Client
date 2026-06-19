@@ -66,7 +66,10 @@ export class LocationSyncService {
             return {
                 refreshed: false,
                 reason: 'FAILED',
-                error: error instanceof Error ? error : new Error('Location sync failed')
+                error:
+                    error instanceof Error
+                        ? error
+                        : new Error('Location sync failed')
             }
         }
     }

@@ -20,7 +20,12 @@ export const useSearchController = ({
     const [isAllEmpty, setIsAllEmpty] = useState(false)
 
     const service = useMemo(
-        () => createSearchService(undefined, { initialDomains: domains, initialContext: context, debounceMs }),
+        () =>
+            createSearchService(undefined, {
+                initialDomains: domains,
+                initialContext: context,
+                debounceMs
+            }),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         []
     )
@@ -41,7 +46,8 @@ export const useSearchController = ({
             service.isAllEmpty$.subscribe(setIsAllEmpty)
         ]
 
-        return () => subscriptions.forEach(subscription => subscription.unsubscribe())
+        return () =>
+            subscriptions.forEach(subscription => subscription.unsubscribe())
     }, [service])
 
     return {
@@ -51,8 +57,10 @@ export const useSearchController = ({
         isAnyLoading,
         isAllEmpty,
         setQuery: (query: string) => service.setQuery(query),
-        setDomains: (nextDomains: SearchDomain[]) => service.setDomains(nextDomains),
-        setContext: (nextContext?: SearchContext) => service.setContext(nextContext),
+        setDomains: (nextDomains: SearchDomain[]) =>
+            service.setDomains(nextDomains),
+        setContext: (nextContext?: SearchContext) =>
+            service.setContext(nextContext),
         clear: () => service.clear()
     }
 }

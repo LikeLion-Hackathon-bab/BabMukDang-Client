@@ -13,9 +13,7 @@ export const notificationApi = {
         return contractClient.get(apiContract.notifications.list)
     },
 
-    markRead: async (
-        notificationId: string
-    ): Promise<MealPlanNotification> => {
+    markRead: async (notificationId: string): Promise<MealPlanNotification> => {
         return contractClient.patch(apiContract.notifications.markRead, {
             pathParams: { notificationId }
         })
@@ -37,7 +35,9 @@ export const useGetNotifications = () => {
     return { data, isLoading, error, refetch }
 }
 
-export const useMarkRead = (options: MutationOptions<MealPlanNotification> = {}) => {
+export const useMarkRead = (
+    options: MutationOptions<MealPlanNotification> = {}
+) => {
     const queryClient = useQueryClient()
     const { mutate, isPending, error } = useMutation({
         mutationFn: notificationApi.markRead,

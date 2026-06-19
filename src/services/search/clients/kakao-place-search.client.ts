@@ -1,7 +1,10 @@
 import type { PlaceSearchResult, SearchContext } from '../types'
 
 export interface PlaceSearchClient {
-    searchPlaces(query: string, context?: SearchContext): Promise<PlaceSearchResult[]>
+    searchPlaces(
+        query: string,
+        context?: SearchContext
+    ): Promise<PlaceSearchResult[]>
 }
 
 declare global {
@@ -24,16 +27,33 @@ const toPlaceSearchResult = (value: unknown): PlaceSearchResult => {
     return {
         placeId: String(item.id ?? ''),
         placeName: String(item.place_name ?? item.placeName ?? ''),
-        addressName: (item.address_name ?? item.addressName) as string | null | undefined,
-        roadAddressName: (item.road_address_name ?? item.roadAddressName) as string | null | undefined,
+        addressName: (item.address_name ?? item.addressName) as
+            | string
+            | null
+            | undefined,
+        roadAddressName: (item.road_address_name ?? item.roadAddressName) as
+            | string
+            | null
+            | undefined,
         latitude,
         longitude,
         distance: toNumberOrNull(item.distance),
-        categoryName: (item.category_name ?? item.categoryName) as string | null | undefined,
-        categoryGroupCode: (item.category_group_code ?? item.categoryGroupCode) as string | null | undefined,
-        categoryGroupName: (item.category_group_name ?? item.categoryGroupName) as string | null | undefined,
-        phoneNumber: (item.phone ?? item.phoneNumber) as string | null | undefined,
-        placeUrl: (item.place_url ?? item.placeUrl) as string | null | undefined,
+        categoryName: (item.category_name ?? item.categoryName) as
+            | string
+            | null
+            | undefined,
+        categoryGroupCode: (item.category_group_code ??
+            item.categoryGroupCode) as string | null | undefined,
+        categoryGroupName: (item.category_group_name ??
+            item.categoryGroupName) as string | null | undefined,
+        phoneNumber: (item.phone ?? item.phoneNumber) as
+            | string
+            | null
+            | undefined,
+        placeUrl: (item.place_url ?? item.placeUrl) as
+            | string
+            | null
+            | undefined,
         raw: value
     }
 }
@@ -41,7 +61,10 @@ const toPlaceSearchResult = (value: unknown): PlaceSearchResult => {
 export class KakaoPlaceSearchClient implements PlaceSearchClient {
     constructor(private readonly timeoutMs = 5000) {}
 
-    searchPlaces(query: string, context?: SearchContext): Promise<PlaceSearchResult[]> {
+    searchPlaces(
+        query: string,
+        context?: SearchContext
+    ): Promise<PlaceSearchResult[]> {
         return Promise.race([
             this.searchWithKakaoSdk(query, context),
             new Promise<PlaceSearchResult[]>((_, reject) => {
@@ -70,7 +93,10 @@ export class KakaoPlaceSearchClient implements PlaceSearchClient {
                 category_group_code: 'FD6'
             }
 
-            if (context?.longitude !== undefined && context.latitude !== undefined) {
+            if (
+                context?.longitude !== undefined &&
+                context.latitude !== undefined
+            ) {
                 options.x = context.longitude
                 options.y = context.latitude
                 options.sort =
@@ -87,7 +113,11 @@ export class KakaoPlaceSearchClient implements PlaceSearchClient {
                 query,
                 (data: unknown[], status: string) => {
                     if (status === kakao.maps.services.Status.OK) {
-                        resolve(data.map(toPlaceSearchResult).filter(item => item.placeId && item.placeName))
+                        resolve(
+                            data
+                                .map(toPlaceSearchResult)
+                                .filter(item => item.placeId && item.placeName)
+                        )
                         return
                     }
 

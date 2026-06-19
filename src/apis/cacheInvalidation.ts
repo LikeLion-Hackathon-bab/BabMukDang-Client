@@ -22,7 +22,9 @@ const invalidateByKey = (
             queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.all })
             return
         case 'mealGroups':
-            queryClient.invalidateQueries({ queryKey: queryKeys.mealGroups.all })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.mealGroups.all
+            })
             return
         case 'notifications':
             queryClient.invalidateQueries({

@@ -10,7 +10,10 @@ describe('notification priority policy', () => {
         expect(
             getMealPlanNotificationPriority('MEAL_PLAN_JOIN_REQUESTED', 'HOME')
         ).toBeLessThan(
-            getMealPlanNotificationPriority('MEAL_PLAN_PARTICIPANT_JOINED', 'HOME')
+            getMealPlanNotificationPriority(
+                'MEAL_PLAN_PARTICIPANT_JOINED',
+                'HOME'
+            )
         )
         expect(
             getMealPlanNotificationPriority('MEAL_PLAN_LOCKED', 'FCM_PUSH')
@@ -37,6 +40,8 @@ describe('notification priority policy', () => {
         expect(getMealPlanLiveActivityBehavior('MEAL_PLAN_RECORD_NEEDED')).toBe(
             'END'
         )
-        expect(shouldShowForegroundToast('MEAL_PLAN_INVITE_RECEIVED')).toBe(true)
+        expect(shouldShowForegroundToast('MEAL_PLAN_INVITE_RECEIVED')).toBe(
+            true
+        )
     })
 })

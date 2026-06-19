@@ -15,8 +15,12 @@ const profileDraft = {
 
 describe('OnboardingFlowController', () => {
     it('routes authenticated users by onboarding status', () => {
-        expect(onboardingFlowController.routeAfterAuth('COMPLETED')).toBe('/home')
-        expect(onboardingFlowController.routeAfterAuth('REQUIRED')).toBe('/onboarding')
+        expect(onboardingFlowController.routeAfterAuth('COMPLETED')).toBe(
+            '/home'
+        )
+        expect(onboardingFlowController.routeAfterAuth('REQUIRED')).toBe(
+            '/onboarding'
+        )
     })
 
     it('redirects required users from protected app routes to onboarding start', () => {

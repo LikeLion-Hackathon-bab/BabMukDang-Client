@@ -89,7 +89,6 @@ export interface ArticlePageView {
 
 export type ArticleLikeView = ArticleLikeResponse
 
-
 export interface ProfileSummaryView {
     memberId: number
     userName: string

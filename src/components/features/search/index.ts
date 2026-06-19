@@ -1,1 +1,5 @@
-export { FoodSearchField, FriendSearchField, PlaceSearchField } from './SearchResultFields'
+export {
+    FoodSearchField,
+    FriendSearchField,
+    PlaceSearchField
+} from './SearchResultFields'

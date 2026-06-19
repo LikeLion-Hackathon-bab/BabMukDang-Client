@@ -24,19 +24,25 @@ export const liveActivityApi = {
         mealPlanId: MealPlanId,
         body: RegisterMealPlanLiveActivitySessionRequest
     ): Promise<MealPlanLiveActivitySessionResponse> =>
-        contractClient.post(apiContract.liveActivities.registerMealPlanSession, {
-            pathParams: { mealPlanId },
-            body
-        }),
+        contractClient.post(
+            apiContract.liveActivities.registerMealPlanSession,
+            {
+                pathParams: { mealPlanId },
+                body
+            }
+        ),
 
     endMealPlanSessions: async (
         mealPlanId: MealPlanId,
         body: EndMealPlanLiveActivitySessionRequest = {}
     ): Promise<NoContent> => {
-        await contractClient.post(apiContract.liveActivities.endMealPlanSessions, {
-            pathParams: { mealPlanId },
-            body
-        })
+        await contractClient.post(
+            apiContract.liveActivities.endMealPlanSessions,
+            {
+                pathParams: { mealPlanId },
+                body
+            }
+        )
         return null
     }
 }

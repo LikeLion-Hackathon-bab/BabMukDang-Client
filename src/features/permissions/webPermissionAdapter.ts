@@ -132,7 +132,9 @@ export const webPermissionAdapter: PermissionAdapter = {
             })
         }
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true })
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: true
+            })
             stream.getTracks().forEach(track => track.stop())
             return toPermissionSnapshot({
                 kind: 'CAMERA',
@@ -142,7 +144,9 @@ export const webPermissionAdapter: PermissionAdapter = {
         } catch (error) {
             const denied =
                 error instanceof DOMException &&
-                ['NotAllowedError', 'PermissionDeniedError'].includes(error.name)
+                ['NotAllowedError', 'PermissionDeniedError'].includes(
+                    error.name
+                )
             return toPermissionSnapshot({
                 kind: 'CAMERA',
                 status: denied ? 'DENIED' : 'UNKNOWN',
@@ -161,7 +165,11 @@ export const webPermissionAdapter: PermissionAdapter = {
 
         const position = await new Promise<GeolocationPosition>(
             (resolve, reject) => {
-                navigator.geolocation.getCurrentPosition(resolve, reject, locationRequestOptions)
+                navigator.geolocation.getCurrentPosition(
+                    resolve,
+                    reject,
+                    locationRequestOptions
+                )
             }
         )
 

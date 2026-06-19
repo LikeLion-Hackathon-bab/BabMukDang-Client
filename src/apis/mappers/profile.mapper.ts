@@ -5,7 +5,9 @@ import type {
     ProfileSummaryView
 } from '../types'
 
-export const mapProfile = (profile: ProfileDto | ProfileDetailDto): ProfileSummaryView => ({
+export const mapProfile = (
+    profile: ProfileDto | ProfileDetailDto
+): ProfileSummaryView => ({
     memberId: Number(profile.memberId),
     userName: profile.username,
     username: profile.username,

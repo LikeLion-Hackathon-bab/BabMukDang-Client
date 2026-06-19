@@ -263,7 +263,6 @@ export const useUpdateMyProfile = (
     })
 }
 
-
 export const useUpdateLocationConsent = (
     options: MutationOptions<MemberLocationSettingsResponse> = {}
 ) => {

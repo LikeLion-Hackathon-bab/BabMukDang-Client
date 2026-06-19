@@ -2,8 +2,16 @@ import { defer, of } from 'rxjs'
 import { tap } from 'rxjs/operators'
 
 import { TtlCache } from '../cache/ttl-cache'
-import { KakaoPlaceSearchClient, type PlaceSearchClient } from '../clients/kakao-place-search.client'
-import type { PlaceSearchResult, SearchContext, SearchProvider, SearchProviderInput } from '../types'
+import {
+    KakaoPlaceSearchClient,
+    type PlaceSearchClient
+} from '../clients/kakao-place-search.client'
+import type {
+    PlaceSearchResult,
+    SearchContext,
+    SearchProvider,
+    SearchProviderInput
+} from '../types'
 
 const normalizeQuery = (query: string): string => query.trim().toLowerCase()
 

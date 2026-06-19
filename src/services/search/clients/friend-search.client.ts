@@ -12,12 +12,21 @@ const toFriendSearchResult = (value: unknown): FriendSearchResult => {
     const nickname = item.nickname ?? item.username ?? item.name ?? item.handle
 
     return {
-        friendId: (item.friendId ?? item.friendshipId) as number | string | undefined,
+        friendId: (item.friendId ?? item.friendshipId) as
+            | number
+            | string
+            | undefined,
         memberId: memberId as number | string,
         nickname: String(nickname ?? ''),
-        profileImageUrl: (item.profileImageUrl ?? item.profileImage) as string | null | undefined,
+        profileImageUrl: (item.profileImageUrl ?? item.profileImage) as
+            | string
+            | null
+            | undefined,
         handle: item.handle as string | null | undefined,
-        friendStatus: (item.friendStatus ?? item.status) as string | null | undefined,
+        friendStatus: (item.friendStatus ?? item.status) as
+            | string
+            | null
+            | undefined,
         isBlocked: item.isBlocked as boolean | undefined,
         isFriend: item.isFriend as boolean | undefined,
         canInviteToMealPlan: item.canInviteToMealPlan as boolean | undefined,
@@ -31,6 +40,8 @@ export class ContractFriendSearchClient implements FriendSearchClient {
             query: { username: query }
         })
 
-        return (response as unknown[]).map(toFriendSearchResult).filter(item => item.nickname)
+        return (response as unknown[])
+            .map(toFriendSearchResult)
+            .filter(item => item.nickname)
     }
 }

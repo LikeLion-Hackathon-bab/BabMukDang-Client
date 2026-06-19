@@ -16,9 +16,7 @@ export const loadingDomainState = <T>(): DomainSearchState<T> => ({
     results: []
 })
 
-export const successDomainState = <T>(
-    results: T[]
-): DomainSearchState<T> => ({
+export const successDomainState = <T>(results: T[]): DomainSearchState<T> => ({
     status: results.length > 0 ? 'success' : 'empty',
     results
 })

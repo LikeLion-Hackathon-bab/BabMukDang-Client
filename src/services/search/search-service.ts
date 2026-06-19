@@ -23,7 +23,11 @@ import {
     loadingDomainState,
     successDomainState
 } from './state'
-import { FoodSearchProvider, FriendSearchProvider, PlaceSearchProvider } from './providers'
+import {
+    FoodSearchProvider,
+    FriendSearchProvider,
+    PlaceSearchProvider
+} from './providers'
 import type {
     DomainSearchState,
     FoodSearchResult,
@@ -109,7 +113,8 @@ export class SearchService {
 
         const context$ = this.contextSubject.pipe(
             distinctUntilChanged(
-                (left, right) => stableContextKey(left) === stableContextKey(right)
+                (left, right) =>
+                    stableContextKey(left) === stableContextKey(right)
             )
         )
 
@@ -173,7 +178,9 @@ export class SearchService {
     }
 
     clearProviderCaches(): void {
-        Object.values(this.providers).forEach(provider => provider.clearCache?.())
+        Object.values(this.providers).forEach(provider =>
+            provider.clearCache?.()
+        )
     }
 
     private searchByDomains(

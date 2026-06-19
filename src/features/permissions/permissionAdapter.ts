@@ -20,7 +20,9 @@ export class PermissionRequestError extends Error {
 }
 
 export interface PermissionAdapter {
-    getPermissionSnapshot(kind: PermissionKind): Promise<DevicePermissionSnapshot>
+    getPermissionSnapshot(
+        kind: PermissionKind
+    ): Promise<DevicePermissionSnapshot>
     requestNotificationPermission(): Promise<DevicePermissionSnapshot>
     requestLocationPermission(): Promise<DevicePermissionSnapshot>
     requestCameraPermission(): Promise<DevicePermissionSnapshot>
@@ -62,6 +64,8 @@ export const toPermissionSnapshot = ({
 })
 
 export const createPermissionAdapter = (): PermissionAdapter =>
-    Capacitor.isNativePlatform() ? nativePermissionAdapter : webPermissionAdapter
+    Capacitor.isNativePlatform()
+        ? nativePermissionAdapter
+        : webPermissionAdapter
 
 export const permissionAdapter = createPermissionAdapter()

@@ -317,7 +317,9 @@ export const useUploadArticle = (
         onSuccess: data => {
             queryClient.invalidateQueries({ queryKey: queryKeys.articles.all })
             queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.all })
-            queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.notifications.all
+            })
             options.onSuccess?.(data)
         },
         onError: options.onError
@@ -340,7 +342,9 @@ export const useLikeArticle = (
         onSuccess: data => {
             queryClient.invalidateQueries({ queryKey: queryKeys.articles.all })
             queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.all })
-            queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.notifications.all
+            })
             options.onSuccess?.(data)
         },
         onError: options.onError
@@ -387,7 +391,9 @@ export const useDeleteArticle = (options: MutationOptions<NoContent> = {}) => {
         onSuccess: data => {
             queryClient.invalidateQueries({ queryKey: queryKeys.articles.all })
             queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.all })
-            queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.notifications.all
+            })
             options.onSuccess?.(data)
         },
         onError: options.onError
@@ -414,7 +420,9 @@ export const useDeleteArticleComment = (
         onSuccess: data => {
             queryClient.invalidateQueries({ queryKey: queryKeys.articles.all })
             queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.all })
-            queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.notifications.all
+            })
             options.onSuccess?.(data)
         },
         onError: options.onError

@@ -1,7 +1,11 @@
 import type { OnboardingStatus } from '@kimdaegyu/babmukdang-shared/domain'
 import type { OnboardingDraftState } from '@/store'
 
-export type OnboardingStepKey = 'PROFILE' | 'PREFER_MENU' | 'ALLERGY_MENU' | 'FINISH'
+export type OnboardingStepKey =
+    | 'PROFILE'
+    | 'PREFER_MENU'
+    | 'ALLERGY_MENU'
+    | 'FINISH'
 
 export interface OnboardingStepDefinition {
     key: OnboardingStepKey
@@ -82,7 +86,9 @@ export class OnboardingFlowController {
     }
 
     nextPathFrom(stepKey: OnboardingStepKey): string {
-        const index = ONBOARDING_FLOW_STEPS.findIndex(step => step.key === stepKey)
+        const index = ONBOARDING_FLOW_STEPS.findIndex(
+            step => step.key === stepKey
+        )
         return ONBOARDING_FLOW_STEPS[index + 1]?.path ?? this.completedHomePath
     }
 

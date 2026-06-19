@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { FriendListSection, MealStatusToggleButton } from '@/components'
 import { FriendSearchInput } from '@/components/features/friend/FriendSearchInput'
@@ -37,13 +37,7 @@ const getNumber = (value: unknown, keys: string[]): number | null => {
 }
 
 const getMemberId = (value: unknown): number | null =>
-    getNumber(value, [
-        'memberId',
-        'friendMemberId',
-        'targetMemberId',
-        'userId',
-        'id'
-    ])
+    getNumber(value, ['memberId', 'friendMemberId', 'targetMemberId', 'userId', 'id'])
 
 const getDisplayName = (value: unknown): string =>
     getString(value, ['userName', 'username', 'nickname', 'name', 'email'])
@@ -68,8 +62,7 @@ const inviteStatusLabel = (status: string): string => {
 export function FriendPage() {
     const navigate = useNavigate()
     const [keyword, setKeyword] = useState('')
-    const { data: friendMeals, isLoading: isFriendMealsLoading } =
-        useAllFriendMeals()
+    const { data: friendMeals, isLoading: isFriendMealsLoading } = useAllFriendMeals()
     const { data: receivedInvites } = useReceivedMealPlanInvites()
     const { data: sentInvites } = useSentMealPlanInvites()
     const { mutate: acceptInvite } = useAcceptMealPlanInvite({
@@ -82,9 +75,7 @@ export function FriendPage() {
     const friendList = useMemo(
         () =>
             (friendMeals ?? [])
-                .filter((friend: unknown) =>
-                    getDisplayName(friend).includes(keyword)
-                )
+                .filter((friend: unknown) => getDisplayName(friend).includes(keyword))
                 .map((friend: unknown) => ({
                     memberId: getMemberId(friend) ?? 0,
                     userName: getDisplayName(friend),
@@ -114,9 +105,7 @@ export function FriendPage() {
             </section>
             <MealStatusToggleButton />
             <section className="flex flex-col gap-12">
-                <h2 className="text-body1-semibold text-gray-8">
-                    받은 MealPlan 초대
-                </h2>
+                <h2 className="text-body1-semibold text-gray-8">받은 MealPlan 초대</h2>
                 {receivedInvites?.length ? (
                     <div className="flex flex-col gap-10">
                         {receivedInvites.map(invite => {
@@ -128,12 +117,10 @@ export function FriendPage() {
                                     <div className="flex items-start justify-between gap-10">
                                         <div className="flex min-w-0 flex-col gap-4">
                                             <span className="text-body1-semibold text-gray-8">
-                                                {invite.inviter.username}님의
-                                                밥약 초대
+                                                {invite.inviter.username}님의 밥약 초대
                                             </span>
                                             <p className="text-caption-regular text-gray-5">
-                                                {invite.message ||
-                                                    '같이 밥 먹자는 초대가 도착했습니다.'}
+                                                {invite.message || '같이 밥 먹자는 초대가 도착했습니다.'}
                                             </p>
                                         </div>
                                         <span className="rounded-20 bg-gray-1 px-10 py-5 text-caption-medium text-gray-6">
@@ -144,21 +131,15 @@ export function FriendPage() {
                                         <div className="grid grid-cols-2 gap-8">
                                             <button
                                                 type="button"
-                                                onClick={() =>
-                                                    acceptInvite(
-                                                        invite.inviteId
-                                                    )
-                                                }
+                                                data-testid={`meal-plan-invite-accept-${invite.inviteId}`}
+                                                onClick={() => acceptInvite(invite.inviteId)}
                                                 className="rounded-30 bg-gray-8 py-10 text-caption-medium text-white">
                                                 수락
                                             </button>
                                             <button
                                                 type="button"
-                                                onClick={() =>
-                                                    declineInvite(
-                                                        invite.inviteId
-                                                    )
-                                                }
+                                                data-testid={`meal-plan-invite-decline-${invite.inviteId}`}
+                                                onClick={() => declineInvite(invite.inviteId)}
                                                 className="rounded-30 bg-gray-2 py-10 text-caption-medium text-gray-7">
                                                 거절
                                             </button>
@@ -181,9 +162,7 @@ export function FriendPage() {
                 )}
             </section>
             <section className="flex flex-col gap-12">
-                <h2 className="text-body1-semibold text-gray-8">
-                    보낸 MealPlan 초대
-                </h2>
+                <h2 className="text-body1-semibold text-gray-8">보낸 MealPlan 초대</h2>
                 {sentInvites?.length ? (
                     <div className="flex flex-col gap-8">
                         {sentInvites.map(invite => (

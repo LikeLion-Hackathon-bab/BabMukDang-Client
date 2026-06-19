@@ -22,8 +22,7 @@ export function useNearbyFriendExposureWorkflow(mealPlanId: string) {
         useExposeMealPlanToNearbyFriends()
     const { mutateAsync: updateLocationConsentAsync } =
         useUpdateLocationConsent()
-    const { mutateAsync: updateMemberLocationAsync } =
-        useUpdateMemberLocation()
+    const { mutateAsync: updateMemberLocationAsync } = useUpdateMemberLocation()
 
     const startExposure = useCallback(
         async ({ radiusMeters }: { radiusMeters: number }) => {

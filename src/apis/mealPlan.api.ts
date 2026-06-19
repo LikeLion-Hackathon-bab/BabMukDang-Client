@@ -45,7 +45,9 @@ const invalidateMealPlanQueries = (
 ) => {
     queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.all })
     queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
-    queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.homeDashboard })
+    queryClient.invalidateQueries({
+        queryKey: queryKeys.mealPlans.homeDashboard
+    })
     queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.map })
     if (mealPlanId) {
         queryClient.invalidateQueries({
@@ -72,7 +74,9 @@ export const mealPlanApi = {
         return contractClient.get(apiContract.mealPlans.homeDashboard)
     },
 
-    getMap: async (query: MealMapQuery = { friendRecordDays: 7 }): Promise<MealMapResponse> => {
+    getMap: async (
+        query: MealMapQuery = { friendRecordDays: 7 }
+    ): Promise<MealMapResponse> => {
         return contractClient.get(apiContract.mealPlans.map, { query })
     },
 
@@ -258,11 +262,12 @@ export const mealPlanApi = {
         })
     },
 
-    getNearbyFriendExposureEligibility: async (): Promise<NearbyFriendExposureEligibility> => {
-        return contractClient.get(
-            apiContract.mealPlans.nearbyFriendExposureEligibility
-        )
-    },
+    getNearbyFriendExposureEligibility:
+        async (): Promise<NearbyFriendExposureEligibility> => {
+            return contractClient.get(
+                apiContract.mealPlans.nearbyFriendExposureEligibility
+            )
+        },
 
     getNearbyFriends: async (): Promise<NearbyFriendMealPlanSummary[]> => {
         return contractClient.get(apiContract.mealPlans.nearbyFriends)
@@ -281,9 +286,7 @@ export const mealPlanApi = {
         })
     },
 
-    acceptJoinRequest: async (
-        requestId: string
-    ): Promise<MealPlanResponse> => {
+    acceptJoinRequest: async (requestId: string): Promise<MealPlanResponse> => {
         return contractClient.post(apiContract.mealPlans.acceptJoinRequest, {
             pathParams: {
                 requestId: domainId.mealPlanJoinRequest(requestId)
@@ -335,8 +338,6 @@ export const mealPlanApi = {
         })
     },
 
-
-
     getDecisionProgress: async (
         mealPlanId: string
     ): Promise<MealPlanDecisionProgress> => {
@@ -384,13 +385,16 @@ export const mealPlanApi = {
         snapshotId: string
         body: ConfirmMealPlanDecisionSnapshotRequest
     }): Promise<MealPlanResponse> => {
-        return contractClient.post(apiContract.mealPlans.confirmDecisionSnapshot, {
-            pathParams: {
-                mealPlanId: domainId.mealPlan(mealPlanId),
-                snapshotId
-            },
-            body
-        })
+        return contractClient.post(
+            apiContract.mealPlans.confirmDecisionSnapshot,
+            {
+                pathParams: {
+                    mealPlanId: domainId.mealPlan(mealPlanId),
+                    snapshotId
+                },
+                body
+            }
+        )
     },
 
     ready: async (mealPlanId: string): Promise<MealPlanResponse> => {
@@ -519,7 +523,9 @@ export const useSentMealPlanInvites = () =>
         queryFn: mealPlanApi.getSentInvites
     })
 
-export const useNearbyFriendExposureEligibility = (options?: { enabled?: boolean }) =>
+export const useNearbyFriendExposureEligibility = (options?: {
+    enabled?: boolean
+}) =>
     useQuery({
         queryKey: queryKeys.mealPlans.nearbyFriendExposureEligibility,
         queryFn: mealPlanApi.getNearbyFriendExposureEligibility,
@@ -542,7 +548,6 @@ export const useMealPlanSharePreview = (
         enabled: (options?.enabled ?? true) && token.length > 0
     })
 
-
 export const useMealPlanGuestSession = (
     token: string,
     sessionToken: string | null,
@@ -551,7 +556,10 @@ export const useMealPlanGuestSession = (
     useQuery({
         queryKey: queryKeys.mealPlans.guestSession(token, sessionToken),
         queryFn: () =>
-            mealPlanApi.getGuestSession({ token, sessionToken: sessionToken ?? '' }),
+            mealPlanApi.getGuestSession({
+                token,
+                sessionToken: sessionToken ?? ''
+            }),
         enabled:
             (options?.enabled ?? true) &&
             token.length > 0 &&
@@ -576,7 +584,10 @@ export const useCreateMealPlan = (
 const useMealPlanMutation = <TVariables, TData>(
     mutationFn: (variables: TVariables) => Promise<TData>,
     options: MutationOptions<TData> = {},
-    resolveMealPlanId?: (variables: TVariables, data: TData) => string | undefined
+    resolveMealPlanId?: (
+        variables: TVariables,
+        data: TData
+    ) => string | undefined
 ) => {
     const queryClient = useQueryClient()
     return useMutation({
@@ -596,13 +607,16 @@ const useMealPlanMutation = <TVariables, TData>(
 export const useUpdateMealPlanContext = (
     options: MutationOptions<MealPlanResponse> = {}
 ) =>
-    useMealPlanMutation(mealPlanApi.updateContext, options, variables =>
-        variables.mealPlanId
+    useMealPlanMutation(
+        mealPlanApi.updateContext,
+        options,
+        variables => variables.mealPlanId
     )
 
 export const useCompleteMealPlan = (
     options: MutationOptions<MealPlanResponse> = {}
-) => useMealPlanMutation(mealPlanApi.complete, options, mealPlanId => mealPlanId)
+) =>
+    useMealPlanMutation(mealPlanApi.complete, options, mealPlanId => mealPlanId)
 
 export const useCancelMealPlan = (
     options: MutationOptions<MealPlanResponse> = {}
@@ -610,27 +624,34 @@ export const useCancelMealPlan = (
 
 export const useRecordMealPlan = (
     options: MutationOptions<MealPlanResponse> = {}
-) => useMealPlanMutation(mealPlanApi.recorded, options, mealPlanId => mealPlanId)
+) =>
+    useMealPlanMutation(mealPlanApi.recorded, options, mealPlanId => mealPlanId)
 
 export const useRemoveMealPlanParticipant = (
     options: MutationOptions<MealPlanResponse> = {}
 ) =>
-    useMealPlanMutation(mealPlanApi.removeParticipant, options, variables =>
-        variables.mealPlanId
+    useMealPlanMutation(
+        mealPlanApi.removeParticipant,
+        options,
+        variables => variables.mealPlanId
     )
 
 export const useSendMealPlanInvite = (
     options: MutationOptions<SendMealPlanInviteResponse> = {}
 ) =>
-    useMealPlanMutation(mealPlanApi.invite, options, variables =>
-        variables.mealPlanId
+    useMealPlanMutation(
+        mealPlanApi.invite,
+        options,
+        variables => variables.mealPlanId
     )
 
 export const useAcceptMealPlanInvite = (
     options: MutationOptions<MealPlanResponse> = {}
 ) =>
-    useMealPlanMutation(mealPlanApi.acceptInvite, options, (_inviteId, data) =>
-        data.mealPlanId
+    useMealPlanMutation(
+        mealPlanApi.acceptInvite,
+        options,
+        (_inviteId, data) => data.mealPlanId
     )
 
 export const useDeclineMealPlanInvite = (
@@ -640,38 +661,50 @@ export const useDeclineMealPlanInvite = (
 export const useCreateMealPlanShareLink = (
     options: MutationOptions<MealPlanShareLinkSummary> = {}
 ) =>
-    useMealPlanMutation(mealPlanApi.createShareLink, options, variables =>
-        variables.mealPlanId
+    useMealPlanMutation(
+        mealPlanApi.createShareLink,
+        options,
+        variables => variables.mealPlanId
     )
 
 export const useJoinMealPlanGuest = (
-    options: MutationOptions<Awaited<ReturnType<typeof mealPlanApi.joinGuest>>> =
-        {}
+    options: MutationOptions<
+        Awaited<ReturnType<typeof mealPlanApi.joinGuest>>
+    > = {}
 ) =>
-    useMealPlanMutation(mealPlanApi.joinGuest, options, (_variables, data) =>
-        data.mealPlanId
+    useMealPlanMutation(
+        mealPlanApi.joinGuest,
+        options,
+        (_variables, data) => data.mealPlanId
     )
 
 export const useExposeMealPlanToNearbyFriends = (
     options: MutationOptions<ExposeMealPlanToNearbyFriendsResponse> = {}
 ) =>
-    useMealPlanMutation(mealPlanApi.exposeNearbyFriends, options, variables =>
-        variables.mealPlanId
+    useMealPlanMutation(
+        mealPlanApi.exposeNearbyFriends,
+        options,
+        variables => variables.mealPlanId
     )
 
 export const useCloseMealPlanNearbyFriends = (
     options: MutationOptions<NoContent> = {}
 ) =>
-    useMealPlanMutation(mealPlanApi.closeNearbyFriends, options, mealPlanId =>
-        mealPlanId
+    useMealPlanMutation(
+        mealPlanApi.closeNearbyFriends,
+        options,
+        mealPlanId => mealPlanId
     )
 
 export const useRequestJoinMealPlan = (
-    options: MutationOptions<Awaited<ReturnType<typeof mealPlanApi.requestJoin>>> =
-        {}
+    options: MutationOptions<
+        Awaited<ReturnType<typeof mealPlanApi.requestJoin>>
+    > = {}
 ) =>
-    useMealPlanMutation(mealPlanApi.requestJoin, options, variables =>
-        variables.mealPlanId
+    useMealPlanMutation(
+        mealPlanApi.requestJoin,
+        options,
+        variables => variables.mealPlanId
     )
 
 export const useAcceptMealPlanJoinRequest = (
@@ -683,7 +716,7 @@ export const useAcceptMealPlanJoinRequest = (
         (_requestId, data) => data.mealPlanId
     )
 
-const removePendingJoinRequestFromCache = <TData,>(
+const removePendingJoinRequestFromCache = <TData>(
     data: TData,
     requestId: string
 ): TData => {
@@ -707,7 +740,9 @@ export const useRejectMealPlanJoinRequest = (
     return useMutation({
         mutationFn: mealPlanApi.rejectJoinRequest,
         onMutate: async requestId => {
-            await queryClient.cancelQueries({ queryKey: queryKeys.mealPlans.all })
+            await queryClient.cancelQueries({
+                queryKey: queryKeys.mealPlans.all
+            })
             const snapshots = queryClient.getQueriesData({
                 queryKey: queryKeys.mealPlans.all
             })
@@ -721,12 +756,20 @@ export const useRejectMealPlanJoinRequest = (
             context?.snapshots.forEach(([queryKey, data]) => {
                 queryClient.setQueryData(queryKey, data)
             })
-            options.onError?.(error instanceof Error ? error : new Error('Join request reject failed'))
+            options.onError?.(
+                error instanceof Error
+                    ? error
+                    : new Error('Join request reject failed')
+            )
         },
         onSuccess: data => {
-            queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
-    queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.homeDashboard })
-    queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.map })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.notifications.all
+            })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.mealPlans.homeDashboard
+            })
+            queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.map })
             options.onSuccess?.(data)
         },
         onSettled: (data, error, requestId, context) => {
@@ -739,25 +782,30 @@ export const useRejectMealPlanJoinRequest = (
 export const useCreateMealPlanVote = (
     options: MutationOptions<MealPlanResponse> = {}
 ) =>
-    useMealPlanMutation(mealPlanApi.vote, options, variables =>
-        variables.mealPlanId
+    useMealPlanMutation(
+        mealPlanApi.vote,
+        options,
+        variables => variables.mealPlanId
     )
 
 export const useCompleteMealPlanStage = (
     options: MutationOptions<MealPlanResponse> = {}
 ) =>
-    useMealPlanMutation(mealPlanApi.completeStage, options, variables =>
-        variables.mealPlanId
+    useMealPlanMutation(
+        mealPlanApi.completeStage,
+        options,
+        variables => variables.mealPlanId
     )
-
-
 
 export const useMealPlanDecisionProgress = (
     mealPlanId: string,
     options?: { enabled?: boolean }
 ) =>
     useQuery({
-        queryKey: [...queryKeys.mealPlans.detail(mealPlanId), 'decision-progress'] as const,
+        queryKey: [
+            ...queryKeys.mealPlans.detail(mealPlanId),
+            'decision-progress'
+        ] as const,
         queryFn: () => mealPlanApi.getDecisionProgress(mealPlanId),
         enabled: (options?.enabled ?? true) && mealPlanId.length > 0
     })
@@ -765,22 +813,28 @@ export const useMealPlanDecisionProgress = (
 export const useReadyMealPlanDecisionTask = (
     options: MutationOptions<MealPlanResponse> = {}
 ) =>
-    useMealPlanMutation(mealPlanApi.readyDecisionTask, options, variables =>
-        variables.mealPlanId
+    useMealPlanMutation(
+        mealPlanApi.readyDecisionTask,
+        options,
+        variables => variables.mealPlanId
     )
 
 export const useReopenMealPlanDecisionTask = (
     options: MutationOptions<MealPlanResponse> = {}
 ) =>
-    useMealPlanMutation(mealPlanApi.reopenDecisionTask, options, variables =>
-        variables.mealPlanId
+    useMealPlanMutation(
+        mealPlanApi.reopenDecisionTask,
+        options,
+        variables => variables.mealPlanId
     )
 
 export const useConfirmMealPlanDecisionSnapshot = (
     options: MutationOptions<MealPlanResponse> = {}
 ) =>
-    useMealPlanMutation(mealPlanApi.confirmDecisionSnapshot, options, variables =>
-        variables.mealPlanId
+    useMealPlanMutation(
+        mealPlanApi.confirmDecisionSnapshot,
+        options,
+        variables => variables.mealPlanId
     )
 
 export const useReadyMealPlan = (
@@ -792,18 +846,23 @@ export const useUnreadyMealPlan = (
 ) => useMealPlanMutation(mealPlanApi.unready, options, mealPlanId => mealPlanId)
 
 export const useCreateMealPlanChangeRequest = (
-    options: MutationOptions<Awaited<ReturnType<typeof mealPlanApi.createChangeRequest>>> =
-        {}
+    options: MutationOptions<
+        Awaited<ReturnType<typeof mealPlanApi.createChangeRequest>>
+    > = {}
 ) =>
-    useMealPlanMutation(mealPlanApi.createChangeRequest, options, variables =>
-        variables.mealPlanId
+    useMealPlanMutation(
+        mealPlanApi.createChangeRequest,
+        options,
+        variables => variables.mealPlanId
     )
 
 export const useAcceptMealPlanChangeRequest = (
     options: MutationOptions<MealPlanResponse> = {}
 ) =>
-    useMealPlanMutation(mealPlanApi.acceptChangeRequest, options, variables =>
-        variables.mealPlanId
+    useMealPlanMutation(
+        mealPlanApi.acceptChangeRequest,
+        options,
+        variables => variables.mealPlanId
     )
 
 export const useConfirmMealPlan = (

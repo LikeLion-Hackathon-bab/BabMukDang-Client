@@ -30,9 +30,7 @@ const pad = (n: number) => String(n).padStart(2, '0')
  * `mealTime`(LocalTime)을 칩 표시용 `HH:mm:ss` 문자열로 포맷한다.
  * (식사 시간대 카테고리 매핑이 붙기 전까지의 표현)
  */
-export const toPostCardView = (
-    article: ArticleSummaryView
-): PostCardView => ({
+export const toPostCardView = (article: ArticleSummaryView): PostCardView => ({
     articleId: article.articleId,
     authorId: article.authorId,
     authorUsername: article.authorUsername,

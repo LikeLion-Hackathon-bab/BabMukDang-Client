@@ -5,7 +5,10 @@ import {
     type AppBootstrapTask
 } from './AppBootstrapTaskRegistry'
 
-const noopTask = (id: string, phase: AppBootstrapTask['phase']): AppBootstrapTask => ({
+const noopTask = (
+    id: string,
+    phase: AppBootstrapTask['phase']
+): AppBootstrapTask => ({
     id,
     phase,
     description: id,
@@ -38,12 +41,14 @@ describe('AppBootstrapTaskRegistry', () => {
     })
 
     it('ships auth recovery, profile loading, passive permission sync, stale location sync, and push registration tasks by default', () => {
-        expect(defaultAppBootstrapTaskRegistry.getTasks().map(task => task.id)).toEqual([
+        expect(
+            defaultAppBootstrapTaskRegistry.getTasks().map(task => task.id)
+        ).toEqual([
             'auth.refresh-session',
             'profile.load-me',
             'permissions.sync',
             'location.sync-if-stale',
-            'push.register-token',
+            'push.register-token'
         ])
     })
 })
