@@ -4,7 +4,7 @@ type OnboardingStatus = 'REQUIRED' | 'COMPLETED'
 
 const AUTH_STORAGE_KEY = 'auth-storage'
 
-const apiSuccess = <T,>(data: T, code = 200) => ({
+const apiSuccess = <T>(data: T, code = 200) => ({
     success: true,
     code,
     message: code === 201 ? 'Created' : 'OK',
@@ -151,7 +151,9 @@ async function completeOnboardingWithoutImage(page: Page) {
 }
 
 test.describe('Milestone 1 auth bootstrap and onboarding', () => {
-    test('기존 회원은 access token bootstrap 후 홈으로 이동한다', async ({ page }) => {
+    test('기존 회원은 access token bootstrap 후 홈으로 이동한다', async ({
+        page
+    }) => {
         await installAuthApiMocks(page, { onboardingStatus: 'COMPLETED' })
         await injectAccessToken(page)
 
@@ -160,7 +162,9 @@ test.describe('Milestone 1 auth bootstrap and onboarding', () => {
         await expect(page).toHaveURL(/\/home$/)
     })
 
-    test('신규 회원은 보호 route 접근 시 온보딩 시작 화면으로 이동한다', async ({ page }) => {
+    test('신규 회원은 보호 route 접근 시 온보딩 시작 화면으로 이동한다', async ({
+        page
+    }) => {
         await installAuthApiMocks(page, { onboardingStatus: 'REQUIRED' })
         await injectAccessToken(page)
 
@@ -169,7 +173,9 @@ test.describe('Milestone 1 auth bootstrap and onboarding', () => {
         await expect(page).toHaveURL(/\/onboarding$/)
     })
 
-    test('OAuth 복귀 사용자는 refresh cookie로 세션을 복구하고 홈으로 이동한다', async ({ page }) => {
+    test('OAuth 복귀 사용자는 refresh cookie로 세션을 복구하고 홈으로 이동한다', async ({
+        page
+    }) => {
         await installAuthApiMocks(page, {
             onboardingStatus: 'COMPLETED',
             refreshSucceeds: true
@@ -180,7 +186,9 @@ test.describe('Milestone 1 auth bootstrap and onboarding', () => {
         await expect(page).toHaveURL(/\/home$/)
     })
 
-    test('이메일 로그인 성공 후 기존 회원은 홈으로 이동한다', async ({ page }) => {
+    test('이메일 로그인 성공 후 기존 회원은 홈으로 이동한다', async ({
+        page
+    }) => {
         await installAuthApiMocks(page, { onboardingStatus: 'COMPLETED' })
 
         await page.goto('/login')
@@ -191,7 +199,9 @@ test.describe('Milestone 1 auth bootstrap and onboarding', () => {
         await expect(page).toHaveURL(/\/home$/)
     })
 
-    test('이메일 회원가입 신규 회원은 온보딩을 완료하고 완료 화면으로 이동한다', async ({ page }) => {
+    test('이메일 회원가입 신규 회원은 온보딩을 완료하고 완료 화면으로 이동한다', async ({
+        page
+    }) => {
         await installAuthApiMocks(page, { onboardingStatus: 'REQUIRED' })
 
         await page.goto('/login')

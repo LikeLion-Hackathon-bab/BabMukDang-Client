@@ -21,7 +21,10 @@ export function UploadButton() {
         input.click()
     }
     return (
-        <div
+        <button
+            type="button"
+            data-testid="home-upload-button"
+            aria-label="사진 업로드"
             className="border-primary-400 fixed right-20 bottom-110 z-51 flex size-60 flex-row items-center justify-center rounded-full border-1 bg-white"
             onClick={selectFromGallery}>
             {/* + 아이콘 */}
@@ -46,6 +49,6 @@ export function UploadButton() {
                     strokeLinejoin="round"
                 />
             </svg>
-        </div>
+        </button>
     )
 }

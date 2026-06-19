@@ -25,8 +25,6 @@ export const authHandlers = [
         return apiSuccess(response)
     }),
 
-
-
     /**
      * POST /auth/login - 이메일 로그인
      */

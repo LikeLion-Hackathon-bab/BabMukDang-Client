@@ -30,6 +30,14 @@ export const pushTokenHandlers = [
     }),
     http.post(`${BASE_URL}/push-tokens/revoke`, () => apiNoContent()),
     http.post(`${BASE_URL}/push-tokens/test-invalid`, () =>
-        HttpResponse.json({ success: false, status: 410, code: 'INVALID_PUSH_TOKEN', message: 'invalid' }, { status: 410 })
+        HttpResponse.json(
+            {
+                success: false,
+                status: 410,
+                code: 'INVALID_PUSH_TOKEN',
+                message: 'invalid'
+            },
+            { status: 410 }
+        )
     )
 ]

@@ -55,6 +55,7 @@ export function MealPlanInvitePanel({
             </div>
             <input
                 className="rounded-12 bg-gray-1 px-12 py-10 text-body2-medium outline-none"
+                data-testid="meal-plan-invite-message-input"
                 value={message}
                 onChange={event => setMessage(event.target.value)}
                 placeholder="초대 메시지"

@@ -5,6 +5,11 @@ import {
 } from '@/components'
 import type { MealPlanNotificationView } from '@/viewModels'
 
+const isExplicitDeleteModeEnabled = () => {
+    if (typeof window === 'undefined') return false
+    return window.localStorage.getItem('e2e-explicit-delete-mode') === 'true'
+}
+
 export function MealPlanNotificationList({
     notifications,
     onDeleteNotification,
@@ -22,6 +27,8 @@ export function MealPlanNotificationList({
             {notifications.map(notification => (
                 <SwipeableCard
                     key={notification.notificationId}
+                    explicitDeleteMode={isExplicitDeleteModeEnabled()}
+                    deleteButtonTestId={`notification-delete-button-${notification.notificationId}`}
                     onDelete={() =>
                         onDeleteNotification(notification.notificationId)
                     }>

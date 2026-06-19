@@ -31,6 +31,7 @@ export function JoinRequestCard({
             <div className="mt-12 grid grid-cols-2 gap-8">
                 <button
                     type="button"
+                    data-testid={`meal-plan-join-request-accept-${request.joinRequestId}`}
                     disabled={disabled}
                     onClick={() => onAccept(request.joinRequestId)}
                     className="rounded-24 bg-gray-8 py-9 text-caption-medium text-white disabled:opacity-40">
@@ -38,6 +39,7 @@ export function JoinRequestCard({
                 </button>
                 <button
                     type="button"
+                    data-testid={`meal-plan-join-request-reject-${request.joinRequestId}`}
                     disabled={disabled}
                     onClick={() => onReject(request.joinRequestId)}
                     className="rounded-24 bg-gray-2 py-9 text-caption-medium text-gray-7 disabled:opacity-40">

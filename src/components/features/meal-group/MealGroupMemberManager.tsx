@@ -53,6 +53,7 @@ export function MealGroupMemberManager({
                     return (
                         <div
                             key={memberId}
+                            data-testid={`meal-group-member-row-${memberId}`}
                             className="rounded-16 border-gray-2 flex items-center justify-between gap-10 border p-12">
                             <div className="min-w-0">
                                 <p className="text-body2-semibold text-gray-8 truncate">
@@ -67,6 +68,7 @@ export function MealGroupMemberManager({
                                     {!isGroupOwner && (
                                         <button
                                             type="button"
+                                            data-testid={`meal-group-member-transfer-owner-${memberId}`}
                                             disabled={updateRole.isPending}
                                             onClick={() =>
                                                 updateRole.mutate({
@@ -82,6 +84,7 @@ export function MealGroupMemberManager({
                                     {!isGroupOwner && (
                                         <button
                                             type="button"
+                                            data-testid={`meal-group-member-remove-${memberId}`}
                                             disabled={removeMember.isPending}
                                             onClick={() => {
                                                 if (window.confirm(`${groupMember.member.username}님을 그룹에서 제거할까요?`)) {
@@ -112,6 +115,7 @@ export function MealGroupMemberManager({
                     ) : (
                         <>
                             <select
+                                data-testid="meal-group-member-select"
                                 value={selectedMemberId}
                                 onChange={event => setSelectedMemberId(event.target.value)}
                                 className="rounded-14 border-gray-2 bg-white text-body2-medium border px-12 py-10">
@@ -126,6 +130,7 @@ export function MealGroupMemberManager({
                             </select>
                             <button
                                 type="button"
+                                data-testid="meal-group-member-add-button"
                                 disabled={addMember.isPending || selectedMemberId.length === 0}
                                 onClick={() =>
                                     addMember.mutate({

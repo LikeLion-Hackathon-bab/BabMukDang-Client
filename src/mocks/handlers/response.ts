@@ -27,11 +27,7 @@ export const apiCreated = <T>(data: T, message = 'Created') =>
 
 export const apiNoContent = () => new HttpResponse(null, { status: 204 })
 
-export const apiFailure = (
-    status: number,
-    code: string,
-    message: string
-) =>
+export const apiFailure = (status: number, code: string, message: string) =>
     HttpResponse.json<ApiFailure>(
         {
             success: false,

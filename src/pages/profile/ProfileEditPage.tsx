@@ -59,6 +59,7 @@ function TagInput({
             </div>
             <input
                 id={id}
+                data-testid={`profile-edit-tag-input-${id}`}
                 type="text"
                 value={value.endsWith(' ') ? '' : value.split(' ').pop() || ''}
                 onChange={e => {
@@ -204,6 +205,7 @@ export function ProfileEditPage() {
         () => (
             <button
                 type="button"
+                data-testid="profile-edit-save-button"
                 disabled={isSaving || name.trim().length === 0}
                 onClick={handleSave}
                 className="text-body1-semibold text-gray-8 disabled:opacity-40">
@@ -250,6 +252,7 @@ export function ProfileEditPage() {
                     <input
                         type="file"
                         accept="image/*"
+                        data-testid="profile-edit-image-input"
                         className="hidden"
                         onChange={e => {
                             setSelectedFile(e.target.files?.[0] ?? null)
@@ -268,6 +271,7 @@ export function ProfileEditPage() {
                     <div className="rounded-12 border-gray-2 flex w-full items-center gap-10 border bg-white p-12">
                         <input
                             type="text"
+                            data-testid="profile-edit-name-input"
                             value={name}
                             onChange={e => setName(e.target.value)}
                             placeholder="이름"
@@ -284,6 +288,7 @@ export function ProfileEditPage() {
                     <div className="rounded-12 border-gray-2 flex w-full items-center gap-10 border bg-white p-12">
                         <input
                             type="text"
+                            data-testid="profile-edit-bio-input"
                             value={bio}
                             onChange={e => setBio(e.target.value)}
                             placeholder="자기소개"

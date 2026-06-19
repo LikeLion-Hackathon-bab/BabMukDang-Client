@@ -64,40 +64,38 @@ export const PostCardContent = ({
                 className="absolute top-16 left-20 z-10"
             />
             <div className="absolute bottom-16 left-16 flex flex-row items-center gap-14">
-                <div className="flex items-center justify-center rounded-full bg-white/30 px-12 py-12">
-                    {isLiked ? (
-                        <div
-                            onClick={onClickLike}
-                            className="flex items-center gap-8">
+                <button
+                    type="button"
+                    data-testid={`article-like-button-${postId}`}
+                    aria-label={isLiked ? '좋아요 취소' : '좋아요'}
+                    disabled={isLikePending}
+                    onClick={onClickLike}
+                    className="flex items-center justify-center rounded-full bg-white/30 px-12 py-12 disabled:opacity-60">
+                    <span className="flex items-center gap-8">
+                        {isLiked ? (
                             <HeartFilledIcon className="size-16" />
-                            {likeCount > 0 && (
-                                <span className="text-body2-semibold text-white">
-                                    {likeCount}
-                                </span>
-                            )}
-                        </div>
-                    ) : (
-                        <div
-                            onClick={onClickLike}
-                            className="flex items-center gap-8">
+                        ) : (
                             <HeartWhiteIcon className="size-16" />
-                            {likeCount > 0 && (
-                                <span className="text-body2-semibold text-white">
-                                    {likeCount}
-                                </span>
-                            )}
-                        </div>
-                    )}
-                </div>
+                        )}
+                        {likeCount > 0 && (
+                            <span className="text-body2-semibold text-white">
+                                {likeCount}
+                            </span>
+                        )}
+                    </span>
+                </button>
                 {!isComment && (
-                    <div
+                    <button
+                        type="button"
+                        data-testid={`article-comment-button-${postId}`}
+                        aria-label="댓글 보기"
                         className="flex size-40 items-center justify-center rounded-full bg-white/30 p-12"
                         onClick={onClickComment}>
                         <CommentIcon
                             strokecolor={COLORS.white}
                             className="size-16"
                         />
-                    </div>
+                    </button>
                 )}
             </div>
         </div>

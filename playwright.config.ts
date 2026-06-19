@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
 const isCI = !!process.env.CI
+const chromiumExecutablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
 
 export default defineConfig({
     testDir: './src/e2e_tests',
@@ -19,6 +20,9 @@ export default defineConfig({
         screenshot: 'only-on-failure',
         video: isCI ? 'retain-on-failure' : 'off',
         trace: isCI ? 'retain-on-failure' : 'off',
+        launchOptions: chromiumExecutablePath
+            ? { executablePath: chromiumExecutablePath }
+            : undefined,
     },
 
     webServer: {

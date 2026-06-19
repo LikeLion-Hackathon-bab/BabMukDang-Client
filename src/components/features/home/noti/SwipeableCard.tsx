@@ -22,6 +22,8 @@ interface SwipeableCardProps {
     deleteButtonWidth?: number
     resistance?: number
     className?: string
+    explicitDeleteMode?: boolean
+    deleteButtonTestId?: string
 }
 
 interface SwipeableCardReturn {
@@ -38,7 +40,9 @@ export function SwipeableCard({
     duration = 300,
     deleteButtonWidth = 90,
     resistance = 0.4,
-    className = ''
+    className = '',
+    explicitDeleteMode = false,
+    deleteButtonTestId = 'swipeable-card-delete-button'
 }: SwipeableCardProps) {
     const containerRef = useRef<HTMLDivElement>(null)
     const [translateX, setTranslateX] = useState(0)
@@ -194,11 +198,22 @@ export function SwipeableCard({
 
     return (
         <div className={`relative overflow-hidden ${className} select-none`}>
+            {explicitDeleteMode && (
+                <button
+                    type="button"
+                    data-testid={`${deleteButtonTestId}-explicit`}
+                    onClick={handleDelete}
+                    className="sr-only">
+                    테스트 삭제
+                </button>
+            )}
             {/* 삭제 버튼 */}
             <div
                 className="bg-gray-4 absolute top-0 right-0 z-10 flex h-full w-20 items-center justify-center"
                 style={{ width: `${deleteButtonWidth}px` }}>
                 <button
+                    type="button"
+                    data-testid={deleteButtonTestId}
                     onClick={handleDelete}
                     className="text-caption-medium flex flex-col items-center justify-center gap-10 text-white">
                     <TrashIcon strokecolor={COLORS.white} />

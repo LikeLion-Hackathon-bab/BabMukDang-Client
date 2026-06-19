@@ -19,7 +19,9 @@ export const uploadHandlers = [
             cdnUrl: 'https://cdn.example.test/articles/1/mock-article-image.jpg'
         })
     ),
-    http.put('https://storage.example.test/:path*', () =>
-        new Response(null, { status: 200, headers: { ETag: 'mock-etag' } })
+    http.put(
+        'https://storage.example.test/:path*',
+        () =>
+            new Response(null, { status: 200, headers: { ETag: 'mock-etag' } })
     )
 ]

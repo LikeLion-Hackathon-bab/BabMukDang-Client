@@ -1,5 +1,10 @@
 import { EmptyNotiView, LocalNewsNotiCard, SwipeableCard } from '@/components'
 
+const isExplicitDeleteModeEnabled = () => {
+    if (typeof window === 'undefined') return false
+    return window.localStorage.getItem('e2e-explicit-delete-mode') === 'true'
+}
+
 interface LocalNewsNoti {
     id: number
     type: 'school' | 'restaurant' | 'area'
@@ -24,6 +29,8 @@ export function LocalNewsList({
             {localNewsNotis.map(noti => (
                 <SwipeableCard
                     key={noti.id}
+                    explicitDeleteMode={isExplicitDeleteModeEnabled()}
+                    deleteButtonTestId={`local-news-delete-button-${noti.id}`}
                     onDelete={() => handleDeleteLocalNewsNoti(noti.id)}>
                     <LocalNewsNotiCard noti={noti} />
                 </SwipeableCard>

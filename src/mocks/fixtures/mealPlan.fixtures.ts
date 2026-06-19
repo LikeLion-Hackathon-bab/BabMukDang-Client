@@ -26,7 +26,9 @@ export const mockMealPlanResponse: MealPlanResponse = {
     participants: [
         {
             participantId: '21111111-1111-4111-8111-111111111111' as never,
-            mealPlanId: domainId.mealPlan('11111111-1111-4111-8111-111111111111'),
+            mealPlanId: domainId.mealPlan(
+                '11111111-1111-4111-8111-111111111111'
+            ),
             member: member(1, '김대규'),
             guest: null,
             role: 'OWNER',
@@ -37,7 +39,9 @@ export const mockMealPlanResponse: MealPlanResponse = {
         },
         {
             participantId: '22222222-2222-4222-8222-222222222222' as never,
-            mealPlanId: domainId.mealPlan('11111111-1111-4111-8111-111111111111'),
+            mealPlanId: domainId.mealPlan(
+                '11111111-1111-4111-8111-111111111111'
+            ),
             member: member(2, '서은우'),
             guest: null,
             role: 'FRIEND',
@@ -50,8 +54,12 @@ export const mockMealPlanResponse: MealPlanResponse = {
     pendingInvites: [],
     pendingJoinRequests: [
         {
-            joinRequestId: domainId.mealPlanJoinRequest('44444444-4444-4444-8444-444444444444'),
-            mealPlanId: domainId.mealPlan('11111111-1111-4111-8111-111111111111'),
+            joinRequestId: domainId.mealPlanJoinRequest(
+                '44444444-4444-4444-8444-444444444444'
+            ),
+            mealPlanId: domainId.mealPlan(
+                '11111111-1111-4111-8111-111111111111'
+            ),
             requester: member(3, '박지민'),
             status: 'PENDING',
             message: '근처라서 같이 먹고 싶어요.',
@@ -144,7 +152,6 @@ export const mockNearbyFriendMealPlans: NearbyFriendMealPlanSummary[] = [
 ]
 export const mockMealPlanChatMessages: MealPlanChatMessageListResponse = []
 
-
 export const mockHomeMealPlanDashboard: HomeMealPlanDashboardResponse = {
     generatedAt: now,
     inProgress: mockMyMealPlans.deciding,
@@ -203,24 +210,38 @@ export const mockMealMap: MealMapResponse = {
                 restaurant: null,
                 distanceMeters: null,
                 updatedAt: now,
-                metadata: { ownerId: member(1, '김대규').memberId, status: 'DECIDING', participantCount: 2, source: 'selectedArea' }
+                metadata: {
+                    ownerId: member(1, '김대규').memberId,
+                    status: 'DECIDING',
+                    participantCount: 2,
+                    source: 'selectedArea'
+                }
             }
         ],
         nearbyFriendMealPlans: [
             {
-                markerId: 'nearby-friend-meal-plan:33333333-3333-4333-8333-333333333333',
+                markerId:
+                    'nearby-friend-meal-plan:33333333-3333-4333-8333-333333333333',
                 layer: 'NEARBY_FRIEND_MEAL_PLAN',
                 lat: 37.5651,
                 lng: 126.9895,
                 title: '근처에서 같이 점심 먹을 친구',
                 subtitle: '서은우 · 1명',
                 href: '/meal-plans/33333333-3333-4333-8333-333333333333',
-                mealPlanId: domainId.mealPlan('33333333-3333-4333-8333-333333333333'),
+                mealPlanId: domainId.mealPlan(
+                    '33333333-3333-4333-8333-333333333333'
+                ),
                 articleId: null,
                 restaurant: null,
                 distanceMeters: 420,
                 updatedAt: now,
-                metadata: { ownerId: member(2, '서은우').memberId, ownerName: '서은우', participantCount: 1, expiresAt: '2026-06-17T10:00:00.000Z', source: 'ownerLastKnownLocation' }
+                metadata: {
+                    ownerId: member(2, '서은우').memberId,
+                    ownerName: '서은우',
+                    participantCount: 1,
+                    expiresAt: '2026-06-17T10:00:00.000Z',
+                    source: 'ownerLastKnownLocation'
+                }
             }
         ],
         friendRecordLocations: [
@@ -249,12 +270,18 @@ export const mockMealMap: MealMapResponse = {
                 },
                 distanceMeters: 420,
                 updatedAt: now,
-                metadata: { authorId: member(2, '서은우').memberId, authorName: '서은우', imageUrl: null, mealDate: '2026-06-17' }
+                metadata: {
+                    authorId: member(2, '서은우').memberId,
+                    authorName: '서은우',
+                    imageUrl: null,
+                    mealDate: '2026-06-17'
+                }
             }
         ],
         restaurantCandidates: [
             {
-                markerId: 'restaurant-candidate:11111111-1111-4111-8111-111111111111:restaurant-2',
+                markerId:
+                    'restaurant-candidate:11111111-1111-4111-8111-111111111111:restaurant-2',
                 layer: 'RESTAURANT_CANDIDATE',
                 lat: 37.5649,
                 lng: 126.981,
@@ -278,7 +305,16 @@ export const mockMealMap: MealMapResponse = {
                 },
                 distanceMeters: 260,
                 updatedAt: now,
-                metadata: { stageId: '55555555-5555-4555-8555-555555555555' as never, ownerId: member(1, '김대규').memberId, status: 'DECIDING', source: 'search', stageStatus: 'OPEN', canVote: true, canCompleteStage: true, completionBlockedReason: null }
+                metadata: {
+                    stageId: '55555555-5555-4555-8555-555555555555' as never,
+                    ownerId: member(1, '김대규').memberId,
+                    status: 'DECIDING',
+                    source: 'search',
+                    stageStatus: 'OPEN',
+                    canVote: true,
+                    canCompleteStage: true,
+                    completionBlockedReason: null
+                }
             }
         ]
     }

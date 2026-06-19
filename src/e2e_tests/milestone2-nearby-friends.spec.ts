@@ -2,7 +2,7 @@ import { expect, test, type Page, type Route } from '@playwright/test'
 
 const AUTH_STORAGE_KEY = 'auth-storage'
 
-const apiSuccess = <T,>(data: T, code = 200) => ({
+const apiSuccess = <T>(data: T, code = 200) => ({
     success: true,
     code,
     message: code === 201 ? 'Created' : 'OK',
@@ -105,14 +105,19 @@ async function installMilestone2ApiMocks(page: Page) {
         joinRequestStatus = 'PENDING'
         await fulfillJson(
             route,
-            apiSuccess({ entity: 'mealPlanJoinRequest', id: 'join-request-1' }, 201),
+            apiSuccess(
+                { entity: 'mealPlanJoinRequest', id: 'join-request-1' },
+                201
+            ),
             201
         )
     })
 }
 
 test.describe('Milestone 2 nearby friend meal plans', () => {
-    test('근처 친구 밥약을 조회하고 참여 요청을 보낼 수 있다', async ({ page }) => {
+    test('근처 친구 밥약을 조회하고 참여 요청을 보낼 수 있다', async ({
+        page
+    }) => {
         await installMilestone2ApiMocks(page)
         await injectAccessToken(page)
 
@@ -164,7 +169,11 @@ async function installJoinRequestOwnerMocks(page: Page) {
             route,
             apiSuccess({
                 mealPlanId,
-                owner: { memberId: 1, username: 'ownerUser', profileImageUrl: null },
+                owner: {
+                    memberId: 1,
+                    username: 'ownerUser',
+                    profileImageUrl: null
+                },
                 title: '오늘 점심 밥약',
                 status: 'GATHERING',
                 channels: ['OWNER_ONLY', 'NEARBY_FRIENDS'],
@@ -172,7 +181,11 @@ async function installJoinRequestOwnerMocks(page: Page) {
                     {
                         participantId: '21111111-1111-4111-8111-111111111111',
                         mealPlanId,
-                        member: { memberId: 1, username: 'ownerUser', profileImageUrl: null },
+                        member: {
+                            memberId: 1,
+                            username: 'ownerUser',
+                            profileImageUrl: null
+                        },
                         guest: null,
                         role: 'OWNER',
                         status: 'JOINED',
@@ -185,9 +198,14 @@ async function installJoinRequestOwnerMocks(page: Page) {
                 pendingJoinRequests: requestVisible
                     ? [
                           {
-                              joinRequestId: '44444444-4444-4444-8444-444444444444',
+                              joinRequestId:
+                                  '44444444-4444-4444-8444-444444444444',
                               mealPlanId,
-                              requester: { memberId: 3, username: '박지민', profileImageUrl: null },
+                              requester: {
+                                  memberId: 3,
+                                  username: '박지민',
+                                  profileImageUrl: null
+                              },
                               status: 'PENDING',
                               message: '근처라서 같이 먹고 싶어요.',
                               requestedAt: '2026-06-17T01:10:00.000Z',
@@ -234,57 +252,64 @@ async function installJoinRequestOwnerMocks(page: Page) {
         )
     })
 
-    await page.route('**/api/v1/meal-plans/join-requests/*/accept', async route => {
-        requestVisible = false
-        await fulfillJson(
-            route,
-            apiSuccess({
-                mealPlanId,
-                owner: { memberId: 1, username: 'ownerUser', profileImageUrl: null },
-                title: '오늘 점심 밥약',
-                status: 'GATHERING',
-                channels: ['OWNER_ONLY', 'NEARBY_FRIENDS'],
-                participants: [],
-                pendingInvites: [],
-                pendingJoinRequests: [],
-                decisionStages: [],
-                decisionProgress: null,
-                viewerRole: 'OWNER',
-                viewerParticipantStatus: 'JOINED',
-                viewerPermissions: {
-                    canView: true,
-                    canInviteFriends: true,
-                    canManageParticipants: true,
-                    canCreateShareLink: true,
-                    canExposeNearbyFriends: true,
-                    canVote: true,
-                    canChat: false,
-                    canReadyMealPlan: true,
-                    canReadyDecisionTask: true,
-                    canRequestChange: false,
-                    canReopenDecisionTask: true,
-                    canConfirmDecisionSnapshot: true,
-                    canConfirmMealPlan: false,
-                    canCompleteMealPlan: false,
-                    canRecordMealPlan: false,
-                    canCancelMealPlan: true
-                },
-                viewerTaskReadyMap: {},
-                selectedDate: null,
-                selectedTime: null,
-                selectedArea: null,
-                selectedRestaurant: null,
-                selectedMenuCategory: null,
-                chatRoom: null,
-                confirmedAt: null,
-                lockedAt: null,
-                completedAt: null,
-                recordedAt: null,
-                createdAt: '2026-06-17T01:00:00.000Z',
-                updatedAt: '2026-06-17T01:11:00.000Z'
-            })
-        )
-    })
+    await page.route(
+        '**/api/v1/meal-plans/join-requests/*/accept',
+        async route => {
+            requestVisible = false
+            await fulfillJson(
+                route,
+                apiSuccess({
+                    mealPlanId,
+                    owner: {
+                        memberId: 1,
+                        username: 'ownerUser',
+                        profileImageUrl: null
+                    },
+                    title: '오늘 점심 밥약',
+                    status: 'GATHERING',
+                    channels: ['OWNER_ONLY', 'NEARBY_FRIENDS'],
+                    participants: [],
+                    pendingInvites: [],
+                    pendingJoinRequests: [],
+                    decisionStages: [],
+                    decisionProgress: null,
+                    viewerRole: 'OWNER',
+                    viewerParticipantStatus: 'JOINED',
+                    viewerPermissions: {
+                        canView: true,
+                        canInviteFriends: true,
+                        canManageParticipants: true,
+                        canCreateShareLink: true,
+                        canExposeNearbyFriends: true,
+                        canVote: true,
+                        canChat: false,
+                        canReadyMealPlan: true,
+                        canReadyDecisionTask: true,
+                        canRequestChange: false,
+                        canReopenDecisionTask: true,
+                        canConfirmDecisionSnapshot: true,
+                        canConfirmMealPlan: false,
+                        canCompleteMealPlan: false,
+                        canRecordMealPlan: false,
+                        canCancelMealPlan: true
+                    },
+                    viewerTaskReadyMap: {},
+                    selectedDate: null,
+                    selectedTime: null,
+                    selectedArea: null,
+                    selectedRestaurant: null,
+                    selectedMenuCategory: null,
+                    chatRoom: null,
+                    confirmedAt: null,
+                    lockedAt: null,
+                    completedAt: null,
+                    recordedAt: null,
+                    createdAt: '2026-06-17T01:00:00.000Z',
+                    updatedAt: '2026-06-17T01:11:00.000Z'
+                })
+            )
+        }
+    )
 }
 
 test.describe('Milestone 2 owner join request panel', () => {

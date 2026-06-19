@@ -48,7 +48,6 @@ export const profileHandlers = [
         return apiSuccess(response)
     }),
 
-
     http.get(`${BASE_URL}/members/me/location-settings`, () =>
         apiSuccess({
             locationConsentStatus: 'UNKNOWN',
@@ -60,24 +59,27 @@ export const profileHandlers = [
         })
     ),
 
-    http.patch(`${BASE_URL}/members/me/location-consent`, async ({ request }) => {
-        const body = (await request.json()) as {
-            locationConsentStatus: 'UNKNOWN' | 'GRANTED' | 'DENIED'
-            nearbyMealPlanExposureAllowed: boolean
-            mealSuggestionAllowed?: boolean
-            permissionSnapshot?: unknown
+    http.patch(
+        `${BASE_URL}/members/me/location-consent`,
+        async ({ request }) => {
+            const body = (await request.json()) as {
+                locationConsentStatus: 'UNKNOWN' | 'GRANTED' | 'DENIED'
+                nearbyMealPlanExposureAllowed: boolean
+                mealSuggestionAllowed?: boolean
+                permissionSnapshot?: unknown
+            }
+            return apiSuccess({
+                locationConsentStatus: body.locationConsentStatus,
+                nearbyMealPlanExposureAllowed:
+                    body.locationConsentStatus === 'GRANTED' &&
+                    body.nearbyMealPlanExposureAllowed,
+                mealSuggestionAllowed: body.mealSuggestionAllowed ?? false,
+                lastKnownLocation: null,
+                permissionSnapshot: body.permissionSnapshot ?? null,
+                updatedAt: new Date().toISOString()
+            })
         }
-        return apiSuccess({
-            locationConsentStatus: body.locationConsentStatus,
-            nearbyMealPlanExposureAllowed:
-                body.locationConsentStatus === 'GRANTED' &&
-                body.nearbyMealPlanExposureAllowed,
-            mealSuggestionAllowed: body.mealSuggestionAllowed ?? false,
-            lastKnownLocation: null,
-            permissionSnapshot: body.permissionSnapshot ?? null,
-            updatedAt: new Date().toISOString()
-        })
-    }),
+    ),
 
     http.patch(`${BASE_URL}/members/me/location`, async ({ request }) => {
         const body = await request.json()

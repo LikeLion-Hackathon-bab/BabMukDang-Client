@@ -26,5 +26,7 @@ export const notificationHandlers = [
             readAt: '2026-06-17T09:05:00.000Z'
         })
     ),
-    http.delete(`${BASE_URL}/notifications/:notificationId`, () => apiNoContent())
+    http.delete(`${BASE_URL}/notifications/:notificationId`, () =>
+        apiNoContent()
+    )
 ]

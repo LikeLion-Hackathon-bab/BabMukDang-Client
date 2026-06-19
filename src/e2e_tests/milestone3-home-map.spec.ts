@@ -2,7 +2,7 @@ import { expect, test, type Page, type Route } from '@playwright/test'
 
 const AUTH_STORAGE_KEY = 'auth-storage'
 
-const apiSuccess = <T,>(data: T, code = 200) => ({
+const apiSuccess = <T>(data: T, code = 200) => ({
     success: true,
     code,
     message: code === 201 ? 'Created' : 'OK',
@@ -117,7 +117,8 @@ async function installHomeMocks(page: Page) {
                 unreadNotifications: [],
                 nextActions: [
                     {
-                        actionId: 'join-request:44444444-4444-4444-8444-444444444444',
+                        actionId:
+                            'join-request:44444444-4444-4444-8444-444444444444',
                         kind: 'RESPOND_JOIN_REQUEST',
                         priority: 10,
                         title: '박지민님의 참여 요청',
@@ -142,11 +143,16 @@ async function installMapMocks(page: Page) {
             route,
             apiSuccess({
                 generatedAt: '2026-06-17T01:00:00.000Z',
-                center: { lat: 37.5665, lng: 126.978, source: 'LAST_KNOWN_LOCATION' },
+                center: {
+                    lat: 37.5665,
+                    lng: 126.978,
+                    source: 'LAST_KNOWN_LOCATION'
+                },
                 layers: {
                     myMealPlanPlaces: [
                         {
-                            markerId: 'my-meal-plan:11111111-1111-4111-8111-111111111111',
+                            markerId:
+                                'my-meal-plan:11111111-1111-4111-8111-111111111111',
                             layer: 'MY_MEAL_PLAN_PLACE',
                             lat: 37.5665,
                             lng: 126.978,
@@ -158,7 +164,12 @@ async function installMapMocks(page: Page) {
                             restaurant: null,
                             distanceMeters: null,
                             updatedAt: '2026-06-17T01:00:00.000Z',
-                            metadata: { ownerId: 1, status: 'DECIDING', participantCount: 2, source: 'selectedArea' }
+                            metadata: {
+                                ownerId: 1,
+                                status: 'DECIDING',
+                                participantCount: 2,
+                                source: 'selectedArea'
+                            }
                         }
                     ],
                     nearbyFriendMealPlans: [],
@@ -176,7 +187,12 @@ async function installMapMocks(page: Page) {
                             restaurant: null,
                             distanceMeters: 420,
                             updatedAt: '2026-06-17T01:00:00.000Z',
-                            metadata: { authorId: 2, authorName: '서은우', imageUrl: null, mealDate: '2026-06-17' }
+                            metadata: {
+                                authorId: 2,
+                                authorName: '서은우',
+                                imageUrl: null,
+                                mealDate: '2026-06-17'
+                            }
                         }
                     ],
                     restaurantCandidates: [
@@ -205,7 +221,16 @@ async function installMapMocks(page: Page) {
                             },
                             distanceMeters: 260,
                             updatedAt: '2026-06-17T01:00:00.000Z',
-                            metadata: { stageId: '55555555-5555-4555-8555-555555555555', ownerId: 1, status: 'DECIDING', source: 'search', stageStatus: 'OPEN', canVote: true, canCompleteStage: true, completionBlockedReason: null }
+                            metadata: {
+                                stageId: '55555555-5555-4555-8555-555555555555',
+                                ownerId: 1,
+                                status: 'DECIDING',
+                                source: 'search',
+                                stageStatus: 'OPEN',
+                                canVote: true,
+                                canCompleteStage: true,
+                                completionBlockedReason: null
+                            }
                         }
                     ]
                 }
@@ -221,13 +246,18 @@ async function installMapMocks(page: Page) {
         await fulfillJson(route, apiSuccess({}))
     })
 
-    await page.route('**/api/v1/meal-plans/*/stages/*/complete', async route => {
-        await fulfillJson(route, apiSuccess({}))
-    })
+    await page.route(
+        '**/api/v1/meal-plans/*/stages/*/complete',
+        async route => {
+            await fulfillJson(route, apiSuccess({}))
+        }
+    )
 }
 
 test.describe('Milestone 3 Home and Map aggregation', () => {
-    test('Home은 서버 aggregation 기반 다음 행동을 보여준다', async ({ page }) => {
+    test('Home은 서버 aggregation 기반 다음 행동을 보여준다', async ({
+        page
+    }) => {
         await installBaseMocks(page)
         await installHomeMocks(page)
         await injectAccessToken(page)
@@ -235,10 +265,14 @@ test.describe('Milestone 3 Home and Map aggregation', () => {
         await page.goto('/home')
 
         await expect(page.getByText('박지민님의 참여 요청')).toBeVisible()
-        await expect(page.getByRole('link', { name: '요청 확인하기' })).toBeVisible()
+        await expect(
+            page.getByRole('link', { name: '요청 확인하기' })
+        ).toBeVisible()
     })
 
-    test('밥지도는 내 밥약, 식당 후보, 친구 기록 layer를 보여준다', async ({ page }) => {
+    test('밥지도는 내 밥약, 식당 후보, 친구 기록 layer를 보여준다', async ({
+        page
+    }) => {
         await installBaseMocks(page)
         await installMapMocks(page)
         await injectAccessToken(page)
@@ -249,6 +283,8 @@ test.describe('Milestone 3 Home and Map aggregation', () => {
         await expect(page.getByText('시청 돈까스')).toBeVisible()
         await expect(page.getByText('을지로 국밥')).toBeVisible()
         await expect(page.getByText('지도')).toBeVisible()
-        await expect(page.getByRole('button', { name: '식당 후보 투표' })).toBeVisible()
+        await expect(
+            page.getByRole('button', { name: '식당 후보 투표' })
+        ).toBeVisible()
     })
 })

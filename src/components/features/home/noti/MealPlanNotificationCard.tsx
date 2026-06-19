@@ -11,6 +11,7 @@ export function MealPlanNotificationCard({
 }) {
     return (
         <div
+            data-testid={`notification-card-${notification.notificationId}`}
             className={`flex w-full flex-col gap-10 px-20 py-16 ${notification.readAt ? 'opacity-60' : ''}`}
             role="button"
             tabIndex={0}

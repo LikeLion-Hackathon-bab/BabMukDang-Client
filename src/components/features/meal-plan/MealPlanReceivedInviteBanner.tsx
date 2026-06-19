@@ -41,6 +41,7 @@ export function MealPlanReceivedInviteBanner({
             <div className="grid grid-cols-2 gap-8">
                 <button
                     type="button"
+                    data-testid={`meal-plan-received-invite-accept-${pendingInvite.inviteId}`}
                     disabled={isAccepting || isDeclining}
                     onClick={() => acceptInvite(pendingInvite.inviteId)}
                     className="rounded-30 bg-gray-8 py-10 text-caption-medium text-white disabled:opacity-40">
@@ -48,6 +49,7 @@ export function MealPlanReceivedInviteBanner({
                 </button>
                 <button
                     type="button"
+                    data-testid={`meal-plan-received-invite-decline-${pendingInvite.inviteId}`}
                     disabled={isAccepting || isDeclining}
                     onClick={() => declineInvite(pendingInvite.inviteId)}
                     className="rounded-30 bg-white py-10 text-caption-medium text-gray-7 disabled:opacity-40">

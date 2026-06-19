@@ -13,7 +13,9 @@ const BASE_URL = API_BASE_URL
 
 export const mealGroupHandlers = [
     http.get(`${BASE_URL}/meal-groups`, () => apiSuccess(mockMealGroups)),
-    http.post(`${BASE_URL}/meal-groups`, () => apiSuccess(mockMealGroupResponse)),
+    http.post(`${BASE_URL}/meal-groups`, () =>
+        apiSuccess(mockMealGroupResponse)
+    ),
     http.get(`${BASE_URL}/meal-groups/:mealGroupId`, () =>
         apiSuccess(mockMealGroupResponse)
     ),
@@ -29,8 +31,9 @@ export const mealGroupHandlers = [
     http.post(`${BASE_URL}/meal-groups/:mealGroupId/members`, () =>
         apiSuccess(mockMealGroupResponse)
     ),
-    http.patch(`${BASE_URL}/meal-groups/:mealGroupId/members/:memberId/role`, () =>
-        apiSuccess(mockMealGroupResponse)
+    http.patch(
+        `${BASE_URL}/meal-groups/:mealGroupId/members/:memberId/role`,
+        () => apiSuccess(mockMealGroupResponse)
     ),
     http.delete(`${BASE_URL}/meal-groups/:mealGroupId/members/:memberId`, () =>
         apiSuccess(mockMealGroupResponse)

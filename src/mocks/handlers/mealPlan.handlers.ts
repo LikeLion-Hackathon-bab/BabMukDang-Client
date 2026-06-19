@@ -36,24 +36,30 @@ export const mealPlanHandlers = [
     http.get(`${BASE_URL}/meal-plans/nearby-friends`, () =>
         apiSuccess(mockNearbyFriendMealPlans)
     ),
-    http.post(`${BASE_URL}/meal-plans/:mealPlanId/nearby-friends/expose`, ({ params }) =>
-        apiSuccess({
-            mealPlanId: String(params.mealPlanId),
-            exposureBatchId: '33333333-3333-4333-8333-333333333399',
-            exposedFriendCount: 1,
-            rejectedFriendCount: 2,
-            notificationStatus: 'SENT',
-            rejectionSummary: [
-                { reason: 'OUT_OF_RADIUS', count: 1 },
-                { reason: 'NOT_HUNGRY', count: 1 }
-            ]
-        })
+    http.post(
+        `${BASE_URL}/meal-plans/:mealPlanId/nearby-friends/expose`,
+        ({ params }) =>
+            apiSuccess({
+                mealPlanId: String(params.mealPlanId),
+                exposureBatchId: '33333333-3333-4333-8333-333333333399',
+                exposedFriendCount: 1,
+                rejectedFriendCount: 2,
+                notificationStatus: 'SENT',
+                rejectionSummary: [
+                    { reason: 'OUT_OF_RADIUS', count: 1 },
+                    { reason: 'NOT_HUNGRY', count: 1 }
+                ]
+            })
     ),
-    http.delete(`${BASE_URL}/meal-plans/:mealPlanId/nearby-friends/expose`, () =>
-        apiSuccess(null)
+    http.delete(
+        `${BASE_URL}/meal-plans/:mealPlanId/nearby-friends/expose`,
+        () => apiSuccess(null)
     ),
     http.post(`${BASE_URL}/meal-plans/:mealPlanId/join-requests`, () =>
-        apiSuccess({ entity: 'mealPlanJoinRequest', id: 'mock-join-request-id' })
+        apiSuccess({
+            entity: 'mealPlanJoinRequest',
+            id: 'mock-join-request-id'
+        })
     ),
     http.post(`${BASE_URL}/meal-plans/join-requests/:requestId/accept`, () =>
         apiSuccess({
@@ -62,9 +68,12 @@ export const mealPlanHandlers = [
             participants: [
                 ...mockMealPlanResponse.participants,
                 {
-                    participantId: '23333333-3333-4333-8333-333333333333' as never,
+                    participantId:
+                        '23333333-3333-4333-8333-333333333333' as never,
                     mealPlanId: mockMealPlanResponse.mealPlanId,
-                    member: mockMealPlanResponse.pendingJoinRequests[0]?.requester ?? null,
+                    member:
+                        mockMealPlanResponse.pendingJoinRequests[0]
+                            ?.requester ?? null,
                     guest: null,
                     role: 'FRIEND',
                     status: 'JOINED',
@@ -99,8 +108,9 @@ export const mealPlanHandlers = [
     http.post(`${BASE_URL}/meal-plans/:mealPlanId/recorded`, () =>
         apiSuccess({ ...mockMealPlanResponse, status: 'RECORDED' })
     ),
-    http.post(`${BASE_URL}/meal-plans/:mealPlanId/participants/:participantId/remove`, () =>
-        apiSuccess(mockMealPlanResponse)
+    http.post(
+        `${BASE_URL}/meal-plans/:mealPlanId/participants/:participantId/remove`,
+        () => apiSuccess(mockMealPlanResponse)
     ),
     http.get(`${BASE_URL}/meal-plans/:mealPlanId/chat/messages`, () =>
         apiSuccess(mockMealPlanChatMessages)
@@ -108,20 +118,24 @@ export const mealPlanHandlers = [
     http.get(`${BASE_URL}/meal-plans/:mealPlanId/decision-progress`, () =>
         apiSuccess(mockMealPlanResponse.decisionProgress)
     ),
-    http.post(`${BASE_URL}/meal-plans/:mealPlanId/decision-tasks/:taskKey/ready`, () =>
-        apiSuccess(mockMealPlanResponse)
+    http.post(
+        `${BASE_URL}/meal-plans/:mealPlanId/decision-tasks/:taskKey/ready`,
+        () => apiSuccess(mockMealPlanResponse)
     ),
-    http.post(`${BASE_URL}/meal-plans/:mealPlanId/decision-tasks/:taskKey/reopen`, () =>
-        apiSuccess(mockMealPlanResponse)
+    http.post(
+        `${BASE_URL}/meal-plans/:mealPlanId/decision-tasks/:taskKey/reopen`,
+        () => apiSuccess(mockMealPlanResponse)
     ),
-    http.post(`${BASE_URL}/meal-plans/:mealPlanId/decision-snapshots/:snapshotId/confirm`, () =>
-        apiSuccess(mockMealPlanResponse)
+    http.post(
+        `${BASE_URL}/meal-plans/:mealPlanId/decision-snapshots/:snapshotId/confirm`,
+        () => apiSuccess(mockMealPlanResponse)
     ),
     http.post(`${BASE_URL}/meal-plans/:mealPlanId/stages/:stageId/votes`, () =>
         apiSuccess(mockMealPlanResponse)
     ),
-    http.post(`${BASE_URL}/meal-plans/:mealPlanId/stages/:stageId/complete`, () =>
-        apiSuccess(mockMealPlanResponse)
+    http.post(
+        `${BASE_URL}/meal-plans/:mealPlanId/stages/:stageId/complete`,
+        () => apiSuccess(mockMealPlanResponse)
     ),
     http.post(`${BASE_URL}/meal-plan-links/:token/join`, () =>
         apiSuccess({
