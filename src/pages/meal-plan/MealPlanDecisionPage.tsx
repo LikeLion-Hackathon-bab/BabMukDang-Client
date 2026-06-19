@@ -25,10 +25,10 @@ const toMenuCandidate = (
 ): MealPlanDecisionCandidate => ({
     stageType: 'MENU',
     value: {
-        menuCandidateId: `manual:${food.id}` as never,
+        menuCandidateId: `manual:${food.code}` as never,
         menu: {
-            code: food.id as never,
-            label: food.name as never
+            code: food.code as never,
+            label: food.label as never
         },
         source: 'manual-search',
         score: food.popularity ?? 0,

@@ -126,8 +126,8 @@ export function UploadPage() {
 
     const selectFood = (food: FoodSearchResult) => {
         setFoodAnalysis({
-            code: food.id as never,
-            label: food.name as never,
+            code: food.code as never,
+            label: food.label as never,
             confidence: 1,
             tsUtc: new Date().toISOString() as never
         })

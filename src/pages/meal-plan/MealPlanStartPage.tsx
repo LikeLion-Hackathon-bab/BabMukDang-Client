@@ -103,15 +103,15 @@ export function MealPlanStartPage() {
             .join(', ')
 
     const addPreferredMenu = (food: FoodSearchResult) => {
-        setPreferredMenus(current => appendCsvValue(current, food.name))
+        setPreferredMenus(current => appendCsvValue(current, food.label))
     }
 
     const addExcludedMenu = (food: FoodSearchResult) => {
-        setExcludedMenus(current => appendCsvValue(current, food.name))
+        setExcludedMenus(current => appendCsvValue(current, food.label))
     }
 
     const addCandidateMenu = (food: FoodSearchResult) => {
-        setCandidateMenus(current => appendCsvValue(current, food.name))
+        setCandidateMenus(current => appendCsvValue(current, food.label))
     }
 
     const selectArea = (place: PlaceSearchResult) => {

@@ -11,7 +11,9 @@ export type UseFoodAnalysisState = {
     error: Error | null
 }
 
-export const useFoodAnalysis = (imageFile: File | null): UseFoodAnalysisState => {
+export const useFoodAnalysis = (
+    imageFile: File | null
+): UseFoodAnalysisState => {
     const setFoodAnalysis = useArticleStore(state => state.setFoodAnalysis)
     const [state, setState] = useState<UseFoodAnalysisState>({
         status: 'idle',

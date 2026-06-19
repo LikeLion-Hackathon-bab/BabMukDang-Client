@@ -88,14 +88,14 @@ export function FoodSearchField({
                 <div className="rounded-16 bg-gray-1 flex flex-col gap-6 p-8">
                     {foodState.results.slice(0, 8).map(food => (
                         <button
-                            key={food.id}
+                            key={food.code}
                             type="button"
                             onClick={() => selectFood(food)}
                             className="rounded-12 bg-white px-12 py-9 text-left">
                             <span className="text-body2-semibold text-gray-8">
-                                {food.name}
+                                {food.label}
                             </span>
-                            {/* <span className="ml-6 text-caption-regular text-gray-5">{food.category}</span> */}
+                            <span className="ml-6 text-caption-regular text-gray-5">{food.parentCategory}</span>
                         </button>
                     ))}
                 </div>

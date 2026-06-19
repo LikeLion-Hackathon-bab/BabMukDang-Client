@@ -1,38 +1,43 @@
+import {
+    AI_CLASS_TO_FOOD_CODE_MAP_PATH,
+    type AiClassFoodCodeMapping,
+    type AiClassToFoodCodeMapManifest
+} from '@kimdaegyu/babmukdang-shared/domain'
+
 import type { FoodAnalysisResultDto } from '@/apis'
 
 export type FoodAiClassLabel = Pick<FoodAnalysisResultDto, 'code' | 'label'> & {
     classId: number
+    candidateCodes: string[]
+    mappingStatus: AiClassFoodCodeMapping['mappingStatus']
 }
-
-const LABELS_URL = '/food-ai/segmentation/labels.yaml'
-const FOOD_CODE_OFFSET = 1
 
 let labelMapPromise: Promise<Map<number, FoodAiClassLabel>> | null = null
 
-const toFoodCode = (classId: number): FoodAiClassLabel['code'] =>
-    `KFOOD_${String(classId + FOOD_CODE_OFFSET).padStart(6, '0')}` as never
+const toFoodAiClassLabel = (
+    mapping: AiClassFoodCodeMapping
+): FoodAiClassLabel | null => {
+    if (!mapping.representativeCode) return null
+    if (mapping.mappingStatus === 'ignored') return null
 
-const parseLabelsYaml = (yaml: string): Map<number, FoodAiClassLabel> => {
+    return {
+        classId: mapping.classId,
+        code: mapping.representativeCode as FoodAnalysisResultDto['code'],
+        label: mapping.aiLabel as FoodAnalysisResultDto['label'],
+        candidateCodes: mapping.candidateCodes,
+        mappingStatus: mapping.mappingStatus
+    }
+}
+
+const parseAiClassMapManifest = (
+    manifest: AiClassToFoodCodeMapManifest
+): Map<number, FoodAiClassLabel> => {
     const labels = new Map<number, FoodAiClassLabel>()
-    const lines = yaml.split(/\r?\n/)
-    let currentClassId: number | null = null
 
-    for (const line of lines) {
-        const classIdMatch = line.match(/^\s*-\s*class_id:\s*(\d+)\s*$/)
-        if (classIdMatch) {
-            currentClassId = Number(classIdMatch[1])
-            continue
-        }
-
-        const labelMatch = line.match(/^\s*canonical_ko:\s*(.+?)\s*$/)
-        if (labelMatch && currentClassId !== null) {
-            labels.set(currentClassId, {
-                classId: currentClassId,
-                code: toFoodCode(currentClassId),
-                label: labelMatch[1].trim() as never
-            })
-            currentClassId = null
-        }
+    for (const mapping of manifest.classes) {
+        const label = toFoodAiClassLabel(mapping)
+        if (!label) continue
+        labels.set(mapping.classId, label)
     }
 
     return labels
@@ -40,16 +45,16 @@ const parseLabelsYaml = (yaml: string): Map<number, FoodAiClassLabel> => {
 
 const loadFoodAiLabelMap = async (): Promise<Map<number, FoodAiClassLabel>> => {
     if (!labelMapPromise) {
-        labelMapPromise = fetch(LABELS_URL)
+        labelMapPromise = fetch(AI_CLASS_TO_FOOD_CODE_MAP_PATH)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(
-                        `food-ai labels request failed: ${response.status}`
+                        `food-ai class map request failed: ${response.status}`
                     )
                 }
-                return response.text()
+                return response.json() as Promise<AiClassToFoodCodeMapManifest>
             })
-            .then(parseLabelsYaml)
+            .then(parseAiClassMapManifest)
     }
 
     return labelMapPromise
@@ -58,8 +63,8 @@ const loadFoodAiLabelMap = async (): Promise<Map<number, FoodAiClassLabel>> => {
 /**
  * food-ai segmentation class_id를 서비스 도메인의 FoodCode/Label로 변환한다.
  *
- * 라벨 원천은 `Babmukdang-FoodAI/outputs/mobile_package/segmentation/labels.yaml`
- * 을 public asset으로 복사한 파일이다. 서버에는 class_id를 보내지 않고,
+ * 라벨 원천은 모델 taxonomy인 `labels.yaml`이지만, 런타임에서는
+ * `ai-class-to-food-code-map.json`만 사용한다. 서버에는 class_id를 보내지 않고,
  * UploadPage는 변환된 code/label/confidence만 ArticlePostRequest.foodAnalysis에
  * 포함한다.
  */

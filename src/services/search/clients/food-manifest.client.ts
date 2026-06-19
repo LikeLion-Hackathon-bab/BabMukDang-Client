@@ -1,3 +1,4 @@
+import { FOOD_CODE_MANIFEST_PATH } from '@kimdaegyu/babmukdang-shared/domain/food'
 import type { FoodSearchManifest } from '../types'
 
 export interface FoodManifestClient {
@@ -5,9 +6,7 @@ export interface FoodManifestClient {
 }
 
 export class FetchFoodManifestClient implements FoodManifestClient {
-    constructor(
-        private readonly manifestUrl = '/manifests/food-search-manifest.json'
-    ) {}
+    constructor(private readonly manifestUrl = FOOD_CODE_MANIFEST_PATH) {}
 
     async loadManifest(): Promise<FoodSearchManifest> {
         const response = await fetch(this.manifestUrl, {
@@ -22,12 +21,11 @@ export class FetchFoodManifestClient implements FoodManifestClient {
         const etag =
             response.headers.get('ETag') ??
             response.headers.get('etag') ??
-            undefined
+            manifest.etag
 
-        return manifest
-        // {
-        //     ...manifest
-        //     etag
-        // }
+        return {
+            ...manifest,
+            etag
+        }
     }
 }

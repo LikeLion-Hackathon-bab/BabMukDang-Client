@@ -1,3 +1,7 @@
+import type {
+    FoodCodeManifest,
+    FoodCodeManifestItem
+} from '@kimdaegyu/babmukdang-shared/domain/food'
 import type { Observable } from 'rxjs'
 
 export type SearchDomain = 'friend' | 'place' | 'food'
@@ -47,15 +51,7 @@ export interface PlaceSearchResult {
     raw?: unknown
 }
 
-export interface FoodSearchResult {
-    id: string
-    name: string
-    // aliases: string[]
-    // keywords: string[]
-    // category: string
-    // imageUrl?: string | null
-    popularity?: number
-}
+export type FoodSearchResult = FoodCodeManifestItem
 
 export interface SearchState {
     query: string
@@ -76,14 +72,7 @@ export interface SearchProvider<T> {
     clearCache?(): void
 }
 
-export type FoodSearchManifest = FoodSearchResult[]
-// {
-// version: string
-// updatedAt: string
-// items: FoodSearchResult[]
-// etag?: string
-
-// }
+export type FoodSearchManifest = FoodCodeManifest
 
 export type SearchProviderRegistry = {
     friend: SearchProvider<FriendSearchResult>

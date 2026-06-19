@@ -1,4 +1,4 @@
-import { defer, from, map, of, switchMap, tap } from 'rxjs'
+import { defer, from, switchMap, tap } from 'rxjs'
 
 import { TtlCache } from '../cache/ttl-cache'
 import {
@@ -16,6 +16,16 @@ const normalize = (value: string): string => value.trim().toLowerCase()
 
 const includesQuery = (values: string[], query: string): boolean =>
     values.some(value => normalize(value).includes(query))
+
+const searchableValues = (item: FoodSearchResult): string[] => [
+    item.code,
+    item.label,
+    item.parentCategory,
+    ...item.aliases,
+    ...item.cuisineTags,
+    ...item.categoryTags,
+    ...item.semanticTags
+]
 
 export class FoodSearchProvider implements SearchProvider<FoodSearchResult> {
     readonly domain = 'food' as const
@@ -36,15 +46,14 @@ export class FoodSearchProvider implements SearchProvider<FoodSearchResult> {
 
         return defer(() => this.loadManifest()).pipe(
             switchMap(manifest => {
-                // const cacheKey = `${manifest.version}:${query}`
-                // const cached = this.cache.get(cacheKey)
+                const cacheKey = `${manifest.version}:${manifest.etag ?? ''}:${query}`
+                const cached = this.cache.get(cacheKey)
 
-                // if (cached) return of(cached)
+                if (cached) return from(Promise.resolve(cached))
 
                 return from(
                     Promise.resolve(this.searchManifest(manifest, query))
-                )
-                // .pipe(tap(results => this.cache.set(cacheKey, results)))
+                ).pipe(tap(results => this.cache.set(cacheKey, results)))
             })
         )
     }
@@ -73,16 +82,17 @@ export class FoodSearchProvider implements SearchProvider<FoodSearchResult> {
         manifest: FoodSearchManifest,
         normalizedQuery: string
     ): FoodSearchResult[] {
-        console.log(manifest)
-        return manifest.filter(item =>
-            includesQuery(
-                [
-                    item.name
-                    // item.category, ...item.aliases, ...item.keywords
-                ],
-                normalizedQuery
+        return manifest.items
+            .filter(item => item.searchable)
+            .filter(item =>
+                includesQuery(searchableValues(item), normalizedQuery)
             )
-        )
-        // .sort((a, b) => (b.popularity ?? 0) - (a.popularity ?? 0))
+            .sort((left, right) => {
+                const recommendableDelta =
+                    Number(right.recommendable) - Number(left.recommendable)
+                if (recommendableDelta !== 0) return recommendableDelta
+
+                return (right.popularity ?? 0) - (left.popularity ?? 0)
+            })
     }
 }
