@@ -82,6 +82,34 @@ const LazyMealPlanDecisionPage = lazyNamed(
     () => import('@/pages/meal-plan/MealPlanDecisionPage'),
     'MealPlanDecisionPage'
 )
+const LazyMealPlanDateVotePage = lazyNamed(
+    () => import('@/pages/meal-plan/MealPlanStageVotePage'),
+    'MealPlanDateVotePage'
+)
+const LazyMealPlanTimeVotePage = lazyNamed(
+    () => import('@/pages/meal-plan/MealPlanStageVotePage'),
+    'MealPlanTimeVotePage'
+)
+const LazyMealPlanAreaVotePage = lazyNamed(
+    () => import('@/pages/meal-plan/MealPlanStageVotePage'),
+    'MealPlanAreaVotePage'
+)
+const LazyMealPlanMenuVotePage = lazyNamed(
+    () => import('@/pages/meal-plan/MealPlanStageVotePage'),
+    'MealPlanMenuVotePage'
+)
+const LazyMealPlanRestaurantVotePage = lazyNamed(
+    () => import('@/pages/meal-plan/MealPlanStageVotePage'),
+    'MealPlanRestaurantVotePage'
+)
+const LazyMealPlanDecisionChatPage = lazyNamed(
+    () => import('@/pages/meal-plan/MealPlanDecisionChatPage'),
+    'MealPlanDecisionChatPage'
+)
+const LazyMealPlanFinalConfirmPage = lazyNamed(
+    () => import('@/pages/meal-plan/MealPlanFinalConfirmPage'),
+    'MealPlanFinalConfirmPage'
+)
 const LazyMealPlanRecordEntryPage = lazyNamed(
     () => import('@/pages/meal-plan/MealPlanRecordEntryPage'),
     'MealPlanRecordEntryPage'
@@ -270,6 +298,48 @@ function App() {
                                         path="/meal-plans/:mealPlanId/decision"
                                         element={page(
                                             <LazyMealPlanDecisionPage />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/meal-plans/:mealPlanId/decision/date"
+                                        element={page(
+                                            <LazyMealPlanDateVotePage />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/meal-plans/:mealPlanId/decision/time"
+                                        element={page(
+                                            <LazyMealPlanTimeVotePage />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/meal-plans/:mealPlanId/decision/area"
+                                        element={page(
+                                            <LazyMealPlanAreaVotePage />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/meal-plans/:mealPlanId/decision/menu"
+                                        element={page(
+                                            <LazyMealPlanMenuVotePage />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/meal-plans/:mealPlanId/decision/restaurant"
+                                        element={page(
+                                            <LazyMealPlanRestaurantVotePage />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/meal-plans/:mealPlanId/decision/chat"
+                                        element={page(
+                                            <LazyMealPlanDecisionChatPage />
+                                        )}
+                                    />
+                                    <Route
+                                        path="/meal-plans/:mealPlanId/decision/final"
+                                        element={page(
+                                            <LazyMealPlanFinalConfirmPage />
                                         )}
                                     />
                                     <Route

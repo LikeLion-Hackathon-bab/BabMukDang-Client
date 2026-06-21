@@ -80,11 +80,19 @@ export const routeChromeConfigEntries: RouteChromeConfigEntry[] = [
         }
     },
     {
+        // Decision flow renders its own AppBar + footer; hide app chrome.
+        path: '/meal-plans/:mealPlanId/decision/*',
+        end: false,
+        chrome: {
+            header: { visible: false },
+            bottomNav: { visible: false }
+        }
+    },
+    {
         path: '/meal-plans/:mealPlanId/decision',
         chrome: {
-            header: {
-                title: '밥약 결정'
-            }
+            header: { visible: false },
+            bottomNav: { visible: false }
         }
     },
     {
