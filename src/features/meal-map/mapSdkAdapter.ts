@@ -12,6 +12,9 @@ export type MealMapSdkAdapter = {
     render(input: RenderInput): () => void
 }
 
+const MAP_CONTAINER_CLASS =
+    'h-[320px] min-h-[320px] w-full overflow-hidden rounded-24 border border-gray-2 bg-gray-1'
+
 type KakaoMaps = {
     LatLng: new (lat: number, lng: number) => unknown
     Map: new (
@@ -79,8 +82,7 @@ const createClusterButton = ({
 export const cssMapSdkAdapter: MealMapSdkAdapter = {
     render({ container, center, clusters, selectedMarkerId, onSelectMarker }) {
         container.innerHTML = ''
-        container.className =
-            'relative min-h-[260px] overflow-hidden rounded-24 border border-gray-2 bg-gray-1 p-14'
+        container.className = `${MAP_CONTAINER_CLASS} relative p-14`
         const label = document.createElement('div')
         label.className =
             'absolute right-12 top-12 rounded-20 bg-white/90 px-10 py-5 text-caption-medium text-gray-6 shadow-sm'
@@ -132,6 +134,7 @@ export const kakaoMapSdkAdapter: MealMapSdkAdapter = {
         }
 
         container.innerHTML = ''
+        container.className = MAP_CONTAINER_CLASS
         const map = new maps.Map(container, {
             center: new maps.LatLng(center.lat, center.lng),
             level: 4

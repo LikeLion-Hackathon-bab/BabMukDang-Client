@@ -33,6 +33,11 @@ type AppBootstrapTaskState = {
     updatedAt: string
 }
 
+type ActiveTaskState = {
+    id: string
+    phase: AppBootstrapTask['phase']
+}
+
 type AppBootstrapContextValue = {
     accessToken: string | null
     profile: ProfileSummaryView | undefined
@@ -54,6 +59,9 @@ const taskAttemptKey = (
     context: AppBootstrapTaskContext
 ) => `${task.id}:${task.scopeKey?.(context) ?? 'default'}`
 
+const isBlockingBootstrapTask = (task: AppBootstrapTask) =>
+    task.phase !== 'POST_AUTH'
+
 export function AppBootstrapProvider({
     children,
     taskRegistry = defaultAppBootstrapTaskRegistry
@@ -63,7 +71,7 @@ export function AppBootstrapProvider({
 }) {
     const accessToken = useAuthStore(state => state.accessToken)
     const [authError, setAuthError] = useState<Error | null>(null)
-    const [activeTaskId, setActiveTaskId] = useState<string | null>(null)
+    const [activeTask, setActiveTask] = useState<ActiveTaskState | null>(null)
     const [taskStates, setTaskStates] = useState<
         Record<string, AppBootstrapTaskState>
     >({})
@@ -85,13 +93,10 @@ export function AppBootstrapProvider({
     const isProfileBootstrapping =
         Boolean(accessToken) && (isProfileLoading || isProfileFetching)
 
-    const {
-        data: locationSettings,
-        isFetching: isLocationSettingsFetching,
-        refetch: refetchLocationSettings
-    } = useGetLocationSettings({
-        enabled: false
-    })
+    const { data: locationSettings, refetch: refetchLocationSettings } =
+        useGetLocationSettings({
+            enabled: false
+        })
 
     const { mutateAsync: updateMemberLocationAsync } = useUpdateMemberLocation()
     const { mutateAsync: registerPushTokenAsync } = useRegisterPushToken()
@@ -196,63 +201,15 @@ export function AppBootstrapProvider({
     )
 
     useEffect(() => {
-        if (activeTaskId || authError) {
-            return
-        }
-
-        const nextTask = tasks.find(task => {
-            if (!task.shouldRun(bootstrapContext)) {
-                return false
-            }
-
-            return !attemptedTaskKeysRef.current.has(
-                taskAttemptKey(task, bootstrapContext)
-            )
-        })
-
-        if (!nextTask) {
-            return
-        }
-
-        const attemptKey = taskAttemptKey(nextTask, bootstrapContext)
-        attemptedTaskKeysRef.current.add(attemptKey)
-        setActiveTaskId(nextTask.id)
-        setTaskState(nextTask.id, { status: 'running' })
-
-        Promise.resolve(nextTask.run(bootstrapContext))
-            .then(() => {
-                setTaskState(nextTask.id, { status: 'success' })
-            })
-            .catch(error => {
-                const normalizedError =
-                    error instanceof Error
-                        ? error
-                        : new Error(`${nextTask.id} failed`)
-                setTaskState(nextTask.id, {
-                    status: 'error',
-                    error: normalizedError.message
-                })
-                setAuthError(normalizedError)
-            })
-            .finally(() => {
-                setActiveTaskId(null)
-            })
-    }, [
-        accessToken,
-        activeTaskId,
-        authError,
-        bootstrapContext,
-        profile,
-        setTaskState,
-        taskRunnerTick,
-        tasks
-    ])
-
-    useEffect(() => {
         if (accessToken) {
             setAuthError(null)
         }
     }, [accessToken])
+
+    const activeTaskId = activeTask?.id ?? null
+    const activeTaskIsBlocking = activeTask
+        ? activeTask.phase !== 'POST_AUTH'
+        : false
 
     if (import.meta.env.VITE_ENV === 'develop')
         console.table(
@@ -272,8 +229,14 @@ export function AppBootstrapProvider({
         )
 
     const findRunnableTask = useCallback(
-        (context: AppBootstrapTaskContext) =>
+        (
+            context: AppBootstrapTaskContext,
+            options: { blockingOnly?: boolean } = {}
+        ) =>
             tasks.find(task => {
+                if (options.blockingOnly && !isBlockingBootstrapTask(task)) {
+                    return false
+                }
                 if (!task.shouldRun(context)) {
                     return false
                 }
@@ -286,7 +249,7 @@ export function AppBootstrapProvider({
     )
 
     useEffect(() => {
-        if (activeTaskId || authError) {
+        if (activeTask || authError) {
             return
         }
 
@@ -299,7 +262,7 @@ export function AppBootstrapProvider({
         const attemptKey = taskAttemptKey(nextTask, bootstrapContext)
 
         attemptedTaskKeysRef.current.add(attemptKey)
-        setActiveTaskId(nextTask.id)
+        setActiveTask({ id: nextTask.id, phase: nextTask.phase })
         setTaskState(nextTask.id, { status: 'running' })
 
         Promise.resolve(nextTask.run(bootstrapContext))
@@ -319,10 +282,10 @@ export function AppBootstrapProvider({
                 setAuthError(normalizedError)
             })
             .finally(() => {
-                setActiveTaskId(null)
+                setActiveTask(null)
             })
     }, [
-        activeTaskId,
+        activeTask,
         authError,
         bootstrapContext,
         findRunnableTask,
@@ -331,13 +294,17 @@ export function AppBootstrapProvider({
     ])
 
     const hasRunnableTask = Boolean(findRunnableTask(bootstrapContext))
+    const hasRunnableBlockingTask = Boolean(
+        findRunnableTask(bootstrapContext, { blockingOnly: true })
+    )
 
     console.log(
         'isBootstrapping:',
-        Boolean(activeTaskId),
+        activeTaskIsBlocking,
         isRefreshPending,
         isProfileFetching,
-        isLocationSettingsFetching,
+
+        !authError && hasRunnableBlockingTask,
         !authError && hasRunnableTask
     )
     const value = useMemo<AppBootstrapContextValue>(
@@ -346,11 +313,10 @@ export function AppBootstrapProvider({
             profile,
             isAuthenticated: Boolean(accessToken && profile),
             isBootstrapping:
-                Boolean(activeTaskId) ||
+                activeTaskIsBlocking ||
                 isRefreshPending ||
                 isProfileBootstrapping ||
-                isLocationSettingsFetching ||
-                (!authError && hasRunnableTask),
+                (!authError && hasRunnableBlockingTask),
             authError,
             refreshSession,
             runBootstrapTasks,
@@ -360,9 +326,10 @@ export function AppBootstrapProvider({
         [
             accessToken,
             activeTaskId,
+            activeTaskIsBlocking,
             authError,
-            hasRunnableTask,
-            isLocationSettingsFetching,
+            hasRunnableBlockingTask,
+            isProfileBootstrapping,
             isRefreshPending,
             profile,
             refreshSession,
