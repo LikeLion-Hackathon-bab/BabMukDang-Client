@@ -4,7 +4,7 @@
  * Every decision sub-page uses this inside a SocketProvider.
  */
 import { useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams } from '@/navigation'
 import { useMealPlanDetail } from '@/apis'
 import { useMealPlanStore } from '@/store'
 

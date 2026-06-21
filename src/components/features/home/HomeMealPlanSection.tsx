@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from '@/navigation'
 import type { HomeMealPlanDashboardResponse } from '@/apis'
 import { MyMealPlanCard } from '@/components/features/meal-plan'
 import { mapMyMealPlanListItem } from '@/apis/mappers/mealPlan.mapper'

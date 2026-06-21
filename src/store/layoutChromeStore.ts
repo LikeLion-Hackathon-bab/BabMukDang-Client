@@ -23,29 +23,45 @@ export interface BottomNavConfig {
     items?: BottomNavItem[]
 }
 
+export interface ContentConfig {
+    fullBleed?: boolean
+    scrollable?: boolean
+    bottomInset?: boolean
+}
+
 export interface LayoutChromeConfig {
     header?: Partial<HeaderConfig>
     bottomNav?: Partial<BottomNavConfig>
+    content?: ContentConfig
 }
 
 export interface ResolvedLayoutChromeConfig {
     header: HeaderConfig
     bottomNav: BottomNavConfig
+    content: Required<ContentConfig>
+}
+
+type ChromeSlot = {
+    ownerId?: string
+    config?: LayoutChromeConfig
 }
 
 interface LayoutChromeStore {
-    routeChromeConfig?: LayoutChromeConfig
-    pageChromeConfig?: LayoutChromeConfig
+    routeChrome: ChromeSlot
+    pageChrome: ChromeSlot
     resolvedConfig: ResolvedLayoutChromeConfig
-    setRouteChromeConfig: (config?: LayoutChromeConfig) => void
-    setPageChromeConfig: (config: LayoutChromeConfig) => void
-    clearPageChromeConfig: () => void
+    setRouteChromeConfig: (
+        config?: LayoutChromeConfig,
+        ownerId?: string
+    ) => void
+    setPageChromeConfig: (config: LayoutChromeConfig, ownerId?: string) => void
+    clearPageChromeConfig: (ownerId?: string) => void
     resetLayoutChromeConfig: () => void
 }
 
 const defaultBottomNavItems: BottomNavItem[] = [
-    { path: '/', label: '홈', icon: 'i' },
-    { path: '/meal-map', label: '지도', icon: 'i' },
+    { path: '/home', label: '홈', icon: 'i' },
+    { path: '/meal-map', label: '밥지도', icon: 'i' },
     { path: '/friend', label: '친구', icon: 'i' },
     { path: '/meeting', label: '밥약', icon: 'i' },
     { path: '/profile', label: '내 밥그릇', icon: 'i' }
@@ -64,6 +80,12 @@ const createDefaultBottomNavConfig = (): BottomNavConfig => ({
     items: [...defaultBottomNavItems]
 })
 
+const createDefaultContentConfig = (): Required<ContentConfig> => ({
+    fullBleed: false,
+    scrollable: true,
+    bottomInset: true
+})
+
 const resolveLayoutChromeConfig = (
     routeChromeConfig?: LayoutChromeConfig,
     pageChromeConfig?: LayoutChromeConfig
@@ -77,45 +99,58 @@ const resolveLayoutChromeConfig = (
         ...createDefaultBottomNavConfig(),
         ...routeChromeConfig?.bottomNav,
         ...pageChromeConfig?.bottomNav
+    },
+    content: {
+        ...createDefaultContentConfig(),
+        ...routeChromeConfig?.content,
+        ...pageChromeConfig?.content
     }
 })
 
+const isSameOwner = (slot: ChromeSlot, ownerId?: string) =>
+    !ownerId || !slot.ownerId || slot.ownerId === ownerId
+
 export const useLayoutChromeStore = create<LayoutChromeStore>(set => ({
-    routeChromeConfig: undefined,
-    pageChromeConfig: undefined,
+    routeChrome: {},
+    pageChrome: {},
     resolvedConfig: resolveLayoutChromeConfig(),
 
-    setRouteChromeConfig: routeChromeConfig => {
+    setRouteChromeConfig: (config, ownerId) => {
         set(state => ({
-            routeChromeConfig,
+            routeChrome: { config, ownerId },
             resolvedConfig: resolveLayoutChromeConfig(
-                routeChromeConfig,
-                state.pageChromeConfig
+                config,
+                state.pageChrome.config
             )
         }))
     },
 
-    setPageChromeConfig: pageChromeConfig => {
+    setPageChromeConfig: (config, ownerId) => {
         set(state => ({
-            pageChromeConfig,
+            pageChrome: { config, ownerId },
             resolvedConfig: resolveLayoutChromeConfig(
-                state.routeChromeConfig,
-                pageChromeConfig
+                state.routeChrome.config,
+                config
             )
         }))
     },
 
-    clearPageChromeConfig: () => {
-        set(state => ({
-            pageChromeConfig: undefined,
-            resolvedConfig: resolveLayoutChromeConfig(state.routeChromeConfig)
-        }))
+    clearPageChromeConfig: ownerId => {
+        set(state => {
+            if (!isSameOwner(state.pageChrome, ownerId)) return state
+            return {
+                pageChrome: {},
+                resolvedConfig: resolveLayoutChromeConfig(
+                    state.routeChrome.config
+                )
+            }
+        })
     },
 
     resetLayoutChromeConfig: () => {
         set({
-            routeChromeConfig: undefined,
-            pageChromeConfig: undefined,
+            routeChrome: {},
+            pageChrome: {},
             resolvedConfig: resolveLayoutChromeConfig()
         })
     }

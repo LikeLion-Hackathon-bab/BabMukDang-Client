@@ -1,6 +1,6 @@
 import { CallIcon, LocationGrayIcon, ShareIcon } from '@/assets/icons'
 import { FriendProfileList } from '../features/onboarding'
-import { Link } from 'react-router-dom'
+import { Link } from '@/navigation'
 import { COLORS } from '@/constants/colors'
 import type { RestaurantCardView } from '@/viewModels'
 interface RestaurantCardProps {

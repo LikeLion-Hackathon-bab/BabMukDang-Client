@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/navigation'
 import { useArticleStore } from '@/store'
 
 export function UploadButton() {

@@ -1,7 +1,8 @@
 export function ProfileButtonSection({
     friends,
     completedMeetings,
-    uncompletedMeetings
+    uncompletedMeetings,
+    challengeCount
 }: {
     friends: number
     completedMeetings: number
@@ -37,6 +38,21 @@ export function ProfileButtonSection({
                     </span>
                 </button>
             </div>
+
+            {/* 친구 초대하기 */}
+            {/* <ModalTrigger
+                forId="friend-invite-notify-modal"
+                className="rounded-12 bg-primary-100 border-primary-400 flex items-center justify-between border px-16 py-18">
+                <span className="text-body1-semibold text-gray-8">
+                    친구 초대하기
+                </span>
+                <div className="flex items-center gap-4">
+                    <span className="text-caption-10 text-gray-4">
+                        초대 받은 친구가 가입시, 랜덤 쿠폰 증정!
+                    </span>
+                    <ArrowForwardIcon />
+                </div>
+            </ModalTrigger> */}
 
             {/* 챌린지 */}
             {/* <ChallengeButton challengeCount={challengeCount} /> */}

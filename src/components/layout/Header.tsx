@@ -1,4 +1,4 @@
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link } from '@/navigation'
 import { BackIcon, AlarmIcon } from '@/assets/icons'
 
 import { COLORS } from '@/constants/colors'

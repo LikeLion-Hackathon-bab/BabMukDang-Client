@@ -1,7 +1,7 @@
 import Logo from '@/assets/icons/BMD-Logo.svg'
 import intro_text from '@/assets/icons/intro_0.svg'
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/navigation'
 
 export const IntroStart = () => {
     const navigate = useNavigate()

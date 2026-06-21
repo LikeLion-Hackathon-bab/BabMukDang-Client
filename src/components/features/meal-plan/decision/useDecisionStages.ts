@@ -42,7 +42,8 @@ export function formatTimeLabel(hhmm: string): string {
     const [h, m] = hhmm.split(':')
     const hour = Number(h)
     if (Number.isNaN(hour)) return hhmm
-    const period = hour < 11 ? '아침' : hour < 15 ? '점심' : hour < 18 ? '오후' : '저녁'
+    const period =
+        hour < 11 ? '아침' : hour < 15 ? '점심' : hour < 18 ? '오후' : '저녁'
     return `${period} ${hhmm}`
 }
 
@@ -226,8 +227,8 @@ export function useDecisionStages(): DecisionView {
         )
         const areaDecided = Boolean(
             current?.selectedArea ||
-                stageByType.get('AREA')?.selectedCandidate ||
-                stageByType.get('AREA')?.status === 'COMPLETED'
+            stageByType.get('AREA')?.selectedCandidate ||
+            stageByType.get('AREA')?.status === 'COMPLETED'
         )
 
         const selectedLabelByKey: Partial<Record<StageKey, string>> = {

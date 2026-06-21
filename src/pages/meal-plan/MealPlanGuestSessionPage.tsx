@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useParams } from '@/navigation'
 import {
     MealPlanChatPanel,
     MealPlanDecisionWorkflowPanel,

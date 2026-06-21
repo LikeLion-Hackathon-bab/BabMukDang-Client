@@ -6,7 +6,7 @@ import React, {
     useState
 } from 'react'
 import { io } from 'socket.io-client'
-import { useParams } from 'react-router-dom'
+import { useParams } from '@/navigation'
 
 import { useRefreshToken } from '@/apis'
 import {

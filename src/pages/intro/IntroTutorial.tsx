@@ -2,7 +2,7 @@ import Intro_1 from '@/assets/images/Intro-1.png'
 import Intro_2 from '@/assets/images/Intro-2.png'
 import Intro_3 from '@/assets/images/Intro-3.png'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/navigation'
 
 const tutorialData = [
     {

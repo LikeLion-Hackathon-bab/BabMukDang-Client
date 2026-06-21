@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/navigation'
 import { useAppBootstrap } from '@/contexts'
 import { onboardingFlowController } from '@/features/onboarding'
 

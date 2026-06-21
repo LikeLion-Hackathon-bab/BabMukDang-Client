@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/navigation'
 import { useCreateMealGroup } from '@/apis'
 import type { MealPlanResponse } from '@kimdaegyu/babmukdang-shared/domain'
 

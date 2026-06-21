@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from '@/navigation'
 import type { MealPlanCardView } from '@/viewModels'
 
 const statusLabel: Record<string, string> = {

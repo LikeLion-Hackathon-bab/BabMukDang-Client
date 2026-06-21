@@ -2,7 +2,7 @@
  * Decision entry — status board. Shows all five stages at once as a 2-column
  * grid; stages progress independently. Tapping a tile routes into that stage.
  */
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/navigation'
 import { Card, ReadyMeter, type AvatarPerson } from './atoms'
 import { CheckGlyph, Glyph, LockGlyph, type GlyphName } from './glyphs'
 import {
@@ -60,7 +60,9 @@ function StageTile({
                 minHeight: 112
             }}>
             <div className="flex items-center justify-between">
-                <div className="flex items-center" style={{ gap: 6 }}>
+                <div
+                    className="flex items-center"
+                    style={{ gap: 6 }}>
                     <Glyph
                         name={STAGE_ICON[stage.key]}
                         size={17}
@@ -80,7 +82,10 @@ function StageTile({
                     </span>
                 </div>
                 {locked ? (
-                    <LockGlyph size={13} color="var(--color-gray-3)" />
+                    <LockGlyph
+                        size={13}
+                        color="var(--color-gray-3)"
+                    />
                 ) : (
                     <span
                         style={{
@@ -98,8 +103,13 @@ function StageTile({
             </div>
             <div style={{ flex: 1 }}>
                 {decided && (
-                    <div className="flex items-center" style={{ gap: 5 }}>
-                        <CheckGlyph size={14} color="#1f8a5b" />
+                    <div
+                        className="flex items-center"
+                        style={{ gap: 5 }}>
+                        <CheckGlyph
+                            size={14}
+                            color="#1f8a5b"
+                        />
                         <span
                             style={{
                                 fontSize: 13.5,
@@ -111,7 +121,9 @@ function StageTile({
                     </div>
                 )}
                 {live && (
-                    <div className="flex flex-col" style={{ gap: 7 }}>
+                    <div
+                        className="flex flex-col"
+                        style={{ gap: 7 }}>
                         <span
                             style={{
                                 fontSize: 12.5,
@@ -225,7 +237,9 @@ export function StageBoard({
         .every(s => s.boardState === 'decided')
 
     return (
-        <div className="flex flex-col" style={{ padding: 16, gap: 13 }}>
+        <div
+            className="flex flex-col"
+            style={{ padding: 16, gap: 13 }}>
             <div>
                 <div
                     style={{
@@ -248,14 +262,18 @@ export function StageBoard({
                     괜찮아요.
                 </div>
             </div>
-            <Card tint pad={12}>
+            <Card
+                tint
+                pad={12}>
                 <ReadyMeter
                     ready={readyCount}
                     total={participantCount}
                     people={participants}
                 />
             </Card>
-            <div className="flex flex-wrap" style={{ gap: 10 }}>
+            <div
+                className="flex flex-wrap"
+                style={{ gap: 10 }}>
                 {stages.map(stage => (
                     <StageTile
                         key={stage.key}

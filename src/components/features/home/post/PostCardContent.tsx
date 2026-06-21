@@ -7,7 +7,7 @@ import {
 import { useLikeArticle } from '@/apis'
 import type { ArticleLikeView } from '@/viewModels'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/navigation'
 import { COLORS } from '@/constants/colors'
 import { mealTimeMapReverse, MealTimeText } from '@/constants/post'
 

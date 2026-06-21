@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from '@/navigation'
 import { MyMealPlanSection } from '@/components/features/meal-plan'
 import { useMyMealPlanCards } from '@/apis'
 

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from '@/navigation'
 import { useCreateMealPlan, useSendMealPlanInvite } from '@/apis'
 import { FoodSearchField, PlaceSearchField } from '@/components/features/search'
 import type { FoodSearchResult, PlaceSearchResult } from '@/services/search'

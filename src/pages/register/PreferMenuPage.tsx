@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/navigation'
 import { useMemo, useState } from 'react'
 import { CardChoice, NextButton } from '@/components'
 import {

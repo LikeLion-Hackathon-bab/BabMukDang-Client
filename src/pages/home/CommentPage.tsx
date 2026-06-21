@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { PostCard, CommentList, ChatInput } from '@/components'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from '@/navigation'
 import {
     useCommentArticle,
     useDeleteArticle,

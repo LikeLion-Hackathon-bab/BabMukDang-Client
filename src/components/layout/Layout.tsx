@@ -1,6 +1,6 @@
-import { Outlet, matchPath, useLocation } from 'react-router-dom'
+import { matchPath, useLocation } from '@/navigation'
 import { Header, BottomNavigation } from '@/components'
-import { useEffect, useLayoutEffect, useMemo } from 'react'
+import { useEffect, useLayoutEffect, useMemo, type ReactNode } from 'react'
 import { useAuthStore } from '@/store'
 import { useAppBootstrap } from '@/contexts'
 import { useLayoutChromeStore } from '@/store/layoutChromeStore'
@@ -8,12 +8,22 @@ import {
     resolveRouteChromeConfig,
     routeChromeConfigEntries
 } from '@/routes/pageChromeConfig'
+import { useNavigationActivityContext } from '@/navigation/NavigationActivityContext'
+type LayoutProps = {
+    children: ReactNode
+    showBottomNavigation?: boolean
+}
 
-export function Layout() {
+export function Layout({ children, showBottomNavigation = true }: LayoutProps) {
     const location = useLocation()
+    const activity = useNavigationActivityContext()
     const setRouteChromeConfig = useLayoutChromeStore(
         state => state.setRouteChromeConfig
     )
+    const { content, bottomNav } = useLayoutChromeStore(
+        state => state.resolvedConfig
+    )
+    const isBottomNavigationVisible = showBottomNavigation && bottomNav.visible
     const routeChromeConfig = useMemo(() => {
         const entry = routeChromeConfigEntries.find(config =>
             matchPath(
@@ -26,24 +36,36 @@ export function Layout() {
     }, [location])
 
     useLayoutEffect(() => {
-        setRouteChromeConfig(routeChromeConfig)
-    }, [routeChromeConfig, setRouteChromeConfig])
+        if (!activity?.isTop) return
+        setRouteChromeConfig(routeChromeConfig, activity.activityId)
+    }, [
+        activity?.activityId,
+        activity?.isTop,
+        routeChromeConfig,
+        setRouteChromeConfig
+    ])
+
+    const mainClassName = content.fullBleed
+        ? 'relative min-h-0 flex-1 overflow-hidden'
+        : [
+              'relative min-h-0 flex-1 overflow-x-hidden px-20',
+              content.scrollable ? 'overflow-y-auto' : 'overflow-y-hidden',
+              content.bottomInset && isBottomNavigationVisible ? 'pb-90' : ''
+          ].join(' ')
 
     return (
         <ProfileBootstrap>
-            <div className="bg-gray-1 flex h-screen min-h-screen w-screen min-w-screen flex-col">
+            <div className="bg-gray-1 relative flex h-screen min-h-screen w-screen min-w-screen flex-col overflow-hidden">
                 <Header />
-                <main className="relative flex-1 overflow-x-hidden overflow-y-auto px-20 pb-90">
-                    <Outlet />
-                </main>
-                <BottomNavigation />
+                <main className={mainClassName}>{children}</main>
+                {isBottomNavigationVisible ? <BottomNavigation /> : null}
             </div>
         </ProfileBootstrap>
     )
 }
 
 type Props = {
-    children: React.ReactNode
+    children: ReactNode
 }
 
 function ProfileBootstrap({ children }: Props) {
@@ -57,25 +79,16 @@ function ProfileBootstrap({ children }: Props) {
     const { profile: myProfile } = useAppBootstrap()
 
     useEffect(() => {
-        if (!myProfile) {
-            return
-        }
+        if (!myProfile) return
 
         const { memberId, userName, profileImageUrl, bio, meetingCount } =
             myProfile
 
-        if (userId === memberId.toString() && username === userName) {
-            return
-        }
+        if (userId === memberId.toString() && username === userName) return
 
         setUserId(memberId.toString())
         setUsername(userName)
-        setProfile({
-            profileImageUrl,
-            userName,
-            bio,
-            meetingCount
-        })
+        setProfile({ profileImageUrl, userName, bio, meetingCount })
     }, [myProfile, userId, username, setUserId, setUsername, setProfile])
 
     return <>{children}</>

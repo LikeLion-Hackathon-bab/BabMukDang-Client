@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from '@/navigation'
 import type { MealMapMarker } from '@/apis'
 import { useMealMapData } from '@/features/meal-map'
 import { RestaurantCandidateActions } from './RestaurantCandidateActions'

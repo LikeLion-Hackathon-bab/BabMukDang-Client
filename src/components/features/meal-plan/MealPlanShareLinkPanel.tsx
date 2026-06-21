@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from '@/navigation'
 import { useCreateMealPlanShareLink } from '@/apis'
 import type { MealPlanShareLinkSummary } from '@kimdaegyu/babmukdang-shared/domain'
 

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { AlbumIcon } from '@/assets/icons'
 import { NextButton } from '@/components'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/navigation'
 import { useOnboardingStore } from '@/store'
 import { onboardingFlowController } from '@/features/onboarding'
 

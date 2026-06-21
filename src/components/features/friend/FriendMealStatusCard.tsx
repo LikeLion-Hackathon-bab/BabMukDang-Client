@@ -1,5 +1,5 @@
 import { HungryIcon, InviteIcon, NotHungryIcon } from '@/assets/icons'
-import { Link } from 'react-router-dom'
+import { Link } from '@/navigation'
 import { Friend } from './FriendListSection'
 
 export function FriendCard({ friend }: { friend: Friend }) {

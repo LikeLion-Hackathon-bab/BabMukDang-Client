@@ -1,7 +1,7 @@
 import { CardBobGraphic } from '@/assets/graphics'
 import { KakaoIcon, LogoTextIcon } from '@/assets/icons'
 import SplashImg from '@/assets/images/SplashImg.png'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/navigation'
 import { useState } from 'react'
 import { useKakaoLogin, useEmailLogin, useEmailSignup } from '@/apis/auth.api'
 

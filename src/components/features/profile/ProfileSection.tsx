@@ -1,7 +1,7 @@
 import { ModalTrigger } from '@/components'
 import { GoodBadChip } from '@/components'
 import { ArrowForwardIcon, ModifyIcon } from '@/assets/icons'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/navigation'
 
 export function ProfileSection({
     profileImgUrl,

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from '@/navigation'
 import { useMealPlanDetail } from '@/apis'
 
 import { useArticleStore } from '@/store'

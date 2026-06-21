@@ -1,10 +1,12 @@
 import { useLayoutEffect } from 'react'
+import { useNavigationActivityContext } from '@/navigation/NavigationActivityContext'
 import {
     type LayoutChromeConfig,
     useLayoutChromeStore
 } from '@/store/layoutChromeStore'
 
 export function usePageChrome(config: LayoutChromeConfig) {
+    const activity = useNavigationActivityContext()
     const setPageChromeConfig = useLayoutChromeStore(
         state => state.setPageChromeConfig
     )
@@ -13,10 +15,17 @@ export function usePageChrome(config: LayoutChromeConfig) {
     )
 
     useLayoutEffect(() => {
-        setPageChromeConfig(config)
+        if (!activity?.isTop) return
+        setPageChromeConfig(config, activity.activityId)
 
         return () => {
-            clearPageChromeConfig()
+            clearPageChromeConfig(activity.activityId)
         }
-    }, [setPageChromeConfig, clearPageChromeConfig, config])
+    }, [
+        activity?.activityId,
+        activity?.isTop,
+        clearPageChromeConfig,
+        config,
+        setPageChromeConfig
+    ])
 }

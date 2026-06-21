@@ -42,7 +42,12 @@ export default defineConfig({
         })
     ],
     resolve: {
+        dedupe: ['zod'],
         alias: [
+            {
+                find: 'zod',
+                replacement: path.resolve(dirname, 'node_modules/zod')
+            },
             {
                 find: '@kimdaegyu/babmukdang-shared/domain/room',
                 replacement: path.resolve(

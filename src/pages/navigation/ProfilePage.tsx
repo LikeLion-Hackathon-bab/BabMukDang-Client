@@ -12,7 +12,7 @@ import {
     useLogout
 } from '@/apis'
 import { useAuthStore } from '@/store'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/navigation'
 import { BobCheckHistorySection } from '@/pages/profile/BobCheckHistoryPage'
 
 export function ProfilePage() {
@@ -22,12 +22,10 @@ export function ProfilePage() {
     const canLoadMember =
         Number.isFinite(currentMemberId) && currentMemberId > 0
     const { data: profileSummary } = useGetMemberProfile(currentMemberId, {
-        enabled: canLoadMember,
-        staleTime: Infinity
+        enabled: canLoadMember
     })
     const { data: profileData } = useGetMemberProfileDetail(currentMemberId, {
-        enabled: canLoadMember,
-        staleTime: Infinity
+        enabled: canLoadMember
     })
     const { data: preferenceData } = useGetMyPreference()
     const { mutate: logout, isPending: isLogoutPending } = useLogout({

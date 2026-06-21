@@ -3,7 +3,7 @@
  * optional footer (ReadyFooter) and an absolutely-positioned bottom-sheet slot.
  */
 import type { ReactNode } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/navigation'
 import { Glyph } from './glyphs'
 import { StageSwitcher } from './StageSwitcher'
 import type { BoardState, StageKey } from './useDecisionStages'
@@ -41,7 +41,11 @@ export function DecisionAppBar({
                         background: 'none',
                         border: 'none'
                     }}>
-                    <Glyph name="back" size={24} color="var(--color-gray-8)" />
+                    <Glyph
+                        name="back"
+                        size={24}
+                        color="var(--color-gray-8)"
+                    />
                 </button>
                 <div
                     className="flex flex-col items-center"
@@ -110,8 +114,14 @@ export function DecisionShell({
     sheet?: ReactNode
 }) {
     return (
-        <div className="flex flex-col" style={{ minHeight: '100%' }}>
-            <DecisionAppBar title={title} sub={sub} mealPlanId={mealPlanId} />
+        <div
+            className="flex flex-col"
+            style={{ minHeight: '100%' }}>
+            <DecisionAppBar
+                title={title}
+                sub={sub}
+                mealPlanId={mealPlanId}
+            />
             <StageSwitcher
                 mealPlanId={mealPlanId}
                 active={active}

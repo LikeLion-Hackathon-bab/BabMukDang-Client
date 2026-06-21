@@ -1,5 +1,10 @@
 import type { ElementType } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useLocation } from '@/navigation'
+import {
+    TAB_ROOT_PATHS,
+    useTabNavigation,
+    type TabRootPath
+} from '@/navigation/useTabNavigation'
 import { useLayoutChromeStore } from '@/store/layoutChromeStore'
 import { BOTTOM_NAVIGATION_HEIGHT } from '@/constants/bottomNav'
 
@@ -16,6 +21,7 @@ export function BottomNavigation({ items }: BottomNavigationProps) {
         state => state.resolvedConfig.bottomNav
     )
     const finalItems = items || bottomNavConfig.items || []
+    const navigateTab = useTabNavigation()
 
     if (!bottomNavConfig.visible) return null
 
@@ -57,23 +63,35 @@ export function BottomNavigation({ items }: BottomNavigationProps) {
             className="fixed right-0 bottom-0 left-0 z-500 border-t border-gray-200 bg-white px-26 pt-10"
             style={{ height: `${BOTTOM_NAVIGATION_HEIGHT}px` }}>
             <div className="flex justify-between">
-                {finalItems.map((item, index) => (
-                    <Link
-                        replace
-                        key={`${item.path}-${index}`}
-                        to={item.path}
-                        className="flex min-w-45 flex-col items-center gap-4 rounded-lg">
-                        <item.icon
-                            className="size-24 min-h-24 min-w-24"
-                            strokecolor={strokecolor(item.path)}
-                            bgcolor={bgcolor(item.path)}
-                        />
-                        <span
-                            className={`text-caption-medium ${textColor(item.path)}`}>
-                            {item.label}
-                        </span>
-                    </Link>
-                ))}
+                {finalItems.map((item, index) => {
+                    const isTabRoot = TAB_ROOT_PATHS.includes(
+                        item.path as TabRootPath
+                    )
+
+                    return (
+                        <button
+                            key={`${item.path}-${index}`}
+                            type="button"
+                            onClick={() => {
+                                if (!isTabRoot) {
+                                    return
+                                }
+
+                                navigateTab(item.path as TabRootPath)
+                            }}
+                            className="flex min-w-45 flex-col items-center gap-4 rounded-lg">
+                            <item.icon
+                                className="size-24 min-h-24 min-w-24"
+                                strokecolor={strokecolor(item.path)}
+                                bgcolor={bgcolor(item.path)}
+                            />
+                            <span
+                                className={`text-caption-medium ${textColor(item.path)}`}>
+                                {item.label}
+                            </span>
+                        </button>
+                    )
+                })}
             </div>
         </nav>
     )

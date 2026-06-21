@@ -1,6 +1,6 @@
 import { CongratsGraphic } from '@/assets/graphics'
 import { MutalButton } from '@/components'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/navigation'
 import { onboardingFlowController } from '@/features/onboarding'
 
 export function FinishRegisterPage() {

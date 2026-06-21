@@ -1,5 +1,5 @@
 import { useEffect, type ReactNode } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { navigateToPath } from '@/navigation'
 import { useAppBootstrap } from '@/contexts'
 import { useQueryClient } from '@tanstack/react-query'
 import { Capacitor } from '@capacitor/core'
@@ -18,7 +18,6 @@ import {
 } from './pushClickRouter'
 
 export function PushProvider({ children }: { children: ReactNode }) {
-    const navigate = useNavigate()
     const { isAuthenticated } = useAppBootstrap()
     const queryClient = useQueryClient()
     const addNotification = useNotificationStore(state => state.addNotification)
@@ -29,7 +28,9 @@ export function PushProvider({ children }: { children: ReactNode }) {
             const parsed = parseMealPlanPushPayload(payload)
             if (!parsed) return
             addNotification(toNotificationFromPushPayload(parsed))
-            queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.notifications.all
+            })
             queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.all })
         }).then(fn => {
             unsubscribe = fn
@@ -38,30 +39,41 @@ export function PushProvider({ children }: { children: ReactNode }) {
         return () => unsubscribe?.()
     }, [addNotification, queryClient])
 
-
     useEffect(() => {
         if (!Capacitor.isNativePlatform()) return
 
         let removeReceived: (() => Promise<void>) | undefined
         let removeAction: (() => Promise<void>) | undefined
 
-        PushNotifications.addListener('pushNotificationReceived', notification => {
-            const parsed = parseMealPlanPushPayload(notification.data)
-            if (!parsed) return
-            addNotification(toNotificationFromPushPayload(parsed))
-            queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all })
-            queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.all })
-        }).then(handle => {
+        PushNotifications.addListener(
+            'pushNotificationReceived',
+            notification => {
+                const parsed = parseMealPlanPushPayload(notification.data)
+                if (!parsed) return
+                addNotification(toNotificationFromPushPayload(parsed))
+                queryClient.invalidateQueries({
+                    queryKey: queryKeys.notifications.all
+                })
+                queryClient.invalidateQueries({
+                    queryKey: queryKeys.mealPlans.all
+                })
+            }
+        ).then(handle => {
             removeReceived = () => handle.remove()
         })
 
-        PushNotifications.addListener('pushNotificationActionPerformed', action => {
-            const parsed = parseMealPlanPushPayload(action.notification.data)
-            if (!parsed) return
-            const normalized = normalizePushDeepLink(parsed.deepLink)
-            savePendingPushDeepLink(normalized)
-            navigate(normalized)
-        }).then(handle => {
+        PushNotifications.addListener(
+            'pushNotificationActionPerformed',
+            action => {
+                const parsed = parseMealPlanPushPayload(
+                    action.notification.data
+                )
+                if (!parsed) return
+                const normalized = normalizePushDeepLink(parsed.deepLink)
+                savePendingPushDeepLink(normalized)
+                navigateToPath(normalized)
+            }
+        ).then(handle => {
             removeAction = () => handle.remove()
         })
 
@@ -69,13 +81,13 @@ export function PushProvider({ children }: { children: ReactNode }) {
             removeReceived?.()
             removeAction?.()
         }
-    }, [addNotification, navigate, queryClient])
+    }, [addNotification, queryClient])
 
     useEffect(() => {
         if (!isAuthenticated) return
         const pendingDeepLink = consumePendingPushDeepLink()
-        if (pendingDeepLink) navigate(pendingDeepLink)
-    }, [isAuthenticated, navigate])
+        if (pendingDeepLink) navigateToPath(pendingDeepLink)
+    }, [isAuthenticated])
 
     useEffect(() => {
         const onServiceWorkerMessage = (event: MessageEvent) => {
@@ -84,7 +96,7 @@ export function PushProvider({ children }: { children: ReactNode }) {
             if (typeof deepLink !== 'string') return
             const normalized = normalizePushDeepLink(deepLink)
             savePendingPushDeepLink(normalized)
-            navigate(normalized)
+            navigateToPath(normalized)
         }
 
         navigator.serviceWorker?.addEventListener(
@@ -96,7 +108,7 @@ export function PushProvider({ children }: { children: ReactNode }) {
                 'message',
                 onServiceWorkerMessage
             )
-    }, [navigate])
+    }, [])
 
     return <>{children}</>
 }

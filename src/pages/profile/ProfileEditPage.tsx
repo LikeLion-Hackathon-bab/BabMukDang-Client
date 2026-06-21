@@ -11,7 +11,7 @@ import {
 import { domainFood } from '@/domain/factories'
 import { useAuthStore } from '@/store'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/navigation'
 import { usePageChrome } from '@/hooks/usePageChrome'
 
 type ChipVariant = 'good' | 'bad'
@@ -107,12 +107,10 @@ export function ProfileEditPage() {
         Number.isFinite(currentMemberId) && currentMemberId > 0
 
     const { data: profileSummary } = useGetMemberProfile(currentMemberId, {
-        enabled: canLoadMember,
-        staleTime: Infinity
+        enabled: canLoadMember
     })
     const { data: profileDetail } = useGetMemberProfileDetail(currentMemberId, {
-        enabled: canLoadMember,
-        staleTime: Infinity
+        enabled: canLoadMember
     })
     const { data: preference } = useGetMyPreference()
     const { mutateAsync: updateProfile, isPending: isProfileUpdating } =

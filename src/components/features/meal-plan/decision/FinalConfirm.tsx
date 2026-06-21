@@ -7,10 +7,16 @@
  * the old workflow panel are intentionally dropped per the redesign (reported to
  * the user); confirmation is a single owner action here.
  */
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/navigation'
 import type { MealPlanResponse } from '@kimdaegyu/babmukdang-shared/domain'
 import { useConfirmMealPlan } from '@/apis'
-import { AvatarStack, Card, InlineBanner, StatusBadge, type AvatarPerson } from './atoms'
+import {
+    AvatarStack,
+    Card,
+    InlineBanner,
+    StatusBadge,
+    type AvatarPerson
+} from './atoms'
 import { CheckGlyph, Glyph, type GlyphName } from './glyphs'
 import {
     formatDateLabel,
@@ -76,8 +82,12 @@ export function FinalConfirmPanel({
             <div
                 className="flex flex-col"
                 style={{ flex: 1, padding: 16, gap: 13 }}>
-                <Card tint pad={14}>
-                    <div className="flex items-center" style={{ gap: 7 }}>
+                <Card
+                    tint
+                    pad={14}>
+                    <div
+                        className="flex items-center"
+                        style={{ gap: 7 }}>
                         <CheckGlyph
                             size={16}
                             color="var(--color-primary-main)"
@@ -94,7 +104,10 @@ export function FinalConfirmPanel({
                         </span>
                     </div>
                     <div style={{ marginTop: 9 }}>
-                        <AvatarStack people={people} size={26} />
+                        <AvatarStack
+                            people={people}
+                            size={26}
+                        />
                     </div>
                 </Card>
                 <Card pad={16}>
@@ -142,7 +155,10 @@ export function FinalConfirmPanel({
                                         {line.value}
                                     </span>
                                     <span style={{ marginLeft: 'auto' }}>
-                                        <CheckGlyph size={15} color="#1f8a5b" />
+                                        <CheckGlyph
+                                            size={15}
+                                            color="#1f8a5b"
+                                        />
                                     </span>
                                 </div>
                             </div>
@@ -244,7 +260,10 @@ export function FinalDonePanel({
                             display: 'grid',
                             placeItems: 'center'
                         }}>
-                        <CheckGlyph size={36} color="#fff" />
+                        <CheckGlyph
+                            size={36}
+                            color="#fff"
+                        />
                     </div>
                     <div
                         style={{
@@ -265,8 +284,16 @@ export function FinalDonePanel({
                         이어가요.
                     </div>
                 </div>
-                <Card pad={14} style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
-                    <div className="flex items-center" style={{ gap: 8 }}>
+                <Card
+                    pad={14}
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 9
+                    }}>
+                    <div
+                        className="flex items-center"
+                        style={{ gap: 8 }}>
                         <StatusBadge status={mealPlan.status} />
                         <span
                             style={{
@@ -310,7 +337,10 @@ export function FinalDonePanel({
                         </div>
                     )}
                     <div style={{ marginTop: 3 }}>
-                        <AvatarStack people={decision.participants} size={26} />
+                        <AvatarStack
+                            people={decision.participants}
+                            size={26}
+                        />
                     </div>
                 </Card>
             </div>
@@ -347,7 +377,9 @@ export function FinalDonePanel({
                 </button>
                 <button
                     type="button"
-                    onClick={() => navigate(`/meal-plans/${mealPlan.mealPlanId}`)}
+                    onClick={() =>
+                        navigate(`/meal-plans/${mealPlan.mealPlanId}`)
+                    }
                     style={{
                         flex: 1,
                         height: 48,

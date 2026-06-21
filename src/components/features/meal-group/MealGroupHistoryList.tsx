@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from '@/navigation'
 import type { MealGroupHistoryResponse } from '@kimdaegyu/babmukdang-shared/domain'
 
 export function MealGroupHistoryList({

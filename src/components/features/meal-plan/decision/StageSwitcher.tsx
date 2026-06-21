@@ -2,7 +2,7 @@
  * Confirmed-flow top nav. Free movement between stages — tapping a chip routes
  * to that stage's vote screen. Locked stages are non-navigable.
  */
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/navigation'
 import { CheckGlyph, LockGlyph } from './glyphs'
 import { STAGE_DEFS, type BoardState, type StageKey } from './useDecisionStages'
 
@@ -68,7 +68,10 @@ export function StageSwitcher({
                                 opacity: locked ? 0.5 : 1
                             }}>
                             {locked ? (
-                                <LockGlyph size={12} color="var(--color-gray-3)" />
+                                <LockGlyph
+                                    size={12}
+                                    color="var(--color-gray-3)"
+                                />
                             ) : decided ? (
                                 <CheckGlyph
                                     size={13}
