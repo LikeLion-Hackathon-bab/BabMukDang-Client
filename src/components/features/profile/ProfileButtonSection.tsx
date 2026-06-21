@@ -1,13 +1,7 @@
-import { ArrowForwardIcon } from '@/assets/icons'
-import { Link } from 'react-router-dom'
-import { ModalTrigger } from '@/components'
-import { ChallengeButton } from './ChallengeButton'
-
 export function ProfileButtonSection({
     friends,
     completedMeetings,
-    uncompletedMeetings,
-    challengeCount
+    uncompletedMeetings
 }: {
     friends: number
     completedMeetings: number
@@ -44,43 +38,18 @@ export function ProfileButtonSection({
                 </button>
             </div>
 
-            {/* 친구 초대하기 */}
-            <ModalTrigger
-                forId="friend-invite-notify-modal"
-                className="rounded-12 bg-primary-100 border-primary-400 flex items-center justify-between border px-16 py-18">
-                <span className="text-body1-semibold text-gray-8">
-                    친구 초대하기
-                </span>
-                <div className="flex items-center gap-4">
-                    <span className="text-caption-10 text-gray-4">
-                        초대 받은 친구가 가입시, 랜덤 쿠폰 증정!
-                    </span>
-                    <ArrowForwardIcon />
-                </div>
-            </ModalTrigger>
-
             {/* 챌린지 */}
-            <ChallengeButton challengeCount={challengeCount} />
+            {/* <ChallengeButton challengeCount={challengeCount} /> */}
 
             {/* 쿠폰 보관함 */}
-            <Link
-                to="/coupon"
-                className="rounded-12 flex items-center justify-between bg-white px-16 py-18">
-                <span className="text-body1-semibold text-gray-8">
-                    쿠폰 보관함
-                </span>
-                <ArrowForwardIcon />
-            </Link>
-
-            {/* 지난 밥 인증 내역 */}
-            <Link
-                to="/bob-check-history"
-                className="rounded-12 flex items-center justify-between bg-white px-16 py-18">
-                <span className="text-body1-semibold text-gray-8">
-                    지난 밥 인증 내역
-                </span>
-                <ArrowForwardIcon />
-            </Link>
+            {/* <Link
+                    to="/coupon"
+                    className="rounded-12 flex items-center justify-between bg-white px-16 py-18">
+                    <span className="text-body1-semibold text-gray-8">
+                        쿠폰 보관함
+                    </span>
+                    <ArrowForwardIcon />
+                </Link> */}
         </section>
     )
 }

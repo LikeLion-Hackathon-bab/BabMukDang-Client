@@ -13,6 +13,7 @@ import {
 } from '@/apis'
 import { useAuthStore } from '@/store'
 import { useNavigate } from 'react-router-dom'
+import { BobCheckHistorySection } from '@/pages/profile/BobCheckHistoryPage'
 
 export function ProfilePage() {
     const { userId } = useAuthStore()
@@ -21,10 +22,12 @@ export function ProfilePage() {
     const canLoadMember =
         Number.isFinite(currentMemberId) && currentMemberId > 0
     const { data: profileSummary } = useGetMemberProfile(currentMemberId, {
-        enabled: canLoadMember
+        enabled: canLoadMember,
+        staleTime: Infinity
     })
     const { data: profileData } = useGetMemberProfileDetail(currentMemberId, {
-        enabled: canLoadMember
+        enabled: canLoadMember,
+        staleTime: Infinity
     })
     const { data: preferenceData } = useGetMyPreference()
     const { mutate: logout, isPending: isLogoutPending } = useLogout({
@@ -79,6 +82,7 @@ export function ProfilePage() {
                         uncompletedMeetings={profile.uncompletedPlans}
                         challengeCount={profile.meetingCount}
                     />
+                    <BobCheckHistorySection />
                     <ProfileModal
                         id="profile-notify-modal"
                         likes={profile.likes.map(like => like.label)}
