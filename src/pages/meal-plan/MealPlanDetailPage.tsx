@@ -7,13 +7,11 @@ import {
     MealPlanJoinRequestPanel,
     MealPlanLiveActivityPanel,
     MealPlanParticipantPanel,
-    MealPlanReadyBar,
     MealPlanRecommendationPanel,
     MealPlanReceivedInviteBanner,
     MealPlanRecordCTA,
     MealPlanShareLinkPanel,
     MealPlanStatusCard,
-    MealPlanVotePanel,
     NearbyFriendExposurePanel
 } from '@/components/features/meal-plan'
 import { MealGroupCreateFromMealPlanButton } from '@/components/features/meal-group'
@@ -43,7 +41,6 @@ function MealPlanDetailContent() {
     const decisionStages = useMealPlanStore(state => state.decisionStages)
     const readyCount = useMealPlanStore(state => state.readyCount)
     const participantCount = useMealPlanStore(state => state.participantCount)
-    const isSelfReady = useMealPlanStore(state => state.isSelfReady)
     const mealPlan = storeCurrent ?? data
     const permissions = mealPlan?.viewerPermissions
     const isOwner = mealPlan?.viewerRole === 'OWNER'
@@ -96,21 +93,26 @@ function MealPlanDetailContent() {
                 canComplete={permissions?.canConfirmDecisionSnapshot}
                 canVote={permissions?.canVote}
             />
-            <MealPlanVotePanel
-                stages={decisionStages}
-                onOpenDecision={() =>
-                    navigate(`/meal-plans/${mealPlanId}/decision`)
-                }
-            />
-            <MealPlanReadyBar
-                mealPlanId={mealPlanId}
-                readyCount={readyCount}
-                participantCount={participantCount || participants.length}
-                isSelfReady={isSelfReady}
-                status={mealPlan.status}
-                canReady={permissions?.canReadyMealPlan}
-                canConfirm={permissions?.canConfirmMealPlan}
-            />
+            <section className="rounded-20 flex flex-col gap-12 bg-white p-16">
+                <div>
+                    <h2 className="text-body1-semibold text-gray-8">
+                        의사결정
+                    </h2>
+                    <p className="text-caption-regular text-gray-5">
+                        {readyCount}/{participantCount || participants.length}명
+                        준비 · 날짜·시간·지역·메뉴·식당을 결정 화면에서 정하고
+                        Ready 합니다.
+                    </p>
+                </div>
+                <button
+                    type="button"
+                    onClick={() =>
+                        navigate(`/meal-plans/${mealPlanId}/decision`)
+                    }
+                    className="rounded-30 bg-gray-8 text-body1-semibold py-12 text-white">
+                    결정하러 가기
+                </button>
+            </section>
             {isOwner && (
                 <>
                     {permissions?.canInviteFriends && (
