@@ -177,12 +177,14 @@ export function MealPlanStartPage() {
                             },
                             {
                                 onSettled: () =>
-                                    navigate(`/meal-plans/${data.mealPlanId}`)
+                                    navigate(
+                                        `/meal-plans/${data.mealPlanId}/decision`
+                                    )
                             }
                         )
                         return
                     }
-                    navigate(`/meal-plans/${data.mealPlanId}`)
+                    navigate(`/meal-plans/${data.mealPlanId}/decision`)
                 }
             }
         )

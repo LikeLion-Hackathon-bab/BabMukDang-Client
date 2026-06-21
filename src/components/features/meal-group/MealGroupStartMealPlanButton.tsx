@@ -13,7 +13,7 @@ export function MealGroupStartMealPlanButton({
     const [title, setTitle] = useState(defaultTitle ?? '')
     const start = useStartMealPlanFromGroup({
         onSuccess: data => {
-            if (data) navigate(`/meal-plans/${data.mealPlanId}`)
+            if (data) navigate(`/meal-plans/${data.mealPlanId}/decision`)
         }
     })
 
