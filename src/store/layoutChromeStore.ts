@@ -45,13 +45,13 @@ interface LayoutChromeStore {
 
 const defaultBottomNavItems: BottomNavItem[] = [
     { path: '/', label: '홈', icon: 'i' },
-    { path: '/matching', label: '매칭', icon: 'i' },
+    { path: '/meal-map', label: '지도', icon: 'i' },
     { path: '/friend', label: '친구', icon: 'i' },
     { path: '/meeting', label: '밥약', icon: 'i' },
     { path: '/profile', label: '내 밥그릇', icon: 'i' }
 ]
 
-export const createDefaultHeaderConfig = (): HeaderConfig => ({
+const createDefaultHeaderConfig = (): HeaderConfig => ({
     visible: true,
     showLeftButton: true,
     showRightButton: false,
@@ -59,7 +59,7 @@ export const createDefaultHeaderConfig = (): HeaderConfig => ({
     title: ''
 })
 
-export const createDefaultBottomNavConfig = (): BottomNavConfig => ({
+const createDefaultBottomNavConfig = (): BottomNavConfig => ({
     visible: true,
     items: [...defaultBottomNavItems]
 })

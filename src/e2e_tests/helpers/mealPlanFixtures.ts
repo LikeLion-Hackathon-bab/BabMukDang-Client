@@ -7,6 +7,7 @@ import type {
     MealPlanDecisionCandidate,
     MealPlanDecisionProgress,
     MealPlanDecisionStageResponse,
+    MealPlanDecisionTaskKey,
     MealPlanGuestSessionResponse,
     MealPlanInviteListResponse,
     MealPlanJoinRequestSummary,
@@ -36,6 +37,22 @@ const mealPlanId = toMealPlanId('11111111-1111-4111-8111-111111111111')
 const ownerParticipantId = '21111111-1111-4111-8111-111111111111' as never
 const friendParticipantId = '22222222-2222-4222-8222-222222222222' as never
 const chatRoomId = '33333333-3333-4333-8333-333333333333' as never
+
+export const createViewerTaskReadyMap = (
+    overrides: Partial<Record<MealPlanDecisionTaskKey, boolean>> = {}
+): Record<MealPlanDecisionTaskKey, boolean> => ({
+    SCHEDULE_DATE: false,
+    SCHEDULE_TIME: false,
+    LOCATION_CANDIDATE: false,
+    LOCATION_VOTE: false,
+    EXCLUDE_MENU: false,
+    PREFER_MENU: false,
+    MENU_PICK: false,
+    RESTAURANT_SEARCH: false,
+    RESTAURANT_PICK: false,
+    FINAL_CONFIRMATION: false,
+    ...overrides
+})
 
 export const E2E_MEAL_PLAN_ID = mealPlanId
 export const E2E_SHARE_TOKEN = toMealPlanShareLinkToken('share-token-e2e')
@@ -168,7 +185,7 @@ export const mealPlanDetailResponse = (
         canRecordMealPlan: false,
         canCancelMealPlan: true
     },
-    viewerTaskReadyMap: {},
+    viewerTaskReadyMap: createViewerTaskReadyMap(),
     selectedDate: '2026-06-19',
     selectedTime: '12:30',
     selectedArea: {
@@ -535,7 +552,7 @@ export const mealPlanDecisionDetailResponse = (
         participants: detailWithFriend.participants,
         decisionStages: [decisionStageResponse()],
         decisionProgress: decisionProgressResponse(),
-        viewerTaskReadyMap: { MENU_PICK: false },
+        viewerTaskReadyMap: createViewerTaskReadyMap({ MENU_PICK: false }),
         viewerPermissions: {
             ...mealPlanDetailResponse().viewerPermissions,
             canChat: true,
@@ -576,7 +593,7 @@ export const confirmedDecisionDetailResponse = (): MealPlanResponse =>
             ],
             final: { menu: menuCandidate }
         },
-        viewerTaskReadyMap: { MENU_PICK: true }
+        viewerTaskReadyMap: createViewerTaskReadyMap({ MENU_PICK: true })
     })
 
 export const articleDetailResponse = (

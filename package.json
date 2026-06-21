@@ -39,7 +39,7 @@
         "@capacitor/ios": "^8.4.0",
         "@capacitor/push-notifications": "^8.1.1",
         "@capgo/capacitor-live-activities": "^1.1.3",
-        "@kimdaegyu/babmukdang-shared": "file:../BabMukDang-Shared",
+        "@kimdaegyu/babmukdang-shared": "^2.0.2",
         "@radix-ui/react-slot": "^1.2.3",
         "@tanstack/react-query": "^5.75.2",
         "@types/serviceworker": "^0.0.147",

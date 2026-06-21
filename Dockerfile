@@ -1,14 +1,14 @@
 # Build context: repository root containing BabMukDang-Client and BabMukDang-Shared.
 #   docker build -f BabMukDang-Client/Dockerfile .
 
-FROM node:20-alpine AS shared-builder
-WORKDIR /app/BabMukDang-Shared
-COPY BabMukDang-Shared/package*.json ./
-RUN npm ci
-COPY BabMukDang-Shared/src ./src
-COPY BabMukDang-Shared/tsconfig*.json ./
-COPY BabMukDang-Shared/tsup.config.ts ./
-RUN npm run build
+# FROM node:20-alpine AS shared-builder
+# WORKDIR /app/BabMukDang-Shared
+# COPY BabMukDang-Shared/package*.json ./
+# RUN npm ci
+# COPY BabMukDang-Shared/src ./src
+# COPY BabMukDang-Shared/tsconfig*.json ./
+# COPY BabMukDang-Shared/tsup.config.ts ./
+# RUN npm run build
 
 FROM node:20-alpine AS builder
 ARG VITE_SERVER_URL=http://localhost:3000
