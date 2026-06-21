@@ -20,6 +20,8 @@ import type {
     UpdatePreferenceRequest
 } from './types'
 
+const SELF_PREFERENCE_STALE_TIME = Infinity
+
 // ============================================================================
 // API 함수
 // ============================================================================
@@ -62,7 +64,8 @@ const preferenceApi = {
 export const useGetMyPreference = () => {
     const { data, isLoading, error, refetch } = useQuery({
         queryKey: queryKeys.preferences.my,
-        queryFn: preferenceApi.getMy
+        queryFn: preferenceApi.getMy,
+        staleTime: SELF_PREFERENCE_STALE_TIME
     })
     return { data, isLoading, error, refetch }
 }
@@ -90,7 +93,7 @@ export const useUpdatePreference = (
             preferenceApi.update(data),
         onSuccess: data => {
             queryClient.invalidateQueries({
-                queryKey: queryKeys.preferences.all
+                queryKey: queryKeys.preferences.my
             })
             options.onSuccess?.(data)
         },

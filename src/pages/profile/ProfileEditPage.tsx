@@ -107,10 +107,12 @@ export function ProfileEditPage() {
         Number.isFinite(currentMemberId) && currentMemberId > 0
 
     const { data: profileSummary } = useGetMemberProfile(currentMemberId, {
-        enabled: canLoadMember
+        enabled: canLoadMember,
+        staleTime: Infinity
     })
     const { data: profileDetail } = useGetMemberProfileDetail(currentMemberId, {
-        enabled: canLoadMember
+        enabled: canLoadMember,
+        staleTime: Infinity
     })
     const { data: preference } = useGetMyPreference()
     const { mutateAsync: updateProfile, isPending: isProfileUpdating } =

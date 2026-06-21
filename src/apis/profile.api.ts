@@ -31,6 +31,8 @@ import type {
     NoContent
 } from './types'
 
+const SELF_PROFILE_STALE_TIME = Infinity
+
 // ============================================================================
 // API 함수
 // ============================================================================
@@ -151,6 +153,7 @@ export const useGetMyProfile = (options?: { enabled?: boolean }) => {
     return useQuery({
         queryKey: queryKeys.profile.my,
         queryFn: profileApi.getMyProfile,
+        staleTime: SELF_PROFILE_STALE_TIME,
         enabled: options?.enabled ?? true
     })
 }
@@ -162,7 +165,8 @@ export const useGetMyProfile = (options?: { enabled?: boolean }) => {
 export const useGetMyProfileDetail = () => {
     return useQuery({
         queryKey: queryKeys.profile.myDetail,
-        queryFn: profileApi.getMyProfileDetail
+        queryFn: profileApi.getMyProfileDetail,
+        staleTime: SELF_PROFILE_STALE_TIME
     })
 }
 
@@ -180,11 +184,12 @@ export const useGetLocationSettings = (options?: { enabled?: boolean }) => {
  */
 export const useGetMemberProfile = (
     memberId: number,
-    options?: { enabled?: boolean }
+    options?: { enabled?: boolean; staleTime?: number }
 ) => {
     return useQuery({
         queryKey: queryKeys.profile.member(memberId),
         queryFn: () => profileApi.getMemberProfile(memberId),
+        staleTime: options?.staleTime,
         enabled: (options?.enabled ?? true) && memberId > 0
     })
 }
@@ -195,11 +200,12 @@ export const useGetMemberProfile = (
  */
 export const useGetMemberProfileDetail = (
     memberId: number,
-    options?: { enabled?: boolean }
+    options?: { enabled?: boolean; staleTime?: number }
 ) => {
     return useQuery({
         queryKey: queryKeys.profile.memberDetail(memberId),
         queryFn: () => profileApi.getMemberProfileDetail(memberId),
+        staleTime: options?.staleTime,
         enabled: (options?.enabled ?? true) && memberId > 0
     })
 }
@@ -256,7 +262,16 @@ export const useUpdateMyProfile = (
         mutationFn: (data: UpdateProfileRequest) =>
             profileApi.updateMyProfile(data),
         onSuccess: data => {
-            queryClient.invalidateQueries({ queryKey: queryKeys.profile.all })
+            queryClient.invalidateQueries({ queryKey: queryKeys.profile.my })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.profile.myDetail
+            })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.profile.member(data.memberId)
+            })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.profile.memberDetail(data.memberId)
+            })
             options.onSuccess?.(data)
         },
         onError: options.onError
@@ -271,7 +286,13 @@ export const useUpdateLocationConsent = (
         mutationFn: (data: UpdateMemberLocationConsentRequest) =>
             profileApi.updateLocationConsent(data),
         onSuccess: data => {
-            queryClient.invalidateQueries({ queryKey: queryKeys.profile.all })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.profile.locationSettings
+            })
+            queryClient.invalidateQueries({ queryKey: queryKeys.profile.my })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.profile.myDetail
+            })
             options.onSuccess?.(data)
         },
         onError: options.onError,
@@ -287,7 +308,9 @@ export const useUpdateMemberLocation = (
         mutationFn: (data: UpdateMemberLocationRequest) =>
             profileApi.updateLocation(data),
         onSuccess: data => {
-            queryClient.invalidateQueries({ queryKey: queryKeys.profile.all })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.profile.locationSettings
+            })
             options.onSuccess?.(data)
         },
         onError: options.onError,
@@ -306,7 +329,16 @@ export const useCompleteOnboarding = (
         mutationFn: (data: CompleteOnboardingRequestDto) =>
             profileApi.completeOnboarding(data),
         onSuccess: data => {
-            queryClient.invalidateQueries({ queryKey: queryKeys.profile.all })
+            queryClient.invalidateQueries({ queryKey: queryKeys.profile.my })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.profile.myDetail
+            })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.profile.locationSettings
+            })
+            queryClient.invalidateQueries({
+                queryKey: queryKeys.preferences.my
+            })
             options.onSuccess?.(data)
         },
         onError: options.onError,
