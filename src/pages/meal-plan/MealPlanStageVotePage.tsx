@@ -92,7 +92,9 @@ function StageVoteContent({ stageKey }: { stageKey: StageKey }) {
                         canVote={canVote}
                         onAdd={openRegister}
                         areaDecided={areaDecided}
-                        areaName={mealPlan?.selectedArea?.placeName ?? undefined}
+                        areaName={
+                            mealPlan?.selectedArea?.placeName ?? undefined
+                        }
                         menuName={mealPlan?.selectedMenuCategory ?? undefined}
                     />
                 )
@@ -157,36 +159,36 @@ function StageVoteContent({ stageKey }: { stageKey: StageKey }) {
     })()
 
     return (
-        <DecisionShell
-            mealPlanId={mealPlanId}
-            title={mealPlanTitle(mealPlan?.title)}
-            sub={`${decision.participantCount}명`}
-            active={stageKey}
-            states={decision.statesByKey}
-            footer={
-                <ReadyFooter
-                    mealPlanId={mealPlanId}
-                    isSelfReady={isSelfReady}
-                    status={status}
-                    canReady={permissions?.canReadyMealPlan}
-                    onFriends={() => {
-                        setShowRegister(false)
-                        setShowFriends(true)
-                    }}
-                    friendsActive={showFriends}
-                />
-            }
-            sheet={
-                registerSheet ??
+        <>
+            <DecisionShell
+                mealPlanId={mealPlanId}
+                title={mealPlanTitle(mealPlan?.title)}
+                sub={`${decision.participantCount}명`}
+                active={stageKey}
+                states={decision.statesByKey}
+                footer={
+                    <ReadyFooter
+                        mealPlanId={mealPlanId}
+                        isSelfReady={isSelfReady}
+                        status={status}
+                        canReady={permissions?.canReadyMealPlan}
+                        onFriends={() => {
+                            setShowRegister(false)
+                            setShowFriends(true)
+                        }}
+                        friendsActive={showFriends}
+                    />
+                }>
+                {panel}
+            </DecisionShell>
+            {registerSheet ??
                 (showFriends ? (
                     <FriendVotesSheet
                         stageType={STAGE_TYPE[stageKey]}
                         onClose={() => setShowFriends(false)}
                     />
-                ) : null)
-            }>
-            {panel}
-        </DecisionShell>
+                ) : null)}
+        </>
     )
 }
 

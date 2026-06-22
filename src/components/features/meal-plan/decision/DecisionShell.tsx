@@ -1,6 +1,6 @@
 /**
  * Per-stage screen scaffold: top AppBar + StageSwitcher + scrollable body, with
- * optional footer (ReadyFooter) and an absolutely-positioned bottom-sheet slot.
+ * optional footer (ReadyFooter).
  */
 import type { ReactNode } from 'react'
 import { useNavigate } from '@/navigation'
@@ -103,8 +103,7 @@ export function DecisionShell({
     active,
     states,
     children,
-    footer,
-    sheet
+    footer
 }: {
     mealPlanId: string
     title: string
@@ -113,7 +112,6 @@ export function DecisionShell({
     states: Record<StageKey, BoardState>
     children: ReactNode
     footer?: ReactNode
-    sheet?: ReactNode
 }) {
     useMealPlanDecisionChrome({ mealPlanId, title })
 
@@ -137,7 +135,6 @@ export function DecisionShell({
                     style={{ padding: 16, gap: 13 }}>
                     {children}
                 </div>
-                {sheet}
             </div>
             {footer}
         </div>

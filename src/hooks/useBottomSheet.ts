@@ -1,445 +1,300 @@
-import { useEffect, useRef, useState, useCallback } from 'react'
-import {
-    fromEvent,
-    merge,
-    scan,
-    switchMap,
-    takeUntil,
-    map,
-    throttleTime,
-    filter,
-    tap,
-    of,
-    first,
-    Subject
-} from 'rxjs'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 interface UseBottomSheetOptions {
     snapPoints?: number[] // 0-100 사이의 퍼센트 값들 (0: 완전 닫힘, 100: 완전 열림)
     initialSnapPoint?: number // 초기 스냅 포인트 인덱스
-    initialExposure: number // 초기 노출 값
-    threshold?: number // 스냅 전환을 위한 최소 드래그 거리
-    duration?: number // 애니메이션 지속 시간
-    dragResistance?: number // 드래그 저항 (0-1, 1이 가장 저항이 큼)
-    clickThreshold?: number // 클릭으로 인정할 최대 이동 거리
-    enableBackdrop?: boolean // 배경 클릭으로 닫기 활성화
+    initialExposure?: number // 최상단 스냅에서 남겨둘 숨김 비율
+    threshold?: number // 스냅 전환을 위한 최소 드래그 거리(px)
+    dragResistance?: number // 닫힘/열림 경계를 넘길 때 적용할 저항
+    clickThreshold?: number // 클릭으로 인정할 최대 이동 거리(px)
+    openingDragLimit?: {
+        bottomOffset: number
+        overflow: number
+    } // 닫힌 offset 상태에서 열기 드래그 중 화면 아래 기준으로 허용할 추가 노출 높이(px)
+}
+
+interface BottomSheetDerivedValue {
+    isOpen: boolean
+    currentSnapPoint: number
+    exposurePercent: number
+    translatePercent: number
+    isDragging: boolean
 }
 
 interface UseBottomSheetReturn {
-    isOpen: boolean
-    currentSnapPoint: number
-    translateY: number
-    isDragging: boolean
+    derivedValue: BottomSheetDerivedValue
     open: () => void
     close: () => void
     snapTo: (index: number) => void
-    containerRef: React.RefObject<HTMLDivElement | null>
-    backdropRef: React.RefObject<HTMLDivElement | null>
-    handleBackdropClick: (event: React.MouseEvent) => void
-    handleClick: () => void
+    setSheetRef: React.RefCallback<HTMLElement>
 }
+
+const clamp = (value: number, min: number, max: number) =>
+    Math.min(Math.max(value, min), max)
+
+const isInteractiveTarget = (target: EventTarget | null) => {
+    if (!(target instanceof Element)) return false
+    return !!target.closest(
+        'input, textarea, select, button, a, label, [contenteditable="true"], [data-no-drag], .no-drag'
+    )
+}
+
+const getAdjustedSnapPoints = (snapPoints: number[], initialExposure: number) =>
+    snapPoints.map((snapPoint, index) =>
+        index === snapPoints.length - 1
+            ? clamp(snapPoint - initialExposure, 0, 100)
+            : clamp(snapPoint, 0, 100)
+    )
 
 export function useBottomSheet({
     snapPoints = [0, 50, 100],
     initialSnapPoint = 0,
-    initialExposure,
+    initialExposure = 0,
     threshold = 50,
-    duration = 300,
     dragResistance = 0.8,
     clickThreshold = 3,
-    enableBackdrop = true
+    openingDragLimit
 }: UseBottomSheetOptions): UseBottomSheetReturn {
-    const containerRef = useRef<HTMLDivElement>(null)
-    const backdropRef = useRef<HTMLDivElement>(null)
-    const [translateY, setTranslateY] = useState(0)
-    const [currentSnapPoint, setCurrentSnapPoint] = useState(initialSnapPoint)
-    const [isDragging, setIsDragging] = useState(false)
-    const subscriptionRef = useRef<any>(null)
-
-    // 외부에서 상태 변경을 위한 Subject 추가
-    const stateUpdateSubject = useRef(
-        new Subject<{ type: 'close' | 'open' | 'snap'; index?: number }>()
+    const snapPointsKey = snapPoints.join(',')
+    const normalizedSnapPoints = useMemo(
+        () => snapPointsKey.split(',').map(Number),
+        [snapPointsKey]
     )
+    const adjustedSnapPoints = useMemo(
+        () => getAdjustedSnapPoints(normalizedSnapPoints, initialExposure),
+        [initialExposure, normalizedSnapPoints]
+    )
+    const initialIndex = clamp(
+        initialSnapPoint,
+        0,
+        adjustedSnapPoints.length - 1
+    )
+    const initialTranslateY = -adjustedSnapPoints[initialIndex]
 
-    // 현재 스냅 포인트에 따른 열림 상태
+    const sheetRef = useRef<HTMLElement | null>(null)
+    const [containerElement, setContainerElement] =
+        useState<HTMLElement | null>(null)
+    const [translateY, setTranslateY] = useState(initialTranslateY)
+    const [currentSnapPoint, setCurrentSnapPoint] = useState(initialIndex)
+    const [isDragging, setIsDragging] = useState(false)
+
+    const translateYRef = useRef(initialTranslateY)
+    const currentSnapPointRef = useRef(initialIndex)
+    const snapPointsRef = useRef(adjustedSnapPoints)
+    const pointerRef = useRef<{
+        id: number
+        startY: number
+        startTranslateY: number
+        sheetHeight: number
+        moved: boolean
+    } | null>(null)
+
+    const minTranslateY = -adjustedSnapPoints[adjustedSnapPoints.length - 1]
+    const maxTranslateY = -adjustedSnapPoints[0]
     const isOpen = currentSnapPoint > 0
+    const openingDragLimitBottomOffset = openingDragLimit?.bottomOffset
+    const openingDragLimitOverflow = openingDragLimit?.overflow
 
-    // 드래그 상태 추적
-    const dragStateRef = useRef({
-        startY: 0,
-        totalDistance: 0,
-        isDragIntent: false
-    })
+    const setSheetRef = useCallback((node: HTMLElement | null) => {
+        sheetRef.current = node
+        setContainerElement(node)
+    }, [])
 
-    const SUPPORT_TOUCH = 'ontouchstart' in window
-    const EVENTS = {
-        start: SUPPORT_TOUCH ? 'touchstart' : 'mousedown',
-        move: SUPPORT_TOUCH ? 'touchmove' : 'mousemove',
-        end: SUPPORT_TOUCH ? 'touchend' : 'mouseup'
-    }
+    const setPosition = useCallback((index: number) => {
+        const points = snapPointsRef.current
+        const clampedIndex = clamp(index, 0, points.length - 1)
+        const nextTranslateY = -points[clampedIndex]
 
-    // 인터랙티브 요소 여부 판단 (클릭/포커스 허용)
-    const isInteractiveTarget = (target: EventTarget | null) => {
-        if (!(target instanceof Element)) return false
-        return !!target.closest(
-            'input, textarea, select, button, a, label, [contenteditable="true"], [data-no-drag], .no-drag'
-        )
-    }
+        currentSnapPointRef.current = clampedIndex
+        translateYRef.current = nextTranslateY
+        setCurrentSnapPoint(clampedIndex)
+        setTranslateY(nextTranslateY)
+    }, [])
 
-    // 위치 추출 함수
-    const getPosition = (event: any) => {
-        return SUPPORT_TOUCH ? event.changedTouches[0].clientY : event.clientY
-    }
-
-    // 스냅 포인트로 이동
     const snapTo = useCallback(
         (index: number) => {
-            const clampedIndex = Math.max(
-                0,
-                Math.min(index, snapPoints.length - 1)
-            )
-            const targetTranslateY = -snapPoints[clampedIndex]
-
-            setCurrentSnapPoint(clampedIndex)
-            setTranslateY(targetTranslateY)
-
-            // 스트림 상태 동기화를 위한 이벤트 발생
-            stateUpdateSubject.current.next({
-                type: 'snap',
-                index: clampedIndex
-            })
+            setPosition(index)
         },
-        [snapPoints]
+        [setPosition]
     )
 
-    // 열기 (가장 높은 스냅 포인트로)
     const open = useCallback(() => {
-        snapTo(snapPoints.length - 1)
-    }, [snapPoints.length, snapTo])
+        snapTo(snapPointsRef.current.length - 1)
+    }, [snapTo])
 
-    // 닫기 (가장 낮은 스냅 포인트로)
     const close = useCallback(() => {
         snapTo(0)
     }, [snapTo])
 
-    // 배경 클릭 핸들러
-    const handleBackdropClick = useCallback(
-        (event: React.MouseEvent) => {
-            if (!enableBackdrop) return
-            event.stopPropagation()
-            close()
-        },
-        [enableBackdrop, close]
-    )
-
-    // 가장 가까운 스냅 포인트 찾기
-    const findClosestSnapPoint = (currentY: number) => {
-        let targetSnapIndex = 0
-        let minDistance = Infinity
-
-        snapPoints.forEach((snapPoint, index) => {
-            const distance = Math.abs(currentY - snapPoint)
-            if (distance < minDistance) {
-                minDistance = distance
-                targetSnapIndex = index
-            }
-        })
-
-        return targetSnapIndex
-    }
-
-    // RxJS 스트림 설정
-    const setupStreams = useCallback(
-        (container: HTMLDivElement) => {
-            // 시작 이벤트
-            const start$ = fromEvent(container, EVENTS.start).pipe(
-                // 인풋/텍스트에어리어/버튼 등에서는 드래그 시작 자체를 막아서 클릭/포커스가 가능하도록 함
-                filter((e: any) => !isInteractiveTarget(e.target)),
-                map((e: any) => {
-                    e.preventDefault()
-                    const startY = getPosition(e)
-                    dragStateRef.current = {
-                        startY,
-                        totalDistance: 0,
-                        isDragIntent: false
-                    }
-                    return startY
-                })
-            )
-
-            // 이동 이벤트
-            const move$ = fromEvent(container, EVENTS.move).pipe(
-                map((e: any) => {
-                    e.preventDefault()
-                    return getPosition(e)
-                })
-            )
-
-            // 종료 이벤트
-            const end$ = fromEvent(container, EVENTS.end).pipe(
-                map((e: any) => {
-                    e.preventDefault()
-                    return getPosition(e)
-                })
-            )
-
-            // 마우스 환경에서 문서 전체 이벤트
-            let documentMouseUp$ = of<number | null>(null)
-            let documentMouseMove$ = of<number | null>(null)
-
-            if (!SUPPORT_TOUCH) {
-                documentMouseUp$ = fromEvent(document, 'mouseup').pipe(
-                    map((e: any) =>
-                        dragStateRef.current.isDragIntent
-                            ? getPosition(e)
-                            : null
-                    ),
-                    filter((pos): pos is number => pos !== null)
-                )
-
-                documentMouseMove$ = fromEvent(document, 'mousemove').pipe(
-                    map((e: any) =>
-                        dragStateRef.current.isDragIntent
-                            ? getPosition(e)
-                            : null
-                    ),
-                    filter((pos): pos is number => pos !== null)
-                )
-            }
-
-            // 드래그 스트림
-            const drag$ = start$.pipe(
-                switchMap(start => {
-                    const moveStream = SUPPORT_TOUCH
-                        ? move$
-                        : merge(move$, documentMouseMove$)
-                    const endStream = SUPPORT_TOUCH
-                        ? end$
-                        : merge(end$, documentMouseUp$)
-
-                    return moveStream.pipe(
-                        throttleTime(16), // 60fps
-                        scan(
-                            (acc, move) => {
-                                const distance = move - acc.prevMove
-                                const totalDistance = Math.abs(move - start)
-
-                                // 드래그 의도 판단
-                                if (totalDistance > clickThreshold) {
-                                    dragStateRef.current.isDragIntent = true
-                                }
-
-                                dragStateRef.current.totalDistance =
-                                    totalDistance
-
-                                // 드래그 저항 적용
-                                const adjustedDistance = distance
-                                // * (1 - dragResistance)
-
-                                return { prevMove: move, adjustedDistance }
-                            },
-                            { prevMove: start, adjustedDistance: 0 }
-                        ),
-                        map(({ adjustedDistance }) => adjustedDistance),
-                        takeUntil(endStream)
-                    )
-                }),
-                map(distance => ({ distance, type: 'drag' as const }))
-            )
-
-            // 드롭 스트림
-            const drop$ = start$.pipe(
-                switchMap(() => {
-                    const endStream = SUPPORT_TOUCH
-                        ? end$
-                        : merge(end$, documentMouseUp$)
-                    return endStream.pipe(
-                        map(end => ({
-                            distance: end - dragStateRef.current.startY,
-                            totalDistance: dragStateRef.current.totalDistance,
-                            isDragIntent: dragStateRef.current.isDragIntent,
-                            type: 'drop' as const
-                        })),
-                        first()
-                    )
-                })
-            )
-
-            return { drag$, drop$ }
-        },
-        [clickThreshold, dragResistance]
-    )
-
-    useEffect(() => {
-        const container = containerRef.current
-        if (!container) return
-
-        // 초기 스냅 포인트 조정
-        const adjustedSnapPoints = [...snapPoints]
-        adjustedSnapPoints[adjustedSnapPoints.length - 1] -= initialExposure
-
-        const { drag$, drop$ } = setupStreams(container)
-
-        // 초기 위치 설정
-        setTranslateY(-adjustedSnapPoints[initialSnapPoint])
-
-        // 바텀시트 상태 관리
-        const bottomSheet$ = merge(
-            drag$,
-            drop$,
-            stateUpdateSubject.current
-        ).pipe(
-            scan(
-                (store, event) => {
-                    // 외부 상태 변경 이벤트 처리
-                    if ('type' in event && 'index' in event) {
-                        if (event.type === 'close') {
-                            const targetTranslateY = -adjustedSnapPoints[0]
-                            return {
-                                ...store,
-                                currentTranslateY: targetTranslateY,
-                                currentSnapIndex: 0
-                            }
-                        } else if (event.type === 'open') {
-                            const targetTranslateY =
-                                -adjustedSnapPoints[
-                                    adjustedSnapPoints.length - 1
-                                ]
-                            return {
-                                ...store,
-                                currentTranslateY: targetTranslateY,
-                                currentSnapIndex: adjustedSnapPoints.length - 1
-                            }
-                        } else if (
-                            event.type === 'snap' &&
-                            typeof event.index === 'number'
-                        ) {
-                            const targetTranslateY =
-                                -adjustedSnapPoints[event.index]
-                            return {
-                                ...store,
-                                currentTranslateY: targetTranslateY,
-                                currentSnapIndex: event.index
-                            }
-                        }
-                        return store
-                    }
-
-                    // 기존 드래그/드롭 이벤트 처리
-                    if ('distance' in event && 'type' in event) {
-                        const { distance, type } = event
-
-                        if (type === 'drag') {
-                            // 드래그 중
-                            const newTranslateY =
-                                store.currentTranslateY + distance
-                            const clampedTranslateY = Math.min(
-                                Math.max(
-                                    -adjustedSnapPoints[
-                                        adjustedSnapPoints.length - 1
-                                    ],
-                                    newTranslateY
-                                ),
-                                -adjustedSnapPoints[initialSnapPoint]
-                            )
-
-                            setIsDragging(true)
-                            setTranslateY(clampedTranslateY)
-
-                            return {
-                                ...store,
-                                currentTranslateY: clampedTranslateY
-                            }
-                        } else if (type === 'drop') {
-                            // drop 이벤트의 경우 isDragIntent 속성 확인
-                            const dropEvent = event as any
-                            if (dropEvent.isDragIntent) {
-                                // 드래그 종료 - 스냅 포인트 결정
-                                const currentY = Math.abs(
-                                    store.currentTranslateY
-                                )
-                                let targetSnapIndex =
-                                    findClosestSnapPoint(currentY)
-
-                                // 스와이프 방향에 따른 스냅 포인트 조정
-                                if (Math.abs(distance) >= threshold) {
-                                    if (distance > 0) {
-                                        // 아래로 스와이프 - 이전 스냅 포인트
-                                        targetSnapIndex = Math.max(
-                                            0,
-                                            targetSnapIndex - 1
-                                        )
-                                    } else {
-                                        // 위로 스와이프 - 다음 스냅 포인트
-                                        targetSnapIndex = Math.min(
-                                            adjustedSnapPoints.length - 1,
-                                            targetSnapIndex + 1
-                                        )
-                                    }
-                                }
-
-                                const targetTranslateY =
-                                    -adjustedSnapPoints[targetSnapIndex]
-
-                                setCurrentSnapPoint(targetSnapIndex)
-                                setTranslateY(targetTranslateY)
-                                setIsDragging(false)
-
-                                return {
-                                    ...store,
-                                    currentTranslateY: targetTranslateY,
-                                    currentSnapIndex: targetSnapIndex
-                                }
-                            } else {
-                                // 클릭 - 초기 위치로
-                                const currentY = Math.abs(
-                                    store.currentTranslateY
-                                )
-                                let targetSnapIndex =
-                                    findClosestSnapPoint(currentY)
-                                setTranslateY(
-                                    -adjustedSnapPoints[targetSnapIndex]
-                                )
-                                setIsDragging(false)
-                                return store
-                            }
-                        }
-                    }
-
-                    return store
-                },
-                {
-                    currentTranslateY: -adjustedSnapPoints[initialSnapPoint],
-                    currentSnapIndex: initialSnapPoint
-                }
-            )
-        )
-
-        // 구독 시작
-        subscriptionRef.current = bottomSheet$.subscribe()
-
-        return () => {
-            if (subscriptionRef.current) {
-                subscriptionRef.current.unsubscribe()
-            }
-        }
+    const findClosestSnapPoint = useCallback((currentExposure: number) => {
+        const points = snapPointsRef.current
+        return points.reduce(
+            (closestIndex, snapPoint, index) => {
+                const distance = Math.abs(currentExposure - snapPoint)
+                return distance < closestIndex.distance
+                    ? { index, distance }
+                    : closestIndex
+            },
+            { index: 0, distance: Infinity }
+        ).index
     }, [])
 
-    const handleClick = useCallback(() => {
-        snapTo(initialSnapPoint)
-    }, [initialSnapPoint, snapTo])
+    useEffect(() => {
+        snapPointsRef.current = adjustedSnapPoints
+
+        const clampedIndex = clamp(
+            currentSnapPointRef.current,
+            0,
+            adjustedSnapPoints.length - 1
+        )
+        setPosition(clampedIndex)
+    }, [adjustedSnapPoints, setPosition])
+
+    useEffect(() => {
+        const container = containerElement
+        if (!container) return
+
+        const onPointerDown = (event: PointerEvent) => {
+            if (!event.isPrimary || isInteractiveTarget(event.target)) return
+
+            const rect = container.getBoundingClientRect()
+            pointerRef.current = {
+                id: event.pointerId,
+                startY: event.clientY,
+                startTranslateY: translateYRef.current,
+                sheetHeight: Math.max(rect.height, 1),
+                moved: false
+            }
+            container.setPointerCapture(event.pointerId)
+        }
+
+        const onPointerMove = (event: PointerEvent) => {
+            const pointer = pointerRef.current
+            if (!pointer || pointer.id !== event.pointerId) return
+
+            const distancePx = event.clientY - pointer.startY
+            const distancePercent = (distancePx / pointer.sheetHeight) * 100
+            const dragMinTranslateY =
+                openingDragLimitBottomOffset != null &&
+                openingDragLimitOverflow != null &&
+                currentSnapPointRef.current === 0
+                    ? Math.max(
+                          minTranslateY,
+                          -clamp(
+                              100 +
+                                  ((openingDragLimitOverflow -
+                                      openingDragLimitBottomOffset) /
+                                      pointer.sheetHeight) *
+                                      100,
+                              adjustedSnapPoints[0],
+                              adjustedSnapPoints[adjustedSnapPoints.length - 1]
+                          )
+                      )
+                    : minTranslateY
+            const nextTranslateY = applyResistance(
+                pointer.startTranslateY + distancePercent,
+                dragMinTranslateY,
+                maxTranslateY,
+                dragResistance
+            )
+
+            if (Math.abs(distancePx) > clickThreshold) {
+                pointer.moved = true
+                setIsDragging(true)
+            }
+
+            event.preventDefault()
+            translateYRef.current = nextTranslateY
+            setTranslateY(nextTranslateY)
+        }
+
+        const onPointerUp = (event: PointerEvent) => {
+            const pointer = pointerRef.current
+            if (!pointer || pointer.id !== event.pointerId) return
+
+            const distancePx = event.clientY - pointer.startY
+            pointerRef.current = null
+            setIsDragging(false)
+
+            if (container.hasPointerCapture(event.pointerId)) {
+                container.releasePointerCapture(event.pointerId)
+            }
+
+            if (!pointer.moved) {
+                setPosition(currentSnapPointRef.current)
+                return
+            }
+
+            if (Math.abs(distancePx) >= threshold) {
+                const nextIndex =
+                    distancePx > 0
+                        ? currentSnapPointRef.current - 1
+                        : currentSnapPointRef.current + 1
+                setPosition(nextIndex)
+                return
+            }
+
+            setPosition(findClosestSnapPoint(Math.abs(translateYRef.current)))
+        }
+
+        const onPointerCancel = (event: PointerEvent) => {
+            if (pointerRef.current?.id !== event.pointerId) return
+
+            pointerRef.current = null
+            setIsDragging(false)
+            setPosition(currentSnapPointRef.current)
+        }
+
+        container.addEventListener('pointerdown', onPointerDown)
+        container.addEventListener('pointermove', onPointerMove)
+        container.addEventListener('pointerup', onPointerUp)
+        container.addEventListener('pointercancel', onPointerCancel)
+
+        return () => {
+            container.removeEventListener('pointerdown', onPointerDown)
+            container.removeEventListener('pointermove', onPointerMove)
+            container.removeEventListener('pointerup', onPointerUp)
+            container.removeEventListener('pointercancel', onPointerCancel)
+        }
+    }, [
+        clickThreshold,
+        adjustedSnapPoints,
+        containerElement,
+        dragResistance,
+        findClosestSnapPoint,
+        maxTranslateY,
+        minTranslateY,
+        openingDragLimitBottomOffset,
+        openingDragLimitOverflow,
+        setPosition,
+        threshold
+    ])
+
+    const exposurePercent = Math.abs(translateY)
+    const translatePercent = 100 + translateY
 
     return {
-        isOpen,
-        currentSnapPoint,
-        translateY,
-        isDragging,
+        derivedValue: {
+            isOpen,
+            currentSnapPoint,
+            exposurePercent,
+            translatePercent,
+            isDragging
+        },
         open,
         close,
         snapTo,
-        containerRef,
-        backdropRef,
-        handleBackdropClick,
-        handleClick
+        setSheetRef
     }
+}
+
+function applyResistance(
+    value: number,
+    min: number,
+    max: number,
+    resistance: number
+) {
+    if (value < min) return min
+    if (value > max) return max + (value - max) * (1 - resistance)
+    return value
 }
