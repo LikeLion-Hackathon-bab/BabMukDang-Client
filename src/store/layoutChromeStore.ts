@@ -61,7 +61,6 @@ interface LayoutChromeStore {
 
 const defaultBottomNavItems: BottomNavItem[] = [
     { path: '/home', label: '홈', icon: 'i' },
-    { path: '/meal-map', label: '밥지도', icon: 'i' },
     { path: '/friend', label: '친구', icon: 'i' },
     { path: '/meeting', label: '밥약', icon: 'i' },
     { path: '/profile', label: '내 밥그릇', icon: 'i' }

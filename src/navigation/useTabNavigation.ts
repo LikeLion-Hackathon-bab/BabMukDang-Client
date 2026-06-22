@@ -6,7 +6,6 @@ export const TAB_ROOT_PATHS = [
     '/home',
     '/meeting',
     '/friend',
-    '/meal-map',
     '/profile'
 ] as const
 
@@ -20,8 +19,11 @@ export function useTabNavigation() {
     const { pop, replace } = useFlow()
 
     return useCallback(
-        (targetPath: TabRootPath) => {
-            if (!isTabRootPath(targetPath)) {
+        (targetPath: TabRootPath | string) => {
+            if (
+                !isTabRootPath(targetPath) &&
+                !targetPath.startsWith('/meal-plans/')
+            ) {
                 throw new Error(`INVALID_TAB_ROOT_PATH:${targetPath}`)
             }
 
@@ -40,13 +42,18 @@ export function useTabNavigation() {
                 activeActivities[activeActivities.length - 1]
 
             const isAlreadyCurrentTab =
-                currentActivity?.name === target.route.name
+                currentActivity?.name === target.route.name &&
+                JSON.stringify(currentActivity.params ?? {}) ===
+                    JSON.stringify(target.params)
 
             if (isAlreadyCurrentTab) {
                 return
             }
 
-            const popCount = Math.max(0, activeActivities.length - 1)
+            const shouldResetToTabRoot = isTabRootPath(targetPath)
+            const popCount = shouldResetToTabRoot
+                ? Math.max(0, activeActivities.length - 1)
+                : 0
 
             if (popCount > 0) {
                 pop(popCount, { animate: false })

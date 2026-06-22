@@ -29,7 +29,6 @@ export function BottomNavigation({ items }: BottomNavigationProps) {
         '/home': ['/home', '/search-restaurant', '/noti', '/upload', '/post'],
         '/meeting': ['/meeting', '/meal-plans'],
         '/friend': ['/friend'],
-        '/meal-map': ['/meal-map'],
         '/profile': [
             '/profile',
             '/coupon',

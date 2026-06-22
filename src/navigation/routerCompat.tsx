@@ -7,10 +7,11 @@ import {
     type MouseEvent,
     type ReactNode
 } from 'react'
-import { useActivity, useFlow } from '@stackflow/react'
+import { useActivity, useFlow, useStack } from '@stackflow/react'
 import type { NavigationActivityParams, NavigationLocation } from './routes'
 import {
     getActivityLocation,
+    getParentPathByActivity,
     resolvePathToActivity,
     type AppActivityName
 } from './routes'
@@ -65,19 +66,42 @@ export const navigateToPath = (to: string, options: NavigateOptions = {}) => {
 
 export const useNavigate = () => {
     const flow = useFlow()
+    const stack = useStack()
+    const activity = useActivity()
 
     return useCallback(
         (to: string | number, options: NavigateOptions = {}) => {
             if (typeof to === 'number') {
                 if (to < 0) {
-                    flow.pop(Math.abs(to))
+                    const popCount = Math.abs(to)
+                    const activeActivities = stack.activities.filter(
+                        item => item.transitionState !== 'exit-done'
+                    )
+
+                    if (activeActivities.length > popCount) {
+                        flow.pop(popCount)
+                        return
+                    }
+
+                    const fallbackPath = getParentPathByActivity(
+                        activity.name,
+                        activity.params as NavigationActivityParams
+                    )
+
+                    if (fallbackPath) {
+                        dispatchPath(
+                            flow as unknown as NavigationDispatcher,
+                            fallbackPath,
+                            { replace: true }
+                        )
+                    }
                 }
                 return
             }
 
             dispatchPath(flow as unknown as NavigationDispatcher, to, options)
         },
-        [flow]
+        [activity.name, activity.params, flow, stack.activities]
     )
 }
 

@@ -1,8 +1,12 @@
 import { stackflow } from '@stackflow/react'
 import { basicRendererPlugin } from '@stackflow/plugin-renderer-basic'
 import { historySyncPlugin } from '@stackflow/plugin-history-sync'
-import { stackflowActivityComponents } from './activityComponents'
-import { stackflowConfig } from './stackflow.config'
+import { NavigationActivityShell } from './NavigationActivityShell'
+import { createStackflowActivityComponents, stackflowConfig } from './routes'
+
+const stackflowActivityComponents = createStackflowActivityComponents(
+    NavigationActivityShell
+)
 
 const stackflowResult = stackflow({
     config: stackflowConfig,

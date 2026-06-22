@@ -53,15 +53,6 @@ export const routeChromeConfigEntries: RouteChromeConfigEntry[] = [
         }
     },
     {
-        path: '/meal-map',
-        chrome: {
-            header: {
-                title: '밥지도',
-                showLeftButton: false
-            }
-        }
-    },
-    {
         path: '/meal-plans',
         chrome: {
             header: {
@@ -81,6 +72,16 @@ export const routeChromeConfigEntries: RouteChromeConfigEntry[] = [
     },
     {
         path: '/meal-plans/:mealPlanId/decision',
+        chrome: {
+            bottomNav: { visible: false },
+            header: {
+                title: '밥약 결정'
+            }
+        }
+    },
+    {
+        path: '/meal-plans/:mealPlanId/decision/:decisionStep',
+        end: false,
         chrome: {
             bottomNav: { visible: false },
             header: {
