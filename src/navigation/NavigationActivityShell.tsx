@@ -32,7 +32,7 @@ function NavigationAccessGate({
 }) {
     const navigate = useNavigate()
     const location = useLocation()
-    const { accessToken, profile, isBootstrapping, authError } =
+    const { profile, isAuthenticated, isBootstrapping, authError } =
         useAppBootstrap()
     const onboardingDraft = useOnboardingStore(
         useShallow(state => ({
@@ -53,7 +53,7 @@ function NavigationAccessGate({
         : null
 
     const publicOnlyRedirect =
-        route.access === 'publicOnly' && profile
+        route.access === 'publicOnly' && isAuthenticated && profile
             ? resolvedRedirectTarget?.route.access === 'authenticated' &&
               onboardingFlowController.resolveProtectedRoute({
                   currentPath: resolvedRedirectTarget.pathname,
@@ -83,7 +83,7 @@ function NavigationAccessGate({
     const loginRedirectPath = `/login?redirect=${encodeURIComponent(currentFullPath)}`
     const protectedRedirect =
         !isBootstrapping && route.access === 'authenticated'
-            ? !accessToken || authError || !profile
+            ? authError || !isAuthenticated
                 ? loginRedirectPath
                 : !protectedDecision?.allow
                   ? (protectedDecision?.redirectTo ?? '/home')

@@ -8,7 +8,8 @@ const getCurrentBrowserPath = () =>
 
 export function AuthGate() {
     const navigate = useNavigate()
-    const { profile, isBootstrapping, authError } = useAppBootstrap()
+    const { profile, isAuthenticated, isBootstrapping, authError } =
+        useAppBootstrap()
 
     useEffect(() => {
         if (authError) {
@@ -17,7 +18,7 @@ export function AuthGate() {
     }, [authError, navigate])
 
     useEffect(() => {
-        if (!profile) {
+        if (!isAuthenticated || !profile) {
             return
         }
 
@@ -46,7 +47,7 @@ export function AuthGate() {
                 replace: true
             }
         )
-    }, [profile, navigate])
+    }, [isAuthenticated, profile, navigate])
 
     if (isBootstrapping) {
         return <div>로그인 상태를 확인하는 중입니다.</div>

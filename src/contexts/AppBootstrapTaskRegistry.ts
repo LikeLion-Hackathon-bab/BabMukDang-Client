@@ -76,6 +76,18 @@ export class AppBootstrapTaskRegistry {
 
 export const defaultAppBootstrapTaskRegistry = new AppBootstrapTaskRegistry([
     {
+        id: 'auth.refresh-session',
+        phase: 'AUTH_RECOVERY',
+        description:
+            '저장된 access token이 없을 때 refresh cookie로 세션을 복구한다.',
+        order: 10,
+        shouldRun: context => !context.accessToken,
+        scopeKey: accessScopeKey,
+        run: async context => {
+            await context.refreshSession()
+        }
+    },
+    {
         id: 'profile.load-me',
         phase: 'PROFILE_BOOTSTRAP',
         description: 'access token으로 /members/me 프로필을 bootstrap한다.',
