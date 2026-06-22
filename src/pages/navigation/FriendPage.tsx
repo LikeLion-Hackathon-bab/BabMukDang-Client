@@ -1,14 +1,17 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate } from '@/navigation'
-import { FriendListSection, MealStatusToggleButton } from '@/components'
+import { useMemo, useState, type ReactNode } from 'react'
+import { MealStatusToggleButton } from '@/components'
 import { FriendSearchInput } from '@/components/features/friend/FriendSearchInput'
 import {
-    useAcceptMealPlanInvite,
+    useAcceptFriendRequest,
     useAllFriendMeals,
-    useDeclineMealPlanInvite,
-    useReceivedMealPlanInvites,
-    useSentMealPlanInvites
+    useBlockMember,
+    useIncomingFriendRequests,
+    useRejectFriendRequest,
+    useRemoveFriend,
+    useSearchFriends,
+    useSendFriendRequest
 } from '@/apis'
+import { usePageChrome } from '@/hooks/usePageChrome'
 
 const asRecord = (value: unknown): Record<string, unknown> =>
     value && typeof value === 'object' ? (value as Record<string, unknown>) : {}
@@ -37,45 +40,75 @@ const getNumber = (value: unknown, keys: string[]): number | null => {
 }
 
 const getMemberId = (value: unknown): number | null =>
-    getNumber(value, ['memberId', 'friendMemberId', 'targetMemberId', 'userId', 'id'])
+    getNumber(value, [
+        'memberId',
+        'friendMemberId',
+        'targetMemberId',
+        'userId',
+        'id'
+    ])
 
 const getDisplayName = (value: unknown): string =>
     getString(value, ['userName', 'username', 'nickname', 'name', 'email'])
 
-const inviteStatusLabel = (status: string): string => {
-    switch (status) {
-        case 'PENDING':
-            return '응답 대기'
-        case 'ACCEPTED':
-            return '수락됨'
-        case 'DECLINED':
-            return '거절됨'
-        case 'CANCELLED':
-            return '취소됨'
-        case 'EXPIRED':
-            return '만료됨'
-        default:
-            return status
-    }
+const getRequester = (value: unknown) => asRecord(value).requester
+
+interface FriendRow {
+    memberId: number
+    userName: string
+    profileImageUrl: string
+    hungry: boolean
+    label: string
+}
+
+interface MemberSearchRow {
+    memberId: number
+    userName: string
+    profileImageUrl: string
+}
+
+interface FriendRequestRow extends MemberSearchRow {
+    requestId: number
 }
 
 export function FriendPage() {
-    const navigate = useNavigate()
     const [keyword, setKeyword] = useState('')
-    const { data: friendMeals, isLoading: isFriendMealsLoading } = useAllFriendMeals()
-    const { data: receivedInvites } = useReceivedMealPlanInvites()
-    const { data: sentInvites } = useSentMealPlanInvites()
-    const { mutate: acceptInvite } = useAcceptMealPlanInvite({
-        onSuccess: mealPlan => {
-            if (mealPlan) navigate(`/meal-plans/${mealPlan.mealPlanId}`)
-        }
-    })
-    const { mutate: declineInvite } = useDeclineMealPlanInvite()
+    const pageChromeConfig = useMemo(
+        () => ({
+            header: {
+                title: '친구',
+                showLeftButton: false,
+                showRightButton: false,
+                right: (
+                    <div
+                        className="h-34 w-34"
+                        aria-hidden
+                    />
+                )
+            }
+        }),
+        []
+    )
+    usePageChrome(pageChromeConfig)
 
-    const friendList = useMemo(
+    const { data: friendMeals, isLoading: isFriendMealsLoading } =
+        useAllFriendMeals()
+    const { data: searchResults, isFetching: isSearching } =
+        useSearchFriends(keyword)
+    const { data: incomingRequests, isLoading: isIncomingLoading } =
+        useIncomingFriendRequests()
+    const sendFriendRequest = useSendFriendRequest()
+    const acceptFriendRequest = useAcceptFriendRequest()
+    const rejectFriendRequest = useRejectFriendRequest()
+    const blockMember = useBlockMember()
+    const removeFriend = useRemoveFriend()
+
+    const friendList = useMemo<FriendRow[]>(
         () =>
-            (friendMeals ?? [])
-                .filter((friend: unknown) => getDisplayName(friend).includes(keyword))
+            ((friendMeals ?? []) as unknown[])
+                .filter((friend: unknown) =>
+                    getDisplayName(friend).includes(keyword)
+                )
                 .map((friend: unknown) => ({
                     memberId: getMemberId(friend) ?? 0,
                     userName: getDisplayName(friend),
@@ -85,119 +118,255 @@ export function FriendPage() {
                 })),
         [friendMeals, keyword]
     )
+    const memberSearchResults = useMemo<MemberSearchRow[]>(
+        () =>
+            ((searchResults ?? []) as unknown[])
+                .map((member: unknown) => ({
+                    memberId: getMemberId(member) ?? 0,
+                    userName: getDisplayName(member),
+                    profileImageUrl: getString(member, ['profileImageUrl'], '')
+                }))
+                .filter(member => member.memberId > 0),
+        [searchResults]
+    )
+    const requests = useMemo<FriendRequestRow[]>(
+        () =>
+            ((incomingRequests ?? []) as unknown[])
+                .map((request: unknown) => {
+                    const requester = getRequester(request)
+                    return {
+                        requestId: getNumber(request, ['requestId']) ?? 0,
+                        memberId: getMemberId(requester) ?? 0,
+                        userName: getDisplayName(requester),
+                        profileImageUrl: getString(
+                            requester,
+                            ['profileImageUrl'],
+                            ''
+                        )
+                    }
+                })
+                .filter(request => request.requestId > 0),
+        [incomingRequests]
+    )
 
     return (
         <div className="mt-20 flex flex-col gap-24">
             <section className="flex flex-col gap-10">
                 <FriendSearchInput handleSearch={setKeyword} />
-                <Link
-                    to="/meal-plans/start"
-                    className="rounded-12 bg-primary-100 border-primary-400 flex items-center justify-between border px-16 py-18">
-                    <div>
-                        <span className="text-body1-semibold text-gray-8">
-                            친구와 새 밥약 시작
-                        </span>
-                        <p className="text-caption-regular text-gray-5">
-                            친구를 초대할 MealPlan을 먼저 만듭니다.
-                        </p>
-                    </div>
-                </Link>
-            </section>
-            <MealStatusToggleButton />
-            <section className="flex flex-col gap-12">
-                <h2 className="text-body1-semibold text-gray-8">받은 MealPlan 초대</h2>
-                {receivedInvites?.length ? (
-                    <div className="flex flex-col gap-10">
-                        {receivedInvites.map(invite => {
-                            const isPending = invite.status === 'PENDING'
-                            return (
-                                <article
-                                    key={invite.inviteId}
-                                    className="rounded-20 flex flex-col gap-10 bg-white p-16">
-                                    <div className="flex items-start justify-between gap-10">
-                                        <div className="flex min-w-0 flex-col gap-4">
-                                            <span className="text-body1-semibold text-gray-8">
-                                                {invite.inviter.username}님의 밥약 초대
-                                            </span>
-                                            <p className="text-caption-regular text-gray-5">
-                                                {invite.message || '같이 밥 먹자는 초대가 도착했습니다.'}
-                                            </p>
-                                        </div>
-                                        <span className="rounded-20 bg-gray-1 px-10 py-5 text-caption-medium text-gray-6">
-                                            {inviteStatusLabel(invite.status)}
-                                        </span>
-                                    </div>
-                                    {isPending ? (
-                                        <div className="grid grid-cols-2 gap-8">
-                                            <button
-                                                type="button"
-                                                data-testid={`meal-plan-invite-accept-${invite.inviteId}`}
-                                                onClick={() => acceptInvite(invite.inviteId)}
-                                                className="rounded-30 bg-gray-8 py-10 text-caption-medium text-white">
-                                                수락
-                                            </button>
-                                            <button
-                                                type="button"
-                                                data-testid={`meal-plan-invite-decline-${invite.inviteId}`}
-                                                onClick={() => declineInvite(invite.inviteId)}
-                                                className="rounded-30 bg-gray-2 py-10 text-caption-medium text-gray-7">
-                                                거절
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        <Link
-                                            to={`/meal-plans/${invite.mealPlanId}`}
-                                            className="rounded-30 bg-gray-1 py-10 text-center text-caption-medium text-gray-7">
-                                            밥약 보기
-                                        </Link>
-                                    )}
-                                </article>
-                            )
-                        })}
-                    </div>
-                ) : (
-                    <div className="rounded-20 bg-white p-16 text-caption-regular text-gray-5">
-                        받은 MealPlan 초대가 없습니다.
+                {keyword.trim() && (
+                    <div className="rounded-20 flex flex-col gap-10 bg-white p-14">
+                        <div className="flex items-center justify-between">
+                            <h2 className="text-body1-semibold text-gray-8">
+                                멤버 검색
+                            </h2>
+                            {isSearching && (
+                                <span className="text-caption-regular text-gray-5">
+                                    검색 중
+                                </span>
+                            )}
+                        </div>
+                        {memberSearchResults.length ? (
+                            memberSearchResults.map(member => (
+                                <FriendActionRow
+                                    key={member.memberId}
+                                    name={member.userName}
+                                    profileImageUrl={member.profileImageUrl}
+                                    description="밥먹댕 멤버"
+                                    actions={
+                                        <ActionButton
+                                            label="친구 요청"
+                                            disabled={
+                                                sendFriendRequest.isPending
+                                            }
+                                            onClick={() =>
+                                                sendFriendRequest.mutate(
+                                                    member.memberId
+                                                )
+                                            }
+                                        />
+                                    }
+                                />
+                            ))
+                        ) : (
+                            <span className="text-caption-regular text-gray-5">
+                                검색 결과가 없습니다.
+                            </span>
+                        )}
                     </div>
                 )}
             </section>
+
             <section className="flex flex-col gap-12">
-                <h2 className="text-body1-semibold text-gray-8">보낸 MealPlan 초대</h2>
-                {sentInvites?.length ? (
-                    <div className="flex flex-col gap-8">
-                        {sentInvites.map(invite => (
-                            <Link
-                                key={invite.inviteId}
-                                to={`/meal-plans/${invite.mealPlanId}`}
-                                className="rounded-20 bg-white p-16">
-                                <span className="text-body2-medium text-gray-8">
-                                    {invite.invitee.username}님에게 보낸 초대
-                                </span>
-                                <p className="text-caption-regular text-gray-5">
-                                    {inviteStatusLabel(invite.status)}
-                                </p>
-                            </Link>
+                <h2 className="text-body1-semibold text-gray-8">
+                    받은 친구 요청
+                </h2>
+                {isIncomingLoading ? (
+                    <span className="text-caption-regular text-gray-5">
+                        친구 요청을 불러오는 중입니다.
+                    </span>
+                ) : requests.length ? (
+                    <div className="flex flex-col gap-10">
+                        {requests.map(request => (
+                            <FriendActionRow
+                                key={request.requestId}
+                                name={request.userName}
+                                profileImageUrl={request.profileImageUrl}
+                                description="친구 요청을 보냈어요."
+                                actions={
+                                    <div className="flex gap-6">
+                                        <ActionButton
+                                            label="수락"
+                                            disabled={
+                                                acceptFriendRequest.isPending
+                                            }
+                                            onClick={() =>
+                                                acceptFriendRequest.mutate(
+                                                    request.requestId
+                                                )
+                                            }
+                                        />
+                                        <ActionButton
+                                            label="거절"
+                                            tone="muted"
+                                            disabled={
+                                                rejectFriendRequest.isPending
+                                            }
+                                            onClick={() =>
+                                                rejectFriendRequest.mutate(
+                                                    request.requestId
+                                                )
+                                            }
+                                        />
+                                    </div>
+                                }
+                            />
                         ))}
                     </div>
                 ) : (
-                    <div className="rounded-20 bg-white p-16 text-caption-regular text-gray-5">
-                        보낸 MealPlan 초대가 없습니다.
-                    </div>
+                    <span className="text-caption-regular text-gray-5">
+                        받은 친구 요청이 없습니다.
+                    </span>
                 )}
             </section>
+
+            <MealStatusToggleButton />
             <section className="flex flex-col gap-12">
                 <h2 className="text-body1-semibold text-gray-8">친구 목록</h2>
                 {isFriendMealsLoading ? (
                     <span className="text-caption-regular text-gray-5">
                         친구 식사 상태를 불러오는 중입니다.
                     </span>
+                ) : friendList.length ? (
+                    <div className="flex flex-col gap-10">
+                        {friendList.map(friend => (
+                            <FriendActionRow
+                                key={friend.memberId}
+                                name={friend.userName}
+                                profileImageUrl={friend.profileImageUrl}
+                                description={
+                                    friend.hungry
+                                        ? '지금 밥약 가능'
+                                        : friend.label || '친구'
+                                }
+                                actions={
+                                    <div className="flex gap-6">
+                                        <ActionButton
+                                            label="차단"
+                                            tone="muted"
+                                            disabled={blockMember.isPending}
+                                            onClick={() =>
+                                                blockMember.mutate(
+                                                    friend.memberId
+                                                )
+                                            }
+                                        />
+                                        <ActionButton
+                                            label="삭제"
+                                            tone="danger"
+                                            disabled={removeFriend.isPending}
+                                            onClick={() =>
+                                                removeFriend.mutate(
+                                                    friend.memberId
+                                                )
+                                            }
+                                        />
+                                    </div>
+                                }
+                            />
+                        ))}
+                    </div>
                 ) : (
-                    <FriendListSection
-                        friendList={friendList}
-                        activeFilter={{ key: 'all', label: '전체' }}
-                    />
+                    <span className="text-caption-regular text-gray-5">
+                        친구 목록이 없습니다.
+                    </span>
                 )}
             </section>
         </div>
+    )
+}
+
+function FriendActionRow({
+    name,
+    profileImageUrl,
+    description,
+    actions
+}: {
+    name: string
+    profileImageUrl?: string
+    description: string
+    actions: ReactNode
+}) {
+    return (
+        <div className="rounded-18 flex items-center gap-12 bg-white p-13">
+            {profileImageUrl ? (
+                <img
+                    src={profileImageUrl}
+                    alt=""
+                    className="h-42 w-42 rounded-full object-cover"
+                />
+            ) : (
+                <div className="bg-primary-100 text-primary-main text-body2-semibold grid h-42 w-42 place-items-center rounded-full">
+                    {name.slice(0, 1)}
+                </div>
+            )}
+            <div className="min-w-0 flex-1">
+                <span className="text-body2-semibold text-gray-8 block truncate">
+                    {name}
+                </span>
+                <span className="text-caption-regular text-gray-5 block truncate">
+                    {description}
+                </span>
+            </div>
+            {actions}
+        </div>
+    )
+}
+
+function ActionButton({
+    label,
+    tone = 'primary',
+    disabled,
+    onClick
+}: {
+    label: string
+    tone?: 'primary' | 'muted' | 'danger'
+    disabled?: boolean
+    onClick: () => void
+}) {
+    const toneClass =
+        tone === 'danger'
+            ? 'bg-red-50 text-red-500'
+            : tone === 'muted'
+              ? 'bg-gray-1 text-gray-6'
+              : 'bg-gray-8 text-white'
+
+    return (
+        <button
+            type="button"
+            disabled={disabled}
+            onClick={onClick}
+            className={`text-caption-medium rounded-full px-12 py-8 disabled:opacity-40 ${toneClass}`}>
+            {label}
+        </button>
     )
 }

@@ -136,7 +136,6 @@ export interface MealPlanCardView {
     scheduleText: string
     placeText: string
     primaryActionLabel: string
-    primaryActionHref: string
     updatedAt: string
 }
 

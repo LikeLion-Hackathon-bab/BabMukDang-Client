@@ -48,6 +48,5 @@ export const mapMyMealPlanListItem = (
     placeText:
         item.selectedRestaurantName ?? item.selectedAreaName ?? '장소 미정',
     primaryActionLabel: item.primaryAction.label,
-    primaryActionHref: item.primaryAction.href,
     updatedAt: item.updatedAt
 })

@@ -30,12 +30,12 @@ export function MyMealPlanCard({ mealPlan }: { mealPlan: MealPlanCardView }) {
                     {mealPlan.participantCount}명
                 </span>
             </div>
-            <div className="flex flex-col gap-4 text-caption-regular text-gray-6">
+            <div className="text-caption-regular text-gray-6 flex flex-col gap-4">
                 <span>{mealPlan.scheduleText}</span>
                 <span>{mealPlan.placeText}</span>
             </div>
             <Link
-                to={mealPlan.primaryActionHref || `/meal-plans/${mealPlan.mealPlanId}`}
+                to={`/meal-plans/${mealPlan.mealPlanId}/decision`}
                 className="rounded-30 bg-gray-8 text-body1-semibold flex w-full items-center justify-center py-12 text-white">
                 {mealPlan.primaryActionLabel || '밥약 보기'}
             </Link>
