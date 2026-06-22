@@ -1,7 +1,10 @@
 import { useEffect } from 'react'
-import { useNavigate } from '@/navigation'
+import { resolvePathToActivity, useNavigate } from '@/navigation'
 import { useAppBootstrap } from '@/contexts'
 import { onboardingFlowController } from '@/features/onboarding'
+
+const getCurrentBrowserPath = () =>
+    `${window.location.pathname}${window.location.search}${window.location.hash}`
 
 export function AuthGate() {
     const navigate = useNavigate()
@@ -18,9 +21,31 @@ export function AuthGate() {
             return
         }
 
-        navigate(onboardingFlowController.routeAfterAuth(profile.onboardingStatus), {
-            replace: true
-        })
+        const currentPath = getCurrentBrowserPath()
+        const target = resolvePathToActivity(currentPath)
+        const canRestoreCurrentPath =
+            target?.route.access === 'authenticated' &&
+            onboardingFlowController.resolveProtectedRoute({
+                currentPath: target.pathname,
+                onboardingStatus: profile.onboardingStatus,
+                draft: {
+                    username: '',
+                    liked: [],
+                    disliked: [],
+                    allergy: []
+                }
+            }).allow
+
+        navigate(
+            canRestoreCurrentPath
+                ? currentPath
+                : onboardingFlowController.routeAfterAuth(
+                      profile.onboardingStatus
+                  ),
+            {
+                replace: true
+            }
+        )
     }, [profile, navigate])
 
     if (isBootstrapping) {

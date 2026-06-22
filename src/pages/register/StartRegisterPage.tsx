@@ -1,12 +1,20 @@
 import { CardBobGraphic } from '@/assets/graphics'
 import { KakaoIcon, LogoTextIcon } from '@/assets/icons'
 import SplashImg from '@/assets/images/SplashImg.png'
-import { useNavigate } from '@/navigation'
+import {
+    resolvePathToActivity,
+    useNavigate,
+    useSearchParams
+} from '@/navigation'
 import { useState } from 'react'
 import { useKakaoLogin, useEmailLogin, useEmailSignup } from '@/apis/auth.api'
 
 export function StartRegisterPage() {
     const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
+    const redirectTo = searchParams.get('redirect')
+    const safeRedirectTo =
+        redirectTo && resolvePathToActivity(redirectTo) ? redirectTo : '/'
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -16,7 +24,7 @@ export function StartRegisterPage() {
         useEmailLogin({
             onSuccess: () => {
                 setAuthError(null)
-                navigate('/', { replace: true })
+                navigate(safeRedirectTo, { replace: true })
             },
             onError: error => {
                 setAuthError(error.message)
@@ -27,7 +35,7 @@ export function StartRegisterPage() {
         useEmailSignup({
             onSuccess: () => {
                 setAuthError(null)
-                navigate('/', { replace: true })
+                navigate(safeRedirectTo, { replace: true })
             },
             onError: error => {
                 setAuthError(error.message)

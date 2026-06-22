@@ -83,15 +83,13 @@ export function AppBootstrapProvider({
 
     const {
         data: profile,
-        isLoading: isProfileLoading,
         isFetching: isProfileFetching,
-        error: profileError,
         refetch: refetchMyProfile
     } = useGetMyProfile({
-        enabled: Boolean(accessToken)
+        enabled: false
     })
     const isProfileBootstrapping =
-        Boolean(accessToken) && (isProfileLoading || isProfileFetching)
+        Boolean(accessToken) && !profile && isProfileFetching
 
     const { data: locationSettings, refetch: refetchLocationSettings } =
         useGetLocationSettings({
@@ -211,23 +209,6 @@ export function AppBootstrapProvider({
         ? activeTask.phase !== 'POST_AUTH'
         : false
 
-    if (import.meta.env.VITE_ENV === 'develop')
-        console.table(
-            tasks.map(task => {
-                const key = taskAttemptKey(task, bootstrapContext)
-
-                return {
-                    id: task.id,
-                    key,
-                    shouldRun: task.shouldRun(bootstrapContext),
-                    attempted: attemptedTaskKeysRef.current.has(key),
-                    runnable:
-                        task.shouldRun(bootstrapContext) &&
-                        !attemptedTaskKeysRef.current.has(key)
-                }
-            })
-        )
-
     const findRunnableTask = useCallback(
         (
             context: AppBootstrapTaskContext,
@@ -298,15 +279,6 @@ export function AppBootstrapProvider({
         findRunnableTask(bootstrapContext, { blockingOnly: true })
     )
 
-    console.log(
-        'isBootstrapping:',
-        activeTaskIsBlocking,
-        isRefreshPending,
-        isProfileFetching,
-
-        !authError && hasRunnableBlockingTask,
-        !authError && hasRunnableTask
-    )
     const value = useMemo<AppBootstrapContextValue>(
         () => ({
             accessToken,

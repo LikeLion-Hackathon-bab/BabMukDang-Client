@@ -10,11 +10,12 @@ import {
     getActivityLocation,
     getRouteByActivityName,
     isTabRootActivity,
+    resolvePathToActivity,
     type AppActivityName,
     type AppActivityRoute,
     type NavigationActivityParams
 } from './routes'
-import { useNavigate } from './routerCompat'
+import { useLocation, useNavigate } from './routerCompat'
 
 const LoadingGate = () => (
     <div className="bg-gray-1 text-body2-medium text-gray-6 flex min-h-screen items-center justify-center px-20">
@@ -30,6 +31,7 @@ function NavigationAccessGate({
     children: ReactNode
 }) {
     const navigate = useNavigate()
+    const location = useLocation()
     const { accessToken, profile, isBootstrapping, authError } =
         useAppBootstrap()
     const onboardingDraft = useOnboardingStore(
@@ -41,9 +43,27 @@ function NavigationAccessGate({
         }))
     )
 
+    const redirectParam =
+        route.access === 'publicOnly'
+            ? new URLSearchParams(location.search).get('redirect')
+            : null
+
+    const resolvedRedirectTarget = redirectParam
+        ? resolvePathToActivity(redirectParam)
+        : null
+
     const publicOnlyRedirect =
         route.access === 'publicOnly' && profile
-            ? onboardingFlowController.routeAfterAuth(profile.onboardingStatus)
+            ? resolvedRedirectTarget?.route.access === 'authenticated' &&
+              onboardingFlowController.resolveProtectedRoute({
+                  currentPath: resolvedRedirectTarget.pathname,
+                  onboardingStatus: profile.onboardingStatus,
+                  draft: onboardingDraft
+              }).allow
+                ? redirectParam
+                : onboardingFlowController.routeAfterAuth(
+                      profile.onboardingStatus
+                  )
             : null
 
     const protectedDecision =
@@ -59,10 +79,12 @@ function NavigationAccessGate({
               })
             : null
 
+    const currentFullPath = `${location.pathname}${location.search}${location.hash}`
+    const loginRedirectPath = `/login?redirect=${encodeURIComponent(currentFullPath)}`
     const protectedRedirect =
-        route.access === 'authenticated'
+        !isBootstrapping && route.access === 'authenticated'
             ? !accessToken || authError || !profile
-                ? '/login'
+                ? loginRedirectPath
                 : !protectedDecision?.allow
                   ? (protectedDecision?.redirectTo ?? '/home')
                   : null

@@ -32,6 +32,8 @@ import type {
 } from './types'
 
 const SELF_PROFILE_STALE_TIME = Infinity
+const SELF_PROFILE_BOOTSTRAP_TIMEOUT_MS = 2500
+const SELF_PROFILE_BOOTSTRAP_RETRY_DELAY_MS = 250
 
 // ============================================================================
 // API 함수
@@ -46,7 +48,9 @@ const profileApi = {
      * @returns 프로필 정보 (화면 view model)
      */
     getMyProfile: async (): Promise<ProfileSummaryView> => {
-        const data = await contractClient.get(apiContract.members.me)
+        const data = await contractClient.get(apiContract.members.me, {
+            timeout: SELF_PROFILE_BOOTSTRAP_TIMEOUT_MS
+        })
         return mapProfile(data)
     },
 
@@ -154,6 +158,8 @@ export const useGetMyProfile = (options?: { enabled?: boolean }) => {
         queryKey: queryKeys.profile.my,
         queryFn: profileApi.getMyProfile,
         staleTime: SELF_PROFILE_STALE_TIME,
+        retry: 1,
+        retryDelay: SELF_PROFILE_BOOTSTRAP_RETRY_DELAY_MS,
         enabled: options?.enabled ?? true
     })
 }
