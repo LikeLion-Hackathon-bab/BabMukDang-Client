@@ -2,7 +2,7 @@
  * Confirmed-flow top nav. Free movement between stages — tapping a chip routes
  * to that stage's vote screen. Locked stages are non-navigable.
  */
-import { useNavigate } from '@/navigation'
+import { useTabNavigation } from '@/navigation/useTabNavigation'
 import { CheckGlyph, LockGlyph } from './glyphs'
 import { STAGE_DEFS, type BoardState, type StageKey } from './useDecisionStages'
 
@@ -22,7 +22,7 @@ export function StageSwitcher({
     active: StageKey
     states: Record<StageKey, BoardState>
 }) {
-    const navigate = useNavigate()
+    const navigateTab = useTabNavigation()
     return (
         <div
             style={{
@@ -45,7 +45,7 @@ export function StageSwitcher({
                             type="button"
                             disabled={locked}
                             onClick={() =>
-                                navigate(
+                                navigateTab(
                                     `/meal-plans/${mealPlanId}/decision/${def.key}`
                                 )
                             }

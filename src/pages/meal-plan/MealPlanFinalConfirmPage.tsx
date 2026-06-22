@@ -1,11 +1,11 @@
 import { SocketProvider } from '@/contexts/SocketContext'
 import {
-    DecisionAppBar,
     FinalConfirmPanel,
     FinalDonePanel,
     StageSwitcher,
     mealPlanTitle,
     useDecisionPageData,
+    useMealPlanDecisionChrome,
     useDecisionStages
 } from '@/components/features/meal-plan/decision'
 
@@ -22,10 +22,14 @@ export function MealPlanFinalConfirmPage() {
 function MealPlanFinalConfirmContent() {
     const { mealPlanId, mealPlan, permissions, isOwner } = useDecisionPageData()
     const decision = useDecisionStages()
+    useMealPlanDecisionChrome({
+        mealPlanId,
+        title: mealPlanTitle(mealPlan?.title)
+    })
 
     if (!mealPlan) {
         return (
-            <div className="py-40 text-center text-gray-5">
+            <div className="text-gray-5 py-40 text-center">
                 밥약을 불러오는 중입니다.
             </div>
         )
@@ -35,10 +39,6 @@ function MealPlanFinalConfirmContent() {
 
     return (
         <div className="flex min-h-full flex-col">
-            <DecisionAppBar
-                title={confirmed ? '밥약 확정' : '이대로 확정할까요?'}
-                mealPlanId={mealPlanId}
-            />
             {!confirmed && (
                 <StageSwitcher
                     mealPlanId={mealPlanId}
@@ -47,7 +47,10 @@ function MealPlanFinalConfirmContent() {
                 />
             )}
             {confirmed ? (
-                <FinalDonePanel mealPlan={mealPlan} decision={decision} />
+                <FinalDonePanel
+                    mealPlan={mealPlan}
+                    decision={decision}
+                />
             ) : (
                 <FinalConfirmPanel
                     mealPlan={mealPlan}

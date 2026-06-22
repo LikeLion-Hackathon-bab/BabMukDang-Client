@@ -7,7 +7,7 @@
  * the old workflow panel are intentionally dropped per the redesign (reported to
  * the user); confirmation is a single owner action here.
  */
-import { useNavigate } from '@/navigation'
+import { useTabNavigation } from '@/navigation/useTabNavigation'
 import type { MealPlanResponse } from '@kimdaegyu/babmukdang-shared/domain'
 import { useConfirmMealPlan } from '@/apis'
 import {
@@ -227,7 +227,7 @@ export function FinalDonePanel({
     mealPlan: MealPlanResponse
     decision: DecisionView
 }) {
-    const navigate = useNavigate()
+    const navigateTab = useTabNavigation()
     const dateTime = [
         mealPlan.selectedDate ? formatDateLabel(mealPlan.selectedDate) : '',
         mealPlan.selectedTime ? formatTimeLabel(mealPlan.selectedTime) : ''
@@ -358,7 +358,7 @@ export function FinalDonePanel({
                 <button
                     type="button"
                     onClick={() =>
-                        navigate(
+                        navigateTab(
                             `/meal-plans/${mealPlan.mealPlanId}/decision/chat`
                         )
                     }
@@ -378,7 +378,9 @@ export function FinalDonePanel({
                 <button
                     type="button"
                     onClick={() =>
-                        navigate(`/meal-plans/${mealPlan.mealPlanId}`)
+                        navigateTab(
+                            `/meal-plans/${mealPlan.mealPlanId}/decision`
+                        )
                     }
                     style={{
                         flex: 1,

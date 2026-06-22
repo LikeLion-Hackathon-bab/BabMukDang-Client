@@ -4,7 +4,7 @@
  */
 import type { MealPlanStatus } from '@kimdaegyu/babmukdang-shared/domain'
 import { useReadyMealPlan, useUnreadyMealPlan } from '@/apis'
-import { Glyph } from './glyphs'
+import { Glyph, type GlyphName } from './glyphs'
 
 const lockedStatuses: MealPlanStatus[] = [
     'CONFIRMED',
@@ -21,7 +21,12 @@ export function ReadyFooter({
     canReady = true,
     onFriends,
     friendsActive = false,
-    label
+    label,
+    actionIcon = 'people',
+    actionLabel = '함께 보기',
+    actionPosition = 'left',
+    onToggleReady,
+    isTogglePending = false
 }: {
     mealPlanId: string
     isSelfReady: boolean
@@ -30,13 +35,51 @@ export function ReadyFooter({
     onFriends?: () => void
     friendsActive?: boolean
     label?: string
+    actionIcon?: GlyphName
+    actionLabel?: string
+    actionPosition?: 'left' | 'right'
+    onToggleReady?: () => void
+    isTogglePending?: boolean
 }) {
     const { mutate: ready, isPending: readyPending } = useReadyMealPlan()
     const { mutate: unready, isPending: unreadyPending } = useUnreadyMealPlan()
     const isLocked = status ? lockedStatuses.includes(status) : false
-    const disabled = readyPending || unreadyPending || isLocked || !canReady
+    const disabled =
+        readyPending ||
+        unreadyPending ||
+        isTogglePending ||
+        isLocked ||
+        !canReady
     const text =
         label ?? (isSelfReady ? 'Ready 취소' : '내 표 다 했어요 (Ready)')
+    const actionButton = onFriends ? (
+        <button
+            type="button"
+            onClick={onFriends}
+            aria-label={actionLabel}
+            style={{
+                flex: 'none',
+                width: 48,
+                height: 48,
+                borderRadius: 9999,
+                display: 'grid',
+                placeItems: 'center',
+                border: 'none',
+                background: friendsActive
+                    ? 'var(--color-primary-100)'
+                    : 'var(--color-gray-1)'
+            }}>
+            <Glyph
+                name={actionIcon}
+                size={22}
+                color={
+                    friendsActive
+                        ? 'var(--color-primary-main)'
+                        : 'var(--color-gray-6)'
+                }
+            />
+        </button>
+    ) : null
 
     return (
         <div
@@ -50,38 +93,16 @@ export function ReadyFooter({
                 position: 'sticky',
                 bottom: 0
             }}>
-            {onFriends && (
-            <button
-                type="button"
-                onClick={onFriends}
-                style={{
-                    flex: 'none',
-                    width: 48,
-                    height: 48,
-                    borderRadius: 9999,
-                    display: 'grid',
-                    placeItems: 'center',
-                    border: 'none',
-                    background: friendsActive
-                        ? 'var(--color-primary-100)'
-                        : 'var(--color-gray-1)'
-                }}>
-                <Glyph
-                    name="people"
-                    size={22}
-                    color={
-                        friendsActive
-                            ? 'var(--color-primary-main)'
-                            : 'var(--color-gray-6)'
-                    }
-                />
-            </button>
-            )}
+            {actionPosition === 'left' && actionButton}
             <button
                 type="button"
                 disabled={disabled}
                 onClick={() =>
-                    isSelfReady ? unready(mealPlanId) : ready(mealPlanId)
+                    onToggleReady
+                        ? onToggleReady()
+                        : isSelfReady
+                          ? unready(mealPlanId)
+                          : ready(mealPlanId)
                 }
                 style={{
                     flex: 1,
@@ -98,6 +119,7 @@ export function ReadyFooter({
                 }}>
                 {text}
             </button>
+            {actionPosition === 'right' && actionButton}
         </div>
     )
 }

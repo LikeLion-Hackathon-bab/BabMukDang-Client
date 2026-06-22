@@ -4,9 +4,11 @@
  */
 import type { ReactNode } from 'react'
 import { useNavigate } from '@/navigation'
+import { useTabNavigation } from '@/navigation/useTabNavigation'
 import { Glyph } from './glyphs'
 import { StageSwitcher } from './StageSwitcher'
 import type { BoardState, StageKey } from './useDecisionStages'
+import { useMealPlanDecisionChrome } from './useMealPlanDecisionChrome'
 
 export function DecisionAppBar({
     title,
@@ -22,6 +24,7 @@ export function DecisionAppBar({
     onBack?: () => void
 }) {
     const navigate = useNavigate()
+    const navigateTab = useTabNavigation()
     return (
         <div
             style={{
@@ -76,7 +79,7 @@ export function DecisionAppBar({
                         <button
                             type="button"
                             onClick={() =>
-                                navigate(
+                                navigateTab(
                                     `/meal-plans/${mealPlanId}/decision/chat`
                                 )
                             }
@@ -97,7 +100,6 @@ export function DecisionAppBar({
 export function DecisionShell({
     mealPlanId,
     title,
-    sub,
     active,
     states,
     children,
@@ -113,15 +115,12 @@ export function DecisionShell({
     footer?: ReactNode
     sheet?: ReactNode
 }) {
+    useMealPlanDecisionChrome({ mealPlanId, title })
+
     return (
         <div
             className="flex flex-col"
             style={{ minHeight: '100%' }}>
-            <DecisionAppBar
-                title={title}
-                sub={sub}
-                mealPlanId={mealPlanId}
-            />
             <StageSwitcher
                 mealPlanId={mealPlanId}
                 active={active}

@@ -2,7 +2,7 @@
  * Decision entry — status board. Shows all five stages at once as a 2-column
  * grid; stages progress independently. Tapping a tile routes into that stage.
  */
-import { useNavigate } from '@/navigation'
+import { useTabNavigation } from '@/navigation/useTabNavigation'
 import { Card, ReadyMeter, type AvatarPerson } from './atoms'
 import { CheckGlyph, Glyph, LockGlyph, type GlyphName } from './glyphs'
 import {
@@ -10,6 +10,7 @@ import {
     type StageKey,
     type StageView
 } from './useDecisionStages'
+import { useNavigate } from '@/navigation'
 
 const STAGE_ICON: Record<StageKey, GlyphName> = {
     date: 'calendar',
