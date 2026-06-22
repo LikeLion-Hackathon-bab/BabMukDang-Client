@@ -121,6 +121,16 @@ export const appActivityDefinitions = {
             'FriendPage'
         )
     }),
+    FriendAddActivity: activity({
+        path: '/friend/add',
+        access: 'authenticated',
+        layout: 'app',
+        parentPath: '/friend',
+        component: lazyNamed(
+            () => import('@/pages/navigation/FriendAddPage'),
+            'FriendAddPage'
+        )
+    }),
     MeetingActivity: activity({
         path: ['/meeting', '/meal-plans', '/meal-map'],
         access: 'authenticated',

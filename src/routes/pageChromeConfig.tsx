@@ -33,12 +33,21 @@ export const routeChromeConfigEntries: RouteChromeConfigEntry[] = [
         }
     },
     {
+        path: '/friend/add',
+        chrome: {
+            header: {
+                title: '친구 추가'
+            },
+            bottomNav: {
+                visible: false
+            }
+        }
+    },
+    {
         path: '/friend',
         chrome: {
             header: {
-                title: '친구',
-                showLeftButton: false,
-                showRightButton: true
+                visible: false
             }
         }
     },
