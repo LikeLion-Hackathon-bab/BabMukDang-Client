@@ -14,7 +14,7 @@ export function MealPlanSharePreviewPage() {
 
     if (isLoading)
         return (
-            <div className="py-40 text-center text-gray-5">
+            <div className="text-gray-5 py-40 text-center">
                 링크를 확인하는 중입니다.
             </div>
         )
@@ -26,16 +26,39 @@ export function MealPlanSharePreviewPage() {
         )
 
     return (
-        <div className="flex flex-col gap-20 py-20">
-            <section className="rounded-24 bg-primary-100 border-primary-300 flex flex-col gap-12 border p-18">
-                <span className="text-caption-medium text-primary-main">
-                    {data.ownerName}님의 밥약
-                </span>
-                <h1 className="text-title2-semibold text-gray-8">
-                    {data.title}
-                </h1>
-                <p className="text-body2-medium text-gray-6">
-                    현재 {data.participantCount}명이 함께 정하고 있습니다.
+        <div className="flex min-h-full flex-col gap-18 py-20">
+            <section className="rounded-24 overflow-hidden bg-white shadow-sm">
+                <div className="bg-primary-100 flex flex-col gap-10 p-16">
+                    <span className="text-caption-medium text-primary-main w-fit rounded-full bg-white px-10 py-5">
+                        링크 초대
+                    </span>
+                    <h1 className="text-title2-semibold text-gray-8">
+                        {data.title}
+                    </h1>
+                    <div className="flex items-center gap-9">
+                        <div className="text-caption-medium text-primary-main grid h-28 w-28 place-items-center rounded-full bg-white">
+                            {data.ownerName[0] ?? '밥'}
+                        </div>
+                        <span className="text-caption-medium text-gray-6">
+                            {data.ownerName}님이 초대했어요
+                        </span>
+                    </div>
+                </div>
+                <div className="text-caption-medium text-gray-7 flex gap-16 p-13">
+                    <span>참여자 {data.participantCount}명</span>
+                    <span>
+                        {data.guestJoinEnabled
+                            ? '게스트 참여 가능'
+                            : '게스트 참여 닫힘'}
+                    </span>
+                </div>
+            </section>
+            <section className="rounded-20 bg-gray-1 p-14">
+                <h2 className="text-body2-semibold text-gray-8">
+                    닉네임만 있으면 같이 정할 수 있어요
+                </h2>
+                <p className="text-caption-regular text-gray-5 mt-4 leading-5">
+                    앱 회원이 아니어도 메뉴·시간·장소 결정에 참여할 수 있습니다.
                 </p>
             </section>
             {guestSession && (

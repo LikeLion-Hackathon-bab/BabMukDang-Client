@@ -18,13 +18,16 @@ export function MealGroupHistoryList({
                     history.map(item => (
                         <Link
                             key={item.mealPlanId}
-                            to={`/meal-plans/${item.mealPlanId}`}
+                            to={`/meal-plans/${item.mealPlanId}/decision`}
                             className="rounded-16 border-gray-2 flex flex-col gap-4 border p-12">
                             <span className="text-body2-semibold text-gray-8">
                                 {item.title}
                             </span>
                             <span className="text-caption-regular text-gray-5">
-                                {item.status} · {item.selectedRestaurantName ?? item.selectedAreaName ?? '장소 미정'}
+                                {item.status} ·{' '}
+                                {item.selectedRestaurantName ??
+                                    item.selectedAreaName ??
+                                    '장소 미정'}
                             </span>
                         </Link>
                     ))

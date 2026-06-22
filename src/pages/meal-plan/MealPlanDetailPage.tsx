@@ -15,7 +15,12 @@ import {
     NearbyFriendExposurePanel
 } from '@/components/features/meal-plan'
 import { MealGroupCreateFromMealPlanButton } from '@/components/features/meal-group'
-import { useMealPlanDetail } from '@/apis'
+import {
+    useCancelMealPlan,
+    useGetMyProfile,
+    useMealPlanDetail,
+    useRemoveMealPlanParticipant
+} from '@/apis'
 import { SocketProvider } from '@/contexts/SocketContext'
 import { useMealPlanStore } from '@/store'
 
@@ -33,17 +38,33 @@ function MealPlanDetailContent() {
     const { data, isLoading, error } = useMealPlanDetail(mealPlanId, {
         enabled: Boolean(mealPlanId)
     })
+    const { data: myProfile } = useGetMyProfile()
+    const cancelMealPlan = useCancelMealPlan({
+        onSuccess: () => navigate('/meeting')
+    })
+    const removeParticipant = useRemoveMealPlanParticipant({
+        onSuccess: () => navigate('/meeting')
+    })
     const setCurrentMealPlan = useMealPlanStore(
         state => state.setCurrentMealPlan
     )
     const storeCurrent = useMealPlanStore(state => state.current)
     const participants = useMealPlanStore(state => state.participants)
     const decisionStages = useMealPlanStore(state => state.decisionStages)
-    const readyCount = useMealPlanStore(state => state.readyCount)
-    const participantCount = useMealPlanStore(state => state.participantCount)
-    const mealPlan = storeCurrent ?? data
+    const mealPlan =
+        storeCurrent?.mealPlanId === mealPlanId ? storeCurrent : data
+    const visibleParticipants =
+        storeCurrent?.mealPlanId === mealPlanId
+            ? participants
+            : (data?.participants ?? [])
     const permissions = mealPlan?.viewerPermissions
     const isOwner = mealPlan?.viewerRole === 'OWNER'
+    const viewerParticipantId = visibleParticipants.find(
+        participant =>
+            participant.member &&
+            myProfile &&
+            String(participant.member.memberId) === String(myProfile.memberId)
+    )?.participantId
 
     useEffect(() => {
         if (data) setCurrentMealPlan(data)
@@ -51,7 +72,7 @@ function MealPlanDetailContent() {
 
     if (isLoading) {
         return (
-            <div className="py-40 text-center text-gray-5">
+            <div className="text-gray-5 py-40 text-center">
                 밥약을 불러오는 중입니다.
             </div>
         )
@@ -71,19 +92,46 @@ function MealPlanDetailContent() {
     const shouldShowRecordCta = ['COMPLETED', 'RECORDED'].includes(
         mealPlan.status
     )
-    const activeParticipantCount = participants.filter(participant =>
+    const activeParticipantCount = visibleParticipants.filter(participant =>
         ['JOINED', 'READY'].includes(participant.status)
+    ).length
+    const visibleReadyCount = visibleParticipants.filter(
+        participant => participant.status === 'READY'
     ).length
     const isChatActive =
         Boolean(mealPlan.chatRoom) || activeParticipantCount >= 2
+    const canCancel =
+        Boolean(permissions?.canCancelMealPlan) &&
+        !['CANCELLED', 'RECORDED'].includes(mealPlan.status)
+    const cancelPending =
+        cancelMealPlan.isPending || removeParticipant.isPending
+    const handleCancel = () => {
+        if (!canCancel || cancelPending) return
+        if (isOwner) {
+            if (!window.confirm('이 밥약을 삭제할까요?')) return
+            cancelMealPlan.mutate(mealPlanId)
+            return
+        }
+        if (!viewerParticipantId) return
+        if (!window.confirm('이 밥약에서 나갈까요?')) return
+        removeParticipant.mutate({
+            mealPlanId,
+            participantId: String(viewerParticipantId)
+        })
+    }
 
     return (
         <div className="flex flex-col gap-20 py-20">
-            <MealPlanStatusCard mealPlan={mealPlan} />
+            <MealPlanStatusCard
+                mealPlan={mealPlan}
+                onCancel={canCancel ? handleCancel : undefined}
+                cancelLabel={isOwner ? 'Cancel · 밥약 삭제' : 'Cancel · 나가기'}
+                cancelPending={cancelPending}
+            />
             <MealPlanReceivedInviteBanner mealPlanId={mealPlanId} />
             <MealPlanParticipantPanel
                 mealPlanId={mealPlanId}
-                participants={participants}
+                participants={visibleParticipants}
                 pendingInvites={mealPlan.pendingInvites}
                 canManageParticipants={permissions?.canManageParticipants}
             />
@@ -99,9 +147,9 @@ function MealPlanDetailContent() {
                         의사결정
                     </h2>
                     <p className="text-caption-regular text-gray-5">
-                        {readyCount}/{participantCount || participants.length}명
-                        준비 · 날짜·시간·지역·메뉴·식당을 결정 화면에서 정하고
-                        Ready 합니다.
+                        {visibleReadyCount}/{activeParticipantCount}명 준비 ·
+                        날짜·시간·지역·메뉴·식당을 결정 화면에서 정하고 Ready
+                        합니다.
                     </p>
                 </div>
                 <button
@@ -118,7 +166,7 @@ function MealPlanDetailContent() {
                     {permissions?.canInviteFriends && (
                         <MealPlanInvitePanel
                             mealPlanId={mealPlanId}
-                            participants={participants}
+                            participants={visibleParticipants}
                             pendingInvites={mealPlan.pendingInvites}
                         />
                     )}

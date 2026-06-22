@@ -13,7 +13,17 @@ const statusText: Record<string, string> = {
     CANCELLED: '취소된 밥약이에요.'
 }
 
-export function MealPlanStatusCard({ mealPlan }: { mealPlan: MealPlanResponse }) {
+export function MealPlanStatusCard({
+    mealPlan,
+    onCancel,
+    cancelLabel = 'Cancel',
+    cancelPending = false
+}: {
+    mealPlan: MealPlanResponse
+    onCancel?: () => void
+    cancelLabel?: string
+    cancelPending?: boolean
+}) {
     const dateTime = [mealPlan.selectedDate, mealPlan.selectedTime]
         .filter(Boolean)
         .join(' ')
@@ -35,16 +45,27 @@ export function MealPlanStatusCard({ mealPlan }: { mealPlan: MealPlanResponse })
                     {statusText[mealPlan.status] ?? '밥약을 진행하고 있어요.'}
                 </p>
             </div>
-            <div className="grid grid-cols-2 gap-10 text-caption-regular text-gray-6">
+            <div className="text-caption-regular text-gray-6 grid grid-cols-2 gap-10">
                 <div className="rounded-16 bg-white p-12">
-                    <span className="block text-gray-5">시간</span>
-                    <strong className="text-gray-8">{dateTime || '미정'}</strong>
+                    <span className="text-gray-5 block">시간</span>
+                    <strong className="text-gray-8">
+                        {dateTime || '미정'}
+                    </strong>
                 </div>
                 <div className="rounded-16 bg-white p-12">
-                    <span className="block text-gray-5">장소</span>
+                    <span className="text-gray-5 block">장소</span>
                     <strong className="text-gray-8">{place}</strong>
                 </div>
             </div>
+            {onCancel && (
+                <button
+                    type="button"
+                    disabled={cancelPending}
+                    onClick={onCancel}
+                    className="rounded-16 text-body2-semibold bg-white px-14 py-11 text-left text-red-500 disabled:opacity-40">
+                    {cancelPending ? '처리 중' : cancelLabel}
+                </button>
+            )}
         </section>
     )
 }
