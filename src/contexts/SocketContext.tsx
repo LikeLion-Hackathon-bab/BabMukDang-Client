@@ -13,10 +13,14 @@ import {
     useMealPlanCommands,
     type MealPlanCommands
 } from '@/socket/useMealPlanCommands'
-import { useMealPlanEvents } from '@/socket/useMealPlanEvents'
+import { createMealPlanEventHandlers } from '@/socket/mealPlanEventHandlers'
+import { attachMealPlanSocketListeners } from '@/socket/mealPlanSocket.listener'
 import type { MealPlanSocket } from '@/socket/mealPlanSocket.types'
 import { useAuthStore } from '@/store/authStore'
-import { useMealPlanStore } from '@/store/mealPlanStore'
+import {
+    getMealPlanStoreActions,
+    useMealPlanStore
+} from '@/store/mealPlanStore'
 
 interface MealPlanSocketContextValue {
     socket: MealPlanSocket | null
@@ -43,6 +47,84 @@ interface MealPlanSocketContextValue {
 }
 
 const SocketContext = createContext<MealPlanSocketContextValue | null>(null)
+const SOCKET_RELEASE_GRACE_MS = 500
+
+type SharedMealPlanSocket = {
+    socket: MealPlanSocket
+    mealPlanId: string
+    leases: number
+    releaseTimer: number | null
+    detachListeners: () => void
+}
+
+const sharedSockets = new Map<string, SharedMealPlanSocket>()
+
+function getSocketKey(input: {
+    mealPlanId: string
+    accessToken: string | null
+    guestSessionToken: string | null
+    shareLinkToken: string | null
+}) {
+    if (input.accessToken) {
+        return `member:${input.mealPlanId}:${input.accessToken}`
+    }
+
+    return `guest:${input.mealPlanId}:${input.guestSessionToken ?? ''}:${input.shareLinkToken ?? ''}`
+}
+
+function createSharedSocket(input: {
+    key: string
+    mealPlanId: string
+    accessToken: string | null
+    guestSessionToken: string | null
+    shareLinkToken: string | null
+}) {
+    const socket: MealPlanSocket = io(
+        `${import.meta.env.VITE_WEBSOCKET_SERVER_URL}/meal-plans`,
+        {
+            auth: input.accessToken
+                ? { token: input.accessToken }
+                : {
+                      guestSessionToken: input.guestSessionToken,
+                      shareLinkToken: input.shareLinkToken
+                  }
+        }
+    )
+    const detachListeners = attachMealPlanSocketListeners(
+        socket,
+        createMealPlanEventHandlers(getMealPlanStoreActions())
+    )
+    const shared: SharedMealPlanSocket = {
+        socket,
+        mealPlanId: input.mealPlanId,
+        leases: 0,
+        releaseTimer: null,
+        detachListeners
+    }
+
+    sharedSockets.set(input.key, shared)
+    socket.emit('mealPlan:join', { mealPlanId: input.mealPlanId })
+    return shared
+}
+
+function releaseSharedSocket(key: string, shared: SharedMealPlanSocket) {
+    shared.leases = Math.max(0, shared.leases - 1)
+    if (shared.leases > 0 || shared.releaseTimer !== null) return
+
+    shared.releaseTimer = window.setTimeout(() => {
+        shared.releaseTimer = null
+        if (shared.leases > 0) return
+
+        shared.socket.emit('mealPlan:leave', { mealPlanId: shared.mealPlanId })
+        shared.detachListeners()
+        shared.socket.close()
+        sharedSockets.delete(key)
+
+        if (useMealPlanStore.getState().mealPlanId === shared.mealPlanId) {
+            useMealPlanStore.getState().resetMealPlanState()
+        }
+    }, SOCKET_RELEASE_GRACE_MS)
+}
 
 export const useSocket = () => {
     const ctx = useContext(SocketContext)
@@ -57,6 +139,11 @@ type SocketProviderProps = {
     shareLinkToken?: string | null
 }
 
+/**
+ * A decision activity is replaced on every stage move. Keep the underlying
+ * socket alive for a short lease window so the incoming activity adopts the
+ * same connection instead of reconnecting and resetting the meal-plan store.
+ */
 export function SocketProvider({
     children,
     mealPlanId: mealPlanIdProp,
@@ -69,12 +156,14 @@ export function SocketProvider({
     const mealPlanId = mealPlanIdProp ?? mealPlanIdParam
     const { mutate: refreshToken, isPending, isError } = useRefreshToken()
     const commands = useMealPlanCommands(socket)
-
-    useMealPlanEvents(socket)
-
     const mealPlanState = useMealPlanStore()
 
     useEffect(() => {
+        if (!mealPlanId) {
+            setSocket(null)
+            return
+        }
+
         const canConnectAsGuest = Boolean(guestSessionToken && shareLinkToken)
         if (!accessToken && !canConnectAsGuest) {
             if (!isPending && !isError) {
@@ -83,29 +172,33 @@ export function SocketProvider({
             return
         }
 
-        const nextSocket: MealPlanSocket = io(
-            `${import.meta.env.VITE_WEBSOCKET_SERVER_URL}/meal-plans`,
-            {
-                auth: accessToken
-                    ? { token: accessToken }
-                    : { guestSessionToken, shareLinkToken }
-            }
-        )
-
-        setSocket(nextSocket)
-
-        if (mealPlanId) {
-            nextSocket.emit('mealPlan:join', { mealPlanId })
+        const key = getSocketKey({
+            mealPlanId,
+            accessToken,
+            guestSessionToken,
+            shareLinkToken
+        })
+        let shared = sharedSockets.get(key)
+        if (!shared) {
+            shared = createSharedSocket({
+                key,
+                mealPlanId,
+                accessToken,
+                guestSessionToken,
+                shareLinkToken
+            })
         }
 
+        if (shared.releaseTimer !== null) {
+            window.clearTimeout(shared.releaseTimer)
+            shared.releaseTimer = null
+        }
+        shared.leases += 1
+        setSocket(shared.socket)
+
         return () => {
-            if (mealPlanId) {
-                nextSocket.emit('mealPlan:leave', { mealPlanId })
-            }
-            nextSocket.removeAllListeners()
-            nextSocket.close()
-            setSocket(null)
-            useMealPlanStore.getState().resetMealPlanState()
+            setSocket(current => (current === shared.socket ? null : current))
+            releaseSharedSocket(key, shared)
         }
     }, [
         accessToken,

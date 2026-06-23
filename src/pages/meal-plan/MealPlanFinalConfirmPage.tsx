@@ -1,5 +1,5 @@
-import { SocketProvider } from '@/contexts/SocketContext'
 import {
+    DecisionSessionProvider,
     FinalConfirmPanel,
     FinalDonePanel,
     StageSwitcher,
@@ -13,9 +13,9 @@ const CONFIRMED = ['CONFIRMED', 'LOCKED', 'COMPLETED', 'RECORDED']
 
 export function MealPlanFinalConfirmPage() {
     return (
-        <SocketProvider>
+        <DecisionSessionProvider>
             <MealPlanFinalConfirmContent />
-        </SocketProvider>
+        </DecisionSessionProvider>
     )
 }
 

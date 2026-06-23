@@ -1,9 +1,9 @@
-import { SocketProvider } from '@/contexts/SocketContext'
 import {
     MealPlanChatPanel,
     MealPlanJoinRequestPanel
 } from '@/components/features/meal-plan'
 import {
+    DecisionSessionProvider,
     ParticipantStatusCard,
     mealPlanTitle,
     useDecisionPageData,
@@ -15,9 +15,9 @@ import { usePageChrome } from '@/hooks/usePageChrome'
 
 export function MealPlanDecisionChatPage() {
     return (
-        <SocketProvider>
+        <DecisionSessionProvider>
             <MealPlanDecisionChatContent />
-        </SocketProvider>
+        </DecisionSessionProvider>
     )
 }
 

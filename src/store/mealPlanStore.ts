@@ -19,6 +19,9 @@ export interface MealPlanStoreActions {
     applyParticipantReady(
         payload: MealPlanServerPayload<'mealPlan:participant:ready'>
     ): void
+    applyParticipantUnready(
+        payload: MealPlanServerPayload<'mealPlan:participant:unready'>
+    ): void
     applyStatusChanged(
         payload: MealPlanServerPayload<'mealPlan:status:changed'>
     ): void
@@ -110,6 +113,9 @@ export const useMealPlanStore = create<MealPlanStore>(set => ({
 
     applyParticipantJoined: payload =>
         set(state => {
+            if (state.mealPlanId && state.mealPlanId !== payload.mealPlanId) {
+                return state
+            }
             const participants = [
                 ...state.participants.filter(
                     participant =>
@@ -127,62 +133,131 @@ export const useMealPlanStore = create<MealPlanStore>(set => ({
         }),
 
     applyParticipantReady: payload =>
-        set(state => ({
-            mealPlanId: payload.mealPlanId,
-            readyCount: payload.readyCount,
-            participantCount: payload.participantCount,
-            participants: state.participants.map(participant =>
+        set(state => {
+            if (state.mealPlanId && state.mealPlanId !== payload.mealPlanId) {
+                return state
+            }
+            const participants = state.participants.map(participant =>
                 participant.participantId === payload.participantId
                     ? {
                           ...participant,
-                          status: 'READY',
+                          status: 'READY' as const,
                           readyAt: new Date().toISOString()
                       }
                     : participant
             )
-        })),
+            const current = state.current
+                ? { ...state.current, participants }
+                : state.current
+            return {
+                mealPlanId: payload.mealPlanId,
+                current,
+                readyCount: payload.readyCount,
+                participantCount: payload.participantCount,
+                participants
+            }
+        }),
+
+    applyParticipantUnready: payload =>
+        set(state => {
+            if (state.mealPlanId && state.mealPlanId !== payload.mealPlanId) {
+                return state
+            }
+            const participants = state.participants.map(participant =>
+                participant.participantId === payload.participantId
+                    ? {
+                          ...participant,
+                          status: 'JOINED' as const,
+                          readyAt: null
+                      }
+                    : participant
+            )
+            const current = state.current
+                ? { ...state.current, participants }
+                : state.current
+            return {
+                mealPlanId: payload.mealPlanId,
+                current,
+                readyCount: payload.readyCount,
+                participantCount: payload.participantCount,
+                participants
+            }
+        }),
 
     applyStatusChanged: payload =>
-        set(state => ({
-            mealPlanId: payload.mealPlanId,
-            current: payload.mealPlan ?? state.current,
-            status: payload.status,
-            participants: payload.mealPlan?.participants ?? state.participants,
-            decisionStages:
-                payload.mealPlan?.decisionStages ?? state.decisionStages,
-            decisionProgress:
-                payload.mealPlan?.decisionProgress ?? state.decisionProgress,
-            isSelfReady:
-                payload.mealPlan?.viewerParticipantStatus === 'READY'
-                    ? true
-                    : payload.mealPlan
-                      ? false
-                      : state.isSelfReady
-        })),
+        set(state => {
+            if (state.mealPlanId && state.mealPlanId !== payload.mealPlanId) {
+                return state
+            }
+            const current = payload.mealPlan
+                ? payload.mealPlan
+                : state.current
+                  ? {
+                        ...state.current,
+                        status: payload.status,
+                        viewerPermissions: {
+                            ...state.current.viewerPermissions,
+                            canConfirmMealPlan:
+                                state.current.viewerRole === 'OWNER' &&
+                                payload.status === 'READY'
+                        }
+                    }
+                  : null
+            const participants = payload.mealPlan?.participants ?? state.participants
+            return {
+                mealPlanId: payload.mealPlanId,
+                current,
+                status: payload.status,
+                participants,
+                readyCount: countReadyParticipants(participants),
+                participantCount: joinedParticipantCount(participants),
+                decisionStages:
+                    payload.mealPlan?.decisionStages ?? state.decisionStages,
+                decisionProgress:
+                    payload.mealPlan?.decisionProgress ?? state.decisionProgress,
+                isSelfReady:
+                    payload.mealPlan?.viewerParticipantStatus === 'READY'
+                        ? true
+                        : payload.mealPlan
+                          ? false
+                          : state.isSelfReady
+            }
+        }),
 
     applyDecisionUpdated: payload =>
-        set({
-            mealPlanId: payload.mealPlanId,
-            decisionStages: payload.stages,
-            decisionProgress: payload.progress ?? null
+        set(state => {
+            if (state.mealPlanId && state.mealPlanId !== payload.mealPlanId) {
+                return state
+            }
+            return {
+                mealPlanId: payload.mealPlanId,
+                decisionStages: payload.stages,
+                decisionProgress: payload.progress ?? null
+            }
         }),
 
     applyDecisionProgressUpdated: payload =>
-        set(state => ({
-            mealPlanId: payload.mealPlanId,
-            current: payload.mealPlan ?? state.current,
-            decisionProgress: payload.progress,
-            decisionStages:
-                payload.mealPlan?.decisionStages ?? state.decisionStages,
-            participants: payload.mealPlan?.participants ?? state.participants,
-            status: payload.mealPlan?.status ?? state.status,
-            isSelfReady:
-                payload.mealPlan?.viewerParticipantStatus === 'READY'
-                    ? true
-                    : payload.mealPlan
-                      ? false
-                      : state.isSelfReady
-        })),
+        set(state => {
+            if (state.mealPlanId && state.mealPlanId !== payload.mealPlanId) {
+                return state
+            }
+            return {
+                mealPlanId: payload.mealPlanId,
+                current: payload.mealPlan ?? state.current,
+                decisionProgress: payload.progress,
+                decisionStages:
+                    payload.mealPlan?.decisionStages ?? state.decisionStages,
+                participants:
+                    payload.mealPlan?.participants ?? state.participants,
+                status: payload.mealPlan?.status ?? state.status,
+                isSelfReady:
+                    payload.mealPlan?.viewerParticipantStatus === 'READY'
+                        ? true
+                        : payload.mealPlan
+                          ? false
+                          : state.isSelfReady
+            }
+        }),
 
     setMealPlanError: payload => set({ error: payload })
 }))
@@ -196,6 +271,7 @@ export function getMealPlanStoreActions(): MealPlanStoreActions {
         applyChatMessage: store.applyChatMessage,
         applyParticipantJoined: store.applyParticipantJoined,
         applyParticipantReady: store.applyParticipantReady,
+        applyParticipantUnready: store.applyParticipantUnready,
         applyStatusChanged: store.applyStatusChanged,
         applyDecisionUpdated: store.applyDecisionUpdated,
         applyDecisionProgressUpdated: store.applyDecisionProgressUpdated,
