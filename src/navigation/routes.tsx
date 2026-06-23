@@ -61,21 +61,11 @@ export const appActivityDefinitions = {
             'IntroTutorial'
         )
     }),
-    MealPlanSharePreviewActivity: activity({
-        path: '/meal-plan-links/:token',
-        access: 'guest',
-        layout: 'register',
-        parentPath: '/login',
-        component: lazyNamed(
-            () => import('@/pages/meal-plan/MealPlanSharePreviewPage'),
-            'MealPlanSharePreviewPage'
-        )
-    }),
     MealPlanGuestJoinActivity: activity({
         path: '/meal-plan-links/:token/join',
         access: 'guest',
         layout: 'register',
-        parentPath: params => `/meal-plan-links/${params.token ?? ''}`,
+        parentPath: '/login',
         component: lazyNamed(
             () => import('@/pages/meal-plan/MealPlanGuestJoinPage'),
             'MealPlanGuestJoinPage'

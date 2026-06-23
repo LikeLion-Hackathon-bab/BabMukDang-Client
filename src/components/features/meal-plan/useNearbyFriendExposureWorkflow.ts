@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
 import {
+    useCloseMealPlanNearbyFriends,
     useExposeMealPlanToNearbyFriends,
     useNearbyFriendExposureEligibility,
     useUpdateLocationConsent,
@@ -20,9 +21,17 @@ export function useNearbyFriendExposureWorkflow(mealPlanId: string) {
         useNearbyFriendExposureEligibility()
     const { mutateAsync: exposeAsync, isPending: isExposePending } =
         useExposeMealPlanToNearbyFriends()
+    const { mutateAsync: closeAsync, isPending: isClosePending } =
+        useCloseMealPlanNearbyFriends()
     const { mutateAsync: updateLocationConsentAsync } =
         useUpdateLocationConsent()
     const { mutateAsync: updateMemberLocationAsync } = useUpdateMemberLocation()
+    const isExposed =
+        Boolean(lastResult) ||
+        Boolean(
+            eligibility?.nearbyMealPlanExposureAllowed &&
+            eligibility.locationConsentStatus === 'GRANTED'
+        )
 
     const startExposure = useCallback(
         async ({ radiusMeters }: { radiusMeters: number }) => {
@@ -79,11 +88,42 @@ export function useNearbyFriendExposureWorkflow(mealPlanId: string) {
         ]
     )
 
+    const stopExposure = useCallback(async () => {
+        setErrorMessage(null)
+        try {
+            await closeAsync(mealPlanId)
+            setLastResult(null)
+            await refetchEligibility()
+            return true
+        } catch (error) {
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : '근처 친구 노출을 종료하지 못했습니다.'
+            setErrorMessage(message)
+            return false
+        }
+    }, [closeAsync, mealPlanId, refetchEligibility])
+
+    const toggleExposure = useCallback(
+        async ({ radiusMeters }: { radiusMeters: number }) => {
+            if (isExposed) {
+                return stopExposure()
+            }
+
+            return startExposure({ radiusMeters })
+        },
+        [isExposed, startExposure, stopExposure]
+    )
+
     return {
         eligibility,
         errorMessage,
         lastResult,
-        isPreparing: isExposePending,
-        startExposure
+        isExposed,
+        isPreparing: isExposePending || isClosePending,
+        startExposure,
+        stopExposure,
+        toggleExposure
     }
 }

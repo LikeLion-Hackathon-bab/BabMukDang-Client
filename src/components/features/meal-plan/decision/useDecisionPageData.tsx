@@ -67,8 +67,8 @@ export function useDecisionPageData() {
         isGuest,
         shareLinkToken: isGuest ? token : null,
         guestSessionToken: isGuest ? guestSessionToken : null,
-        guestNickname: isGuest ? guestQuery.data?.nickname ?? null : null,
-        guestId: isGuest ? guestQuery.data?.guestId ?? null : null,
+        guestNickname: isGuest ? (guestQuery.data?.nickname ?? null) : null,
+        guestId: isGuest ? (guestQuery.data?.guestId ?? null) : null,
         hasGuestSession: !isGuest || Boolean(guestSessionToken)
     }
 }
@@ -95,9 +95,9 @@ export function GuestDecisionSessionProvider({
                     공유 링크에서 닉네임을 입력하고 다시 참여해주세요.
                 </p>
                 <Link
-                    to={`/meal-plan-links/${data.shareLinkToken ?? ''}`}
+                    to={`/meal-plan-links/${data.shareLinkToken ?? ''}/join`}
                     className="rounded-30 bg-gray-8 text-body1-semibold py-14 text-white">
-                    링크 미리보기로 돌아가기
+                    게스트 참여로 돌아가기
                 </Link>
             </div>
         )
@@ -121,9 +121,9 @@ export function GuestDecisionSessionProvider({
                     링크가 만료되었거나 게스트 참여 정보가 유효하지 않습니다.
                 </p>
                 <Link
-                    to={`/meal-plan-links/${data.shareLinkToken ?? ''}`}
+                    to={`/meal-plan-links/${data.shareLinkToken ?? ''}/join`}
                     className="rounded-30 bg-gray-8 text-body1-semibold py-14 text-white">
-                    링크 미리보기로 돌아가기
+                    게스트 참여로 돌아가기
                 </Link>
             </div>
         )
@@ -146,7 +146,11 @@ export function DecisionSessionProvider({ children }: { children: ReactNode }) {
     }>()
 
     if (token && !mealPlanId) {
-        return <GuestDecisionSessionProvider>{children}</GuestDecisionSessionProvider>
+        return (
+            <GuestDecisionSessionProvider>
+                {children}
+            </GuestDecisionSessionProvider>
+        )
     }
 
     return <SocketProvider mealPlanId={mealPlanId}>{children}</SocketProvider>

@@ -1,8 +1,14 @@
 import { useState } from 'react'
-import { Link } from '@/navigation'
 import { useCreateMealPlanShareLink } from '@/apis'
 import { useNearbyFriendExposureWorkflow } from './useNearbyFriendExposureWorkflow'
 import type { MealPlanShareLinkSummary } from '@kimdaegyu/babmukdang-shared/domain'
+
+const copyShareLink = async (url: string) => {
+    if (!navigator.clipboard) {
+        throw new Error('클립보드를 사용할 수 없습니다.')
+    }
+    await navigator.clipboard.writeText(url)
+}
 
 export function MealPlanShareSheet({
     mealPlanId,
@@ -19,34 +25,47 @@ export function MealPlanShareSheet({
         onSuccess: data => setShareLink(data ?? null)
     })
     const nearby = useNearbyFriendExposureWorkflow(mealPlanId)
-    const isNearbyOn =
-        Boolean(nearby.lastResult) ||
-        Boolean(
-            nearby.eligibility?.nearbyMealPlanExposureAllowed &&
-            nearby.eligibility.locationConsentStatus === 'GRANTED'
-        )
 
-    const createOrShare = async () => {
+    const copyLink = async (url: string) => {
+        await copyShareLink(url)
+        setCopyMessage('링크를 복사했어요.')
+    }
+
+    const createOrCopy = async () => {
         setCopyMessage(null)
-        const link =
-            shareLink ??
-            (await createShareLink.mutateAsync({
-                mealPlanId,
-                body: { guestJoinEnabled: true }
-            }))
-        setShareLink(link)
+        try {
+            const link =
+                shareLink ??
+                (await createShareLink.mutateAsync({
+                    mealPlanId,
+                    body: { guestJoinEnabled: true }
+                }))
+            setShareLink(link)
+            await copyLink(link.url)
+        } catch (error) {
+            setCopyMessage(
+                error instanceof Error
+                    ? error.message
+                    : '링크를 복사하지 못했습니다.'
+            )
+        }
+    }
 
-        if (navigator.share) {
-            await navigator.share({
-                title: '밥먹댕 밥약 초대',
-                text: '같이 밥약을 정해요.',
-                url: link.url
-            })
+    const copyExisting = async () => {
+        if (!shareLink) {
             return
         }
 
-        await navigator.clipboard?.writeText(link.url)
-        setCopyMessage('링크를 복사했어요.')
+        setCopyMessage(null)
+        try {
+            await copyLink(shareLink.url)
+        } catch (error) {
+            setCopyMessage(
+                error instanceof Error
+                    ? error.message
+                    : '링크를 복사하지 못했습니다.'
+            )
+        }
     }
 
     return (
@@ -94,18 +113,20 @@ export function MealPlanShareSheet({
                             <button
                                 type="button"
                                 disabled={createShareLink.isPending}
-                                onClick={() => void createOrShare()}
+                                onClick={() => void createOrCopy()}
                                 className="bg-primary-main text-caption-medium h-40 rounded-full px-18 text-white disabled:opacity-40">
-                                공유
+                                {createShareLink.isPending
+                                    ? '생성 중'
+                                    : '생성 후 복사'}
+                            </button>
+                            <button
+                                type="button"
+                                disabled={!shareLink}
+                                onClick={() => void copyExisting()}
+                                className="bg-gray-8 text-caption-medium h-40 rounded-full px-18 text-white disabled:opacity-40">
+                                복사
                             </button>
                         </div>
-                        {shareLink && (
-                            <Link
-                                to={`/meal-plan-links/${shareLink.token}`}
-                                className="text-caption-medium text-primary-main mt-8 inline-flex">
-                                링크 미리보기 열기
-                            </Link>
-                        )}
                         {copyMessage && (
                             <p className="text-caption-regular text-gray-5 mt-8">
                                 {copyMessage}
@@ -115,7 +136,7 @@ export function MealPlanShareSheet({
 
                     <article
                         className={`rounded-20 border p-14 shadow-sm ${
-                            isNearbyOn
+                            nearby.isExposed
                                 ? 'border-primary-300 bg-primary-100'
                                 : 'border-transparent bg-white'
                         }`}>
@@ -138,18 +159,22 @@ export function MealPlanShareSheet({
                                 500m 이내
                             </span>
                             <span className="text-caption-medium text-gray-5">
-                                {isNearbyOn ? '지금 켜짐' : '꺼짐'}
+                                {nearby.isExposed ? '지금 켜짐' : '꺼짐'}
                             </span>
                             <button
                                 type="button"
                                 disabled={nearby.isPreparing}
                                 onClick={() =>
-                                    void nearby.startExposure({
+                                    void nearby.toggleExposure({
                                         radiusMeters: 500
                                     })
                                 }
                                 className="bg-gray-8 text-caption-medium ml-auto rounded-full px-16 py-9 text-white disabled:opacity-40">
-                                {nearby.isPreparing ? '준비 중' : '켜기'}
+                                {nearby.isPreparing
+                                    ? '처리 중'
+                                    : nearby.isExposed
+                                      ? '끄기'
+                                      : '켜기'}
                             </button>
                         </div>
                         {nearby.errorMessage && (
