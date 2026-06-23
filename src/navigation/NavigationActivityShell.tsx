@@ -1,4 +1,4 @@
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { useActivity } from '@stackflow/react'
 import { useShallow } from 'zustand/react/shallow'
 import { Layout, RegisterLayout } from '@/components'
@@ -136,7 +136,26 @@ function ActivityLayout({
 
 export function NavigationActivityShell({ children }: { children: ReactNode }) {
     const activity = useActivity()
+    const [isEntering, setIsEntering] = useState(
+        activity.transitionState === 'enter-active'
+    )
     const route = getRouteByActivityName(activity.name)
+
+    useEffect(() => {
+        if (activity.transitionState !== 'enter-active') {
+            setIsEntering(false)
+            return
+        }
+
+        setIsEntering(true)
+        const animationFrame = window.requestAnimationFrame(() => {
+            setIsEntering(false)
+        })
+
+        return () => {
+            window.cancelAnimationFrame(animationFrame)
+        }
+    }, [activity.transitionState])
 
     if (!route) {
         throw new Error(`UNREGISTERED_STACKFLOW_ACTIVITY:${activity.name}`)
@@ -162,7 +181,7 @@ export function NavigationActivityShell({ children }: { children: ReactNode }) {
                 data-stackflow-activity={activity.name}
                 data-stackflow-active={activity.isTop ? 'true' : 'false'}
                 className={[
-                    'absolute inset-0 min-h-0',
+                    'absolute inset-0 min-h-0 overflow-hidden bg-gray-1',
                     activity.isTop
                         ? 'pointer-events-auto'
                         : 'pointer-events-none'
@@ -170,12 +189,13 @@ export function NavigationActivityShell({ children }: { children: ReactNode }) {
                 style={{
                     zIndex: activity.zIndex,
                     transform:
-                        activity.transitionState === 'enter-active'
+                        isEntering || activity.transitionState === 'exit-active'
                             ? 'translateX(100%)'
-                            : activity.transitionState === 'exit-active'
-                              ? 'translateX(100%)'
-                              : 'translateX(0)',
-                    transition: 'transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1)'
+                            : 'translateX(0)',
+                    transition: isEntering
+                        ? 'none'
+                        : 'transform 280ms cubic-bezier(0.2, 0.8, 0.2, 1)',
+                    backgroundColor: 'var(--color-gray-1)'
                 }}>
                 <NavigationAccessGate route={route}>
                     <ActivityLayout route={route}>{children}</ActivityLayout>

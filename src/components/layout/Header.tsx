@@ -2,21 +2,22 @@ import { useNavigate, Link } from '@/navigation'
 import { BackIcon, AlarmIcon } from '@/assets/icons'
 
 import { COLORS } from '@/constants/colors'
-import { useLayoutChromeStore } from '@/store/layoutChromeStore'
+import type { HeaderConfig } from '@/store/layoutChromeStore'
 
 interface HeaderProps {
     title?: string
-    config?: any // 기존 props 호환성을 위해 유지
+    config?: HeaderConfig
 }
 
 export function Header({ title, config }: HeaderProps) {
     const navigate = useNavigate()
-    const headerConfig = useLayoutChromeStore(
-        state => state.resolvedConfig.header
-    )
-
-    // config prop이 제공되면 우선 사용, 아니면 Zustand 스토어의 config 사용
-    const finalConfig = config || headerConfig
+    const finalConfig: HeaderConfig = config ?? {
+        visible: true,
+        showLeftButton: true,
+        showRightButton: false,
+        showCenterElement: true,
+        title: title ?? ''
+    }
 
     if (!finalConfig.visible) {
         return null
@@ -41,7 +42,7 @@ export function Header({ title, config }: HeaderProps) {
                 {finalConfig.center ||
                     (finalConfig.showCenterElement && (
                         <span className="text-title2-semibold">
-                            {finalConfig.title || ''}
+                            {finalConfig.title || title || ''}
                         </span>
                     ))}
             </div>

@@ -41,19 +41,15 @@ export interface ResolvedLayoutChromeConfig {
     content: Required<ContentConfig>
 }
 
-type ChromeSlot = {
-    ownerId?: string
-    config?: LayoutChromeConfig
+type ActivityChromeSlot = {
+    route?: LayoutChromeConfig
+    page?: LayoutChromeConfig
 }
 
 interface LayoutChromeStore {
-    routeChrome: ChromeSlot
-    pageChrome: ChromeSlot
-    resolvedConfig: ResolvedLayoutChromeConfig
-    setRouteChromeConfig: (
-        config?: LayoutChromeConfig,
-        ownerId?: string
-    ) => void
+    activityChrome: Record<string, ActivityChromeSlot>
+    setRouteChromeConfig: (config?: LayoutChromeConfig, ownerId?: string) => void
+    clearRouteChromeConfig: (ownerId?: string) => void
     setPageChromeConfig: (config: LayoutChromeConfig, ownerId?: string) => void
     clearPageChromeConfig: (ownerId?: string) => void
     resetLayoutChromeConfig: () => void
@@ -85,7 +81,7 @@ const createDefaultContentConfig = (): Required<ContentConfig> => ({
     bottomInset: true
 })
 
-const resolveLayoutChromeConfig = (
+export const resolveLayoutChromeConfig = (
     routeChromeConfig?: LayoutChromeConfig,
     pageChromeConfig?: LayoutChromeConfig
 ): ResolvedLayoutChromeConfig => ({
@@ -106,51 +102,69 @@ const resolveLayoutChromeConfig = (
     }
 })
 
-const isSameOwner = (slot: ChromeSlot, ownerId?: string) =>
-    !ownerId || !slot.ownerId || slot.ownerId === ownerId
+const updateActivityChrome = (
+    activityChrome: Record<string, ActivityChromeSlot>,
+    ownerId: string,
+    update: (slot: ActivityChromeSlot) => ActivityChromeSlot
+) => ({
+    ...activityChrome,
+    [ownerId]: update(activityChrome[ownerId] ?? {})
+})
 
 export const useLayoutChromeStore = create<LayoutChromeStore>(set => ({
-    routeChrome: {},
-    pageChrome: {},
-    resolvedConfig: resolveLayoutChromeConfig(),
+    activityChrome: {},
 
     setRouteChromeConfig: (config, ownerId) => {
+        if (!ownerId) return
         set(state => ({
-            routeChrome: { config, ownerId },
-            resolvedConfig: resolveLayoutChromeConfig(
-                config,
-                state.pageChrome.config
+            activityChrome: updateActivityChrome(
+                state.activityChrome,
+                ownerId,
+                slot => ({ ...slot, route: config })
             )
         }))
     },
 
+    clearRouteChromeConfig: ownerId => {
+        if (!ownerId) return
+        set(state => {
+            const slot = state.activityChrome[ownerId]
+            if (!slot) return state
+            const next = { ...state.activityChrome }
+            if (!slot.page) {
+                delete next[ownerId]
+            } else {
+                next[ownerId] = { ...slot, route: undefined }
+            }
+            return { activityChrome: next }
+        })
+    },
+
     setPageChromeConfig: (config, ownerId) => {
+        if (!ownerId) return
         set(state => ({
-            pageChrome: { config, ownerId },
-            resolvedConfig: resolveLayoutChromeConfig(
-                state.routeChrome.config,
-                config
+            activityChrome: updateActivityChrome(
+                state.activityChrome,
+                ownerId,
+                slot => ({ ...slot, page: config })
             )
         }))
     },
 
     clearPageChromeConfig: ownerId => {
+        if (!ownerId) return
         set(state => {
-            if (!isSameOwner(state.pageChrome, ownerId)) return state
-            return {
-                pageChrome: {},
-                resolvedConfig: resolveLayoutChromeConfig(
-                    state.routeChrome.config
-                )
+            const slot = state.activityChrome[ownerId]
+            if (!slot) return state
+            const next = { ...state.activityChrome }
+            if (!slot.route) {
+                delete next[ownerId]
+            } else {
+                next[ownerId] = { ...slot, page: undefined }
             }
+            return { activityChrome: next }
         })
     },
 
-    resetLayoutChromeConfig: () => {
-        set({
-            routeChrome: {},
-            pageChrome: {},
-            resolvedConfig: resolveLayoutChromeConfig()
-        })
-    }
+    resetLayoutChromeConfig: () => set({ activityChrome: {} })
 }))

@@ -3,12 +3,16 @@ import { Header, BottomNavigation } from '@/components'
 import { useEffect, useLayoutEffect, useMemo, type ReactNode } from 'react'
 import { useAuthStore } from '@/store'
 import { useAppBootstrap } from '@/contexts'
-import { useLayoutChromeStore } from '@/store/layoutChromeStore'
+import {
+    resolveLayoutChromeConfig,
+    useLayoutChromeStore
+} from '@/store/layoutChromeStore'
 import {
     resolveRouteChromeConfig,
     routeChromeConfigEntries
 } from '@/routes/pageChromeConfig'
 import { useNavigationActivityContext } from '@/navigation/NavigationActivityContext'
+
 type LayoutProps = {
     children: ReactNode
     showBottomNavigation?: boolean
@@ -17,13 +21,16 @@ type LayoutProps = {
 export function Layout({ children, showBottomNavigation = true }: LayoutProps) {
     const location = useLocation()
     const activity = useNavigationActivityContext()
+    const activityId = activity?.activityId
     const setRouteChromeConfig = useLayoutChromeStore(
         state => state.setRouteChromeConfig
     )
-    const { content, bottomNav } = useLayoutChromeStore(
-        state => state.resolvedConfig
+    const clearRouteChromeConfig = useLayoutChromeStore(
+        state => state.clearRouteChromeConfig
     )
-    const isBottomNavigationVisible = showBottomNavigation && bottomNav.visible
+    const activityChrome = useLayoutChromeStore(state =>
+        activityId ? state.activityChrome[activityId] : undefined
+    )
     const routeChromeConfig = useMemo(() => {
         const entry = routeChromeConfigEntries.find(config =>
             matchPath(
@@ -36,29 +43,44 @@ export function Layout({ children, showBottomNavigation = true }: LayoutProps) {
     }, [location])
 
     useLayoutEffect(() => {
-        if (!activity?.isTop) return
-        setRouteChromeConfig(routeChromeConfig, activity.activityId)
+        if (!activityId) return
+        setRouteChromeConfig(routeChromeConfig, activityId)
+
+        return () => {
+            clearRouteChromeConfig(activityId)
+        }
     }, [
-        activity?.activityId,
-        activity?.isTop,
+        activityId,
+        clearRouteChromeConfig,
         routeChromeConfig,
         setRouteChromeConfig
     ])
 
-    const mainClassName = content.fullBleed
+    const chrome = useMemo(
+        () =>
+            resolveLayoutChromeConfig(
+                routeChromeConfig,
+                activityChrome?.page
+            ),
+        [activityChrome?.page, routeChromeConfig]
+    )
+    const isBottomNavigationVisible = showBottomNavigation && chrome.bottomNav.visible
+    const mainClassName = chrome.content.fullBleed
         ? 'relative min-h-0 flex-1 overflow-hidden'
         : [
               'relative min-h-0 flex-1 overflow-x-hidden px-20',
-              content.scrollable ? 'overflow-y-auto' : 'overflow-y-hidden',
-              content.bottomInset && isBottomNavigationVisible ? 'pb-90' : ''
+              chrome.content.scrollable ? 'overflow-y-auto' : 'overflow-y-hidden',
+              chrome.content.bottomInset && isBottomNavigationVisible ? 'pb-90' : ''
           ].join(' ')
 
     return (
         <ProfileBootstrap>
             <div className="bg-gray-1 relative flex h-screen min-h-screen w-screen min-w-screen flex-col overflow-hidden">
-                <Header />
+                <Header config={chrome.header} />
                 <main className={mainClassName}>{children}</main>
-                {isBottomNavigationVisible ? <BottomNavigation /> : null}
+                {isBottomNavigationVisible ? (
+                    <BottomNavigation config={chrome.bottomNav} />
+                ) : null}
             </div>
         </ProfileBootstrap>
     )

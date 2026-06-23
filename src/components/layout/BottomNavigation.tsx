@@ -5,7 +5,7 @@ import {
     useTabNavigation,
     type TabRootPath
 } from '@/navigation/useTabNavigation'
-import { useLayoutChromeStore } from '@/store/layoutChromeStore'
+import type { BottomNavConfig } from '@/store/layoutChromeStore'
 import { BOTTOM_NAVIGATION_HEIGHT } from '@/constants/bottomNav'
 
 interface BottomNavigationProps {
@@ -14,16 +14,15 @@ interface BottomNavigationProps {
         label: string
         icon: ElementType
     }>
+    config?: BottomNavConfig
 }
-export function BottomNavigation({ items }: BottomNavigationProps) {
+export function BottomNavigation({ items, config }: BottomNavigationProps) {
     const location = useLocation()
-    const bottomNavConfig = useLayoutChromeStore(
-        state => state.resolvedConfig.bottomNav
-    )
-    const finalItems = items || bottomNavConfig.items || []
+    const finalConfig: BottomNavConfig = config ?? { visible: true, items: [] }
+    const finalItems = items || finalConfig.items || []
     const navigateTab = useTabNavigation()
 
-    if (!bottomNavConfig.visible) return null
+    if (!finalConfig.visible) return null
 
     const tabRoutes: Record<string, string[]> = {
         '/home': ['/home', '/search-restaurant', '/noti', '/upload', '/post'],
