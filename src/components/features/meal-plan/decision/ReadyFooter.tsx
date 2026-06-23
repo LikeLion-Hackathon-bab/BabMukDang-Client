@@ -26,7 +26,10 @@ export function ReadyFooter({
     actionLabel = '함께 보기',
     actionPosition = 'left',
     onToggleReady,
-    isTogglePending = false
+    isTogglePending = false,
+    onPrimaryAction,
+    primaryLabel,
+    primaryDisabled = false
 }: {
     mealPlanId: string
     isSelfReady: boolean
@@ -40,18 +43,25 @@ export function ReadyFooter({
     actionPosition?: 'left' | 'right'
     onToggleReady?: () => void
     isTogglePending?: boolean
+    onPrimaryAction?: () => void
+    primaryLabel?: string
+    primaryDisabled?: boolean
 }) {
     const { mutate: ready, isPending: readyPending } = useReadyMealPlan()
     const { mutate: unready, isPending: unreadyPending } = useUnreadyMealPlan()
     const isLocked = status ? lockedStatuses.includes(status) : false
-    const disabled =
-        readyPending ||
-        unreadyPending ||
-        isTogglePending ||
-        isLocked ||
-        !canReady
+    const isCustomPrimaryAction = Boolean(onPrimaryAction)
+    const disabled = isCustomPrimaryAction
+        ? primaryDisabled
+        : readyPending ||
+          unreadyPending ||
+          isTogglePending ||
+          isLocked ||
+          !canReady
     const text =
-        label ?? (isSelfReady ? 'Ready 취소' : '내 표 다 했어요 (Ready)')
+        primaryLabel ??
+        label ??
+        (isSelfReady ? 'Ready 취소' : '내 표 다 했어요 (Ready)')
     const actionButton = onFriends ? (
         <button
             type="button"
@@ -97,19 +107,30 @@ export function ReadyFooter({
             <button
                 type="button"
                 disabled={disabled}
-                onClick={() =>
-                    onToggleReady
-                        ? onToggleReady()
-                        : isSelfReady
-                          ? unready(mealPlanId)
-                          : ready(mealPlanId)
-                }
+                onClick={() => {
+                    if (onPrimaryAction) {
+                        onPrimaryAction()
+                        return
+                    }
+
+                    if (onToggleReady) {
+                        onToggleReady()
+                        return
+                    }
+
+                    if (isSelfReady) {
+                        unready(mealPlanId)
+                        return
+                    }
+
+                    ready(mealPlanId)
+                }}
                 style={{
                     flex: 1,
                     height: 48,
                     borderRadius: 9999,
                     border: 'none',
-                    background: isSelfReady
+                    background: isCustomPrimaryAction || isSelfReady
                         ? 'var(--color-primary-main)'
                         : 'var(--color-gray-8)',
                     color: '#fff',

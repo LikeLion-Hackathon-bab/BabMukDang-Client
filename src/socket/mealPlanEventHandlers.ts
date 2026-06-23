@@ -18,6 +18,10 @@ export function createMealPlanEventHandlers(
             payload: MealPlanServerPayload<'mealPlan:participant:ready'>
         ) => actions.applyParticipantReady(payload),
 
+        'mealPlan:participant:unready': (
+            payload: MealPlanServerPayload<'mealPlan:participant:unready'>
+        ) => actions.applyParticipantUnready(payload),
+
         'mealPlan:status:changed': (
             payload: MealPlanServerPayload<'mealPlan:status:changed'>
         ) => actions.applyStatusChanged(payload),

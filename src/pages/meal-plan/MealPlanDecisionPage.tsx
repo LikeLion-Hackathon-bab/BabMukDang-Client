@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { SocketProvider } from '@/contexts/SocketContext'
+import { useNavigate } from '@/navigation'
 import { MealPlanShareSheet } from '@/components/features/meal-plan'
 import {
+    DecisionSessionProvider,
     ReadyFooter,
     StageBoard,
     useDecisionPageData,
@@ -12,19 +13,25 @@ import {
 
 export function MealPlanDecisionPage() {
     return (
-        <SocketProvider>
+        <DecisionSessionProvider>
             <MealPlanDecisionBoard />
-        </SocketProvider>
+        </DecisionSessionProvider>
     )
 }
 
 function MealPlanDecisionBoard() {
     const [shareOpen, setShareOpen] = useState(false)
-    const { mealPlanId, mealPlan, permissions, isSelfReady, status } =
+    const navigate = useNavigate()
+    const { mealPlanId, mealPlan, permissions, isSelfReady, status, isOwner } =
         useDecisionPageData()
     const { stages, participants, readyCount, participantCount } =
         useDecisionStages()
     const title = mealPlanTitle(mealPlan?.title)
+    const allParticipantsReady =
+        participantCount > 0 && readyCount === participantCount && status === 'READY'
+    const canConfirm =
+        isOwner && allParticipantsReady && Boolean(permissions?.canConfirmMealPlan)
+
     useMealPlanDecisionChrome({ mealPlanId, title })
 
     return (
@@ -42,6 +49,15 @@ function MealPlanDecisionBoard() {
                 status={status}
                 canReady={permissions?.canReadyMealPlan}
                 label={isSelfReady ? 'Ready 취소' : '내 몫 다 정했어요 (Ready)'}
+                onPrimaryAction={
+                    canConfirm
+                        ? () =>
+                              navigate(
+                                  `/meal-plans/${mealPlanId}/decision/final`
+                              )
+                        : undefined
+                }
+                primaryLabel={canConfirm ? '최종 확정하기' : undefined}
                 onFriends={() => setShareOpen(true)}
                 friendsActive={shareOpen}
                 actionIcon="send"
