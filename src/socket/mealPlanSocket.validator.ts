@@ -39,6 +39,12 @@ export const MealPlanSocketServerEventSchemas = {
         readyCount: z.number().int().min(0),
         participantCount: z.number().int().min(0)
     }),
+    'mealPlan:participant:unready': z.object({
+        mealPlanId: z.string().uuid(),
+        participantId: z.string().uuid(),
+        readyCount: z.number().int().min(0),
+        participantCount: z.number().int().min(0)
+    }),
     'mealPlan:status:changed': z.object({
         mealPlanId: z.string().uuid(),
         status: z.string().min(1),

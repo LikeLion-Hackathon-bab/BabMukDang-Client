@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { SocketProvider } from '@/contexts/SocketContext'
+import { useParams } from '@/navigation'
 import {
     AreaRegisterSheet,
     AreaVotePanel,
     DateRegisterSheet,
     DateVotePanel,
+    DecisionSessionProvider,
     DecisionShell,
     FriendVotesSheet,
     Glyph,
@@ -30,11 +31,30 @@ const STAGE_TYPE: Record<StageKey, MealPlanDecisionStageType> = {
 }
 
 function StageVoteContent({ stageKey }: { stageKey: StageKey }) {
-    const { mealPlanId, mealPlan, permissions } = useDecisionPageData()
+    const {
+        mealPlanId,
+        mealPlan,
+        permissions,
+        isGuest,
+        shareLinkToken
+    } = useDecisionPageData()
     const decision = useDecisionStages()
-    const stage = decision.stages.find(s => s.key === stageKey)!
     const [sheetOpen, setSheetOpen] = useState(false)
     const [showFriends, setShowFriends] = useState(false)
+    const stage = decision.stages.find(s => s.key === stageKey)
+
+    if (!stage) {
+        return (
+            <div className="text-gray-5 py-40 text-center">
+                투표 단계를 불러오는 중입니다.
+            </div>
+        )
+    }
+
+    const stagePathFor = (key: StageKey) =>
+        isGuest && shareLinkToken
+            ? `/meal-plan-links/${shareLinkToken}/session/decision/${key}`
+            : `/meal-plans/${mealPlanId}/decision/${key}`
     const canVote = permissions?.canVote ?? false
     const provisionalArea = decision.provisionalByKey.area
     const provisionalMenu = decision.provisionalByKey.menu
@@ -152,6 +172,8 @@ function StageVoteContent({ stageKey }: { stageKey: StageKey }) {
                 sub={`${decision.participantCount}명`}
                 active={stageKey}
                 states={decision.statesByKey}
+                stagePathFor={stagePathFor}
+                showChat={!isGuest}
                 rightActions={
                     <button
                         type="button"
@@ -180,10 +202,31 @@ function StageVoteContent({ stageKey }: { stageKey: StageKey }) {
 
 function StageVotePage({ stageKey }: { stageKey: StageKey }) {
     return (
-        <SocketProvider>
+        <DecisionSessionProvider>
             <StageVoteContent stageKey={stageKey} />
-        </SocketProvider>
+        </DecisionSessionProvider>
     )
+}
+
+const isStageKey = (value: string | undefined): value is StageKey =>
+    value === 'date' ||
+    value === 'time' ||
+    value === 'area' ||
+    value === 'menu' ||
+    value === 'restaurant'
+
+export function MealPlanGuestStageVotePage() {
+    const { stageKey } = useParams<{ stageKey: string }>()
+
+    if (!isStageKey(stageKey)) {
+        return (
+            <div className="text-gray-5 py-40 text-center">
+                존재하지 않는 투표 단계입니다.
+            </div>
+        )
+    }
+
+    return <StageVotePage stageKey={stageKey} />
 }
 
 export const MealPlanDateVotePage = () => <StageVotePage stageKey="date" />

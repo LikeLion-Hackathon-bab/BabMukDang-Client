@@ -22,7 +22,8 @@ export function useTabNavigation() {
         (targetPath: TabRootPath | string) => {
             if (
                 !isTabRootPath(targetPath) &&
-                !targetPath.startsWith('/meal-plans/')
+                !targetPath.startsWith('/meal-plans/') &&
+                !targetPath.startsWith('/meal-plan-links/')
             ) {
                 throw new Error(`INVALID_TAB_ROOT_PATH:${targetPath}`)
             }

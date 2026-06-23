@@ -1,7 +1,7 @@
 /**
  * Derives the redesign's stage/candidate view-model from the live store
  * (`decisionStages`, `participants`, `current`). Pure selectors — no fetching;
- * the page wraps everything in SocketProvider + useMealPlanDetail already.
+ * DecisionSessionProvider hydrates the store and keeps the socket lifecycle separate.
  */
 import { useMemo } from 'react'
 import { getMealPlanDecisionCandidateKey, MealPlanDecisionCandidateSchema } from '@kimdaegyu/babmukdang-shared/domain'
@@ -15,6 +15,7 @@ import type {
 import { useMealPlanStore } from '@/store'
 import { useAuthStore } from '@/store/authStore'
 import type { AvatarPerson, VoteState } from './atoms'
+import { useDecisionPageData } from './useDecisionPageData'
 
 export type StageKey = 'date' | 'time' | 'area' | 'menu' | 'restaurant'
 export type BoardState = 'decided' | 'live' | 'open' | 'locked'
@@ -148,7 +149,7 @@ function votePerson(
 function buildCandidates(
     stage: MealPlanDecisionStageResponse,
     participants: MealPlanParticipantResponse[],
-    viewerId: string | null
+    viewer: { memberId: string | null; guestId: string | null }
 ): CandidateView[] {
     const lookup = buildVoterLookup(participants)
     const selectedKey = stage.selectedCandidate
@@ -173,7 +174,10 @@ function buildCandidates(
             .filter((x): x is AvatarPerson => x !== null)
 
         const myVotes = votes.filter(
-            v => v.voterId != null && String(v.voterId) === viewerId
+            vote =>
+                (vote.voterId != null &&
+                    String(vote.voterId) === viewer.memberId) ||
+                (vote.guestId != null && vote.guestId === viewer.guestId)
         )
         const myState: VoteState = myVotes.some(v => v.voteType === 'EXCLUDE')
             ? 'excluded'
@@ -224,6 +228,7 @@ export function useDecisionStages(): DecisionView {
     const readyCount = useMealPlanStore(state => state.readyCount)
     const participantCount = useMealPlanStore(state => state.participantCount)
     const viewerId = useAuthStore(state => state.userId)
+    const { guestId } = useDecisionPageData()
     const decisionProgress = useMealPlanStore(state => state.decisionProgress)
 
     return useMemo(() => {
@@ -259,7 +264,10 @@ export function useDecisionStages(): DecisionView {
         const stages: StageView[] = STAGE_DEFS.map(def => {
             const stage = stageByType.get(def.type)
             const candidates = stage
-                ? buildCandidates(stage, activeParticipants, viewerId)
+                ? buildCandidates(stage, activeParticipants, {
+                      memberId: viewerId,
+                      guestId
+                  })
                 : []
             const selectedLabel =
                 selectedLabelByKey[def.key] ??

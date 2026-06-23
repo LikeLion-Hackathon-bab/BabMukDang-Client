@@ -2,7 +2,6 @@
  * Decision entry — status board. Shows all five stages at once as a 2-column
  * grid; stages progress independently. Tapping a tile routes into that stage.
  */
-import { useTabNavigation } from '@/navigation/useTabNavigation'
 import { Card, ReadyMeter, type AvatarPerson } from './atoms'
 import { CheckGlyph, Glyph, LockGlyph, type GlyphName } from './glyphs'
 import {
@@ -22,10 +21,10 @@ const STAGE_ICON: Record<StageKey, GlyphName> = {
 
 function StageTile({
     stage,
-    mealPlanId
+    stagePathFor
 }: {
     stage: StageView
-    mealPlanId: string
+    stagePathFor: (stageKey: StageKey) => string
 }) {
     const navigate = useNavigate()
     const s: BoardState = stage.boardState
@@ -38,9 +37,7 @@ function StageTile({
         <button
             type="button"
             disabled={locked}
-            onClick={() =>
-                navigate(`/meal-plans/${mealPlanId}/decision/${stage.key}`)
-            }
+            onClick={() => navigate(stagePathFor(stage.key))}
             style={{
                 width: 'calc(50% - 5px)',
                 textAlign: 'left',
@@ -223,13 +220,17 @@ export function StageBoard({
     stages,
     readyCount,
     participantCount,
-    participants
+    participants,
+    stagePathFor = stageKey => `/meal-plans/${mealPlanId}/decision/${stageKey}`,
+    finalPath = `/meal-plans/${mealPlanId}/decision/final`
 }: {
     mealPlanId: string
     stages: StageView[]
     readyCount: number
     participantCount: number
     participants: AvatarPerson[]
+    stagePathFor?: (stageKey: StageKey) => string
+    finalPath?: string | null
 }) {
     const navigate = useNavigate()
     const liveStages = stages.filter(s => s.boardState === 'live')
@@ -279,16 +280,14 @@ export function StageBoard({
                     <StageTile
                         key={stage.key}
                         stage={stage}
-                        mealPlanId={mealPlanId}
+                        stagePathFor={stagePathFor}
                     />
                 ))}
             </div>
-            {allDecided && (
+            {allDecided && finalPath && (
                 <button
                     type="button"
-                    onClick={() =>
-                        navigate(`/meal-plans/${mealPlanId}/decision/final`)
-                    }
+                    onClick={() => navigate(finalPath)}
                     style={{
                         height: 48,
                         borderRadius: 9999,

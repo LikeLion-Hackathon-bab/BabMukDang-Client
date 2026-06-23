@@ -91,6 +91,26 @@ export const appActivityDefinitions = {
             'MealPlanGuestSessionPage'
         )
     }),
+    MealPlanGuestDecisionActivity: activity({
+        path: '/meal-plan-links/:token/session/decision',
+        access: 'guest',
+        layout: 'register',
+        parentPath: params => `/meal-plan-links/${params.token ?? ''}/session`,
+        component: lazyNamed(
+            () => import('@/pages/meal-plan/MealPlanGuestSessionPage'),
+            'MealPlanGuestSessionPage'
+        )
+    }),
+    MealPlanGuestDecisionStageActivity: activity({
+        path: '/meal-plan-links/:token/session/decision/:stageKey',
+        access: 'guest',
+        layout: 'register',
+        parentPath: params => `/meal-plan-links/${params.token ?? ''}/session`,
+        component: lazyNamed(
+            () => import('@/pages/meal-plan/MealPlanStageVotePage'),
+            'MealPlanGuestStageVotePage'
+        )
+    }),
     HomeActivity: activity({
         path: '/home',
         access: 'authenticated',

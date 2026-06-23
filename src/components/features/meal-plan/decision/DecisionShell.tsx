@@ -107,7 +107,10 @@ export function DecisionShell({
     states,
     children,
     footer,
-    rightActions
+    rightActions,
+    stagePathFor,
+    showChat = true,
+    chatPath
 }: {
     mealPlanId: string
     title: string
@@ -117,8 +120,17 @@ export function DecisionShell({
     children: ReactNode
     footer?: ReactNode
     rightActions?: ReactNode
+    stagePathFor?: (stageKey: StageKey) => string
+    showChat?: boolean
+    chatPath?: string
 }) {
-    useMealPlanDecisionChrome({ mealPlanId, title, rightActions })
+    useMealPlanDecisionChrome({
+        mealPlanId,
+        title,
+        rightActions,
+        showChat,
+        chatPath
+    })
 
     return (
         <div
@@ -128,6 +140,7 @@ export function DecisionShell({
                 mealPlanId={mealPlanId}
                 active={active}
                 states={states}
+                stagePathFor={stagePathFor}
             />
             <div
                 style={{

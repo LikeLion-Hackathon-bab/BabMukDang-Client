@@ -57,6 +57,35 @@ const invalidateMealPlanQueries = (
     }
 }
 
+const trimTrailingSlash = (value: string): string => value.replace(/\/+$/, '')
+
+const getFrontendOrigin = (): string => {
+    const configured = import.meta.env.VITE_FRONTEND_DOMAIN
+    if (typeof configured === 'string' && configured.trim().length > 0) {
+        return trimTrailingSlash(configured.trim())
+    }
+
+    if (typeof window !== 'undefined' && window.location.origin) {
+        return trimTrailingSlash(window.location.origin)
+    }
+
+    return ''
+}
+
+const getGuestJoinUrl = (token: string, fallbackUrl: string): string => {
+    const frontendOrigin = getFrontendOrigin()
+    if (!frontendOrigin) return fallbackUrl
+
+    return `${frontendOrigin}/meal-plan-links/${token}/join`
+}
+
+const mapShareLinkSummary = (
+    summary: MealPlanShareLinkSummary
+): MealPlanShareLinkSummary => ({
+    ...summary,
+    url: getGuestJoinUrl(summary.token, summary.url)
+})
+
 export const mealPlanApi = {
     create: async (
         body: CreateMealPlanRequest
@@ -201,10 +230,14 @@ export const mealPlanApi = {
         mealPlanId: string
         body: CreateMealPlanShareLinkRequest
     }): Promise<MealPlanShareLinkSummary> => {
-        return contractClient.post(apiContract.mealPlans.createShareLink, {
+        const summary = await contractClient.post(
+            apiContract.mealPlans.createShareLink,
+            {
             pathParams: { mealPlanId: domainId.mealPlan(mealPlanId) },
             body
-        })
+            }
+        )
+        return mapShareLinkSummary(summary)
     },
 
     getSharePreview: async (
@@ -436,14 +469,22 @@ export const useMealMap = (query: MealMapQuery = { friendRecordDays: 7 }) =>
         queryFn: () => mealPlanApi.getMap(query)
     })
 
+type MealPlanQueryOptions = {
+    enabled?: boolean
+    staleTime?: number
+    refetchOnMount?: boolean
+}
+
 export const useMealPlanDetail = (
     mealPlanId: string,
-    options?: { enabled?: boolean }
+    options?: MealPlanQueryOptions
 ) => {
     const { data, isLoading, error, refetch } = useQuery({
         queryKey: queryKeys.mealPlans.detail(mealPlanId),
         queryFn: () => mealPlanApi.getDetail(mealPlanId),
-        enabled: (options?.enabled ?? true) && mealPlanId.length > 0
+        enabled: (options?.enabled ?? true) && mealPlanId.length > 0,
+        staleTime: options?.staleTime,
+        refetchOnMount: options?.refetchOnMount
     })
     return { data, isLoading, error, refetch }
 }
@@ -516,7 +557,7 @@ export const useMealPlanSharePreview = (
 export const useMealPlanGuestSession = (
     token: string,
     sessionToken: string | null,
-    options?: { enabled?: boolean }
+    options?: MealPlanQueryOptions
 ) =>
     useQuery({
         queryKey: queryKeys.mealPlans.guestSession(token, sessionToken),
@@ -528,7 +569,9 @@ export const useMealPlanGuestSession = (
         enabled:
             (options?.enabled ?? true) &&
             token.length > 0 &&
-            Boolean(sessionToken)
+            Boolean(sessionToken),
+        staleTime: options?.staleTime,
+        refetchOnMount: options?.refetchOnMount
     })
 
 export const useCreateMealPlan = (

@@ -7,12 +7,14 @@ export function useMealPlanDecisionChrome({
     mealPlanId,
     title,
     showChat = true,
-    rightActions
+    rightActions,
+    chatPath
 }: {
     mealPlanId: string
     title: string
     showChat?: boolean
     rightActions?: ReactNode
+    chatPath?: string
 }) {
     const navigate = useNavigate()
     const right = useMemo(() => {
@@ -27,7 +29,10 @@ export function useMealPlanDecisionChrome({
                     <button
                         type="button"
                         onClick={() =>
-                            navigate(`/meal-plans/${mealPlanId}/decision/chat`)
+                            navigate(
+                                chatPath ??
+                                    `/meal-plans/${mealPlanId}/decision/chat`
+                            )
                         }
                         className="text-gray-7 grid h-34 w-34 place-items-center rounded-full bg-white"
                         aria-label="밥약 채팅">
@@ -36,7 +41,7 @@ export function useMealPlanDecisionChrome({
                 )}
             </div>
         )
-    }, [mealPlanId, navigate, rightActions, showChat])
+    }, [chatPath, mealPlanId, navigate, rightActions, showChat])
 
     const pageChromeConfig = useMemo(
         () => ({

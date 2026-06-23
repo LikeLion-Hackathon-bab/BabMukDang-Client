@@ -41,6 +41,12 @@ export type MealPlanServerToClientEvents = {
         readyCount: number
         participantCount: number
     }) => void
+    'mealPlan:participant:unready': (payload: {
+        mealPlanId: string
+        participantId: string
+        readyCount: number
+        participantCount: number
+    }) => void
     'mealPlan:status:changed': (payload: {
         mealPlanId: string
         status: MealPlanStatus

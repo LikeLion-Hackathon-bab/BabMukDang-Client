@@ -16,11 +16,13 @@ const DOT: Record<BoardState, string> = {
 export function StageSwitcher({
     mealPlanId,
     active,
-    states
+    states,
+    stagePathFor = stageKey => `/meal-plans/${mealPlanId}/decision/${stageKey}`
 }: {
     mealPlanId: string
     active: StageKey
     states: Record<StageKey, BoardState>
+    stagePathFor?: (stageKey: StageKey) => string
 }) {
     const navigateTab = useTabNavigation()
     return (
@@ -44,11 +46,7 @@ export function StageSwitcher({
                             key={def.key}
                             type="button"
                             disabled={locked}
-                            onClick={() =>
-                                navigateTab(
-                                    `/meal-plans/${mealPlanId}/decision/${def.key}`
-                                )
-                            }
+                            onClick={() => navigateTab(stagePathFor(def.key))}
                             className="inline-flex items-center"
                             style={{
                                 gap: 6,
