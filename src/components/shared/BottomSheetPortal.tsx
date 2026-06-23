@@ -58,7 +58,7 @@ export function BottomSheetPortal({
 }: BottomSheetPortalProps) {
     const [mounted, setMounted] = useState(open || persistent)
     const [portalNode, setPortalNode] = useState<HTMLElement | null>(null)
-    const hasOpenedRef = useRef(false)
+    const wasOpenRef = useRef(false)
     const isClosingRef = useRef(false)
     const closeTimerRef = useRef<number | null>(null)
     const animationFrameRef = useRef<number | null>(null)
@@ -153,13 +153,15 @@ export function BottomSheetPortal({
     ])
 
     useEffect(() => {
+        const didCloseFromOpen = wasOpenRef.current && !isOpen
+        wasOpenRef.current = isOpen
+
         if (isOpen) {
-            hasOpenedRef.current = true
             isClosingRef.current = false
             return
         }
 
-        if (!open || !hasOpenedRef.current || isDragging) return
+        if (!open || !didCloseFromOpen || isDragging) return
 
         requestClose()
     }, [isDragging, isOpen, open, requestClose])

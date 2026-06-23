@@ -34,6 +34,8 @@ const clamp = (value: number, min: number, max: number) =>
 
 const isInteractiveTarget = (target: EventTarget | null) => {
     if (!(target instanceof Element)) return false
+    if (target.closest('[data-sheet-drag-handle]')) return false
+
     return !!target.closest(
         'input, textarea, select, button, a, label, [contenteditable="true"], [data-no-drag], .no-drag'
     )

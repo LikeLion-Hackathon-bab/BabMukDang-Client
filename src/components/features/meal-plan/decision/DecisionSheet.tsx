@@ -48,10 +48,20 @@ export function DecisionSheet({
                 maxHeight: '86%',
                 overflow: 'hidden'
             }}>
-            <button
-                type="button"
+            <div
+                role="button"
+                tabIndex={0}
+                data-sheet-drag-handle
                 onClick={() => {
                     if (!open) onOpen?.()
+                }}
+                onKeyDown={event => {
+                    if (open || (event.key !== 'Enter' && event.key !== ' ')) {
+                        return
+                    }
+
+                    event.preventDefault()
+                    onOpen?.()
                 }}
                 aria-label={`${title} 열기`}
                 style={{
@@ -62,8 +72,6 @@ export function DecisionSheet({
                     cursor: open ? 'grab' : 'pointer',
                     touchAction: 'none',
                     userSelect: 'none',
-                    border: 'none',
-                    background: 'transparent',
                     padding: 0,
                     textAlign: 'left'
                 }}>
@@ -98,7 +106,7 @@ export function DecisionSheet({
                         </div>
                     )}
                 </div>
-            </button>
+            </div>
             <div
                 className="no-drag"
                 style={{
