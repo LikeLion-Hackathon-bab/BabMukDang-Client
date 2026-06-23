@@ -12,7 +12,6 @@ import type {
     CreateMealPlanJoinRequest,
     CreateMealPlanRequest,
     CreateMealPlanShareLinkRequest,
-    CreateMealPlanVoteRequest,
     ExposeMealPlanToNearbyFriendsRequest,
     ExposeMealPlanToNearbyFriendsResponse,
     HomeMealPlanDashboardResponse,
@@ -23,7 +22,6 @@ import type {
     MealPlanChatMessageListResponse,
     MealPlanDecisionProgress,
     MealPlanDecisionTaskKey,
-    MealPlanDecisionTaskReadyRequest,
     MealPlanInviteListResponse,
     MealPlanGuestSessionResponse,
     MealPlanResponse,
@@ -302,24 +300,6 @@ export const mealPlanApi = {
         })
     },
 
-    vote: async ({
-        mealPlanId,
-        stageId,
-        body
-    }: {
-        mealPlanId: string
-        stageId: string
-        body: CreateMealPlanVoteRequest
-    }): Promise<MealPlanResponse> => {
-        return contractClient.post(apiContract.mealPlans.vote, {
-            pathParams: {
-                mealPlanId: domainId.mealPlan(mealPlanId),
-                stageId
-            },
-            body
-        })
-    },
-
     completeStage: async ({
         mealPlanId,
         stageId,
@@ -343,21 +323,6 @@ export const mealPlanApi = {
     ): Promise<MealPlanDecisionProgress> => {
         return contractClient.get(apiContract.mealPlans.decisionProgress, {
             pathParams: { mealPlanId: domainId.mealPlan(mealPlanId) }
-        })
-    },
-
-    readyDecisionTask: async ({
-        mealPlanId,
-        taskKey,
-        body
-    }: {
-        mealPlanId: string
-        taskKey: MealPlanDecisionTaskKey
-        body: MealPlanDecisionTaskReadyRequest
-    }): Promise<MealPlanResponse> => {
-        return contractClient.post(apiContract.mealPlans.readyDecisionTask, {
-            pathParams: { mealPlanId: domainId.mealPlan(mealPlanId), taskKey },
-            body
         })
     },
 
@@ -779,15 +744,6 @@ export const useRejectMealPlanJoinRequest = (
     })
 }
 
-export const useCreateMealPlanVote = (
-    options: MutationOptions<MealPlanResponse> = {}
-) =>
-    useMealPlanMutation(
-        mealPlanApi.vote,
-        options,
-        variables => variables.mealPlanId
-    )
-
 export const useCompleteMealPlanStage = (
     options: MutationOptions<MealPlanResponse> = {}
 ) =>
@@ -809,15 +765,6 @@ export const useMealPlanDecisionProgress = (
         queryFn: () => mealPlanApi.getDecisionProgress(mealPlanId),
         enabled: (options?.enabled ?? true) && mealPlanId.length > 0
     })
-
-export const useReadyMealPlanDecisionTask = (
-    options: MutationOptions<MealPlanResponse> = {}
-) =>
-    useMealPlanMutation(
-        mealPlanApi.readyDecisionTask,
-        options,
-        variables => variables.mealPlanId
-    )
 
 export const useReopenMealPlanDecisionTask = (
     options: MutationOptions<MealPlanResponse> = {}

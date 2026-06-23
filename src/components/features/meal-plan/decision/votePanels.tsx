@@ -1,11 +1,11 @@
 /**
  * Per-stage voting bodies. Each consumes a derived StageView and casts real
- * votes via useCreateMealPlanVote. Data-shape-specific UI per the redesign:
+ * votes via useMealPlanDecisionVote. Data-shape-specific UI per the redesign:
  * date = calendar heatmap, time = slot poll, area = map + tie, menu = food cards
  * with exclude tray, restaurant = area-dependent recommendations.
  */
 import type { MealPlanDecisionCandidate } from '@kimdaegyu/babmukdang-shared/domain'
-import { useCreateMealPlanVote } from '@/apis'
+import { useMealPlanDecisionVote } from '@/socket/useMealPlanDecisionVote'
 import {
     AvatarStack,
     Card,
@@ -23,39 +23,12 @@ import type { CandidateView, StageView } from './useDecisionStages'
 type VoteFn = (candidate: MealPlanDecisionCandidate, type: 'PICK' | 'PREFER' | 'EXCLUDE') => void
 
 function useStageVote(mealPlanId: string, stage: StageView, canVote: boolean) {
-    const { mutate, isPending } = useCreateMealPlanVote()
+    const { mutate, isPending } = useMealPlanDecisionVote()
     const cast: VoteFn = (candidate, voteType) => {
         if (!stage.stageId || !canVote || isPending) return
         mutate({ mealPlanId, stageId: stage.stageId, body: { voteType, candidate } })
     }
     return { cast, isPending }
-}
-
-function AddAffordance({ label, onClick }: { label: string; onClick?: () => void }) {
-    return (
-        <button
-            type="button"
-            onClick={onClick}
-            className="flex items-center justify-center"
-            style={{
-                gap: 7,
-                padding: '13px 0',
-                borderRadius: 'var(--radius-lg)',
-                border: '1.5px dashed var(--color-primary-300)',
-                background: 'var(--color-primary-100)',
-                width: '100%'
-            }}>
-            <Glyph name="add" size={16} color="var(--color-primary-main)" />
-            <span
-                style={{
-                    fontSize: 13,
-                    fontWeight: 700,
-                    color: 'var(--color-primary-main)'
-                }}>
-                {label}
-            </span>
-        </button>
-    )
 }
 
 function EmptyHint({ children }: { children: React.ReactNode }) {
@@ -78,7 +51,6 @@ type PanelProps = {
     mealPlanId: string
     stage: StageView
     canVote: boolean
-    onAdd?: () => void
 }
 
 /* ---------- title ---------- */
@@ -112,7 +84,7 @@ export function StageTitle({ stage, desc }: { stage: string; desc: string }) {
 /* ====================================================================== */
 /*  DATE — calendar heatmap + ranked candidate days                        */
 /* ====================================================================== */
-export function DateVotePanel({ mealPlanId, stage, canVote, onAdd }: PanelProps) {
+export function DateVotePanel({ mealPlanId, stage, canVote }: PanelProps) {
     const { cast } = useStageVote(mealPlanId, stage, canVote)
     const dated = stage.candidates
         .map(c => ({
@@ -248,7 +220,6 @@ export function DateVotePanel({ mealPlanId, stage, canVote, onAdd }: PanelProps)
                     onPick={() => cast(c.candidate, 'PICK')}
                 />
             ))}
-            <AddAffordance label="날짜 후보 추가" onClick={onAdd} />
         </>
     )
 }
@@ -312,7 +283,7 @@ function CandidatePickRow({
 /* ====================================================================== */
 /*  TIME — slot poll                                                        */
 /* ====================================================================== */
-export function TimeVotePanel({ mealPlanId, stage, canVote, onAdd }: PanelProps) {
+export function TimeVotePanel({ mealPlanId, stage, canVote }: PanelProps) {
     const { cast } = useStageVote(mealPlanId, stage, canVote)
     const ranked = [...stage.candidates].sort((a, b) => b.voteCount - a.voteCount)
     const max = Math.max(1, ...stage.candidates.map(c => c.voteCount))
@@ -400,7 +371,6 @@ export function TimeVotePanel({ mealPlanId, stage, canVote, onAdd }: PanelProps)
                     )
                 })}
             </Card>
-            <AddAffordance label="시간대 추가" onClick={onAdd} />
         </>
     )
 }
@@ -412,7 +382,6 @@ export function AreaVotePanel({
     mealPlanId,
     stage,
     canVote,
-    onAdd,
     mapSlot
 }: PanelProps & { mapSlot?: React.ReactNode }) {
     const { cast } = useStageVote(mealPlanId, stage, canVote)
@@ -463,7 +432,6 @@ export function AreaVotePanel({
                     onPick={() => cast(c.candidate, 'PICK')}
                 />
             ))}
-            <AddAffordance label="지역 검색해서 추가" onClick={onAdd} />
         </>
     )
 }
@@ -471,7 +439,7 @@ export function AreaVotePanel({
 /* ====================================================================== */
 /*  MENU — food cards (taste-aware) + exclude tray                         */
 /* ====================================================================== */
-export function MenuVotePanel({ mealPlanId, stage, canVote, onAdd }: PanelProps) {
+export function MenuVotePanel({ mealPlanId, stage, canVote }: PanelProps) {
     const { cast } = useStageVote(mealPlanId, stage, canVote)
     // taste-aware ordering: my-preference candidates first, then by votes
     const visible = stage.candidates
@@ -599,7 +567,6 @@ export function MenuVotePanel({ mealPlanId, stage, canVote, onAdd }: PanelProps)
                     </div>
                 </div>
             )}
-            <AddAffordance label="메뉴 후보 추가" onClick={onAdd} />
         </>
     )
 }
@@ -611,7 +578,6 @@ export function RestaurantVotePanel({
     mealPlanId,
     stage,
     canVote,
-    onAdd,
     areaName,
     menuName,
     areaDecided
@@ -747,7 +713,6 @@ export function RestaurantVotePanel({
                     </div>
                 </Card>
             ))}
-            <AddAffordance label="식당 검색해서 추가" onClick={onAdd} />
         </>
     )
 }

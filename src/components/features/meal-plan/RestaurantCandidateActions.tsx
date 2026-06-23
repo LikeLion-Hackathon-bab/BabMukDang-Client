@@ -1,9 +1,9 @@
 import { Link } from '@/navigation'
 import {
     useCompleteMealPlanStage,
-    useCreateMealPlanVote,
     type MealMapMarker
 } from '@/apis'
+import { useMealPlanDecisionVote } from '@/socket/useMealPlanDecisionVote'
 import type { MealPlanDecisionCandidate } from '@kimdaegyu/babmukdang-shared/domain'
 
 type RestaurantCandidateMarker = Extract<
@@ -36,7 +36,7 @@ export function RestaurantCandidateActions({
 }: {
     marker: MealMapMarker
 }) {
-    const { mutate: vote, isPending: isVotePending } = useCreateMealPlanVote()
+    const { mutate: vote, isPending: isVotePending } = useMealPlanDecisionVote()
     const { mutate: completeStage, isPending: isCompletePending } =
         useCompleteMealPlanStage()
 

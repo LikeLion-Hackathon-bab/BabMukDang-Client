@@ -1,4 +1,9 @@
 import { z } from 'zod'
+import {
+    MealPlanDecisionVoteSocketAckSchema,
+    MealPlanDecisionVoteSocketEvent,
+    MealPlanDecisionVoteSocketPayloadSchema
+} from '@kimdaegyu/babmukdang-shared/domain'
 
 import type {
     MealPlanClientEventName,
@@ -19,19 +24,7 @@ export const MealPlanSocketClientEventSchemas = {
     }),
     'mealPlan:participant:ready': MealPlanIdPayloadSchema,
     'mealPlan:participant:unready': MealPlanIdPayloadSchema,
-    'mealPlan:decision:vote': z.object({
-        mealPlanId: z.string().uuid(),
-        stageId: z.string().uuid(),
-        voteType: z.string().min(1),
-        candidate: z.unknown(),
-        guestSessionToken: z.string().min(1).optional()
-    }),
-    'mealPlan:decision:taskReady': z.object({
-        mealPlanId: z.string().uuid(),
-        taskKey: z.string().min(1),
-        isReady: z.boolean(),
-        guestSessionToken: z.string().min(1).optional()
-    })
+    [MealPlanDecisionVoteSocketEvent]: MealPlanDecisionVoteSocketPayloadSchema
 }
 
 export const MealPlanSocketServerEventSchemas = {
@@ -84,3 +77,6 @@ export function safeParseMealPlanServerPayload<
 
 export type ParsedMealPlanServerPayload<E extends MealPlanServerEventName> =
     MealPlanServerPayload<E>
+export function parseMealPlanDecisionVoteSocketAck(payload: unknown) {
+    return MealPlanDecisionVoteSocketAckSchema.parse(payload)
+}

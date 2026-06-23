@@ -3,7 +3,22 @@ import type {
     MealPlanClientPayload,
     MealPlanSocket
 } from './mealPlanSocket.types'
-import { parseMealPlanClientPayload } from './mealPlanSocket.validator'
+import {
+    parseMealPlanClientPayload,
+    parseMealPlanDecisionVoteSocketAck
+} from './mealPlanSocket.validator'
+import { MealPlanDecisionVoteSocketEvent } from '@kimdaegyu/babmukdang-shared/domain'
+import type { MealPlanResponse } from '@kimdaegyu/babmukdang-shared/domain'
+
+export class MealPlanSocketCommandError extends Error {
+    constructor(
+        readonly code: string,
+        message: string
+    ) {
+        super(message)
+        this.name = 'MealPlanSocketCommandError'
+    }
+}
 
 /**
  * UI가 socket event name을 직접 알지 않아도 MealPlan 실시간 명령을 보낼 수 있게 하는 얇은 adapter.
@@ -17,7 +32,7 @@ export class MealPlanSocketEmitter {
     ) {
         const parsedPayload = parseMealPlanClientPayload(event, payload)
         ;(
-            this.socket.emit as (
+            this.socket.emit as unknown as (
                 event: E,
                 payload: MealPlanClientPayload<E>
             ) => void
@@ -44,11 +59,36 @@ export class MealPlanSocketEmitter {
         this.emit('mealPlan:participant:unready', { mealPlanId })
     }
 
-    vote(payload: MealPlanClientPayload<'mealPlan:decision:vote'>) {
-        this.emit('mealPlan:decision:vote', payload)
-    }
+    async vote(
+        payload: MealPlanClientPayload<typeof MealPlanDecisionVoteSocketEvent>
+    ): Promise<MealPlanResponse> {
+        const parsedPayload = parseMealPlanClientPayload(
+            MealPlanDecisionVoteSocketEvent,
+            payload
+        )
 
-    taskReady(payload: MealPlanClientPayload<'mealPlan:decision:taskReady'>) {
-        this.emit('mealPlan:decision:taskReady', payload)
+        let rawAck: unknown
+        try {
+            rawAck = await this.socket
+                .timeout(10_000)
+                .emitWithAck(MealPlanDecisionVoteSocketEvent, parsedPayload)
+        } catch {
+            throw new Error('실시간 투표 요청이 시간 안에 완료되지 않았습니다.')
+        }
+
+        try {
+            const ack = parseMealPlanDecisionVoteSocketAck(rawAck)
+            if (!ack.ok) {
+                throw new MealPlanSocketCommandError(
+                    ack.error.code,
+                    ack.error.message
+                )
+            }
+            return ack.mealPlan
+        } catch (error) {
+            throw error instanceof Error
+                ? error
+                : new Error('실시간 투표 응답을 해석하지 못했습니다.')
+        }
     }
 }

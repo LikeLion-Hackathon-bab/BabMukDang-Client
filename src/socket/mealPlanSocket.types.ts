@@ -1,11 +1,11 @@
 import type { Socket } from 'socket.io-client'
+import { MealPlanDecisionVoteSocketEvent } from '@kimdaegyu/babmukdang-shared/domain'
 import type {
-    CreateMealPlanVoteRequest,
     MealPlanChatMessageResponse,
+    MealPlanDecisionVoteSocketAck,
+    MealPlanDecisionVoteSocketPayload,
     MealPlanDecisionProgress,
     MealPlanDecisionStageResponse,
-    MealPlanDecisionTaskKey,
-    MealPlanDecisionTaskReadyRequest,
     MealPlanParticipantResponse,
     MealPlanResponse,
     MealPlanStatus,
@@ -23,19 +23,9 @@ export type MealPlanClientToServerEvents = {
     ) => void
     'mealPlan:participant:ready': (payload: { mealPlanId: string }) => void
     'mealPlan:participant:unready': (payload: { mealPlanId: string }) => void
-    'mealPlan:decision:vote': (
-        payload: CreateMealPlanVoteRequest & {
-            mealPlanId: string
-            stageId: string
-            guestSessionToken?: string
-        }
-    ) => void
-    'mealPlan:decision:taskReady': (
-        payload: MealPlanDecisionTaskReadyRequest & {
-            mealPlanId: string
-            taskKey: MealPlanDecisionTaskKey
-            guestSessionToken?: string
-        }
+    [MealPlanDecisionVoteSocketEvent]: (
+        payload: MealPlanDecisionVoteSocketPayload,
+        acknowledgement?: (ack: MealPlanDecisionVoteSocketAck) => void
     ) => void
 }
 

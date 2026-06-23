@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useCompleteMealPlanStage } from '@/apis'
 import { useSocket } from '@/contexts/SocketContext'
+import { useMealPlanDecisionVote } from '@/socket/useMealPlanDecisionVote'
+import { getMealPlanDecisionCandidateKey } from '@kimdaegyu/babmukdang-shared/domain'
 import type {
     MealPlanDecisionCandidate,
     MealPlanDecisionStageResponse
@@ -34,8 +36,9 @@ export function MealPlanRecommendationPanel({
 }) {
     const [votedCandidateKey, setVotedCandidateKey] = useState<string | null>(null)
     const menuStage = stages.find(stage => stage.stageType === 'MENU')
-    const { mutate: completeStage, isPending } = useCompleteMealPlanStage()
-    const { commands, guestSessionToken, isConnected } = useSocket()
+    const { mutate: completeStage, isPending: isCompletePending } = useCompleteMealPlanStage()
+    const { isConnected } = useSocket()
+    const { mutate: vote, isPending: isVotePending } = useMealPlanDecisionVote()
 
     if (!menuStage) {
         return (
@@ -52,16 +55,27 @@ export function MealPlanRecommendationPanel({
         menuStage.selectedCandidate?.stageType === 'MENU'
             ? menuStage.selectedCandidate.value.menu.label
             : null
+    const candidatesByKey = new Map<string, MealPlanDecisionCandidate>()
+    for (const candidate of menuStage.candidates) {
+        const key = getMealPlanDecisionCandidateKey(candidate)
+        if (!candidatesByKey.has(key)) candidatesByKey.set(key, candidate)
+    }
+    const menuCandidates = [...candidatesByKey.values()]
 
     const voteCandidate = (candidate: MealPlanDecisionCandidate) => {
-        commands?.vote({
-            mealPlanId,
-            stageId: menuStage.stageId,
-            voteType: 'PICK',
-            candidate,
-            ...(guestSessionToken ? { guestSessionToken } : {})
-        })
-        setVotedCandidateKey(JSON.stringify(candidate))
+        vote(
+            {
+                mealPlanId,
+                stageId: menuStage.stageId,
+                body: { voteType: 'PICK', candidate }
+            },
+            {
+                onSuccess: () =>
+                    setVotedCandidateKey(
+                        getMealPlanDecisionCandidateKey(candidate)
+                    )
+            }
+        )
     }
 
     return (
@@ -80,13 +94,19 @@ export function MealPlanRecommendationPanel({
                 </div>
             )}
             <div className="flex flex-col gap-8">
-                {menuStage.candidates.map((candidate, index) => {
-                    const candidateKey = JSON.stringify(candidate)
+                {menuCandidates.map((candidate, index) => {
+                    const candidateKey = getMealPlanDecisionCandidateKey(candidate)
                     const isSelected =
-                        candidateKey === JSON.stringify(menuStage.selectedCandidate)
+                        menuStage.selectedCandidate != null &&
+                        candidateKey ===
+                            getMealPlanDecisionCandidateKey(
+                                menuStage.selectedCandidate
+                            )
                     const isVoted = votedCandidateKey === candidateKey
                     const voteCount = menuStage.votes.filter(
-                        vote => JSON.stringify(vote.candidate) === candidateKey
+                        vote =>
+                            getMealPlanDecisionCandidateKey(vote.candidate) ===
+                            candidateKey
                     ).length
                     return (
                         <button
@@ -94,8 +114,8 @@ export function MealPlanRecommendationPanel({
                             type="button"
                             disabled={
                                 interactionMode === 'vote'
-                                    ? !isConnected || isVoted || !canVote
-                                    : isPending || isSelected || !canComplete
+                                    ? !isConnected || isVoted || isVotePending || !canVote
+                                    : isCompletePending || isSelected || !canComplete
                             }
                             onClick={() =>
                                 interactionMode === 'vote'

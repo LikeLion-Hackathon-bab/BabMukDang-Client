@@ -7,9 +7,9 @@ import {
     DateVotePanel,
     DecisionShell,
     FriendVotesSheet,
+    Glyph,
     MenuRegisterSheet,
     MenuVotePanel,
-    ReadyFooter,
     RestaurantRegisterSheet,
     RestaurantVotePanel,
     TimeRegisterSheet,
@@ -30,21 +30,18 @@ const STAGE_TYPE: Record<StageKey, MealPlanDecisionStageType> = {
 }
 
 function StageVoteContent({ stageKey }: { stageKey: StageKey }) {
-    const { mealPlanId, mealPlan, permissions, isSelfReady, status } =
-        useDecisionPageData()
+    const { mealPlanId, mealPlan, permissions } = useDecisionPageData()
     const decision = useDecisionStages()
     const stage = decision.stages.find(s => s.key === stageKey)!
-    const [showRegister, setShowRegister] = useState(false)
+    const [sheetOpen, setSheetOpen] = useState(false)
     const [showFriends, setShowFriends] = useState(false)
     const canVote = permissions?.canVote ?? false
-    const openRegister = () => {
-        setShowFriends(false)
-        setShowRegister(true)
-    }
+    const provisionalArea = decision.provisionalByKey.area
+    const provisionalMenu = decision.provisionalByKey.menu
+    const hasRestaurantProvisionContext =
+        provisionalArea?.stageType === 'AREA' &&
+        provisionalMenu?.stageType === 'MENU'
 
-    const areaDecided = Boolean(
-        decision.statesByKey.area === 'decided' || mealPlan?.selectedArea
-    )
 
     const panel = (() => {
         switch (stageKey) {
@@ -54,7 +51,6 @@ function StageVoteContent({ stageKey }: { stageKey: StageKey }) {
                         mealPlanId={mealPlanId}
                         stage={stage}
                         canVote={canVote}
-                        onAdd={openRegister}
                     />
                 )
             case 'time':
@@ -63,7 +59,6 @@ function StageVoteContent({ stageKey }: { stageKey: StageKey }) {
                         mealPlanId={mealPlanId}
                         stage={stage}
                         canVote={canVote}
-                        onAdd={openRegister}
                     />
                 )
             case 'area':
@@ -72,7 +67,6 @@ function StageVoteContent({ stageKey }: { stageKey: StageKey }) {
                         mealPlanId={mealPlanId}
                         stage={stage}
                         canVote={canVote}
-                        onAdd={openRegister}
                     />
                 )
             case 'menu':
@@ -81,7 +75,6 @@ function StageVoteContent({ stageKey }: { stageKey: StageKey }) {
                         mealPlanId={mealPlanId}
                         stage={stage}
                         canVote={canVote}
-                        onAdd={openRegister}
                     />
                 )
             case 'restaurant':
@@ -90,68 +83,61 @@ function StageVoteContent({ stageKey }: { stageKey: StageKey }) {
                         mealPlanId={mealPlanId}
                         stage={stage}
                         canVote={canVote}
-                        onAdd={openRegister}
-                        areaDecided={areaDecided}
+                        areaDecided={hasRestaurantProvisionContext}
                         areaName={
-                            mealPlan?.selectedArea?.placeName ?? undefined
+                            provisionalArea?.stageType === 'AREA'
+                                ? provisionalArea.value.placeName
+                                : undefined
                         }
-                        menuName={mealPlan?.selectedMenuCategory ?? undefined}
+                        menuName={
+                            provisionalMenu?.stageType === 'MENU'
+                                ? provisionalMenu.value.menu.label
+                                : undefined
+                        }
                     />
                 )
         }
     })()
 
     const registerSheet = (() => {
-        if (!showRegister) return null
-        const close = () => setShowRegister(false)
+        const base = {
+            mealPlanId,
+            stageId: stage.stageId,
+            open: sheetOpen,
+            persistent: true,
+            onOpen: () => setSheetOpen(true),
+            onClose: () => setSheetOpen(false)
+        }
         switch (stageKey) {
             case 'date':
-                return (
-                    <DateRegisterSheet
-                        mealPlanId={mealPlanId}
-                        stageId={stage.stageId}
-                        onClose={close}
-                    />
-                )
+                return <DateRegisterSheet {...base} />
             case 'time':
-                return (
-                    <TimeRegisterSheet
-                        mealPlanId={mealPlanId}
-                        stageId={stage.stageId}
-                        onClose={close}
-                    />
-                )
+                return <TimeRegisterSheet {...base} />
             case 'area':
-                return (
-                    <AreaRegisterSheet
-                        mealPlanId={mealPlanId}
-                        stageId={stage.stageId}
-                        onClose={close}
-                    />
-                )
+                return <AreaRegisterSheet {...base} />
             case 'menu':
                 return (
                     <MenuRegisterSheet
-                        mealPlanId={mealPlanId}
-                        stageId={stage.stageId}
-                        onClose={close}
+                        {...base}
+                        stage={stage}
                     />
                 )
             case 'restaurant':
                 return (
                     <RestaurantRegisterSheet
-                        mealPlanId={mealPlanId}
-                        stageId={stage.stageId}
-                        onClose={close}
+                        {...base}
                         areaContext={
-                            mealPlan?.selectedArea
+                            provisionalArea?.stageType === 'AREA'
                                 ? {
-                                      latitude: mealPlan.selectedArea
-                                          .lat as number,
-                                      longitude: mealPlan.selectedArea
-                                          .lng as number
+                                      latitude: provisionalArea.value.lat as number,
+                                      longitude: provisionalArea.value.lng as number
                                   }
-                                : undefined
+                                : mealPlan?.selectedArea
+                                  ? {
+                                        latitude: mealPlan.selectedArea.lat as number,
+                                        longitude: mealPlan.selectedArea.lng as number
+                                    }
+                                  : undefined
                         }
                     />
                 )
@@ -166,28 +152,28 @@ function StageVoteContent({ stageKey }: { stageKey: StageKey }) {
                 sub={`${decision.participantCount}명`}
                 active={stageKey}
                 states={decision.statesByKey}
-                footer={
-                    <ReadyFooter
-                        mealPlanId={mealPlanId}
-                        isSelfReady={isSelfReady}
-                        status={status}
-                        canReady={permissions?.canReadyMealPlan}
-                        onFriends={() => {
-                            setShowRegister(false)
-                            setShowFriends(true)
-                        }}
-                        friendsActive={showFriends}
-                    />
+                rightActions={
+                    <button
+                        type="button"
+                        onClick={() => setShowFriends(true)}
+                        className="grid h-34 w-34 place-items-center rounded-full bg-white"
+                        aria-label="후보별 친구 투표">
+                        <Glyph
+                            name="people"
+                            size={21}
+                            color="var(--color-gray-7)"
+                        />
+                    </button>
                 }>
                 {panel}
             </DecisionShell>
-            {registerSheet ??
-                (showFriends ? (
-                    <FriendVotesSheet
-                        stageType={STAGE_TYPE[stageKey]}
-                        onClose={() => setShowFriends(false)}
-                    />
-                ) : null)}
+            {registerSheet}
+            {showFriends && (
+                <FriendVotesSheet
+                    stageType={STAGE_TYPE[stageKey]}
+                    onClose={() => setShowFriends(false)}
+                />
+            )}
         </>
     )
 }

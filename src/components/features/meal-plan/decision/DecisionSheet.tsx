@@ -1,8 +1,6 @@
 /**
- * Context-preserving bottom sheet built on the shared `useBottomSheet` hook.
- * The stage switcher stays visible behind a scrim; the sheet rises from the
- * bottom and can be dragged down to dismiss. Used by every register sheet and
- * the friend-votes sheet.
+ * A decision sheet may remain mounted in a collapsed state, so adding a
+ * candidate is always one drag or tap away without a separate CTA in the poll.
  */
 import { type ReactNode } from 'react'
 import { BottomSheetPortal } from '@/components/shared'
@@ -14,6 +12,9 @@ export function DecisionSheet({
     onCta,
     ctaDisabled = false,
     onClose,
+    onOpen,
+    open = true,
+    persistent = false,
     children
 }: {
     title: string
@@ -22,14 +23,21 @@ export function DecisionSheet({
     onCta?: () => void
     ctaDisabled?: boolean
     onClose: () => void
+    onOpen?: () => void
+    open?: boolean
+    persistent?: boolean
     children: ReactNode
 }) {
     return (
         <BottomSheetPortal
-            open
+            open={open}
+            persistent={persistent}
+            snapPoints={persistent ? [18, 94] : [0, 100]}
+            bottomOffset={0}
             onClose={onClose}
+            showBackdrop={open}
             style={{
-                zIndex: 1,
+                zIndex: 100,
                 background: 'var(--color-white)',
                 borderRadius: '20px 20px 0 0',
                 boxShadow: '0 -8px 30px rgba(28,28,28,0.18)',
@@ -40,15 +48,24 @@ export function DecisionSheet({
                 maxHeight: '86%',
                 overflow: 'hidden'
             }}>
-            <div
+            <button
+                type="button"
+                onClick={() => {
+                    if (!open) onOpen?.()
+                }}
+                aria-label={`${title} 열기`}
                 style={{
                     display: 'flex',
                     flexDirection: 'column',
                     gap: 12,
                     flex: 'none',
-                    cursor: 'grab',
+                    cursor: open ? 'grab' : 'pointer',
                     touchAction: 'none',
-                    userSelect: 'none'
+                    userSelect: 'none',
+                    border: 'none',
+                    background: 'transparent',
+                    padding: 0,
+                    textAlign: 'left'
                 }}>
                 <div
                     style={{
@@ -81,7 +98,7 @@ export function DecisionSheet({
                         </div>
                     )}
                 </div>
-            </div>
+            </button>
             <div
                 className="no-drag"
                 style={{

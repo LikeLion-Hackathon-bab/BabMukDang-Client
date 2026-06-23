@@ -15,12 +15,14 @@ export function DecisionAppBar({
     sub,
     mealPlanId,
     showChat = true,
+    rightActions,
     onBack
 }: {
     title: string
     sub?: string
     mealPlanId?: string
     showChat?: boolean
+    rightActions?: ReactNode
     onBack?: () => void
 }) {
     const navigate = useNavigate()
@@ -74,7 +76,8 @@ export function DecisionAppBar({
                 </div>
                 <div
                     className="flex items-center justify-end"
-                    style={{ width: 40, gap: 10 }}>
+                    style={{ minWidth: 40, gap: 10 }}>
+                    {rightActions}
                     {showChat && mealPlanId && (
                         <button
                             type="button"
@@ -103,7 +106,8 @@ export function DecisionShell({
     active,
     states,
     children,
-    footer
+    footer,
+    rightActions
 }: {
     mealPlanId: string
     title: string
@@ -112,8 +116,9 @@ export function DecisionShell({
     states: Record<StageKey, BoardState>
     children: ReactNode
     footer?: ReactNode
+    rightActions?: ReactNode
 }) {
-    useMealPlanDecisionChrome({ mealPlanId, title })
+    useMealPlanDecisionChrome({ mealPlanId, title, rightActions })
 
     return (
         <div

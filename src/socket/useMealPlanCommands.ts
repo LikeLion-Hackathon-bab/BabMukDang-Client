@@ -5,9 +5,7 @@ import type { MealPlanSocket } from './mealPlanSocket.types'
 export function useMealPlanCommands(socket: MealPlanSocket | null) {
     return useMemo(() => {
         if (!socket) return null
-
         const emitter = new MealPlanSocketEmitter(socket)
-
         return {
             join: (mealPlanId: string) => emitter.join(mealPlanId),
             leave: (mealPlanId: string) => emitter.leave(mealPlanId),
@@ -17,9 +15,7 @@ export function useMealPlanCommands(socket: MealPlanSocket | null) {
             ready: (mealPlanId: string) => emitter.ready(mealPlanId),
             unready: (mealPlanId: string) => emitter.unready(mealPlanId),
             vote: (payload: Parameters<typeof emitter.vote>[0]) =>
-                emitter.vote(payload),
-            taskReady: (payload: Parameters<typeof emitter.taskReady>[0]) =>
-                emitter.taskReady(payload)
+                emitter.vote(payload)
         }
     }, [socket])
 }

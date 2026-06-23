@@ -4,6 +4,7 @@
  * the page wraps everything in SocketProvider + useMealPlanDetail already.
  */
 import { useMemo } from 'react'
+import { getMealPlanDecisionCandidateKey, MealPlanDecisionCandidateSchema } from '@kimdaegyu/babmukdang-shared/domain'
 import type {
     MealPlanDecisionCandidate,
     MealPlanDecisionStageResponse,
@@ -84,8 +85,7 @@ export function candidateSource(
     return undefined
 }
 
-const candidateKey = (candidate: MealPlanDecisionCandidate) =>
-    JSON.stringify(candidate)
+const candidateKey = getMealPlanDecisionCandidateKey
 
 export interface CandidateView {
     key: string
@@ -155,7 +155,13 @@ function buildCandidates(
         ? candidateKey(stage.selectedCandidate)
         : null
 
-    return stage.candidates.map(candidate => {
+    const candidatesByKey = new Map<string, MealPlanDecisionCandidate>()
+    for (const candidate of stage.candidates) {
+        const key = candidateKey(candidate)
+        if (!candidatesByKey.has(key)) candidatesByKey.set(key, candidate)
+    }
+
+    return [...candidatesByKey.values()].map(candidate => {
         const key = candidateKey(candidate)
         const votes = stage.votes.filter(v => candidateKey(v.candidate) === key)
         const preferCount = votes.filter(v => v.voteType === 'PREFER').length
@@ -208,6 +214,7 @@ export interface DecisionView {
     participants: AvatarPerson[]
     readyCount: number
     participantCount: number
+    provisionalByKey: Partial<Record<StageKey, MealPlanDecisionCandidate>>
 }
 
 export function useDecisionStages(): DecisionView {
@@ -217,6 +224,7 @@ export function useDecisionStages(): DecisionView {
     const readyCount = useMealPlanStore(state => state.readyCount)
     const participantCount = useMealPlanStore(state => state.participantCount)
     const viewerId = useAuthStore(state => state.userId)
+    const decisionProgress = useMealPlanStore(state => state.decisionProgress)
 
     return useMemo(() => {
         const activeParticipants = storeParticipants.filter(p =>
@@ -225,11 +233,16 @@ export function useDecisionStages(): DecisionView {
         const stageByType = new Map(
             decisionStages.map(stage => [stage.stageType, stage])
         )
-        const areaDecided = Boolean(
-            current?.selectedArea ||
-            stageByType.get('AREA')?.selectedCandidate ||
-            stageByType.get('AREA')?.status === 'COMPLETED'
-        )
+        const provisionalByKey: Partial<
+            Record<StageKey, MealPlanDecisionCandidate>
+        > = {}
+        for (const def of STAGE_DEFS) {
+            const value = decisionProgress?.provisional?.[def.key]
+            const parsed = MealPlanDecisionCandidateSchema.safeParse(value)
+            if (parsed.success && parsed.data.stageType === def.type) {
+                provisionalByKey[def.key] = parsed.data
+            }
+        }
 
         const selectedLabelByKey: Partial<Record<StageKey, string>> = {
             date: current?.selectedDate
@@ -255,9 +268,7 @@ export function useDecisionStages(): DecisionView {
                     : undefined)
 
             let boardState: BoardState
-            if (def.key === 'restaurant' && !areaDecided) {
-                boardState = 'locked'
-            } else if (
+            if (
                 selectedLabel ||
                 stage?.status === 'COMPLETED' ||
                 stage?.selectedCandidate
@@ -297,7 +308,8 @@ export function useDecisionStages(): DecisionView {
             statesByKey,
             participants: activeParticipants.map(participantPerson),
             readyCount,
-            participantCount: participantCount || activeParticipants.length
+            participantCount: participantCount || activeParticipants.length,
+            provisionalByKey
         }
     }, [
         decisionStages,
@@ -305,6 +317,7 @@ export function useDecisionStages(): DecisionView {
         current,
         readyCount,
         participantCount,
-        viewerId
+        viewerId,
+        decisionProgress
     ])
 }
