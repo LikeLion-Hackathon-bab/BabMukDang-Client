@@ -1,11 +1,13 @@
 import { test, expect, type APIRequestContext } from '@playwright/test'
 import { io, type Socket } from 'socket.io-client'
+import { MealPlanDecisionVoteSocketEvent } from '@kimdaegyu/babmukdang-shared/domain'
 import type {
     CreateMealPlanRequest,
     CreateMealPlanResponse,
     FriendRequestItemResponse,
     LoginRequest,
     MealPlanDecisionProgress,
+    MealPlanDecisionVoteSocketAck,
     MealPlanResponse,
     SendMealPlanInviteResponse,
     SignupRequest,
@@ -192,6 +194,27 @@ function once<T>(socket: Socket, eventName: string): Promise<T> {
     })
 }
 
+
+async function emitWithAck<T>(
+    socket: Socket,
+    eventName: string,
+    payload: unknown
+): Promise<T> {
+    return new Promise((resolve, reject) => {
+        socket.timeout(SOCKET_TIMEOUT_MS).emit(
+            eventName,
+            payload,
+            (error: Error | null, acknowledgement?: T) => {
+                if (error) {
+                    reject(error)
+                    return
+                }
+                resolve(acknowledgement as T)
+            }
+        )
+    })
+}
+
 async function connectMealPlanSocket(accessToken: string): Promise<Socket> {
     const socket = io(`${BACKEND_URL}/meal-plans`, {
         transports: ['websocket'],
@@ -256,52 +279,43 @@ test.describe('MealPlan socket full-stack E2E', () => {
         }
     })
 
-    test('P0-E2E-007C vote와 taskReady가 decision update 이벤트를 broadcast한다', async ({
+    test('P0-E2E-007C vote가 decision update 이벤트를 broadcast한다', async ({
         request
     }) => {
         const alice = await createSession(request, 'socket-decision')
         const { mealPlanId } = await createMealPlan(request, alice.accessToken)
-        const detail = await getMealPlanDetail(
-            request,
-            alice.accessToken,
-            mealPlanId
-        )
+        const detail = await getMealPlanDetail(request, alice.accessToken, mealPlanId)
         const menuStage = detail.decisionStages.find(
             stage => stage.stageType === 'MENU'
         )
         expect(menuStage).toBeDefined()
         expect(menuStage!.candidates.length).toBeGreaterThan(0)
-        const menuCandidate = menuStage!.candidates[0]
 
         const socket = await connectMealPlanSocket(alice.accessToken)
         try {
             socket.emit('mealPlan:join', { mealPlanId })
             await new Promise(resolve => setTimeout(resolve, 50))
-
             const decisionPromise = once<{ mealPlanId: string }>(
                 socket,
                 'mealPlan:decision:updated'
             )
-            socket.emit('mealPlan:decision:vote', {
-                mealPlanId,
-                stageId: menuStage!.stageId,
-                voteType: 'PICK',
-                candidate: menuCandidate
-            })
-            await expect(decisionPromise).resolves.toEqual(
-                expect.objectContaining({ mealPlanId })
-            )
-
-            const progressPromise = once<{ mealPlanId: string }>(
+            const acknowledgement = await emitWithAck<MealPlanDecisionVoteSocketAck>(
                 socket,
-                'mealPlan:decision:progressUpdated'
+                MealPlanDecisionVoteSocketEvent,
+                {
+                    mealPlanId,
+                    stageId: menuStage!.stageId,
+                    voteType: 'PICK',
+                    candidate: menuStage!.candidates[0]
+                }
             )
-            socket.emit('mealPlan:decision:taskReady', {
-                mealPlanId,
-                taskKey: 'MENU_PICK',
-                isReady: true
-            })
-            await expect(progressPromise).resolves.toEqual(
+            expect(acknowledgement).toEqual(
+                expect.objectContaining({ ok: true })
+            )
+            if (acknowledgement.ok) {
+                expect(acknowledgement.mealPlan.mealPlanId).toBe(mealPlanId)
+            }
+            await expect(decisionPromise).resolves.toEqual(
                 expect.objectContaining({ mealPlanId })
             )
         } finally {
@@ -421,19 +435,31 @@ test.describe('MealPlan socket full-stack E2E', () => {
                 friendSocket,
                 'mealPlan:decision:updated'
             )
-            ownerSocket.emit('mealPlan:decision:vote', {
-                mealPlanId,
-                stageId: menuStage!.stageId,
-                voteType: 'PICK',
-                candidate: firstCandidate
-            })
-            friendSocket.emit('mealPlan:decision:vote', {
-                mealPlanId,
-                stageId: menuStage!.stageId,
-                voteType: 'PICK',
-                candidate: secondCandidate
-            })
+            const [ownerAck, friendAck] = await Promise.all([
+                emitWithAck<MealPlanDecisionVoteSocketAck>(
+                    ownerSocket,
+                    MealPlanDecisionVoteSocketEvent,
+                    {
+                        mealPlanId,
+                        stageId: menuStage!.stageId,
+                        voteType: 'PICK',
+                        candidate: firstCandidate
+                    }
+                ),
+                emitWithAck<MealPlanDecisionVoteSocketAck>(
+                    friendSocket,
+                    MealPlanDecisionVoteSocketEvent,
+                    {
+                        mealPlanId,
+                        stageId: menuStage!.stageId,
+                        voteType: 'PICK',
+                        candidate: secondCandidate
+                    }
+                )
+            ])
 
+            expect(ownerAck).toEqual(expect.objectContaining({ ok: true }))
+            expect(friendAck).toEqual(expect.objectContaining({ ok: true }))
             await expect(ownerUpdate).resolves.toEqual(
                 expect.objectContaining({ mealPlanId })
             )
@@ -446,51 +472,16 @@ test.describe('MealPlan socket full-stack E2E', () => {
         }
     })
 
-    test('CX-E2E-004 같은 taskReady가 중복 emit돼도 progress readyCount는 참여자 단위로 유지된다', async ({
+    test('CX-E2E-004 decision progress는 task-ready count 없이 snapshot 상태를 반환한다', async ({
         request
     }) => {
-        const alice = await createSession(request, 'socket-ready-idempotent')
+        const alice = await createSession(request, 'socket-progress')
         const { mealPlanId } = await createMealPlan(request, alice.accessToken)
-        const socket = await connectMealPlanSocket(alice.accessToken)
-        try {
-            socket.emit('mealPlan:join', { mealPlanId })
-            await new Promise(resolve => setTimeout(resolve, 50))
-
-            const progressUpdate = once<{ mealPlanId: string }>(
-                socket,
-                'mealPlan:decision:progressUpdated'
-            )
-            socket.emit('mealPlan:decision:taskReady', {
-                mealPlanId,
-                taskKey: 'MENU_PICK',
-                isReady: true
-            })
-            socket.emit('mealPlan:decision:taskReady', {
-                mealPlanId,
-                taskKey: 'MENU_PICK',
-                isReady: true
-            })
-
-            await expect(progressUpdate).resolves.toEqual(
-                expect.objectContaining({ mealPlanId })
-            )
-
-            const progress = await getDecisionProgress(
-                request,
-                alice.accessToken,
-                mealPlanId
-            )
-            const menuPick = progress.tasks.find(
-                task => task.taskKey === 'MENU_PICK'
-            )
-            expect(menuPick).toEqual(
-                expect.objectContaining({
-                    participantCount: 1,
-                    readyCount: 1
-                })
-            )
-        } finally {
-            socket.disconnect()
-        }
+        const progress = await getDecisionProgress(request, alice.accessToken, mealPlanId)
+        const menuPick = progress.tasks.find(task => task.taskKey === 'MENU_PICK')
+        expect(menuPick).toBeDefined()
+        expect(menuPick).not.toHaveProperty('readyCount')
+        expect(menuPick).not.toHaveProperty('participantCount')
     })
+
 })

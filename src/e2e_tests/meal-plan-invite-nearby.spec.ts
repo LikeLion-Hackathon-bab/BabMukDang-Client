@@ -171,7 +171,6 @@ test.describe('P0 MealPlan invite and nearby E2E', () => {
                             canVote: true,
                             canChat: true,
                             canReadyMealPlan: true,
-                            canReadyDecisionTask: true,
                             canRequestChange: true,
                             canReopenDecisionTask: false,
                             canConfirmDecisionSnapshot: false,

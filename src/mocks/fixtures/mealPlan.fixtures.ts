@@ -88,7 +88,6 @@ export const mockMealPlanResponse: MealPlanResponse = {
         canVote: true,
         canChat: true,
         canReadyMealPlan: true,
-        canReadyDecisionTask: true,
         canRequestChange: true,
         canReopenDecisionTask: true,
         canConfirmDecisionSnapshot: true,
@@ -97,7 +96,6 @@ export const mockMealPlanResponse: MealPlanResponse = {
         canRecordMealPlan: false,
         canCancelMealPlan: true
     },
-    viewerTaskReadyMap: {} as never,
     selectedDate: null,
     selectedTime: null,
     selectedArea: null,

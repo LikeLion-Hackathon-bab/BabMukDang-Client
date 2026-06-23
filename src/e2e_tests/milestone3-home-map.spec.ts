@@ -242,10 +242,6 @@ async function installMapMocks(page: Page) {
         await fulfillJson(route, apiSuccess([]))
     })
 
-    await page.route('**/api/v1/meal-plans/*/stages/*/votes', async route => {
-        await fulfillJson(route, apiSuccess({}))
-    })
-
     await page.route(
         '**/api/v1/meal-plans/*/stages/*/complete',
         async route => {

@@ -1,5 +1,4 @@
 import { expect, test, type Page, type Route } from '@playwright/test'
-import { createViewerTaskReadyMap } from './helpers/mealPlanFixtures'
 
 const AUTH_STORAGE_KEY = 'auth-storage'
 
@@ -227,7 +226,6 @@ async function installJoinRequestOwnerMocks(page: Page) {
                     canVote: true,
                     canChat: false,
                     canReadyMealPlan: true,
-                    canReadyDecisionTask: true,
                     canRequestChange: false,
                     canReopenDecisionTask: true,
                     canConfirmDecisionSnapshot: true,
@@ -236,7 +234,6 @@ async function installJoinRequestOwnerMocks(page: Page) {
                     canRecordMealPlan: false,
                     canCancelMealPlan: true
                 },
-                viewerTaskReadyMap: createViewerTaskReadyMap(),
                 selectedDate: null,
                 selectedTime: null,
                 selectedArea: null,
@@ -285,7 +282,6 @@ async function installJoinRequestOwnerMocks(page: Page) {
                         canVote: true,
                         canChat: false,
                         canReadyMealPlan: true,
-                        canReadyDecisionTask: true,
                         canRequestChange: false,
                         canReopenDecisionTask: true,
                         canConfirmDecisionSnapshot: true,
@@ -294,7 +290,6 @@ async function installJoinRequestOwnerMocks(page: Page) {
                         canRecordMealPlan: false,
                         canCancelMealPlan: true
                     },
-                    viewerTaskReadyMap: createViewerTaskReadyMap(),
                     selectedDate: null,
                     selectedTime: null,
                     selectedArea: null,

@@ -119,19 +119,12 @@ export const mealPlanHandlers = [
         apiSuccess(mockMealPlanResponse.decisionProgress)
     ),
     http.post(
-        `${BASE_URL}/meal-plans/:mealPlanId/decision-tasks/:taskKey/ready`,
-        () => apiSuccess(mockMealPlanResponse)
-    ),
-    http.post(
         `${BASE_URL}/meal-plans/:mealPlanId/decision-tasks/:taskKey/reopen`,
         () => apiSuccess(mockMealPlanResponse)
     ),
     http.post(
         `${BASE_URL}/meal-plans/:mealPlanId/decision-snapshots/:snapshotId/confirm`,
         () => apiSuccess(mockMealPlanResponse)
-    ),
-    http.post(`${BASE_URL}/meal-plans/:mealPlanId/stages/:stageId/votes`, () =>
-        apiSuccess(mockMealPlanResponse)
     ),
     http.post(
         `${BASE_URL}/meal-plans/:mealPlanId/stages/:stageId/complete`,
