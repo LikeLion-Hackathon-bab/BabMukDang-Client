@@ -93,6 +93,10 @@ export default defineConfig({
                 replacement: path.join(sharedDomainDir, 'common')
             },
             {
+                find: '@/food',
+                replacement: path.join(sharedDomainDir, 'food')
+            },
+            {
                 find: '@/friend',
                 replacement: path.join(sharedDomainDir, 'friend')
             },
@@ -141,7 +145,12 @@ export default defineConfig({
         environment: 'jsdom',
         globals: true,
         setupFiles: './src/test/setup.ts',
-        exclude: [...configDefaults.exclude, 'e2e/**', 'src/mocks/**'],
+        exclude: [
+            ...configDefaults.exclude,
+            'e2e/**',
+            'src/e2e_tests/**',
+            'src/mocks/**'
+        ],
         coverage: {
             provider: 'v8',
             reporter: ['text', 'html']
