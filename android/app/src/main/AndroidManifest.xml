@@ -29,6 +29,26 @@
                 <data android:scheme="babmukdang" android:host="app" />
             </intent-filter>
 
+            <!-- App Links (ADR 0008). assetlinks.json은 https://app.babmukdang.link/.well-known/에서 서빙한다. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="app.babmukdang.link" android:pathPrefix="/meal-plan-links/" />
+            </intent-filter>
+
+        </activity>
+
+        <!-- 카카오 SDK 카카오계정 로그인 리다이렉트 (ADR 0008). 키는 Gradle manifestPlaceholders로 주입한다. -->
+        <activity
+            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:host="oauth" android:scheme="kakao${KAKAO_NATIVE_APP_KEY}" />
+            </intent-filter>
         </activity>
 
         <provider

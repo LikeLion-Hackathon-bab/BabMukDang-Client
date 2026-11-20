@@ -176,7 +176,7 @@ export type LocalTime = import('../viewModels/api').LocalTimeView
 
 export interface MutationOptions<TData = NoContent> {
     mutationFn?: () => Promise<TData>
-    onSuccess?: (data?: TData) => void
+    onSuccess?: (data: TData) => void
     onError?: (error: Error) => void
     onSettled?: () => void
 }

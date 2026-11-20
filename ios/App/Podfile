@@ -11,6 +11,7 @@ install! 'cocoapods', :disable_input_output_paths => true
 def capacitor_pods
   pod 'Capacitor', :path => '../../node_modules/@capacitor/ios'
   pod 'CapacitorCordova', :path => '../../node_modules/@capacitor/ios'
+  pod 'CapacitorApp', :path => '../../../node_modules/@capacitor/app'
   pod 'CapacitorCamera', :path => '../../../node_modules/@capacitor/camera'
   pod 'CapacitorGeolocation', :path => '../../../node_modules/@capacitor/geolocation'
   pod 'CapacitorPushNotifications', :path => '../../node_modules/@capacitor/push-notifications'
@@ -20,6 +21,9 @@ end
 target 'App' do
   capacitor_pods
   # Add your Pods here
+  # 카카오 네이티브 로그인 (ADR 0008). KakaoSDKUser가 KakaoSDKAuth, KakaoSDKCommon을 함께 가져온다.
+  pod 'KakaoSDKUser', '~> 2.22'
+  pod 'KakaoSDKAuth', '~> 2.22'
 end
 
 post_install do |installer|
