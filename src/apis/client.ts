@@ -5,6 +5,7 @@ import axios, {
     InternalAxiosRequestConfig
 } from 'axios'
 import { toAppError } from './errors'
+import { clearUserSession } from './queryClient'
 import {
     apiContract,
     type ApiResponse,
@@ -28,17 +29,24 @@ const axiosClient = axios.create({
 
 // 토큰 갱신 상태 관리
 let isRefreshing = false
-let refreshSubscribers: ((token: string) => void)[] = []
+type RefreshSubscriber = {
+    resolve: (token: string) => void
+    reject: (error: unknown) => void
+}
+let refreshSubscribers: RefreshSubscriber[] = []
 
 // 대기 중인 요청들에게 새 토큰 전달
 const onRefreshed = (token: string) => {
-    refreshSubscribers.forEach(callback => callback(token))
+    const subscribers = refreshSubscribers
     refreshSubscribers = []
+    subscribers.forEach(subscriber => subscriber.resolve(token))
 }
 
-// 토큰 갱신 대기열에 추가
-const addRefreshSubscriber = (callback: (token: string) => void) => {
-    refreshSubscribers.push(callback)
+// 토큰 갱신 실패 시 대기 중인 요청들을 모두 reject
+const onRefreshFailed = (error: unknown) => {
+    const subscribers = refreshSubscribers
+    refreshSubscribers = []
+    subscribers.forEach(subscriber => subscriber.reject(error))
 }
 
 function isApiFailure<T>(body: ApiResponse<T>): body is ApiFailure {
@@ -80,13 +88,16 @@ axiosClient.interceptors.response.use(
 
         originalRequest._retry = true
 
-        const { setTokens, flushAuthStore } = useAuthStore.getState()
+        const { setTokens } = useAuthStore.getState()
 
         if (isRefreshing) {
-            return new Promise(resolve => {
-                addRefreshSubscriber((token: string) => {
-                    originalRequest.headers.Authorization = `Bearer ${token}`
-                    resolve(axiosClient(originalRequest))
+            return new Promise((resolve, reject) => {
+                refreshSubscribers.push({
+                    resolve: (token: string) => {
+                        originalRequest.headers.Authorization = `Bearer ${token}`
+                        resolve(axiosClient(originalRequest))
+                    },
+                    reject
                 })
             })
         }
@@ -116,9 +127,10 @@ axiosClient.interceptors.response.use(
 
             return axiosClient(originalRequest)
         } catch {
-            flushAuthStore()
-            refreshSubscribers = []
-            return Promise.reject(toAppError(error))
+            const appError = toAppError(error)
+            clearUserSession()
+            onRefreshFailed(appError)
+            return Promise.reject(appError)
         } finally {
             isRefreshing = false
         }

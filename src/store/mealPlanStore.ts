@@ -58,6 +58,56 @@ const joinedParticipantCount = (participants: MealPlanParticipantResponse[]) =>
         ['JOINED', 'READY'].includes(participant.status)
     ).length
 
+type MealPlanViewerField =
+    | 'viewerRole'
+    | 'viewerParticipantStatus'
+    | 'viewerPermissions'
+
+/**
+ * Room broadcast는 모든 참여자에게 같은 mealPlan을 보내므로 viewer 전용 필드가
+ * viewer-neutral 값이다. Backend는 Shared 스키마를 지키기 위해 viewer 없이 만든
+ * 응답(viewerRole 'NONE', viewerParticipantStatus null, 모든 권한 false)을 보낸다.
+ * ack/REST 응답은 개인화된 MealPlanResponse다.
+ */
+type RoomMealPlan = Omit<MealPlanResponse, MealPlanViewerField> & {
+    [K in MealPlanViewerField]?: MealPlanResponse[K] | null
+}
+
+const isViewerNeutral = (mealPlan: RoomMealPlan) =>
+    mealPlan.viewerRole == null || mealPlan.viewerRole === 'NONE'
+
+/**
+ * Broadcast mealPlan의 공용 필드는 반영하되, viewer 필드는 현재 클라이언트가
+ * 가진 값을 유지한다(브로드캐스트의 권한 값은 viewer-neutral이라 쓰지 않는다).
+ * 병합할 기준 상태가 없으면 null을 반환한다.
+ */
+const mergeRoomMealPlan = (
+    current: MealPlanResponse | null,
+    incoming: RoomMealPlan
+): MealPlanResponse | null => {
+    if (!isViewerNeutral(incoming)) return incoming as MealPlanResponse
+    if (!current || current.mealPlanId !== incoming.mealPlanId) return null
+
+    return {
+        ...incoming,
+        viewerRole: current.viewerRole,
+        viewerParticipantStatus: current.viewerParticipantStatus,
+        viewerPermissions: {
+            ...current.viewerPermissions,
+            canConfirmMealPlan:
+                current.viewerRole === 'OWNER' && incoming.status === 'READY'
+        }
+    }
+}
+
+const nextIsSelfReady = (
+    incoming: RoomMealPlan | undefined,
+    isSelfReady: boolean
+) =>
+    incoming && !isViewerNeutral(incoming)
+        ? incoming.viewerParticipantStatus === 'READY'
+        : isSelfReady
+
 const initialState = {
     mealPlanId: null,
     current: null,
@@ -189,8 +239,11 @@ export const useMealPlanStore = create<MealPlanStore>(set => ({
             if (state.mealPlanId && state.mealPlanId !== payload.mealPlanId) {
                 return state
             }
-            const current = payload.mealPlan
-                ? payload.mealPlan
+            const roomMealPlan = payload.mealPlan
+                ? mergeRoomMealPlan(state.current, payload.mealPlan)
+                : null
+            const current = roomMealPlan
+                ? roomMealPlan
                 : state.current
                   ? {
                         ...state.current,
@@ -203,7 +256,8 @@ export const useMealPlanStore = create<MealPlanStore>(set => ({
                         }
                     }
                   : null
-            const participants = payload.mealPlan?.participants ?? state.participants
+            const participants =
+                payload.mealPlan?.participants ?? state.participants
             return {
                 mealPlanId: payload.mealPlanId,
                 current,
@@ -214,13 +268,12 @@ export const useMealPlanStore = create<MealPlanStore>(set => ({
                 decisionStages:
                     payload.mealPlan?.decisionStages ?? state.decisionStages,
                 decisionProgress:
-                    payload.mealPlan?.decisionProgress ?? state.decisionProgress,
-                isSelfReady:
-                    payload.mealPlan?.viewerParticipantStatus === 'READY'
-                        ? true
-                        : payload.mealPlan
-                          ? false
-                          : state.isSelfReady
+                    payload.mealPlan?.decisionProgress ??
+                    state.decisionProgress,
+                isSelfReady: nextIsSelfReady(
+                    payload.mealPlan,
+                    state.isSelfReady
+                )
             }
         }),
 
@@ -243,19 +296,20 @@ export const useMealPlanStore = create<MealPlanStore>(set => ({
             }
             return {
                 mealPlanId: payload.mealPlanId,
-                current: payload.mealPlan ?? state.current,
+                current: payload.mealPlan
+                    ? (mergeRoomMealPlan(state.current, payload.mealPlan) ??
+                      state.current)
+                    : state.current,
                 decisionProgress: payload.progress,
                 decisionStages:
                     payload.mealPlan?.decisionStages ?? state.decisionStages,
                 participants:
                     payload.mealPlan?.participants ?? state.participants,
                 status: payload.mealPlan?.status ?? state.status,
-                isSelfReady:
-                    payload.mealPlan?.viewerParticipantStatus === 'READY'
-                        ? true
-                        : payload.mealPlan
-                          ? false
-                          : state.isSelfReady
+                isSelfReady: nextIsSelfReady(
+                    payload.mealPlan,
+                    state.isSelfReady
+                )
             }
         }),
 
