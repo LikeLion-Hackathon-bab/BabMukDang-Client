@@ -1,9 +1,4 @@
-import {
-    HeartIcon,
-    CommentIcon,
-    HeartFilledIcon,
-    HeartWhiteIcon
-} from '@/assets/icons'
+import { CommentIcon, HeartFilledIcon, HeartWhiteIcon } from '@/assets/icons'
 import { useLikeArticle } from '@/apis'
 import type { ArticleLikeView } from '@/viewModels'
 import { useState } from 'react'
@@ -17,8 +12,7 @@ export const PostCardContent = ({
     isComment,
     mealTime,
     likedByMe,
-    likeCount,
-    commentCount
+    likeCount
 }: {
     postImageUrl: string
     postId: number
@@ -37,7 +31,7 @@ export const PostCardContent = ({
             setIsLiked(false)
         }
     }
-    const onError = (e: Error) => {
+    const onError = () => {
         setIsLiked(false)
     }
     const { mutate: likeArticle, isPending: isLikePending } = useLikeArticle({

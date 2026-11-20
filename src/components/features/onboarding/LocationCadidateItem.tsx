@@ -4,7 +4,7 @@ export function LocationCadidateItem({
     location,
     onClick
 }: {
-    location: any
+    location: { placeName: string; address: string; isSelected?: boolean }
     onClick: () => void
 }) {
     return (

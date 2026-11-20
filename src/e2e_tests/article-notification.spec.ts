@@ -70,6 +70,7 @@ test.describe('P0 Article and notification E2E', () => {
         let articleCreateBody: Record<string, unknown> | undefined
 
         await page.addInitScript(() => {
+            // 장소 검색에 필요한 Kakao SDK 일부(services.Places)만 흉내 낸다.
             window.kakao = {
                 maps: {
                     services: {
@@ -110,7 +111,7 @@ test.describe('P0 Article and notification E2E', () => {
                         }
                     }
                 }
-            }
+            } as Window['kakao']
         })
 
         await page.route('**/api/v1/uploads/presign-article', async route => {

@@ -174,7 +174,7 @@ type ContractEndpointByMethod<TMethod extends HttpMethod> =
     AnyContractEndpoint & { readonly method: TMethod }
 
 type RequiredKeys<T extends object> = {
-    [K in keyof T]-?: {} extends Pick<T, K> ? never : K
+    [K in keyof T]-?: Record<never, never> extends Pick<T, K> ? never : K
 }[keyof T]
 
 type ContractRequestConfig<E extends AnyContractEndpoint> = Omit<

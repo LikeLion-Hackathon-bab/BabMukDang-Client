@@ -26,14 +26,3 @@ export function FriendCard({ friend }: { friend: Friend }) {
         </div>
     )
 }
-
-const calculateHungryTime = (lastActive: string) => {
-    const now = new Date()
-    const lastActiveDate = new Date(lastActive)
-    const diffTime = Math.abs(now.getTime() - lastActiveDate.getTime())
-    const diffHours = Math.ceil(diffTime / (1000 * 60 * 60))
-    if (diffHours > 24) {
-        return '24시간 이상'
-    }
-    return `${diffHours}시간`
-}

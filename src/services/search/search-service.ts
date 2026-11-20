@@ -30,9 +30,6 @@ import {
 } from './providers'
 import type {
     DomainSearchState,
-    FoodSearchResult,
-    FriendSearchResult,
-    PlaceSearchResult,
     SearchContext,
     SearchDomain,
     SearchProvider,

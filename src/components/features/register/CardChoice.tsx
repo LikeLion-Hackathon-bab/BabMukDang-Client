@@ -3,8 +3,7 @@ import { cn } from '@/lib/utils'
 export function CardChoice({
     label,
     selected,
-    onToggle,
-    className
+    onToggle
 }: {
     label: string
     selected: boolean

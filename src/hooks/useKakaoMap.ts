@@ -1,8 +1,68 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+// Kakao 지도 SDK(index.html 의 dapi.kakao.com 스크립트) 중 앱이 실제로 사용하는 부분만 타입으로 기술한다.
+export interface KakaoLatLng {
+    getLat(): number
+    getLng(): number
+}
+
+/** 지도 인스턴스는 다른 SDK 객체에 그대로 넘기기만 하므로 불투명 객체로 다룬다. */
+export type KakaoMapInstance = object
+
+export interface KakaoMarker {
+    setMap(map: KakaoMapInstance | null): void
+}
+
+export interface KakaoMouseEvent {
+    latLng: KakaoLatLng
+}
+
+export interface KakaoGeocoder {
+    coord2Address(
+        lng: number,
+        lat: number,
+        callback: (
+            result: Array<{ address: { address_name: string } }>,
+            status: string
+        ) => void
+    ): void
+}
+
+export interface KakaoPlaces {
+    keywordSearch(
+        query: string,
+        callback: (data: unknown[], status: string) => void,
+        options?: Record<string, unknown>
+    ): void
+}
+
+export interface KakaoSdk {
+    maps: {
+        LatLng: new (lat: number, lng: number) => KakaoLatLng
+        Map: new (
+            container: HTMLElement,
+            options: { center: KakaoLatLng; level: number }
+        ) => KakaoMapInstance
+        Marker: new (options: { position: KakaoLatLng }) => KakaoMarker
+        event: {
+            addListener(
+                target: KakaoMapInstance,
+                type: string,
+                handler: (event: KakaoMouseEvent) => void
+            ): void
+        }
+        services: {
+            Status: { OK: string; ZERO_RESULT: string }
+            SortBy: { ACCURACY: string; DISTANCE: string }
+            Places: new () => KakaoPlaces
+            Geocoder: new () => KakaoGeocoder
+        }
+    }
+}
+
 declare global {
     interface Window {
-        kakao?: any
+        kakao?: KakaoSdk
     }
 }
 

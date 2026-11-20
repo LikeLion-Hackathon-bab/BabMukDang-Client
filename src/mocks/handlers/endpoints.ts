@@ -16,7 +16,6 @@
 
 import type {
     ArticleDetailDto,
-    ArticleDetailView,
     ArticlePostRequest,
     CommentPostRequest,
     ChallengeStatusResponse,
@@ -27,7 +26,6 @@ import type {
     LoginRequest,
     SignupRequest,
     PageArticleSummaryDto,
-    ArticlePageView,
     PreferenceMetaResponse,
     PreferenceSummaryResponse,
     ProfileDetailView,

@@ -5,7 +5,7 @@ import { COLORS } from '@/constants/colors'
 import type { RestaurantCardView } from '@/viewModels'
 interface RestaurantCardProps {
     restaurant: RestaurantCardView
-    gps?: any
+    gps?: { current?: { latitude?: number; longitude?: number } | null }
     selectedUserId?: string | null
     onClick: (restaurant: RestaurantCardView) => void
     className?: string

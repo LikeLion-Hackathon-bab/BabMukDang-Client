@@ -1,11 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import {
-    ChevronDownIcon,
-    ChevronLeftIcon,
-    ChevronRightIcon
-} from 'lucide-react'
+import { ChevronDownIcon } from 'lucide-react'
 import { DayButton, DayPicker, getDefaultClassNames } from 'react-day-picker'
 
 import { cn } from '@/lib/utils'
@@ -16,7 +12,8 @@ import { ArrowBackIcon, ArrowForwardIcon } from '@/assets/icons'
 function Calendar({
     className,
     classNames,
-    showOutsideDays = true,
+    // DayPicker 로 전달되지 않도록 props 에서 분리만 한다(전달부는 아래에 주석 처리돼 있다).
+    showOutsideDays: _showOutsideDays = true,
     captionLayout = 'label',
     buttonVariant = 'ghost',
     formatters,

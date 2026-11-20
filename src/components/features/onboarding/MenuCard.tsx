@@ -10,7 +10,7 @@ export const MenuCard = ({
 }: {
     selectedUsers?: string[]
     menuName: string
-    category: any
+    category: React.ComponentProps<typeof ThumbImg>['item']
     currentUser: string | null
     onClick: () => void
 }) => {

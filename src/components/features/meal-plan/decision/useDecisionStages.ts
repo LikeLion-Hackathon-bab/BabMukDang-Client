@@ -44,7 +44,7 @@ export function formatDateLabel(iso: string): string {
 }
 
 export function formatTimeLabel(hhmm: string): string {
-    const [h, m] = hhmm.split(':')
+    const [h] = hhmm.split(':')
     const hour = Number(h)
     if (Number.isNaN(hour)) return hhmm
     const period =

@@ -21,7 +21,6 @@ export function UploadPage() {
     const {
         image: imageFile,
         mealDate,
-        mealTime,
         setMealTime,
         setMealPlanId,
         setTaggedMemberIds,

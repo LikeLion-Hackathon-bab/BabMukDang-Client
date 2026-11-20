@@ -51,7 +51,6 @@ export function CouponModal({
 
 function CouponModalContent({
     onClose,
-    onAccept,
     restaurantName,
     condition,
     serviceItem,

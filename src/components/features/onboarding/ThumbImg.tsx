@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 type Item = {
     name: string
     aspectRatio?: number
@@ -96,7 +94,6 @@ export function ThumbImg({
                             import.meta.env.VITE_CDN_URL
                         )}
                         // loading={item.priority ? 'eager' : 'lazy'}
-                        // @ts-ignore
                         // fetchpriority={item.priority ? 'high' : 'auto'}
                         decoding="async"
                         className="absolute inset-0 h-full w-full object-cover"

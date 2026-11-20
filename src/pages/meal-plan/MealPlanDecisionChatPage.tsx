@@ -7,7 +7,6 @@ import {
     ParticipantStatusCard,
     mealPlanTitle,
     useDecisionPageData,
-    useMealPlanDecisionChrome,
     useDecisionStages
 } from '@/components/features/meal-plan/decision'
 import { useMemo } from 'react'

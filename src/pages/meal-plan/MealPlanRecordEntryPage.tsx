@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { Link, useParams } from '@/navigation'
 import { useMealPlanDetail } from '@/apis'
 import { MealGroupCreateFromMealPlanButton } from '@/components/features/meal-group'

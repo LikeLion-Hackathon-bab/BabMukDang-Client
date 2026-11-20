@@ -9,9 +9,8 @@ import {
     takeUntil,
     map,
     throttleTime,
-    filter,
-    tap,
-    first
+    first,
+    type Subscription
 } from 'rxjs'
 
 interface SwipeableCardProps {
@@ -24,13 +23,6 @@ interface SwipeableCardProps {
     className?: string
     explicitDeleteMode?: boolean
     deleteButtonTestId?: string
-}
-
-interface SwipeableCardReturn {
-    translateX: number
-    isDragging: boolean
-    containerRef: React.RefObject<HTMLDivElement>
-    handleDelete: () => void
 }
 
 export function SwipeableCard({
@@ -47,7 +39,7 @@ export function SwipeableCard({
     const containerRef = useRef<HTMLDivElement>(null)
     const [translateX, setTranslateX] = useState(0)
     const [isDragging, setIsDragging] = useState(false)
-    const subscriptionRef = useRef<any>(null)
+    const subscriptionRef = useRef<Subscription | null>(null)
 
     const SUPPORT_TOUCH = 'ontouchstart' in window
     const EVENTS = {
@@ -111,27 +103,27 @@ export function SwipeableCard({
         if (!container) return
 
         // 위치 추출 함수
-        const toPos = (event: any) => {
+        const toPos = (event: Event): number => {
             return SUPPORT_TOUCH
-                ? event.changedTouches[0].clientX
-                : event.clientX
+                ? (event as TouchEvent).changedTouches[0].clientX
+                : (event as MouseEvent).clientX
         }
 
         // 이벤트 스트림 생성
         const start$ = fromEvent(container, EVENTS.start).pipe(
-            map((e: any) => {
+            map((e: Event) => {
                 return toPos(e)
             })
         )
 
         const move$ = fromEvent(container, EVENTS.move).pipe(
-            map((e: any) => {
+            map((e: Event) => {
                 return toPos(e)
             })
         )
 
         const end$ = fromEvent(container, EVENTS.end).pipe(
-            map((e: any) => {
+            map((e: Event) => {
                 return toPos(e)
             })
         )
@@ -164,7 +156,7 @@ export function SwipeableCard({
             scan(
                 (state, event) => {
                     const { distance, type } = event
-                    let newDistance = distance * resistance
+                    const newDistance = distance * resistance
                     if (type === 'drag') {
                         // 드래그 중 - 왼쪽으로만 스와이프 허용
                         let newX = Math.min(0, newDistance)

@@ -780,7 +780,7 @@ export const useRejectMealPlanJoinRequest = (
             queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.map })
             options.onSuccess?.(data)
         },
-        onSettled: (data, error, requestId, context) => {
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.all })
             options.onSettled?.()
         }
