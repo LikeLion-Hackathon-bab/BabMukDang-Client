@@ -37,7 +37,20 @@ const personalizedMealPlan = (
         ...overrides
     }) as unknown as MealPlanResponse
 
+const allFalsePermissions = Object.fromEntries(
+    Object.keys(ownerPermissions).map(key => [key, false])
+) as unknown as MealPlanResponse['viewerPermissions']
+
+// Backend room broadcast payload (meal-plan.gateway): viewer 없이 만든 응답
 const viewerNeutralMealPlan = (status: MealPlanResponse['status']) =>
+    ({
+        ...personalizedMealPlan({ status }),
+        viewerRole: 'NONE',
+        viewerParticipantStatus: null,
+        viewerPermissions: allFalsePermissions
+    }) as unknown as MealPlanResponse
+
+const nullViewerMealPlan = (status: MealPlanResponse['status']) =>
     ({
         ...personalizedMealPlan({ status }),
         viewerRole: null,
@@ -78,6 +91,19 @@ describe('mealPlanStore room broadcasts', () => {
         const state = useMealPlanStore.getState()
         expect(state.current?.viewerRole).toBe('OWNER')
         expect(state.current?.viewerPermissions).toEqual(ownerPermissions)
+        expect(state.isSelfReady).toBe(true)
+    })
+
+    it('also treats null viewer fields as viewer-neutral', () => {
+        useMealPlanStore.getState().applyStatusChanged({
+            mealPlanId,
+            status: 'READY',
+            mealPlan: nullViewerMealPlan('READY')
+        })
+
+        const state = useMealPlanStore.getState()
+        expect(state.current?.viewerRole).toBe('OWNER')
+        expect(state.current?.viewerPermissions.canVote).toBe(true)
         expect(state.isSelfReady).toBe(true)
     })
 

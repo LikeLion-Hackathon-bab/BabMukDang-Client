@@ -65,17 +65,21 @@ type MealPlanViewerField =
 
 /**
  * Room broadcast는 모든 참여자에게 같은 mealPlan을 보내므로 viewer 전용 필드가
- * null일 수 있다(viewer-neutral). ack/REST 응답은 개인화된 MealPlanResponse다.
+ * viewer-neutral 값이다. Backend는 Shared 스키마를 지키기 위해 viewer 없이 만든
+ * 응답(viewerRole 'NONE', viewerParticipantStatus null, 모든 권한 false)을 보낸다.
+ * ack/REST 응답은 개인화된 MealPlanResponse다.
  */
 type RoomMealPlan = Omit<MealPlanResponse, MealPlanViewerField> & {
     [K in MealPlanViewerField]?: MealPlanResponse[K] | null
 }
 
-const isViewerNeutral = (mealPlan: RoomMealPlan) => mealPlan.viewerRole == null
+const isViewerNeutral = (mealPlan: RoomMealPlan) =>
+    mealPlan.viewerRole == null || mealPlan.viewerRole === 'NONE'
 
 /**
- * Broadcast mealPlan의 공용 필드는 반영하되, null인 viewer 필드는 현재
- * 클라이언트가 가진 값을 유지한다. 병합할 기준 상태가 없으면 null을 반환한다.
+ * Broadcast mealPlan의 공용 필드는 반영하되, viewer 필드는 현재 클라이언트가
+ * 가진 값을 유지한다(브로드캐스트의 권한 값은 viewer-neutral이라 쓰지 않는다).
+ * 병합할 기준 상태가 없으면 null을 반환한다.
  */
 const mergeRoomMealPlan = (
     current: MealPlanResponse | null,
@@ -88,7 +92,7 @@ const mergeRoomMealPlan = (
         ...incoming,
         viewerRole: current.viewerRole,
         viewerParticipantStatus: current.viewerParticipantStatus,
-        viewerPermissions: incoming.viewerPermissions ?? {
+        viewerPermissions: {
             ...current.viewerPermissions,
             canConfirmMealPlan:
                 current.viewerRole === 'OWNER' && incoming.status === 'READY'
