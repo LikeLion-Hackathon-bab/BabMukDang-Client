@@ -21,6 +21,8 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        // 카카오 Android SDK (ADR 0008)
+        maven { url 'https://devrepo.kakao.com/nexus/content/groups/public/' }
     }
 }
 
