@@ -22,7 +22,7 @@ export default defineConfig({
         trace: isCI ? 'retain-on-failure' : 'off',
         launchOptions: chromiumExecutablePath
             ? { executablePath: chromiumExecutablePath }
-            : undefined,
+            : undefined
     },
 
     webServer: {
@@ -31,10 +31,10 @@ export default defineConfig({
         reuseExistingServer: !isCI,
         timeout: 30_000,
         env: {
-            VITE_USE_MSW: process.env.VITE_USE_MSW ?? 'false',
-        },
+            VITE_USE_MSW: process.env.VITE_USE_MSW ?? 'false'
+        }
     },
 
     globalSetup: './src/e2e_tests/globalSetup.ts',
-    globalTeardown: './src/e2e_tests/globalTeardown.ts',
+    globalTeardown: './src/e2e_tests/globalTeardown.ts'
 })

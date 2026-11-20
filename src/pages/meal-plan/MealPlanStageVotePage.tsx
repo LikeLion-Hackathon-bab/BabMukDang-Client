@@ -31,13 +31,8 @@ const STAGE_TYPE: Record<StageKey, MealPlanDecisionStageType> = {
 }
 
 function StageVoteContent({ stageKey }: { stageKey: StageKey }) {
-    const {
-        mealPlanId,
-        mealPlan,
-        permissions,
-        isGuest,
-        shareLinkToken
-    } = useDecisionPageData()
+    const { mealPlanId, mealPlan, permissions, isGuest, shareLinkToken } =
+        useDecisionPageData()
     const decision = useDecisionStages()
     const [sheetOpen, setSheetOpen] = useState(false)
     const [showFriends, setShowFriends] = useState(false)
@@ -61,7 +56,6 @@ function StageVoteContent({ stageKey }: { stageKey: StageKey }) {
     const hasRestaurantProvisionContext =
         provisionalArea?.stageType === 'AREA' &&
         provisionalMenu?.stageType === 'MENU'
-
 
     const panel = (() => {
         switch (stageKey) {
@@ -149,13 +143,17 @@ function StageVoteContent({ stageKey }: { stageKey: StageKey }) {
                         areaContext={
                             provisionalArea?.stageType === 'AREA'
                                 ? {
-                                      latitude: provisionalArea.value.lat as number,
-                                      longitude: provisionalArea.value.lng as number
+                                      latitude: provisionalArea.value
+                                          .lat as number,
+                                      longitude: provisionalArea.value
+                                          .lng as number
                                   }
                                 : mealPlan?.selectedArea
                                   ? {
-                                        latitude: mealPlan.selectedArea.lat as number,
-                                        longitude: mealPlan.selectedArea.lng as number
+                                        latitude: mealPlan.selectedArea
+                                            .lat as number,
+                                        longitude: mealPlan.selectedArea
+                                            .lng as number
                                     }
                                   : undefined
                         }

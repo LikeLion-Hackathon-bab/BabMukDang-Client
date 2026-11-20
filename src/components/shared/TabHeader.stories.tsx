@@ -20,7 +20,8 @@ const meta: Meta<typeof TabHeader> = {
             action: 'onTabChange',
             description: '탭 변경 핸들러'
         }
-    },    decorators: [
+    },
+    decorators: [
         Story => (
             <div className="w-full max-w-400">
                 <Story />
@@ -107,4 +108,3 @@ const InteractiveTabHeader = () => {
 export const Interactive: Story = {
     render: () => <InteractiveTabHeader />
 }
-

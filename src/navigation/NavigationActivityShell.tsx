@@ -181,7 +181,7 @@ export function NavigationActivityShell({ children }: { children: ReactNode }) {
                 data-stackflow-activity={activity.name}
                 data-stackflow-active={activity.isTop ? 'true' : 'false'}
                 className={[
-                    'absolute inset-0 min-h-0 overflow-hidden bg-gray-1',
+                    'bg-gray-1 absolute inset-0 min-h-0 overflow-hidden',
                     activity.isTop
                         ? 'pointer-events-auto'
                         : 'pointer-events-none'

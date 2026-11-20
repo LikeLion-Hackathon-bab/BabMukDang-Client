@@ -48,7 +48,10 @@ type ActivityChromeSlot = {
 
 interface LayoutChromeStore {
     activityChrome: Record<string, ActivityChromeSlot>
-    setRouteChromeConfig: (config?: LayoutChromeConfig, ownerId?: string) => void
+    setRouteChromeConfig: (
+        config?: LayoutChromeConfig,
+        ownerId?: string
+    ) => void
     clearRouteChromeConfig: (ownerId?: string) => void
     setPageChromeConfig: (config: LayoutChromeConfig, ownerId?: string) => void
     clearPageChromeConfig: (ownerId?: string) => void

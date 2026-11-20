@@ -95,7 +95,9 @@ export function FoodSearchField({
                             <span className="text-body2-semibold text-gray-8">
                                 {food.label}
                             </span>
-                            <span className="ml-6 text-caption-regular text-gray-5">{food.parentCategory}</span>
+                            <span className="text-caption-regular text-gray-5 ml-6">
+                                {food.parentCategory}
+                            </span>
                         </button>
                     ))}
                 </div>

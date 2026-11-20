@@ -24,7 +24,7 @@ export function HomeMealPlanSection({
         return (
             <section className="flex flex-col gap-12">
                 <h2 className="text-body1-semibold text-gray-8">다음 행동</h2>
-                <div className="rounded-20 bg-white p-16 text-caption-regular text-gray-5">
+                <div className="rounded-20 text-caption-regular text-gray-5 bg-white p-16">
                     밥약 다음 행동을 불러오는 중입니다.
                 </div>
             </section>
@@ -35,7 +35,7 @@ export function HomeMealPlanSection({
         return (
             <section className="flex flex-col gap-12">
                 <h2 className="text-body1-semibold text-gray-8">다음 행동</h2>
-                <div className="rounded-20 bg-white p-16 text-caption-regular text-red-500">
+                <div className="rounded-20 text-caption-regular bg-white p-16 text-red-500">
                     밥약 다음 행동을 불러오지 못했습니다.
                 </div>
             </section>
@@ -60,7 +60,9 @@ export function HomeMealPlanSection({
                         action.mealPlan ? (
                             <MyMealPlanCard
                                 key={action.actionId}
-                                mealPlan={mapMyMealPlanListItem(action.mealPlan)}
+                                mealPlan={mapMyMealPlanListItem(
+                                    action.mealPlan
+                                )}
                             />
                         ) : (
                             <article
@@ -87,7 +89,7 @@ export function HomeMealPlanSection({
                     )}
                 </div>
             ) : (
-                <div className="rounded-20 bg-white p-16 text-caption-regular text-gray-5">
+                <div className="rounded-20 text-caption-regular text-gray-5 bg-white p-16">
                     지금 이어서 할 밥약이 없습니다.
                 </div>
             )}

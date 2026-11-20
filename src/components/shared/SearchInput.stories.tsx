@@ -20,7 +20,8 @@ const meta: Meta<typeof SearchInput> = {
             control: 'text',
             description: '플레이스홀더 텍스트'
         }
-    },    decorators: [
+    },
+    decorators: [
         Story => (
             <div className="w-full max-w-400 p-20">
                 <Story />

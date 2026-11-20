@@ -95,4 +95,3 @@ export const Closed: Story = {
         acceptText: '확인하러 가기'
     }
 }
-

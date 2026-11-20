@@ -20,13 +20,20 @@ import {
 import { CheckGlyph, Glyph } from './glyphs'
 import type { CandidateView, StageView } from './useDecisionStages'
 
-type VoteFn = (candidate: MealPlanDecisionCandidate, type: 'PICK' | 'PREFER' | 'EXCLUDE') => void
+type VoteFn = (
+    candidate: MealPlanDecisionCandidate,
+    type: 'PICK' | 'PREFER' | 'EXCLUDE'
+) => void
 
 function useStageVote(mealPlanId: string, stage: StageView, canVote: boolean) {
     const { mutate, isPending } = useMealPlanDecisionVote()
     const cast: VoteFn = (candidate, voteType) => {
         if (!stage.stageId || !canVote || isPending) return
-        mutate({ mealPlanId, stageId: stage.stageId, body: { voteType, candidate } })
+        mutate({
+            mealPlanId,
+            stageId: stage.stageId,
+            body: { voteType, candidate }
+        })
     }
     return { cast, isPending }
 }
@@ -92,7 +99,9 @@ export function DateVotePanel({ mealPlanId, stage, canVote }: PanelProps) {
             iso: c.candidate.stageType === 'DATE' ? c.candidate.value : ''
         }))
         .filter(d => d.iso)
-    const ranked = [...stage.candidates].sort((a, b) => b.voteCount - a.voteCount)
+    const ranked = [...stage.candidates].sort(
+        (a, b) => b.voteCount - a.voteCount
+    )
     const maxVotes = Math.max(0, ...stage.candidates.map(c => c.voteCount))
 
     const base = dated[0] ? new Date(`${dated[0].iso}T00:00:00`) : new Date()
@@ -209,7 +218,9 @@ export function DateVotePanel({ mealPlanId, stage, canVote }: PanelProps) {
                 후보 날짜
             </SectionLabel>
             {ranked.length === 0 && (
-                <EmptyHint>아직 후보 날짜가 없어요. 가능한 날을 제안해 주세요.</EmptyHint>
+                <EmptyHint>
+                    아직 후보 날짜가 없어요. 가능한 날을 제안해 주세요.
+                </EmptyHint>
             )}
             {ranked.map(c => (
                 <CandidatePickRow
@@ -245,7 +256,9 @@ function CandidatePickRow({
             style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
             {leftIcon}
             <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="flex items-center" style={{ gap: 6 }}>
+                <div
+                    className="flex items-center"
+                    style={{ gap: 6 }}>
                     <span
                         style={{
                             fontSize: 15,
@@ -260,7 +273,11 @@ function CandidatePickRow({
                 <div
                     className="flex items-center"
                     style={{ gap: 7, marginTop: 4 }}>
-                    <AvatarStack people={cand.pickers} size={18} max={4} />
+                    <AvatarStack
+                        people={cand.pickers}
+                        size={18}
+                        max={4}
+                    />
                     <span
                         style={{
                             fontSize: 11.5,
@@ -285,7 +302,9 @@ function CandidatePickRow({
 /* ====================================================================== */
 export function TimeVotePanel({ mealPlanId, stage, canVote }: PanelProps) {
     const { cast } = useStageVote(mealPlanId, stage, canVote)
-    const ranked = [...stage.candidates].sort((a, b) => b.voteCount - a.voteCount)
+    const ranked = [...stage.candidates].sort(
+        (a, b) => b.voteCount - a.voteCount
+    )
     const max = Math.max(1, ...stage.candidates.map(c => c.voteCount))
 
     return (
@@ -295,9 +314,13 @@ export function TimeVotePanel({ mealPlanId, stage, canVote }: PanelProps) {
                 desc="편한 시간대를 골라요. 표가 가장 많은 시간으로 정해져요."
             />
             {ranked.length === 0 && (
-                <EmptyHint>아직 시간 후보가 없어요. 가능한 시간대를 추가해 주세요.</EmptyHint>
+                <EmptyHint>
+                    아직 시간 후보가 없어요. 가능한 시간대를 추가해 주세요.
+                </EmptyHint>
             )}
-            <Card pad={12} style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <Card
+                pad={12}
+                style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 {ranked.map(c => {
                     const sel = c.myState === 'pick'
                     const pct = Math.round((c.voteCount / max) * 100)
@@ -385,7 +408,9 @@ export function AreaVotePanel({
     mapSlot
 }: PanelProps & { mapSlot?: React.ReactNode }) {
     const { cast } = useStageVote(mealPlanId, stage, canVote)
-    const ranked = [...stage.candidates].sort((a, b) => b.voteCount - a.voteCount)
+    const ranked = [...stage.candidates].sort(
+        (a, b) => b.voteCount - a.voteCount
+    )
     const max = Math.max(0, ...stage.candidates.map(c => c.voteCount))
 
     return (
@@ -404,7 +429,9 @@ export function AreaVotePanel({
                 />
             )}
             {ranked.length === 0 && (
-                <EmptyHint>아직 지역 후보가 없어요. 검색해서 후보로 올려보세요.</EmptyHint>
+                <EmptyHint>
+                    아직 지역 후보가 없어요. 검색해서 후보로 올려보세요.
+                </EmptyHint>
             )}
             {ranked.map(c => (
                 <CandidatePickRow
@@ -459,7 +486,9 @@ export function MenuVotePanel({ mealPlanId, stage, canVote }: PanelProps) {
                 desc="참여자 취향(좋아요·못먹어요)을 반영해 정렬했어요."
             />
             {visible.length === 0 && (
-                <EmptyHint>아직 메뉴 후보가 없어요. AI 추천·검색으로 후보를 올려보세요.</EmptyHint>
+                <EmptyHint>
+                    아직 메뉴 후보가 없어요. AI 추천·검색으로 후보를 올려보세요.
+                </EmptyHint>
             )}
             {visible.map(c => (
                 <Card
@@ -473,7 +502,9 @@ export function MenuVotePanel({ mealPlanId, stage, canVote }: PanelProps) {
                         size={48}
                     />
                     <div style={{ flex: 1, minWidth: 0 }}>
-                        <div className="flex items-center" style={{ gap: 6 }}>
+                        <div
+                            className="flex items-center"
+                            style={{ gap: 6 }}>
                             <span
                                 style={{
                                     fontSize: 15,
@@ -487,7 +518,11 @@ export function MenuVotePanel({ mealPlanId, stage, canVote }: PanelProps) {
                         <div
                             className="flex items-center"
                             style={{ gap: 7, marginTop: 3 }}>
-                            <AvatarStack people={c.pickers} size={18} max={3} />
+                            <AvatarStack
+                                people={c.pickers}
+                                size={18}
+                                max={3}
+                            />
                             <span
                                 style={{
                                     fontSize: 11.5,
@@ -587,7 +622,9 @@ export function RestaurantVotePanel({
     areaDecided: boolean
 }) {
     const { cast } = useStageVote(mealPlanId, stage, canVote)
-    const ranked = [...stage.candidates].sort((a, b) => b.voteCount - a.voteCount)
+    const ranked = [...stage.candidates].sort(
+        (a, b) => b.voteCount - a.voteCount
+    )
 
     if (!areaDecided) {
         return (
@@ -623,14 +660,20 @@ export function RestaurantVotePanel({
                 stage="식당"
                 desc="정해진 지역·메뉴를 바탕으로 추천했어요."
             />
-            <div className="flex flex-wrap items-center" style={{ gap: 6 }}>
+            <div
+                className="flex flex-wrap items-center"
+                style={{ gap: 6 }}>
                 {areaName && (
-                    <Pill tone="green" dot>
+                    <Pill
+                        tone="green"
+                        dot>
                         {areaName}
                     </Pill>
                 )}
                 {menuName && (
-                    <Pill tone="green" dot>
+                    <Pill
+                        tone="green"
+                        dot>
                         {menuName}
                     </Pill>
                 )}
@@ -643,15 +686,23 @@ export function RestaurantVotePanel({
                 </span>
             </div>
             {ranked.length === 0 && (
-                <EmptyHint>아직 식당 후보가 없어요. 식당을 검색해 후보로 올려보세요.</EmptyHint>
+                <EmptyHint>
+                    아직 식당 후보가 없어요. 식당을 검색해 후보로 올려보세요.
+                </EmptyHint>
             )}
             {ranked.map(c => (
                 <Card
                     key={c.key}
                     selected={c.myState === 'pick'}
                     pad={11}
-                    style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    <div className="flex items-center" style={{ gap: 11 }}>
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 10
+                    }}>
+                    <div
+                        className="flex items-center"
+                        style={{ gap: 11 }}>
                         <FoodTile
                             category={c.category ?? 'default'}
                             label={c.label}
@@ -694,7 +745,11 @@ export function RestaurantVotePanel({
                             paddingTop: 8,
                             borderTop: '1px solid var(--color-gray-1)'
                         }}>
-                        <AvatarStack people={c.pickers} size={18} max={3} />
+                        <AvatarStack
+                            people={c.pickers}
+                            size={18}
+                            max={3}
+                        />
                         <span
                             style={{
                                 fontSize: 11.5,

@@ -19,7 +19,12 @@ export function useMealPlanDecisionChrome({
     const navigate = useNavigate()
     const right = useMemo(() => {
         if (!showChat && !rightActions) {
-            return <div className="h-34 w-34" aria-hidden />
+            return (
+                <div
+                    className="h-34 w-34"
+                    aria-hidden
+                />
+            )
         }
 
         return (

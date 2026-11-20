@@ -23,7 +23,8 @@ type SubmitErrorState = {
 const toSubmitError = (error: unknown): SubmitErrorState => {
     if (error instanceof ProfileImageUploadError) {
         return {
-            kind: error.stage === 'PRESIGN' ? 'IMAGE_PRESIGN' : 'IMAGE_S3_UPLOAD',
+            kind:
+                error.stage === 'PRESIGN' ? 'IMAGE_PRESIGN' : 'IMAGE_S3_UPLOAD',
             message: error.userMessage
         }
     }
@@ -56,9 +57,8 @@ export function AllergicMenuPage() {
         () => new Set(allergy.map(item => String(item.code))),
         [allergy]
     )
-    const [selectedKeys, setSelectedKeys] = useState<Set<string>>(
-        initialSelectedKeys
-    )
+    const [selectedKeys, setSelectedKeys] =
+        useState<Set<string>>(initialSelectedKeys)
     const [submitError, setSubmitError] = useState<SubmitErrorState>(null)
 
     const { mutateAsync: uploadProfilePhoto, isPending: isImageUploading } =
@@ -106,7 +106,9 @@ export function AllergicMenuPage() {
                       ? null
                       : profileImageUrl
 
-            setProfileDraft({ profileImageUrl: uploadedProfileImageUrl ?? null })
+            setProfileDraft({
+                profileImageUrl: uploadedProfileImageUrl ?? null
+            })
             if (profileImageFile && uploadedProfileImageUrl) {
                 setProfileImageFile(null)
             }

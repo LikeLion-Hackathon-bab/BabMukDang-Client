@@ -194,24 +194,25 @@ function once<T>(socket: Socket, eventName: string): Promise<T> {
     })
 }
 
-
 async function emitWithAck<T>(
     socket: Socket,
     eventName: string,
     payload: unknown
 ): Promise<T> {
     return new Promise((resolve, reject) => {
-        socket.timeout(SOCKET_TIMEOUT_MS).emit(
-            eventName,
-            payload,
-            (error: Error | null, acknowledgement?: T) => {
-                if (error) {
-                    reject(error)
-                    return
+        socket
+            .timeout(SOCKET_TIMEOUT_MS)
+            .emit(
+                eventName,
+                payload,
+                (error: Error | null, acknowledgement?: T) => {
+                    if (error) {
+                        reject(error)
+                        return
+                    }
+                    resolve(acknowledgement as T)
                 }
-                resolve(acknowledgement as T)
-            }
-        )
+            )
     })
 }
 
@@ -284,7 +285,11 @@ test.describe('MealPlan socket full-stack E2E', () => {
     }) => {
         const alice = await createSession(request, 'socket-decision')
         const { mealPlanId } = await createMealPlan(request, alice.accessToken)
-        const detail = await getMealPlanDetail(request, alice.accessToken, mealPlanId)
+        const detail = await getMealPlanDetail(
+            request,
+            alice.accessToken,
+            mealPlanId
+        )
         const menuStage = detail.decisionStages.find(
             stage => stage.stageType === 'MENU'
         )
@@ -299,16 +304,17 @@ test.describe('MealPlan socket full-stack E2E', () => {
                 socket,
                 'mealPlan:decision:updated'
             )
-            const acknowledgement = await emitWithAck<MealPlanDecisionVoteSocketAck>(
-                socket,
-                MealPlanDecisionVoteSocketEvent,
-                {
-                    mealPlanId,
-                    stageId: menuStage!.stageId,
-                    voteType: 'PICK',
-                    candidate: menuStage!.candidates[0]
-                }
-            )
+            const acknowledgement =
+                await emitWithAck<MealPlanDecisionVoteSocketAck>(
+                    socket,
+                    MealPlanDecisionVoteSocketEvent,
+                    {
+                        mealPlanId,
+                        stageId: menuStage!.stageId,
+                        voteType: 'PICK',
+                        candidate: menuStage!.candidates[0]
+                    }
+                )
             expect(acknowledgement).toEqual(
                 expect.objectContaining({ ok: true })
             )
@@ -477,11 +483,16 @@ test.describe('MealPlan socket full-stack E2E', () => {
     }) => {
         const alice = await createSession(request, 'socket-progress')
         const { mealPlanId } = await createMealPlan(request, alice.accessToken)
-        const progress = await getDecisionProgress(request, alice.accessToken, mealPlanId)
-        const menuPick = progress.tasks.find(task => task.taskKey === 'MENU_PICK')
+        const progress = await getDecisionProgress(
+            request,
+            alice.accessToken,
+            mealPlanId
+        )
+        const menuPick = progress.tasks.find(
+            task => task.taskKey === 'MENU_PICK'
+        )
         expect(menuPick).toBeDefined()
         expect(menuPick).not.toHaveProperty('readyCount')
         expect(menuPick).not.toHaveProperty('participantCount')
     })
-
 })

@@ -69,7 +69,12 @@ export function PushNotificationPage() {
         // 포그라운드 메시지 처리
         const unsubscribe = onForegroundMessage(payload => {
             const message = payload as {
-                notification?: { title?: string; body?: string; icon?: string; badge?: string }
+                notification?: {
+                    title?: string
+                    body?: string
+                    icon?: string
+                    badge?: string
+                }
                 data?: { tag?: string; url?: string }
             }
             console.log('포그라운드 메시지 수신:', message)

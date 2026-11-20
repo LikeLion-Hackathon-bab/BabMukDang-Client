@@ -25,7 +25,8 @@ const meta: Meta<typeof CardChoice> = {
             action: 'toggled',
             description: '토글 핸들러'
         }
-    },}
+    }
+}
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -55,7 +56,7 @@ export const WithInteraction: Story = {
     args: {
         label: '일식',
         selected: false
-    },
+    }
 }
 
 // Multiple cards example

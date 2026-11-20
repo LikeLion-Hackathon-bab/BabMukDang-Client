@@ -1,3 +1,3 @@
 export function OnboardingButton() {
-  return null
+    return null
 }

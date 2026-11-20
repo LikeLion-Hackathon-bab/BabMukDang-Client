@@ -24,7 +24,8 @@ const meta: Meta<typeof FilterList> = {
             control: 'text',
             description: '추가 CSS 클래스'
         }
-    },    decorators: [
+    },
+    decorators: [
         Story => (
             <div className="p-20">
                 <Story />

@@ -53,9 +53,8 @@ function MealPlanGuestSessionContent() {
                 readyCount={readyCount}
                 participantCount={participantCount}
                 participants={participants}
-                stagePathFor={
-                    stageKey =>
-                        `/meal-plan-links/${shareLinkToken}/session/decision/${stageKey}`
+                stagePathFor={stageKey =>
+                    `/meal-plan-links/${shareLinkToken}/session/decision/${stageKey}`
                 }
                 finalPath={null}
             />

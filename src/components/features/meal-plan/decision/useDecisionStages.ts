@@ -4,7 +4,10 @@
  * DecisionSessionProvider hydrates the store and keeps the socket lifecycle separate.
  */
 import { useMemo } from 'react'
-import { getMealPlanDecisionCandidateKey, MealPlanDecisionCandidateSchema } from '@kimdaegyu/babmukdang-shared/domain'
+import {
+    getMealPlanDecisionCandidateKey,
+    MealPlanDecisionCandidateSchema
+} from '@kimdaegyu/babmukdang-shared/domain'
 import type {
     MealPlanDecisionCandidate,
     MealPlanDecisionStageResponse,

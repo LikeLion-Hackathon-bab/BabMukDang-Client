@@ -23,7 +23,7 @@ export function MealGroupDetailPage() {
     })
     if (isLoading)
         return (
-            <div className="py-40 text-center text-gray-5">
+            <div className="text-gray-5 py-40 text-center">
                 불러오는 중입니다.
             </div>
         )

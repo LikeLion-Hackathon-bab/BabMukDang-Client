@@ -233,8 +233,8 @@ export const mealPlanApi = {
         const summary = await contractClient.post(
             apiContract.mealPlans.createShareLink,
             {
-            pathParams: { mealPlanId: domainId.mealPlan(mealPlanId) },
-            body
+                pathParams: { mealPlanId: domainId.mealPlan(mealPlanId) },
+                body
             }
         )
         return mapShareLinkSummary(summary)

@@ -20,4 +20,3 @@ export const MealPlanDecisionStart: Story = {}
 export const MealPlanDecisionMiddle: Story = {}
 
 export const MealPlanDecisionEnd: Story = {}
-

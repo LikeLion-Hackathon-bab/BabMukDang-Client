@@ -24,7 +24,8 @@ const meta: Meta<typeof ChatInput> = {
             action: 'handleSendMessage',
             description: '메시지 전송 핸들러'
         }
-    },    decorators: [
+    },
+    decorators: [
         Story => (
             <div className="w-full max-w-400 p-20">
                 <Story />

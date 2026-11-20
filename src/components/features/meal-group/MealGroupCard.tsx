@@ -14,7 +14,8 @@ export function MealGroupCard({ mealGroup }: { mealGroup: MealGroupResponse }) {
                         {mealGroup.name}
                     </h3>
                     <p className="text-caption-regular text-gray-5">
-                        멤버 {mealGroup.members.length}명 · 최근 밥약 {mealGroup.recentMealPlanIds.length}개
+                        멤버 {mealGroup.members.length}명 · 최근 밥약{' '}
+                        {mealGroup.recentMealPlanIds.length}개
                     </p>
                 </div>
             </div>

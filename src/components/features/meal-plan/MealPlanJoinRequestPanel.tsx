@@ -28,7 +28,8 @@ export function MealPlanJoinRequestPanel({
                     근처 친구 참여 요청
                 </h2>
                 <p className="text-caption-regular text-gray-5">
-                    근처 친구 노출을 보고 들어온 요청입니다. 수락하면 같은 밥약 참여자로 추가됩니다.
+                    근처 친구 노출을 보고 들어온 요청입니다. 수락하면 같은 밥약
+                    참여자로 추가됩니다.
                 </p>
             </div>
             <div className="flex flex-col gap-10">

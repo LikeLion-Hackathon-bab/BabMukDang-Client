@@ -1,5 +1,9 @@
 import { useMemo, useState } from 'react'
-import { toMemberId, type MealPlanInviteSummary, type MealPlanParticipantResponse } from '@kimdaegyu/babmukdang-shared/domain'
+import {
+    toMemberId,
+    type MealPlanInviteSummary,
+    type MealPlanParticipantResponse
+} from '@kimdaegyu/babmukdang-shared/domain'
 import { useSendMealPlanInvite } from '@/apis'
 import { FriendSearchField } from '@/components/features/search'
 import type { FriendSearchResult } from '@/services/search'
@@ -46,15 +50,16 @@ export function MealPlanInvitePanel({
     }
 
     return (
-        <section className="flex flex-col gap-12 rounded-20 bg-white p-16">
+        <section className="rounded-20 flex flex-col gap-12 bg-white p-16">
             <div>
                 <h2 className="text-body1-semibold text-gray-8">친구 초대</h2>
                 <p className="text-caption-regular text-gray-5">
-                    친구 검색은 서버 결과를 신뢰합니다. 친구 관계, 차단 여부, 초대 가능 여부는 클라이언트에서 다시 판단하지 않습니다.
+                    친구 검색은 서버 결과를 신뢰합니다. 친구 관계, 차단 여부,
+                    초대 가능 여부는 클라이언트에서 다시 판단하지 않습니다.
                 </p>
             </div>
             <input
-                className="rounded-12 bg-gray-1 px-12 py-10 text-body2-medium outline-none"
+                className="rounded-12 bg-gray-1 text-body2-medium px-12 py-10 outline-none"
                 data-testid="meal-plan-invite-message-input"
                 value={message}
                 onChange={event => setMessage(event.target.value)}

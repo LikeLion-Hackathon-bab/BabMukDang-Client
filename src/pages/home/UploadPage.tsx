@@ -137,7 +137,7 @@ export function UploadPage() {
         <div className="absolute top-0 left-0 flex h-full w-screen flex-col items-start justify-between pt-55 pb-40">
             <div className="flex w-full flex-col gap-20">
                 {mealPlanId && (
-                    <div className="mx-20 rounded-20 bg-primary-100 border-primary-300 border p-14">
+                    <div className="rounded-20 bg-primary-100 border-primary-300 mx-20 border p-14">
                         <span className="text-caption-medium text-primary-main">
                             MealPlan 기록 연결
                         </span>
@@ -155,7 +155,7 @@ export function UploadPage() {
                         alt="uploaded image"
                     />
                 )}
-                <div className="mx-20 rounded-20 bg-white p-16">
+                <div className="rounded-20 mx-20 bg-white p-16">
                     <FriendSearchField
                         label="친구 태그 추가"
                         helperText="서버 검색 결과를 신뢰해서 태그할 친구를 선택합니다. 게스트 참여자는 Article 태그에서 제외됩니다."
@@ -167,10 +167,10 @@ export function UploadPage() {
                         onRemove={removeTaggedFriend}
                     />
                 </div>
-                <div className="mx-20 rounded-20 bg-white p-16">
+                <div className="rounded-20 mx-20 bg-white p-16">
                     <FoodAnalysisStatus state={foodAnalysis} />
                     {selectedFoodAnalysis && (
-                        <div className="mb-10 rounded-16 bg-primary-100 p-10 text-body2-medium text-primary-main">
+                        <div className="rounded-16 bg-primary-100 text-body2-medium text-primary-main mb-10 p-10">
                             현재 음식 메뉴: {selectedFoodAnalysis.label}
                         </div>
                     )}

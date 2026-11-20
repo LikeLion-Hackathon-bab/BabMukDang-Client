@@ -85,7 +85,7 @@ export function SearchRestaurantPage() {
                 />
             </div>
             {selectedRestaurant && (
-                <div className="mt-14 rounded-20 bg-primary-100 p-14">
+                <div className="rounded-20 bg-primary-100 mt-14 p-14">
                     <p className="text-body1-semibold text-primary-main">
                         {selectedRestaurant.placeName}
                     </p>

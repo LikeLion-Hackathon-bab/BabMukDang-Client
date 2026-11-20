@@ -19,7 +19,9 @@ export function MealGroupStartMealPlanButton({
 
     return (
         <section className="rounded-20 flex flex-col gap-10 bg-white p-16">
-            <h2 className="text-body1-semibold text-gray-8">이 그룹으로 새 밥약 시작</h2>
+            <h2 className="text-body1-semibold text-gray-8">
+                이 그룹으로 새 밥약 시작
+            </h2>
             <input
                 data-testid="meal-group-start-title-input"
                 value={title}
@@ -38,7 +40,9 @@ export function MealGroupStartMealPlanButton({
                     })
                 }
                 className="rounded-30 bg-gray-8 text-body1-semibold disabled:bg-gray-3 py-12 text-white">
-                {start.isPending ? '시작 중입니다.' : '이 그룹으로 새 밥약 시작'}
+                {start.isPending
+                    ? '시작 중입니다.'
+                    : '이 그룹으로 새 밥약 시작'}
             </button>
         </section>
     )
