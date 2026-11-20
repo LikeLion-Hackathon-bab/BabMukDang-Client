@@ -8,17 +8,24 @@ import {
 } from '@/navigation'
 import { useState } from 'react'
 import { useKakaoLogin, useEmailLogin, useEmailSignup } from '@/apis/auth.api'
+import {
+    getKakaoLoginErrorMessage,
+    sanitizeRedirectPath
+} from '@/features/auth/loginRedirect'
 
 export function StartRegisterPage() {
     const navigate = useNavigate()
     const [searchParams] = useSearchParams()
-    const redirectTo = searchParams.get('redirect')
+    const redirectTo = sanitizeRedirectPath(searchParams.get('redirect'))
     const safeRedirectTo =
         redirectTo && resolvePathToActivity(redirectTo) ? redirectTo : '/'
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [authError, setAuthError] = useState<string | null>(null)
+    // 카카오 콜백 실패 시 Backend가 /login?error=<code>로 돌려보낸다. (ADR 0008)
+    const [authError, setAuthError] = useState<string | null>(() =>
+        getKakaoLoginErrorMessage(searchParams.get('error'))
+    )
 
     const { mutate: emailLogin, isPending: isEmailLoginPending } =
         useEmailLogin({
@@ -43,7 +50,8 @@ export function StartRegisterPage() {
         })
 
     const handleLogin = () => {
-        useKakaoLogin()
+        setAuthError(null)
+        useKakaoLogin(safeRedirectTo)
     }
 
     const handleEmailLogin = () => {

@@ -26,6 +26,7 @@ import type {
 import { API_BASE_URL } from './baseUrl'
 import { pushTokenApi } from './pushToken.api'
 import { getOrCreateDeviceId } from '@/features/push/deviceId'
+import { buildKakaoWebLoginUrl } from '@/features/auth/loginRedirect'
 
 type EmailAuthRequest = LoginRequest
 
@@ -39,12 +40,10 @@ type EmailAuthRequest = LoginRequest
 const authApi = {
     /**
      * 카카오 로그인 시작
-     * @returns 토큰 응답
+     * @param redirect - 로그인 후 돌아갈 같은 출처 상대 경로 (ADR 0008)
      */
-    login: async () => {
-        // const res = await client.get(endpoints.auth.kakaoLogin)
-        // return res.data
-        window.location.href = `${API_BASE_URL}/auth/kakao`
+    login: async (redirect?: string | null) => {
+        window.location.href = buildKakaoWebLoginUrl(API_BASE_URL, redirect)
     },
 
     emailLogin: async ({
@@ -107,8 +106,8 @@ const authApi = {
 /**
  * 카카오 로그인 redirect Hook
  */
-export const useKakaoLogin = () => {
-    return (async () => await authApi.login())()
+export const useKakaoLogin = (redirect?: string | null) => {
+    return (async () => await authApi.login(redirect))()
 }
 
 /**
