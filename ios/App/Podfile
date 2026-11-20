@@ -20,6 +20,9 @@ end
 target 'App' do
   capacitor_pods
   # Add your Pods here
+  # 카카오 네이티브 로그인 (ADR 0008). KakaoSDKUser가 KakaoSDKAuth, KakaoSDKCommon을 함께 가져온다.
+  pod 'KakaoSDKUser', '~> 2.22'
+  pod 'KakaoSDKAuth', '~> 2.22'
 end
 
 post_install do |installer|
