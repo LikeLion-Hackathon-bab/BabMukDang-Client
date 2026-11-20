@@ -36,6 +36,21 @@ jobs:
         working-directory: BabMukDang-Client
         run: npm ci
 
+      # package-lock.json 은 @kimdaegyu/babmukdang-shared 를 npm 레지스트리 버전(2.0.8)으로 고정하지만,
+      # main 코드는 아직 배포되지 않은 Shared 계약(2.0.9: kakaoNative, logoutAll, KakaoLoginErrorCode,
+      # AnyEndpointContract, *InputOf 등)을 사용한다. vite 는 alias 로 ../BabMukDang-Shared/src 를 번들하지만
+      # tsc(type-check, `tsc -b`)와 Playwright 는 node_modules 를 보므로, 방금 빌드한 Shared 체크아웃으로 교체한다.
+      # 또한 심볼릭 링크를 따라가면 Shared 의 dist 가 Shared 자신의 node_modules/zod 를 해석해 zod 사본이 둘이 된다.
+      # vite.config.ts 의 `dedupe: ['zod']`/alias 와 같은 의미가 되도록 Shared 쪽 zod 를 Client 의 zod 로 연결한다.
+      - name: Shared 체크아웃을 Client node_modules 에 연결
+        working-directory: BabMukDang-Client
+        run: |
+          rm -rf node_modules/@kimdaegyu/babmukdang-shared
+          ln -s "$GITHUB_WORKSPACE/BabMukDang-Shared" node_modules/@kimdaegyu/babmukdang-shared
+          rm -rf ../BabMukDang-Shared/node_modules/zod
+          ln -s "$PWD/node_modules/zod" ../BabMukDang-Shared/node_modules/zod
+          node -p "'linked Shared ' + require('./node_modules/@kimdaegyu/babmukdang-shared/package.json').version"
+
       - name: Type check
         working-directory: BabMukDang-Client
         run: npm run type-check
@@ -77,6 +92,21 @@ jobs:
       - name: Client 의존성 설치
         working-directory: BabMukDang-Client
         run: npm ci
+
+      # package-lock.json 은 @kimdaegyu/babmukdang-shared 를 npm 레지스트리 버전(2.0.8)으로 고정하지만,
+      # main 코드는 아직 배포되지 않은 Shared 계약(2.0.9: kakaoNative, logoutAll, KakaoLoginErrorCode,
+      # AnyEndpointContract, *InputOf 등)을 사용한다. vite 는 alias 로 ../BabMukDang-Shared/src 를 번들하지만
+      # tsc(type-check, `tsc -b`)와 Playwright 는 node_modules 를 보므로, 방금 빌드한 Shared 체크아웃으로 교체한다.
+      # 또한 심볼릭 링크를 따라가면 Shared 의 dist 가 Shared 자신의 node_modules/zod 를 해석해 zod 사본이 둘이 된다.
+      # vite.config.ts 의 `dedupe: ['zod']`/alias 와 같은 의미가 되도록 Shared 쪽 zod 를 Client 의 zod 로 연결한다.
+      - name: Shared 체크아웃을 Client node_modules 에 연결
+        working-directory: BabMukDang-Client
+        run: |
+          rm -rf node_modules/@kimdaegyu/babmukdang-shared
+          ln -s "$GITHUB_WORKSPACE/BabMukDang-Shared" node_modules/@kimdaegyu/babmukdang-shared
+          rm -rf ../BabMukDang-Shared/node_modules/zod
+          ln -s "$PWD/node_modules/zod" ../BabMukDang-Shared/node_modules/zod
+          node -p "'linked Shared ' + require('./node_modules/@kimdaegyu/babmukdang-shared/package.json').version"
 
       - name: Playwright 브라우저 설치
         working-directory: BabMukDang-Client
