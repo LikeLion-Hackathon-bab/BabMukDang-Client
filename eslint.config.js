@@ -60,6 +60,11 @@ export default tseslint.config(
             // @tanstack/query/exhaustive-deps: 쿼리 함수에서 사용하는 외부 변수는 쿼리 키에 추가하세요!
             // @tanstack/query/stable-query-client: 애플리케이션에서 하나의 쿼리 클라이언트를 생성해 사용하세요!
             // @tanstack/query/no-rest-destructuring: 쿼리의 반환에서 나머지 매개변수(...rest)를 사용하지 마세요!
+            // @stackflow/config 의 Register 는 모듈 보강(declaration merging)이라 `interface X extends Y {}` 형태가 필요하다.
+            '@typescript-eslint/no-empty-object-type': [
+                'error',
+                { allowInterfaces: 'with-single-extends' }
+            ],
             '@tanstack/query/exhaustive-deps': 'error',
             '@tanstack/query/stable-query-client': 'error',
             '@tanstack/query/no-rest-destructuring': 'warn'
