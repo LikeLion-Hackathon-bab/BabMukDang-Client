@@ -10,8 +10,9 @@ import { useState } from 'react'
 import { useKakaoLogin, useEmailLogin, useEmailSignup } from '@/apis/auth.api'
 import {
     getKakaoLoginErrorMessage,
+    getKakaoNativeLoginErrorMessage,
     sanitizeRedirectPath
-} from '@/features/auth/loginRedirect'
+} from '@/features/auth'
 
 export function StartRegisterPage() {
     const navigate = useNavigate()
@@ -49,9 +50,26 @@ export function StartRegisterPage() {
             }
         })
 
+    const { mutate: kakaoLogin, isPending: isKakaoLoginPending } =
+        useKakaoLogin({
+            onSuccess: result => {
+                // 웹은 Backend로 이동하므로 결과가 없다.
+                if (!result) return
+                navigate(
+                    result.signupRequired ? '/onboarding' : safeRedirectTo,
+                    {
+                        replace: true
+                    }
+                )
+            },
+            onError: error => {
+                setAuthError(getKakaoNativeLoginErrorMessage(error))
+            }
+        })
+
     const handleLogin = () => {
         setAuthError(null)
-        useKakaoLogin(safeRedirectTo)
+        kakaoLogin(safeRedirectTo)
     }
 
     const handleEmailLogin = () => {
@@ -123,7 +141,10 @@ export function StartRegisterPage() {
                             </button>
                         </div>
                     </div>
-                    <KakaoLoginButton handleLogin={handleLogin} />
+                    <KakaoLoginButton
+                        disabled={isKakaoLoginPending}
+                        handleLogin={handleLogin}
+                    />
                     <span className="text-caption-medium text-primary-100">
                         로그인 후 식사 취향 테스트를 완료해주세요
                     </span>
@@ -135,16 +156,19 @@ export function StartRegisterPage() {
 
 function KakaoLoginButton({
     className,
+    disabled,
     handleLogin
 }: {
     className?: string
+    disabled?: boolean
     handleLogin: () => void
 }) {
     return (
         <button
             type="button"
+            disabled={disabled}
             onClick={handleLogin}
-            className={`flex w-full cursor-pointer items-center justify-center gap-12 rounded-full bg-[#FEDC2C] py-14 pr-16 pl-17 ${className ?? ''}`}>
+            className={`flex w-full cursor-pointer items-center justify-center gap-12 rounded-full bg-[#FEDC2C] py-14 pr-16 pl-17 disabled:opacity-50 ${className ?? ''}`}>
             <KakaoIcon />
             <span className="text-body1-semibold text-gray-8">
                 카카오톡으로 시작하기

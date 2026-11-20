@@ -9,7 +9,8 @@ import {
     useGetMemberProfile,
     useGetMemberProfileDetail,
     useGetMyPreference,
-    useLogout
+    useLogout,
+    useLogoutAll
 } from '@/apis'
 import { useAuthStore } from '@/store'
 import { useNavigate } from '@/navigation'
@@ -29,6 +30,11 @@ export function ProfilePage() {
     })
     const { data: preferenceData } = useGetMyPreference()
     const { mutate: logout, isPending: isLogoutPending } = useLogout({
+        onSuccess: () => {
+            navigate('/login', { replace: true })
+        }
+    })
+    const { mutate: logoutAll, isPending: isLogoutAllPending } = useLogoutAll({
         onSuccess: () => {
             navigate('/login', { replace: true })
         }
@@ -57,6 +63,16 @@ export function ProfilePage() {
                     logout()
                 }}>
                 {isLogoutPending ? '로그아웃 중입니다' : '로그아웃'}
+            </button>
+            <button
+                className={`text-caption-regular text-black`}
+                disabled={isLogoutAllPending}
+                onClick={() => {
+                    logoutAll()
+                }}>
+                {isLogoutAllPending
+                    ? '모든 기기에서 로그아웃 중입니다'
+                    : '모든 기기에서 로그아웃'}
             </button>
             {profile ? (
                 <>

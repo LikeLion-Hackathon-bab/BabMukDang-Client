@@ -11,24 +11,45 @@
  */
 
 import { useMutation } from '@tanstack/react-query'
-import { contractClient } from './client'
+import { contractClient, requestTokenRefresh } from './client'
 import { apiContract } from '@kimdaegyu/babmukdang-shared/domain'
 import type { MutationOptions, NoContent, TokenResponse } from './types'
 import { useAuthStore } from '@/store'
 import { clearUserSession } from './queryClient'
 
-import axios from 'axios'
-import { unwrapBaseResponse } from './client'
 import type {
-    ApiResponse,
-    LoginRequest
+    LoginRequest,
+    RefreshResponse
 } from '@kimdaegyu/babmukdang-shared/domain'
 import { API_BASE_URL } from './baseUrl'
 import { pushTokenApi } from './pushToken.api'
 import { getOrCreateDeviceId } from '@/features/push/deviceId'
 import { buildKakaoWebLoginUrl } from '@/features/auth/loginRedirect'
+import {
+    KakaoAuth,
+    clearNativeAuthSession,
+    readNativeRefreshToken,
+    usesNativeAuthSession
+} from '@/features/auth/kakaoAuthPlugin'
 
 type EmailAuthRequest = LoginRequest
+
+/** 네이티브 로그인 결과. 웹은 페이지를 이동하므로 null이다. */
+export type KakaoLoginResult = {
+    accessToken: string
+    signupRequired: boolean
+} | null
+
+const revokeCurrentDevicePushToken = async () => {
+    try {
+        await pushTokenApi.revoke({
+            provider: 'FCM',
+            deviceId: getOrCreateDeviceId()
+        })
+    } catch (error) {
+        console.warn('[auth] current device push token revoke failed', error)
+    }
+}
 
 // ============================================================================
 // API 함수
@@ -39,11 +60,25 @@ type EmailAuthRequest = LoginRequest
  */
 const authApi = {
     /**
-     * 카카오 로그인 시작
-     * @param redirect - 로그인 후 돌아갈 같은 출처 상대 경로 (ADR 0008)
+     * 카카오 로그인 (ADR 0008)
+     * - 웹: Backend `/auth/kakao`로 이동한다. redirect는 같은 출처 상대 경로만 넘긴다.
+     * - 네이티브: 카카오 SDK id_token을 `/auth/kakao/native`로 보내고 refresh token은 보안 저장소에 둔다.
      */
-    login: async (redirect?: string | null) => {
-        window.location.href = buildKakaoWebLoginUrl(API_BASE_URL, redirect)
+    login: async (redirect?: string | null): Promise<KakaoLoginResult> => {
+        if (!usesNativeAuthSession()) {
+            window.location.href = buildKakaoWebLoginUrl(API_BASE_URL, redirect)
+            return null
+        }
+
+        const { idToken } = await KakaoAuth.login()
+        const tokens = await contractClient.post(apiContract.auth.kakaoNative, {
+            body: { idToken }
+        })
+        await KakaoAuth.setRefreshToken({ refreshToken: tokens.refreshToken })
+        return {
+            accessToken: tokens.accessToken,
+            signupRequired: tokens.signupRequired
+        }
     },
 
     emailLogin: async ({
@@ -71,43 +106,73 @@ const authApi = {
      * @returns 성공 응답
      */
     logout: async (): Promise<NoContent> => {
-        try {
-            await pushTokenApi.revoke({
-                provider: 'FCM',
-                deviceId: getOrCreateDeviceId()
-            })
-        } catch (error) {
-            console.warn(
-                '[auth] current device push token revoke failed',
-                error
-            )
+        await revokeCurrentDevicePushToken()
+
+        if (!usesNativeAuthSession()) {
+            return contractClient.post(apiContract.auth.logout)
         }
-        return contractClient.post(apiContract.auth.logout)
+
+        // 네이티브 세션은 쿠키가 없으므로 refresh token을 body로 보내 서버 세션을 끊는다. (ADR 0007)
+        try {
+            const refreshToken = await readNativeRefreshToken().catch(
+                () => null
+            )
+            return await contractClient.post(apiContract.auth.logout, {
+                body: refreshToken ? { refreshToken } : undefined
+            })
+        } finally {
+            await clearNativeAuthSession()
+        }
     },
 
     /**
-     * 토큰 갱신
-     * @returns 새로운 토큰 응답 (Backend DTO 직접 반환)
+     * 모든 기기에서 로그아웃
      */
-    refresh: async (): Promise<TokenResponse> => {
-        // 무한 루프 방지를 위해 인터셉터가 없는 axios 직접 사용
-        const res = await axios.post<ApiResponse<TokenResponse>>(
-            `${API_BASE_URL}${apiContract.auth.refresh.path}`,
-            {},
-            { withCredentials: true }
-        )
-        return unwrapBaseResponse(res.data)
-    }
+    logoutAll: async (): Promise<NoContent> => {
+        await revokeCurrentDevicePushToken()
+
+        try {
+            return await contractClient.post(apiContract.auth.logoutAll)
+        } finally {
+            if (usesNativeAuthSession()) {
+                await clearNativeAuthSession()
+            }
+        }
+    },
+
+    /**
+     * 토큰 갱신 (웹: 쿠키, 네이티브: 보안 저장소 refresh token body)
+     */
+    refresh: (): Promise<RefreshResponse> => requestTokenRefresh()
 }
 
 // ============================================================================
 // Mutation Hooks
 // ============================================================================
 /**
- * 카카오 로그인 redirect Hook
+ * 카카오 로그인 Hook. mutate(redirect)로 시작한다.
+ * 네이티브 로그인이 끝나면 access token을 저장하고 결과(signupRequired)를 넘긴다.
  */
-export const useKakaoLogin = (redirect?: string | null) => {
-    return (async () => await authApi.login(redirect))()
+export const useKakaoLogin = (
+    options: MutationOptions<KakaoLoginResult> = {}
+) => {
+    const { setTokens } = useAuthStore()
+
+    return useMutation({
+        mutationFn: authApi.login,
+        onSuccess: data => {
+            if (data) {
+                setTokens({ accessToken: data.accessToken })
+            }
+            options.onSuccess?.(data)
+        },
+        onError: error => {
+            options.onError?.(
+                error instanceof Error ? error : new Error('Kakao login failed')
+            )
+        },
+        onSettled: options.onSettled
+    })
 }
 
 /**
@@ -125,13 +190,13 @@ export const useKakaoLogin = (redirect?: string | null) => {
  *   }
  * })
  */
-export const useRefreshToken = (options?: MutationOptions<TokenResponse>) => {
+export const useRefreshToken = (options?: MutationOptions<RefreshResponse>) => {
     const { setTokens, accessToken } = useAuthStore()
 
     return useMutation({
         mutationFn: authApi.refresh,
         onSuccess: data => {
-            setTokens(data)
+            setTokens({ accessToken: data.accessToken })
             console.log('Token Saved ', accessToken)
             options?.onSuccess?.(data)
         },
@@ -206,6 +271,28 @@ export const useLogout = (options: MutationOptions<NoContent> = {}) => {
             )
         },
 
+        onSettled: () => {
+            clearUserSession()
+            options.onSettled?.()
+        }
+    })
+}
+
+/**
+ * 모든 기기에서 로그아웃 Hook
+ * @param options - 성공/에러 콜백
+ */
+export const useLogoutAll = (options: MutationOptions<NoContent> = {}) => {
+    return useMutation({
+        mutationFn: authApi.logoutAll,
+        onSuccess: data => {
+            options.onSuccess?.(data)
+        },
+        onError: error => {
+            options.onError?.(
+                error instanceof Error ? error : new Error('Logout all failed')
+            )
+        },
         onSettled: () => {
             clearUserSession()
             options.onSettled?.()

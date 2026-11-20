@@ -9,7 +9,8 @@ import { clearUserSession } from './queryClient'
 import {
     apiContract,
     type ApiResponse,
-    type TokenResponse
+    type RefreshRequest,
+    type RefreshResponse
 } from '@kimdaegyu/babmukdang-shared/domain'
 import type {
     EndpointContract,
@@ -19,6 +20,11 @@ import type {
 } from '@kimdaegyu/babmukdang-shared/domain'
 import type { z } from 'zod'
 import { API_BASE_URL } from './baseUrl'
+import {
+    KakaoAuth,
+    readNativeRefreshToken,
+    usesNativeAuthSession
+} from '@/features/auth/kakaoAuthPlugin'
 
 // Axios 클라이언트 인스턴스 생성
 const axiosClient = axios.create({
@@ -58,6 +64,37 @@ export function unwrapBaseResponse<T>(body: ApiResponse<T>): T {
     }
 
     return (body as unknown as { data: T }).data
+}
+
+/**
+ * access token을 갱신한다. 무한 루프 방지를 위해 인터셉터가 없는 axios를 쓴다.
+ * - 웹: httpOnly refresh 쿠키(withCredentials)만 쓴다.
+ * - 네이티브: 보안 저장소의 refresh token을 body로 보내고, 회전된 refresh token을 다시 저장한다. (ADR 0007)
+ */
+export async function requestTokenRefresh(): Promise<RefreshResponse> {
+    const isNative = usesNativeAuthSession()
+    let body: RefreshRequest = {}
+
+    if (isNative) {
+        const refreshToken = await readNativeRefreshToken()
+        if (!refreshToken) {
+            throw new Error('Native refresh token is missing')
+        }
+        body = { refreshToken }
+    }
+
+    const res = await axios.post<ApiResponse<RefreshResponse>>(
+        `${API_BASE_URL}${apiContract.auth.refresh.path}`,
+        body,
+        { withCredentials: !isNative }
+    )
+    const tokens = unwrapBaseResponse(res.data)
+
+    if (isNative && tokens.refreshToken) {
+        await KakaoAuth.setRefreshToken({ refreshToken: tokens.refreshToken })
+    }
+
+    return tokens
 }
 
 // Request Interceptor: Authorization 헤더 자동 추가
@@ -105,17 +142,7 @@ axiosClient.interceptors.response.use(
         isRefreshing = true
 
         try {
-            const refreshResponse = await axios.post<
-                ApiResponse<TokenResponse>
-            >(
-                `${API_BASE_URL}${apiContract.auth.refresh.path}`,
-                {},
-                { withCredentials: true }
-            )
-
-            const tokenData: TokenResponse = unwrapBaseResponse<TokenResponse>(
-                refreshResponse.data
-            )
+            const tokenData = await requestTokenRefresh()
 
             setTokens({
                 accessToken: tokenData.accessToken
