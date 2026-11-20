@@ -13,12 +13,14 @@ import {
     type RefreshResponse
 } from '@kimdaegyu/babmukdang-shared/domain'
 import type {
-    EndpointContract,
+    AnyEndpointContract as AnyContractEndpoint,
+    BodyInputOf as ContractBodyOf,
     HttpMethod,
+    PathParamsInputOf as ContractPathParamsOf,
+    QueryInputOf as ContractQueryOf,
     ResponseOf as ContractResponseOf,
     ApiFailure
 } from '@kimdaegyu/babmukdang-shared/domain'
-import type { z } from 'zod'
 import { API_BASE_URL } from './baseUrl'
 import {
     KakaoAuth,
@@ -168,32 +170,8 @@ axiosClient.interceptors.response.use(
 // Shared apiContract 기반 typed client
 // ============================================================================
 
-type AnyContractEndpoint = EndpointContract<
-    HttpMethod,
-    string,
-    any,
-    any,
-    any,
-    any
->
-
 type ContractEndpointByMethod<TMethod extends HttpMethod> =
     AnyContractEndpoint & { readonly method: TMethod }
-
-type ContractPathParamsOf<E extends AnyContractEndpoint> =
-    E extends EndpointContract<any, any, infer TPathParams, any, any, any>
-        ? z.input<TPathParams>
-        : never
-
-type ContractQueryOf<E extends AnyContractEndpoint> =
-    E extends EndpointContract<any, any, any, infer TQuery, any, any>
-        ? z.input<TQuery>
-        : never
-
-type ContractBodyOf<E extends AnyContractEndpoint> =
-    E extends EndpointContract<any, any, any, any, infer TBody, any>
-        ? z.input<TBody>
-        : never
 
 type RequiredKeys<T extends object> = {
     [K in keyof T]-?: {} extends Pick<T, K> ? never : K
