@@ -7,13 +7,6 @@ import type { MealPlanCardView } from '@/viewModels'
 type MyMealPlanSegmentKey = 'deciding' | 'upcoming' | 'recordNeeded' | 'past'
 type MyMealPlanGroups = Record<MyMealPlanSegmentKey, MealPlanCardView[]>
 
-const emptyGroups: MyMealPlanGroups = {
-    deciding: [],
-    upcoming: [],
-    recordNeeded: [],
-    past: []
-}
-
 const segments: Array<{
     key: MyMealPlanSegmentKey
     label: string

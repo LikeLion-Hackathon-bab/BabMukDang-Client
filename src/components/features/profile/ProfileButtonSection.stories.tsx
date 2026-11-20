@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ProfileButtonSection } from './ProfileButtonSection'
 
 const meta: Meta<typeof ProfileButtonSection> = {

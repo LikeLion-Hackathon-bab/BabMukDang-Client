@@ -7,7 +7,9 @@ import { useMealPlanStore } from '@/store/mealPlanStore'
 import { MealPlanSystemMessage } from './MealPlanSystemMessage'
 
 const senderName = (message: MealPlanChatMessageResponse) =>
-    message.sender?.username ?? message.guestNickname ?? (message.guestId ? '게스트' : '시스템')
+    message.sender?.username ??
+    message.guestNickname ??
+    (message.guestId ? '게스트' : '시스템')
 
 export function MealPlanChatPanel({
     mealPlanId,
@@ -52,7 +54,7 @@ export function MealPlanChatPanel({
                         : '참여자가 2명 이상이 되면 MealPlanChatRoom이 활성화됩니다.'}
                 </p>
             </div>
-            <div className="bg-gray-1 flex max-h-260 min-h-160 flex-col gap-10 overflow-y-auto rounded-16 p-12">
+            <div className="bg-gray-1 rounded-16 flex max-h-260 min-h-160 flex-col gap-10 overflow-y-auto p-12">
                 {messages.length === 0 ? (
                     <span className="text-caption-regular text-gray-5">
                         아직 메시지가 없습니다.
@@ -71,7 +73,7 @@ export function MealPlanChatPanel({
                                 <span className="text-caption-medium text-gray-5">
                                     {senderName(chatMessage)}
                                 </span>
-                                <p className="rounded-16 bg-white px-12 py-8 text-body2-medium text-gray-8">
+                                <p className="rounded-16 text-body2-medium text-gray-8 bg-white px-12 py-8">
                                     {chatMessage.message}
                                 </p>
                             </div>
@@ -88,13 +90,17 @@ export function MealPlanChatPanel({
                     }}
                     className="rounded-30 bg-gray-1 text-body2-medium min-w-0 flex-1 px-14 py-10 outline-none"
                     disabled={!active}
-                    placeholder={active ? '메시지 입력' : '참여자가 2명 이상일 때 사용할 수 있어요'}
+                    placeholder={
+                        active
+                            ? '메시지 입력'
+                            : '참여자가 2명 이상일 때 사용할 수 있어요'
+                    }
                 />
                 <button
                     type="button"
                     onClick={submit}
                     disabled={!active}
-                    className="rounded-30 bg-gray-8 px-16 text-caption-medium text-white disabled:opacity-40">
+                    className="rounded-30 bg-gray-8 text-caption-medium px-16 text-white disabled:opacity-40">
                     보내기
                 </button>
             </div>

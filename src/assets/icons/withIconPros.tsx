@@ -23,18 +23,24 @@ export function withIconProps<
             { strokecolor, fillcolor, bgcolor, className, style, ...rest },
             ref
         ) => {
-            const mergedStyle = {
+            const mergedStyle: React.CSSProperties &
+                Record<`--ic-${string}`, string | undefined> = {
                 ...style,
                 // (선택) CSS 변수도 같이 내려서 CSS로 강제 오버라이드할 수 있게
-                ['--ic-stroke' as any]: strokecolor,
-                ['--ic-fill' as any]: fillcolor,
-                ['--ic-bg' as any]: bgcolor
-            } as React.CSSProperties
+                '--ic-stroke': strokecolor,
+                '--ic-fill': fillcolor,
+                '--ic-bg': bgcolor
+            }
+            // T 의 구체 props 는 제네릭이라 JSX 에서 좁힐 수 없으므로, 매핑 대상 SVG props 로 본다.
+            const Svg = Comp as React.ComponentType<
+                React.SVGProps<SVGSVGElement> &
+                    ExtraProps & { ref?: React.Ref<SVGSVGElement> }
+            >
 
             return (
-                <Comp
+                <Svg
                     ref={ref}
-                    {...(rest as any)}
+                    {...rest}
                     bgcolor={bgcolor}
                     strokecolor={strokecolor}
                     fillcolor={fillcolor}
@@ -44,6 +50,6 @@ export function withIconProps<
             )
         }
     )
-    Wrapped.displayName = `WithIconProps(${(Comp as any).displayName || Comp.name || 'Icon'})`
+    Wrapped.displayName = `WithIconProps(${Comp.displayName || Comp.name || 'Icon'})`
     return Wrapped
 }

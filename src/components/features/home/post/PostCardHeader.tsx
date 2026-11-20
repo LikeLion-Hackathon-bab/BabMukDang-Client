@@ -51,14 +51,6 @@ export const PostCardHeader = ({
     )
 }
 
-const moreTagged = (tags?: number[]) => {
-    if (!tags) return []
-    if (tags.length > 2) {
-        return [tags[0], `${tags[1]} 외 ${tags.length - 2}명`]
-    }
-    return tags
-}
-
 const formatTime = (time: string) => {
     const date = new Date(time)
     // 24시간 전이 최대

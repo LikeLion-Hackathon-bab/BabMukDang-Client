@@ -4,7 +4,10 @@
  * DecisionSessionProvider hydrates the store and keeps the socket lifecycle separate.
  */
 import { useMemo } from 'react'
-import { getMealPlanDecisionCandidateKey, MealPlanDecisionCandidateSchema } from '@kimdaegyu/babmukdang-shared/domain'
+import {
+    getMealPlanDecisionCandidateKey,
+    MealPlanDecisionCandidateSchema
+} from '@kimdaegyu/babmukdang-shared/domain'
 import type {
     MealPlanDecisionCandidate,
     MealPlanDecisionStageResponse,
@@ -41,7 +44,7 @@ export function formatDateLabel(iso: string): string {
 }
 
 export function formatTimeLabel(hhmm: string): string {
-    const [h, m] = hhmm.split(':')
+    const [h] = hhmm.split(':')
     const hour = Number(h)
     if (Number.isNaN(hour)) return hhmm
     const period =

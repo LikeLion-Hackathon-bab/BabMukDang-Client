@@ -6,19 +6,13 @@ import {
     switchMap,
     takeUntil,
     map,
-    share,
     first,
     withLatestFrom,
     startWith,
     throttleTime,
-    interval,
-    takeWhile,
-    of,
-    concat,
-    defer,
-    animationFrameScheduler,
     filter,
-    tap
+    tap,
+    type Subscription
 } from 'rxjs'
 
 interface UseCarouselOptions {
@@ -50,7 +44,8 @@ interface UseCarouselReturn {
 export function useCarousel({
     itemCount,
     threshold = 30,
-    duration = 300,
+    // 애니메이션은 CSS transition 으로 처리하므로 현재 사용하지 않는다(옵션 호환을 위해 유지).
+    duration: _duration = 300,
     autoPlay = false,
     autoPlayInterval = 3000,
     gap = 16,
@@ -65,12 +60,11 @@ export function useCarousel({
     const [cardWidth, setCardWidth] = useState(0)
 
     const totalCardWidth = cardWidth + gap
-    const totalWidth = totalCardWidth * itemCount
     const [translateX, setTranslateX] = useState(initialPosition)
     const [currentIndex, setCurrentIndex] = useState(0)
     const [isDragging, setIsDragging] = useState(false)
     const autoPlayRef = useRef<number>(0)
-    const subscriptionRef = useRef<any>(null)
+    const subscriptionRef = useRef<Subscription | null>(null)
 
     // 드래그/클릭 상태 추적
     const dragStateRef = useRef({
@@ -86,21 +80,6 @@ export function useCarousel({
         end: SUPPORT_TOUCH ? 'touchend' : 'mouseup'
     }
 
-    // RxJS 애니메이션 함수
-    const createAnimation = (from: number, to: number) => {
-        return defer(() => {
-            const scheduler = animationFrameScheduler
-            const start = scheduler.now()
-            let animation$ = interval(0, scheduler).pipe(
-                map(() => (scheduler.now() - start) / duration),
-                takeWhile(progress => progress <= 1)
-            )
-            animation$ = concat(animation$, of(1)).pipe(
-                map(rate => from + (to - from) * rate)
-            )
-            return animation$
-        })
-    }
     // 카드 클릭 핸들러
     const handleCardClick = (
         index: number,
@@ -150,15 +129,15 @@ export function useCarousel({
     const streamFactory = useCallback(
         (container: HTMLDivElement) => {
             // 위치 추출 함수
-            const toPos = (event: any) => {
+            const toPos = (event: Event): number => {
                 return SUPPORT_TOUCH
-                    ? event.changedTouches[0].clientX
-                    : event.clientX
+                    ? (event as TouchEvent).changedTouches[0].clientX
+                    : (event as MouseEvent).clientX
             }
 
             // 이벤트 스트림 생성
             const start$ = fromEvent(container, EVENTS.start).pipe(
-                map((e: any) => {
+                map((e: Event) => {
                     e.preventDefault()
                     const startX = toPos(e)
                     dragStateRef.current = {
@@ -171,14 +150,14 @@ export function useCarousel({
             )
 
             const move$ = fromEvent(container, EVENTS.move).pipe(
-                map((e: any) => {
+                map((e: Event) => {
                     e.preventDefault()
                     return toPos(e)
                 })
             )
 
             const end$ = fromEvent(container, EVENTS.end).pipe(
-                map((e: any) => {
+                map((e: Event) => {
                     e.preventDefault()
                     return toPos(e)
                 })
@@ -285,7 +264,12 @@ export function useCarousel({
                     const { distance, type } = event
                     const size = 'size' in event ? event.size : undefined
 
-                    const updateStore: any = {
+                    const updateStore: {
+                        from: number
+                        to?: number
+                        index?: number
+                        size?: number
+                    } = {
                         from:
                             -(store.index * totalCardWidth) +
                             (containerWidth / 2 - totalCardWidth / 2) +

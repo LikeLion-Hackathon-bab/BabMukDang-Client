@@ -19,7 +19,7 @@ export const ChatInput = forwardRef<
             handleKeyPress,
             handleSendMessage
         },
-        ref
+        _ref
     ) => {
         return (
             <div className="shadow-drop-1 flex w-full items-center justify-between rounded-full bg-white px-16 py-8">

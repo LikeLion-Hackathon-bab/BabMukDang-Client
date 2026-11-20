@@ -11,7 +11,7 @@ const mockBanners = [
 ]
 
 export const HomeMeetingBanner = () => {
-    const { containerRef, cardRef, translateX, currentIndex } = useCarousel({
+    const { containerRef, cardRef, translateX } = useCarousel({
         itemCount: mockBanners.length,
         gap: 10
     })

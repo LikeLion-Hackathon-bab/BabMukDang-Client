@@ -1,27 +1,15 @@
-/// <reference types="vitest/config" />
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import { configDefaults } from 'vitest/config'
 import svgr from 'vite-plugin-svgr'
 import path from 'node:path'
-import fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
-import { storybookTest } from '@storybook/addon-vitest/vitest-plugin'
-import { playwright } from '@vitest/browser-playwright'
 const dirname =
     typeof __dirname !== 'undefined'
         ? __dirname
         : path.dirname(fileURLToPath(import.meta.url))
 const sharedDomainDir = path.resolve(dirname, '../BabMukDang-Shared/src/domain')
-const storybookConfigDir = path.join(dirname, '.storybook')
-const hasStorybookConfig =
-    fs.existsSync(path.join(storybookConfigDir, 'main.ts')) ||
-    fs.existsSync(path.join(storybookConfigDir, 'main.js')) ||
-    fs.existsSync(path.join(storybookConfigDir, 'main.mjs')) ||
-    fs.existsSync(path.join(storybookConfigDir, 'main.cjs'))
-
-const storybookProjects = [] as const
 
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({

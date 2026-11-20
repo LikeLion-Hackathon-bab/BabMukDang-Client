@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { MenuCard } from './MenuCard'
 
 const meta: Meta<typeof MenuCard> = {

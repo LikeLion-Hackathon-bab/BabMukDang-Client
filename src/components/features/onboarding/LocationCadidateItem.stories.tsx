@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { LocationCadidateItem } from './LocationCadidateItem'
 
 const meta: Meta<typeof LocationCadidateItem> = {

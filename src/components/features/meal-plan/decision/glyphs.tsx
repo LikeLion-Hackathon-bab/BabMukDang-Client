@@ -123,15 +123,33 @@ export function Glyph({
         case 'calendar':
             return (
                 <svg {...base(size)}>
-                    <rect x="4" y="5.5" width="16" height="15" rx="2.5" {...s} />
-                    <path d="M4 9.5h16M8 3.5v4M16 3.5v4" {...s} />
+                    <rect
+                        x="4"
+                        y="5.5"
+                        width="16"
+                        height="15"
+                        rx="2.5"
+                        {...s}
+                    />
+                    <path
+                        d="M4 9.5h16M8 3.5v4M16 3.5v4"
+                        {...s}
+                    />
                 </svg>
             )
         case 'time':
             return (
                 <svg {...base(size)}>
-                    <circle cx="12" cy="12" r="8" {...s} />
-                    <path d="M12 7.5V12l3 2" {...s} />
+                    <circle
+                        cx="12"
+                        cy="12"
+                        r="8"
+                        {...s}
+                    />
+                    <path
+                        d="M12 7.5V12l3 2"
+                        {...s}
+                    />
                 </svg>
             )
         case 'location':
@@ -141,42 +159,85 @@ export function Glyph({
                         d="M12 21c4.5-4.2 7-7.4 7-10.6A7 7 0 0 0 5 10.4C5 13.6 7.5 16.8 12 21z"
                         {...s}
                     />
-                    <circle cx="12" cy="10.3" r="2.4" {...s} />
+                    <circle
+                        cx="12"
+                        cy="10.3"
+                        r="2.4"
+                        {...s}
+                    />
                 </svg>
             )
         case 'dish':
             return (
                 <svg {...base(size)}>
-                    <circle cx="12" cy="12" r="8" {...s} />
-                    <circle cx="12" cy="12" r="3.2" {...s} />
+                    <circle
+                        cx="12"
+                        cy="12"
+                        r="8"
+                        {...s}
+                    />
+                    <circle
+                        cx="12"
+                        cy="12"
+                        r="3.2"
+                        {...s}
+                    />
                 </svg>
             )
         case 'meeting':
             return (
                 <svg {...base(size)}>
-                    <path d="M6 3.5v7M9 3.5v7M7.5 10.5V21M6 3.5h3" {...s} />
-                    <path d="M16.5 3.5c-1.5 0-2.5 2-2.5 5s1 4 2.5 4V21" {...s} />
+                    <path
+                        d="M6 3.5v7M9 3.5v7M7.5 10.5V21M6 3.5h3"
+                        {...s}
+                    />
+                    <path
+                        d="M16.5 3.5c-1.5 0-2.5 2-2.5 5s1 4 2.5 4V21"
+                        {...s}
+                    />
                 </svg>
             )
         case 'people':
             return (
                 <svg {...base(size)}>
-                    <circle cx="9" cy="8.5" r="3" {...s} />
-                    <path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5" {...s} />
-                    <path d="M16 6.2a3 3 0 0 1 0 5.6M17 14.2c2.2.5 3.8 2.3 3.8 4.8" {...s} />
+                    <circle
+                        cx="9"
+                        cy="8.5"
+                        r="3"
+                        {...s}
+                    />
+                    <path
+                        d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"
+                        {...s}
+                    />
+                    <path
+                        d="M16 6.2a3 3 0 0 1 0 5.6M17 14.2c2.2.5 3.8 2.3 3.8 4.8"
+                        {...s}
+                    />
                 </svg>
             )
         case 'search':
             return (
                 <svg {...base(size)}>
-                    <circle cx="11" cy="11" r="6" {...s} />
-                    <path d="M15.5 15.5L20 20" {...s} />
+                    <circle
+                        cx="11"
+                        cy="11"
+                        r="6"
+                        {...s}
+                    />
+                    <path
+                        d="M15.5 15.5L20 20"
+                        {...s}
+                    />
                 </svg>
             )
         case 'add':
             return (
                 <svg {...base(size)}>
-                    <path d="M12 5v14M5 12h14" {...s} />
+                    <path
+                        d="M12 5v14M5 12h14"
+                        {...s}
+                    />
                 </svg>
             )
         case 'comment':
@@ -191,38 +252,59 @@ export function Glyph({
         case 'send':
             return (
                 <svg {...base(size)}>
-                    <path d="M5 12l15-7-7 15-2.5-5.5L5 12z" {...s} />
+                    <path
+                        d="M5 12l15-7-7 15-2.5-5.5L5 12z"
+                        {...s}
+                    />
                 </svg>
             )
         case 'modify':
             return (
                 <svg {...base(size)}>
-                    <path d="M5 19h3l10-10-3-3L5 16v3z" {...s} />
-                    <path d="M14 6l3 3" {...s} />
+                    <path
+                        d="M5 19h3l10-10-3-3L5 16v3z"
+                        {...s}
+                    />
+                    <path
+                        d="M14 6l3 3"
+                        {...s}
+                    />
                 </svg>
             )
         case 'up':
             return (
                 <svg {...base(size)}>
-                    <path d="M6 15l6-6 6 6" {...s} />
+                    <path
+                        d="M6 15l6-6 6 6"
+                        {...s}
+                    />
                 </svg>
             )
         case 'down':
             return (
                 <svg {...base(size)}>
-                    <path d="M6 9l6 6 6-6" {...s} />
+                    <path
+                        d="M6 9l6 6 6-6"
+                        {...s}
+                    />
                 </svg>
             )
         case 'arrow':
             return (
                 <svg {...base(size)}>
-                    <path d="M5 12h14M13 6l6 6-6 6" {...s} />
+                    <path
+                        d="M5 12h14M13 6l6 6-6 6"
+                        {...s}
+                    />
                 </svg>
             )
         case 'back':
             return (
                 <svg {...base(size)}>
-                    <path d="M19 12H5M11 6l-6 6 6 6" {...s} />
+                    <path
+                        d="M19 12H5M11 6l-6 6 6 6"
+                        {...s}
+                    />
                 </svg>
             )
         default:

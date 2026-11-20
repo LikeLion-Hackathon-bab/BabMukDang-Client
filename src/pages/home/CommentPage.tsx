@@ -48,11 +48,7 @@ export function CommentPage() {
         }
     }
 
-    const {
-        data: commentsData,
-        error,
-        refetch
-    } = useGetArticleComments(articleId)
+    const { data: commentsData, refetch } = useGetArticleComments(articleId)
     const [comments, setComments] = useState<TreeComment[]>([])
     const [totalCommentCount, setTotalCommentCount] = useState(0)
     useEffect(() => {

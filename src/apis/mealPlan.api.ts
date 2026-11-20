@@ -233,8 +233,8 @@ export const mealPlanApi = {
         const summary = await contractClient.post(
             apiContract.mealPlans.createShareLink,
             {
-            pathParams: { mealPlanId: domainId.mealPlan(mealPlanId) },
-            body
+                pathParams: { mealPlanId: domainId.mealPlan(mealPlanId) },
+                body
             }
         )
         return mapShareLinkSummary(summary)
@@ -780,7 +780,7 @@ export const useRejectMealPlanJoinRequest = (
             queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.map })
             options.onSuccess?.(data)
         },
-        onSettled: (data, error, requestId, context) => {
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: queryKeys.mealPlans.all })
             options.onSettled?.()
         }

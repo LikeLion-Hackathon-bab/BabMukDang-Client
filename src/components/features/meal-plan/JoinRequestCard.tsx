@@ -14,7 +14,7 @@ export function JoinRequestCard({
     onReject
 }: Props) {
     return (
-        <article className="rounded-16 border border-gray-2 p-12">
+        <article className="rounded-16 border-gray-2 border p-12">
             <div className="flex items-start justify-between gap-12">
                 <div>
                     <p className="text-body2-semibold text-gray-8">
@@ -24,7 +24,7 @@ export function JoinRequestCard({
                         {request.message || '메시지 없이 참여를 요청했어요.'}
                     </p>
                 </div>
-                <span className="rounded-20 bg-primary-100 px-10 py-4 text-caption-medium text-primary-600">
+                <span className="rounded-20 bg-primary-100 text-caption-medium text-primary-600 px-10 py-4">
                     요청 중
                 </span>
             </div>
@@ -34,7 +34,7 @@ export function JoinRequestCard({
                     data-testid={`meal-plan-join-request-accept-${request.joinRequestId}`}
                     disabled={disabled}
                     onClick={() => onAccept(request.joinRequestId)}
-                    className="rounded-24 bg-gray-8 py-9 text-caption-medium text-white disabled:opacity-40">
+                    className="rounded-24 bg-gray-8 text-caption-medium py-9 text-white disabled:opacity-40">
                     수락
                 </button>
                 <button
@@ -42,7 +42,7 @@ export function JoinRequestCard({
                     data-testid={`meal-plan-join-request-reject-${request.joinRequestId}`}
                     disabled={disabled}
                     onClick={() => onReject(request.joinRequestId)}
-                    className="rounded-24 bg-gray-2 py-9 text-caption-medium text-gray-7 disabled:opacity-40">
+                    className="rounded-24 bg-gray-2 text-caption-medium text-gray-7 py-9 disabled:opacity-40">
                     거절
                 </button>
             </div>

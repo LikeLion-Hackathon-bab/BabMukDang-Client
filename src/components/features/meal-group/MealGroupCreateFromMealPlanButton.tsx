@@ -13,7 +13,10 @@ export function MealGroupCreateFromMealPlanButton({
     const memberIds = mealPlan.participants
         .filter(participant => ['JOINED', 'READY'].includes(participant.status))
         .map(participant => participant.member?.memberId)
-        .filter((memberId): memberId is NonNullable<typeof memberId> => typeof memberId === 'number')
+        .filter(
+            (memberId): memberId is NonNullable<typeof memberId> =>
+                typeof memberId === 'number'
+        )
         .map(memberId => Number(memberId))
     const canCreate = mealPlan.status === 'RECORDED' && memberIds.length > 0
     const createGroup = useCreateMealGroup({
@@ -30,7 +33,7 @@ export function MealGroupCreateFromMealPlanButton({
                 <h2 className="text-body1-semibold text-gray-8">
                     이 멤버로 MealGroup 만들기
                 </h2>
-                <p className="text-caption-regular mt-4 text-gray-5">
+                <p className="text-caption-regular text-gray-5 mt-4">
                     기록된 밥약 참여자 묶음을 반복 식사 그룹으로 저장합니다.
                 </p>
             </div>

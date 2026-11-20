@@ -130,9 +130,10 @@ export function ReadyFooter({
                     height: 48,
                     borderRadius: 9999,
                     border: 'none',
-                    background: isCustomPrimaryAction || isSelfReady
-                        ? 'var(--color-primary-main)'
-                        : 'var(--color-gray-8)',
+                    background:
+                        isCustomPrimaryAction || isSelfReady
+                            ? 'var(--color-primary-main)'
+                            : 'var(--color-gray-8)',
                     color: '#fff',
                     fontSize: 15,
                     fontWeight: 700,

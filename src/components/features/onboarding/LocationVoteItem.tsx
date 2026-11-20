@@ -5,7 +5,7 @@ export function LocationVoteItem({
     handleLocationSelect,
     isSelected
 }: {
-    location: any
+    location: { id: string; address: string; placeName?: string }
     handleLocationSelect: (id: string) => void
     isSelected: boolean
 }) {

@@ -232,7 +232,9 @@ export function Segmented({
                             borderRadius: 'var(--radius-sm)',
                             whiteSpace: 'nowrap',
                             border: 'none',
-                            background: on ? 'var(--color-white)' : 'transparent',
+                            background: on
+                                ? 'var(--color-white)'
+                                : 'transparent',
                             color: on
                                 ? 'var(--color-gray-8)'
                                 : 'var(--color-gray-4)',
@@ -341,14 +343,20 @@ export function Avatar({
                 color: 'var(--color-gray-6)',
                 fontSize: size * 0.4,
                 fontWeight: 700,
-                boxShadow: ring ? `0 0 0 2px var(--color-primary-main)` : 'none',
+                boxShadow: ring
+                    ? `0 0 0 2px var(--color-primary-main)`
+                    : 'none',
                 overflow: 'hidden'
             }}>
             {person?.imageUrl ? (
                 <img
                     src={person.imageUrl}
                     alt=""
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover'
+                    }}
                 />
             ) : (
                 initial
@@ -379,7 +387,11 @@ export function AvatarStack({
                         opacity: p.ready === false ? 0.45 : 1,
                         filter: p.ready === false ? 'grayscale(0.4)' : 'none'
                     }}>
-                    <Avatar person={p} size={size} ring={p.ready} />
+                    <Avatar
+                        person={p}
+                        size={size}
+                        ring={p.ready}
+                    />
                 </div>
             ))}
             {people.length > max && (
@@ -421,7 +433,9 @@ export function ReadyMeter({
 }) {
     const pct = total ? Math.round((ready / total) * 100) : 0
     return (
-        <div className="flex flex-col" style={{ gap: 8 }}>
+        <div
+            className="flex flex-col"
+            style={{ gap: 8 }}>
             <div className="flex items-center justify-between">
                 <span
                     style={{
@@ -434,7 +448,12 @@ export function ReadyMeter({
                     </span>
                     /{total}명 준비됨
                 </span>
-                {!compact && <AvatarStack people={people} size={24} />}
+                {!compact && (
+                    <AvatarStack
+                        people={people}
+                        size={24}
+                    />
+                )}
             </div>
             <div
                 style={{
@@ -524,7 +543,9 @@ export function VoteControls({
     }
 
     return (
-        <div className="flex" style={{ gap: 6 }}>
+        <div
+            className="flex"
+            style={{ gap: 6 }}>
             <button
                 type="button"
                 disabled={disabled}
@@ -564,7 +585,10 @@ export function VoteControls({
                             : 'var(--color-gray-8)',
                     color: '#fff'
                 }}>
-                <CheckGlyph size={size === 'lg' ? 17 : 14} color="#fff" />
+                <CheckGlyph
+                    size={size === 'lg' ? 17 : 14}
+                    color="#fff"
+                />
                 선택
             </button>
             <button
@@ -626,9 +650,15 @@ export function InlineBanner({
                     placeItems: 'center',
                     marginTop: 1
                 }}>
-                <Glyph name={icon} size={14} color={t.fg} />
+                <Glyph
+                    name={icon}
+                    size={14}
+                    color={t.fg}
+                />
             </div>
-            <div className="min-w-0" style={{ flex: 1 }}>
+            <div
+                className="min-w-0"
+                style={{ flex: 1 }}>
                 <div
                     style={{
                         fontSize: 13,
@@ -680,7 +710,10 @@ export function DependencyHint({ children }: { children: ReactNode }) {
                 borderRadius: 'var(--radius-md)',
                 padding: '9px 11px'
             }}>
-            <LockGlyph size={13} color="var(--color-gray-4)" />
+            <LockGlyph
+                size={13}
+                color="var(--color-gray-4)"
+            />
             <span
                 style={{
                     fontSize: 12,

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import { ProfilePage } from './ProfilePage'
 
@@ -31,4 +31,3 @@ export const WithUserProfile: Story = {
         }
     }
 }
-

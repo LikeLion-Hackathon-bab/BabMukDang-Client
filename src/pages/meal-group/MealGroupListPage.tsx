@@ -30,7 +30,7 @@ export function MealGroupListPage() {
                     />
                 ))
             ) : (
-                <div className="rounded-20 bg-white p-16 text-caption-regular text-gray-5">
+                <div className="rounded-20 text-caption-regular text-gray-5 bg-white p-16">
                     아직 MealGroup이 없습니다.
                 </div>
             )}

@@ -7,7 +7,7 @@ interface TabHeaderProps {
 export function TabHeader({ tabs, activeTab, onTabChange }: TabHeaderProps) {
     return (
         <div className="flex w-full flex-row justify-center bg-white pt-12">
-            {tabs.map((tab, index) => (
+            {tabs.map(tab => (
                 <div
                     key={tab.key}
                     className="flex flex-1 cursor-pointer flex-col items-center"

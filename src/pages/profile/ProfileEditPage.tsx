@@ -164,7 +164,7 @@ export function ProfileEditPage() {
         let nextProfileImageUrl = profileImageUrl
 
         if (selectedFile) {
-            let result = await uploadProfilePhoto(selectedFile)
+            const result = await uploadProfilePhoto(selectedFile)
             if (result) {
                 nextProfileImageUrl = result
                 setProfileImageUrl(nextProfileImageUrl)

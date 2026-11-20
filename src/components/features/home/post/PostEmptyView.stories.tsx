@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { PostEmptyView } from './PostEmptyView'
 
 const meta: Meta<typeof PostEmptyView> = {

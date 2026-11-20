@@ -22,13 +22,18 @@ export function PushPermissionCta() {
         try {
             const registration = await requestPushTokenRegistration()
             if (!registration) {
-                if (typeof window === 'undefined' || !('Notification' in window)) {
+                if (
+                    typeof window === 'undefined' ||
+                    !('Notification' in window)
+                ) {
                     setState('unsupported')
                     setMessage('이 환경에서는 푸시 알림을 지원하지 않습니다.')
                     return
                 }
 
-                setState(Notification.permission === 'denied' ? 'denied' : 'error')
+                setState(
+                    Notification.permission === 'denied' ? 'denied' : 'error'
+                )
                 setMessage(
                     Notification.permission === 'denied'
                         ? '브라우저 또는 앱 설정에서 알림 권한을 허용해야 합니다.'
@@ -55,16 +60,16 @@ export function PushPermissionCta() {
             <p className="text-15 font-semibold text-gray-900">
                 밥약 알림을 놓치지 않도록 푸시 알림을 켜주세요.
             </p>
-            <p className="mt-6 text-13 leading-20 text-gray-600">
-                초대, 참여 요청, 확정된 밥약 시간, 기록 필요 알림을 앱 밖에서도 받을 수 있습니다.
+            <p className="text-13 mt-6 leading-20 text-gray-600">
+                초대, 참여 요청, 확정된 밥약 시간, 기록 필요 알림을 앱 밖에서도
+                받을 수 있습니다.
             </p>
-            {message && <p className="mt-8 text-12 text-gray-600">{message}</p>}
+            {message && <p className="text-12 mt-8 text-gray-600">{message}</p>}
             <button
                 type="button"
                 onClick={requestPermission}
                 disabled={state === 'requesting' || state === 'registered'}
-                className="mt-12 rounded-full bg-[#FF7A1A] px-16 py-8 text-13 font-semibold text-white disabled:bg-gray-300"
-            >
+                className="text-13 mt-12 rounded-full bg-[#FF7A1A] px-16 py-8 font-semibold text-white disabled:bg-gray-300">
                 {state === 'requesting'
                     ? '설정 중입니다'
                     : state === 'registered'

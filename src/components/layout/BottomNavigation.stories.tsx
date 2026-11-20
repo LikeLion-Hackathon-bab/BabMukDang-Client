@@ -1,8 +1,10 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { BottomNavigation } from './BottomNavigation'
 
+type MockIconProps = React.SVGProps<SVGSVGElement> & { strokecolor?: string }
+
 // Mock icons
-const MockHomeIcon = (props: any) => (
+const MockHomeIcon = (props: MockIconProps) => (
     <svg
         {...props}
         viewBox="0 0 24 24"
@@ -13,7 +15,7 @@ const MockHomeIcon = (props: any) => (
     </svg>
 )
 
-const MockMatchIcon = (props: any) => (
+const MockMatchIcon = (props: MockIconProps) => (
     <svg
         {...props}
         viewBox="0 0 24 24"
@@ -28,7 +30,7 @@ const MockMatchIcon = (props: any) => (
     </svg>
 )
 
-const MockProfileIcon = (props: any) => (
+const MockProfileIcon = (props: MockIconProps) => (
     <svg
         {...props}
         viewBox="0 0 24 24"

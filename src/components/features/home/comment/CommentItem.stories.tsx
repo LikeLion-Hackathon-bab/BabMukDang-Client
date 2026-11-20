@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { CommentItem } from './CommentItem'
 
 const meta: Meta<typeof CommentItem> = {

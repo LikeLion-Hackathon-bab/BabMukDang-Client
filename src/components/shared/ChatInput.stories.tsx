@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { useState } from 'react'
 
 import { ChatInput } from './ChatInput'
@@ -24,7 +24,8 @@ const meta: Meta<typeof ChatInput> = {
             action: 'handleSendMessage',
             description: '메시지 전송 핸들러'
         }
-    },    decorators: [
+    },
+    decorators: [
         Story => (
             <div className="w-full max-w-400 p-20">
                 <Story />

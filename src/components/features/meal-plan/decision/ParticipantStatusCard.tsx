@@ -15,20 +15,28 @@ const STATUS_PILL: Record<string, { tone: Tone; label: string }> = {
 
 export function ParticipantStatusCard() {
     const participants = useMealPlanStore(state => state.participants)
-    const { readyCount, participantCount, participants: people } =
-        useDecisionStages()
+    const {
+        readyCount,
+        participantCount,
+        participants: people
+    } = useDecisionStages()
     const shown = participants.filter(
         p => !['LEFT', 'REMOVED', 'DECLINED'].includes(p.status)
     )
 
     return (
-        <Card tint pad={12} style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <Card
+            tint
+            pad={12}
+            style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <ReadyMeter
                 ready={readyCount}
                 total={participantCount}
                 people={people}
             />
-            <div className="flex flex-wrap" style={{ gap: 6 }}>
+            <div
+                className="flex flex-wrap"
+                style={{ gap: 6 }}>
                 {shown.map(p => {
                     const meta = STATUS_PILL[p.status] ?? STATUS_PILL.JOINED
                     const name =

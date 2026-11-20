@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 
 import { JoinCompleteModal } from './JoinCompleteModal'
 
@@ -95,4 +95,3 @@ export const Closed: Story = {
         acceptText: '확인하러 가기'
     }
 }
-

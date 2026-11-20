@@ -13,7 +13,7 @@ import { apiSuccess } from './response'
 const BASE_URL = API_BASE_URL
 
 // 현재 쿠폰 목록 (mutatable for testing)
-let currentCoupons = [...mockCouponResponses]
+const currentCoupons = [...mockCouponResponses]
 
 /**
  * Coupon 관련 MSW request handlers

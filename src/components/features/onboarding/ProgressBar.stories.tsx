@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { ProgressBar } from './ProgressBar'
 
 const meta: Meta<typeof ProgressBar> = {
@@ -20,4 +20,3 @@ export const MealPlanDecisionStart: Story = {}
 export const MealPlanDecisionMiddle: Story = {}
 
 export const MealPlanDecisionEnd: Story = {}
-

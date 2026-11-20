@@ -28,5 +28,10 @@ export function usePageChrome(config: LayoutChromeConfig) {
         return () => {
             clearPageChromeConfig(activityId)
         }
-    }, [activity?.activityId, clearPageChromeConfig, config, setPageChromeConfig])
+    }, [
+        activity?.activityId,
+        clearPageChromeConfig,
+        config,
+        setPageChromeConfig
+    ])
 }

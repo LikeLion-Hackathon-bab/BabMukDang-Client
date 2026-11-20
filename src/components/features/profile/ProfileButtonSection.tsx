@@ -1,8 +1,7 @@
 export function ProfileButtonSection({
     friends,
     completedMeetings,
-    uncompletedMeetings,
-    challengeCount
+    uncompletedMeetings
 }: {
     friends: number
     completedMeetings: number

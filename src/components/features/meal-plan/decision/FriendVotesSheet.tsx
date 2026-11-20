@@ -51,7 +51,9 @@ export function FriendVotesSheet({
             title={`친구별 투표 · ${STAGE_KO[stageType]}`}
             hint="이 단계에서 누가 무엇을 골랐는지 한눈에 봐요."
             onClose={onClose}>
-            <Card pad={4} style={{ padding: '2px 14px' }}>
+            <Card
+                pad={4}
+                style={{ padding: '2px 14px' }}>
                 {active.map((p, idx) => {
                     const name =
                         p.member?.username ?? p.guest?.nickname ?? '게스트'
@@ -96,7 +98,9 @@ export function FriendVotesSheet({
                                         </span>
                                         <RoleChip role={p.role} />
                                         {ready && (
-                                            <Pill tone="green" dot>
+                                            <Pill
+                                                tone="green"
+                                                dot>
                                                 준비됨
                                             </Pill>
                                         )}

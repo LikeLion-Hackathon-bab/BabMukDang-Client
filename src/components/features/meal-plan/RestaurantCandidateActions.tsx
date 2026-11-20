@@ -1,8 +1,5 @@
 import { Link } from '@/navigation'
-import {
-    useCompleteMealPlanStage,
-    type MealMapMarker
-} from '@/apis'
+import { useCompleteMealPlanStage, type MealMapMarker } from '@/apis'
 import { useMealPlanDecisionVote } from '@/socket/useMealPlanDecisionVote'
 import type { MealPlanDecisionCandidate } from '@kimdaegyu/babmukdang-shared/domain'
 
@@ -45,21 +42,18 @@ export function RestaurantCandidateActions({
     const candidate = toRestaurantCandidate(marker)
     const stageId = marker.metadata.stageId
     const canVote = Boolean(
-        marker.mealPlanId &&
-            stageId &&
-            candidate &&
-            marker.metadata.canVote
+        marker.mealPlanId && stageId && candidate && marker.metadata.canVote
     )
     const canComplete = Boolean(
         marker.mealPlanId &&
-            stageId &&
-            candidate &&
-            marker.metadata.canCompleteStage
+        stageId &&
+        candidate &&
+        marker.metadata.canCompleteStage
     )
     const blockedReason = marker.metadata.completionBlockedReason
     const blockedMessage = blockedReason
-        ? blockedReasonMessage[blockedReason] ??
-          '현재 조건에서는 식당 후보를 최종 선택할 수 없습니다.'
+        ? (blockedReasonMessage[blockedReason] ??
+          '현재 조건에서는 식당 후보를 최종 선택할 수 없습니다.')
         : null
 
     return (
@@ -81,7 +75,7 @@ export function RestaurantCandidateActions({
                             }
                         })
                     }}
-                    className="rounded-20 bg-gray-8 px-12 py-7 text-caption-medium text-white disabled:bg-gray-3 disabled:text-gray-5">
+                    className="rounded-20 bg-gray-8 text-caption-medium disabled:bg-gray-3 disabled:text-gray-5 px-12 py-7 text-white">
                     식당 후보 투표
                 </button>
                 <button
@@ -99,13 +93,13 @@ export function RestaurantCandidateActions({
                             }
                         })
                     }}
-                    className="rounded-20 bg-primary-main px-12 py-7 text-caption-medium text-white disabled:bg-gray-3 disabled:text-gray-5">
+                    className="rounded-20 bg-primary-main text-caption-medium disabled:bg-gray-3 disabled:text-gray-5 px-12 py-7 text-white">
                     선택 완료
                 </button>
                 {marker.href && (
                     <Link
                         to={marker.href}
-                        className="rounded-20 border border-gray-3 px-12 py-7 text-caption-medium text-gray-7">
+                        className="rounded-20 border-gray-3 text-caption-medium text-gray-7 border px-12 py-7">
                         결정 화면에서 보기
                     </Link>
                 )}

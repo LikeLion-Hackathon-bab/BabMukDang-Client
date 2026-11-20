@@ -58,19 +58,21 @@ export function Layout({ children, showBottomNavigation = true }: LayoutProps) {
 
     const chrome = useMemo(
         () =>
-            resolveLayoutChromeConfig(
-                routeChromeConfig,
-                activityChrome?.page
-            ),
+            resolveLayoutChromeConfig(routeChromeConfig, activityChrome?.page),
         [activityChrome?.page, routeChromeConfig]
     )
-    const isBottomNavigationVisible = showBottomNavigation && chrome.bottomNav.visible
+    const isBottomNavigationVisible =
+        showBottomNavigation && chrome.bottomNav.visible
     const mainClassName = chrome.content.fullBleed
         ? 'relative min-h-0 flex-1 overflow-hidden'
         : [
               'relative min-h-0 flex-1 overflow-x-hidden px-20',
-              chrome.content.scrollable ? 'overflow-y-auto' : 'overflow-y-hidden',
-              chrome.content.bottomInset && isBottomNavigationVisible ? 'pb-90' : ''
+              chrome.content.scrollable
+                  ? 'overflow-y-auto'
+                  : 'overflow-y-hidden',
+              chrome.content.bottomInset && isBottomNavigationVisible
+                  ? 'pb-90'
+                  : ''
           ].join(' ')
 
     return (

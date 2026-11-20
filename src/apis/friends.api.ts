@@ -17,15 +17,7 @@ import { contractClient } from './client'
 import { apiContract } from '@kimdaegyu/babmukdang-shared/domain'
 import { domainId } from '@/domain/factories'
 import { queryKeys } from './keys'
-import type {
-    FriendBlockItemResponse,
-    FriendListItemResponse,
-    FriendMealFilter,
-    FriendMealListResponse,
-    FriendRequestItemResponse,
-    MutationOptions,
-    NoContent
-} from './types'
+import type { FriendMealFilter, MutationOptions, NoContent } from './types'
 
 // ============================================================================
 // API 함수

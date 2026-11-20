@@ -23,7 +23,7 @@ export function MyMealPlanSection({
                 )}
             </div>
             {mealPlans.length === 0 ? (
-                <div className="rounded-20 bg-white p-18 text-caption-regular text-gray-5">
+                <div className="rounded-20 text-caption-regular text-gray-5 bg-white p-18">
                     {emptyText}
                 </div>
             ) : (

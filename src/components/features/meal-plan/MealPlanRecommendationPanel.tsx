@@ -34,9 +34,12 @@ export function MealPlanRecommendationPanel({
     canComplete?: boolean
     canVote?: boolean
 }) {
-    const [votedCandidateKey, setVotedCandidateKey] = useState<string | null>(null)
+    const [votedCandidateKey, setVotedCandidateKey] = useState<string | null>(
+        null
+    )
     const menuStage = stages.find(stage => stage.stageType === 'MENU')
-    const { mutate: completeStage, isPending: isCompletePending } = useCompleteMealPlanStage()
+    const { mutate: completeStage, isPending: isCompletePending } =
+        useCompleteMealPlanStage()
     const { isConnected } = useSocket()
     const { mutate: vote, isPending: isVotePending } = useMealPlanDecisionVote()
 
@@ -45,7 +48,8 @@ export function MealPlanRecommendationPanel({
             <section className="rounded-20 flex flex-col gap-8 bg-white p-16">
                 <h2 className="text-body1-semibold text-gray-8">추천 결과</h2>
                 <p className="text-caption-regular text-gray-5">
-                    아직 저장된 추천 후보가 없습니다. 밥약 시작 화면에서 추천 조건을 입력하거나, 컨텍스트를 다시 저장해 주세요.
+                    아직 저장된 추천 후보가 없습니다. 밥약 시작 화면에서 추천
+                    조건을 입력하거나, 컨텍스트를 다시 저장해 주세요.
                 </p>
             </section>
         )
@@ -89,13 +93,14 @@ export function MealPlanRecommendationPanel({
                 </p>
             </div>
             {selectedMenu && (
-                <div className="rounded-16 bg-primary-100 p-12 text-body2-medium text-primary-main">
+                <div className="rounded-16 bg-primary-100 text-body2-medium text-primary-main p-12">
                     선택한 메뉴: {selectedMenu}
                 </div>
             )}
             <div className="flex flex-col gap-8">
                 {menuCandidates.map((candidate, index) => {
-                    const candidateKey = getMealPlanDecisionCandidateKey(candidate)
+                    const candidateKey =
+                        getMealPlanDecisionCandidateKey(candidate)
                     const isSelected =
                         menuStage.selectedCandidate != null &&
                         candidateKey ===
@@ -114,8 +119,13 @@ export function MealPlanRecommendationPanel({
                             type="button"
                             disabled={
                                 interactionMode === 'vote'
-                                    ? !isConnected || isVoted || isVotePending || !canVote
-                                    : isCompletePending || isSelected || !canComplete
+                                    ? !isConnected ||
+                                      isVoted ||
+                                      isVotePending ||
+                                      !canVote
+                                    : isCompletePending ||
+                                      isSelected ||
+                                      !canComplete
                             }
                             onClick={() =>
                                 interactionMode === 'vote'
@@ -126,13 +136,13 @@ export function MealPlanRecommendationPanel({
                                           body: { selectedCandidate: candidate }
                                       })
                             }
-                            className={`rounded-18 border px-14 py-12 text-left text-body2-medium disabled:opacity-50 ${
+                            className={`rounded-18 text-body2-medium border px-14 py-12 text-left disabled:opacity-50 ${
                                 isSelected || isVoted
                                     ? 'border-primary-main bg-primary-100 text-primary-main'
                                     : 'border-gray-2 bg-gray-1 text-gray-8'
                             }`}>
                             <span>{menuCandidateLabel(candidate)}</span>
-                            <span className="mt-4 block text-caption-regular text-gray-5">
+                            <span className="text-caption-regular text-gray-5 mt-4 block">
                                 {interactionMode === 'vote'
                                     ? isVoted
                                         ? `투표 완료 · 현재 ${voteCount + 1}표`

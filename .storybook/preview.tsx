@@ -1,6 +1,5 @@
 import type { Preview } from '@storybook/react-vite'
 import React from 'react'
-import { MemoryRouter } from '@/navigation'
 import { SocketProvider } from '@/contexts/SocketContext'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
@@ -60,11 +59,9 @@ const preview: Preview = {
     decorators: [
         Story => (
             <QueryClientProvider client={queryClient}>
-                <MemoryRouter>
-                    <SocketProvider>
-                        <Story />
-                    </SocketProvider>
-                </MemoryRouter>
+                <SocketProvider>
+                    <Story />
+                </SocketProvider>
             </QueryClientProvider>
         )
     ]

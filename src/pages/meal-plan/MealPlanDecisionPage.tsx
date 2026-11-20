@@ -28,9 +28,13 @@ function MealPlanDecisionBoard() {
         useDecisionStages()
     const title = mealPlanTitle(mealPlan?.title)
     const allParticipantsReady =
-        participantCount > 0 && readyCount === participantCount && status === 'READY'
+        participantCount > 0 &&
+        readyCount === participantCount &&
+        status === 'READY'
     const canConfirm =
-        isOwner && allParticipantsReady && Boolean(permissions?.canConfirmMealPlan)
+        isOwner &&
+        allParticipantsReady &&
+        Boolean(permissions?.canConfirmMealPlan)
 
     useMealPlanDecisionChrome({ mealPlanId, title })
 

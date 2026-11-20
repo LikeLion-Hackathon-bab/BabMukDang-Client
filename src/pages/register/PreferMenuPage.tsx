@@ -15,9 +15,8 @@ export function PreferMenuPage() {
         () => new Set(liked.map(item => String(item.code))),
         [liked]
     )
-    const [selectedKeys, setSelectedKeys] = useState<Set<string>>(
-        initialSelectedKeys
-    )
+    const [selectedKeys, setSelectedKeys] =
+        useState<Set<string>>(initialSelectedKeys)
 
     const toggle = (key: string) => {
         setSelectedKeys(prev => {

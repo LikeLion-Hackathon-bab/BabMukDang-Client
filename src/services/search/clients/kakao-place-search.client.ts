@@ -7,12 +7,6 @@ export interface PlaceSearchClient {
     ): Promise<PlaceSearchResult[]>
 }
 
-declare global {
-    interface Window {
-        kakao?: any
-    }
-}
-
 const toNumberOrNull = (value: unknown): number | null => {
     if (value === undefined || value === null || value === '') return null
     const parsed = Number(value)

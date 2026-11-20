@@ -274,7 +274,6 @@ export function AppBootstrapProvider({
         taskRunnerTick
     ])
 
-    const hasRunnableTask = Boolean(findRunnableTask(bootstrapContext))
     const hasRunnableBlockingTask = Boolean(
         findRunnableTask(bootstrapContext, { blockingOnly: true })
     )

@@ -6,7 +6,7 @@ export type NavigationActivityParams = Record<string, string | undefined>
 export type NavigationAccess = 'root' | 'publicOnly' | 'guest' | 'authenticated'
 export type NavigationLayout = 'app' | 'bare' | 'register'
 
-const lazyNamed = <T extends ComponentType<any>>(
+const lazyNamed = <T extends ComponentType>(
     loader: () => Promise<Record<string, unknown>>,
     exportName: string
 ) => lazy(async () => ({ default: (await loader())[exportName] as T }))
@@ -19,7 +19,7 @@ type ActivityDefinition = {
     path: string | string[]
     access: NavigationAccess
     layout: NavigationLayout
-    component: ComponentType<any>
+    component: ComponentType
     parentPath?: ActivityParentPath
     tabRoot?: boolean
 }
@@ -640,7 +640,7 @@ const LoadingFallback = () => (
 type ActivityShellComponent = ComponentType<{ children: ReactNode }>
 
 const createActivity = (
-    Page: ComponentType<any>,
+    Page: ComponentType,
     ActivityShell: ActivityShellComponent
 ) =>
     function ActivityComponent(_props: { params: NavigationActivityParams }) {
