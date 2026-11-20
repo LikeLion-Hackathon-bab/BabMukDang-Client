@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
-  pull_request:
     branches: [main]
+  # 기능 브랜치 위에 쌓은 PR도 검사하도록 대상 브랜치를 제한하지 않는다.
+  pull_request:
 
 jobs:
   lint-build:
@@ -85,8 +85,8 @@ jobs:
       - name: E2E 스모크 테스트 (MSW + dev 서버)
         working-directory: BabMukDang-Client
         env:
-          VITE_SERVER_URL: http://localhost:3000
-          VITE_WEBSOCKET_URL: http://localhost:3000
+          VITE_API_SERVER_URL: http://localhost:3000
+          VITE_WEBSOCKET_SERVER_URL: http://localhost:3000
         run: npm run test:e2e
 
       - name: Playwright 리포트 업로드
@@ -102,7 +102,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint-build
     # 통합 E2E는 main 브랜치 push 시에만 실행 (PR은 MSW 모드로 충분)
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    if: github.ref == 'refs/heads/main'
 
     env:
       DB_PASSWORD: testpass
@@ -123,8 +123,8 @@ jobs:
       ONBOARDING_REDIRECT_URL: http://localhost:3001/onboarding
       APP_RABBITMQ_ENABLED: "false"
       DB_SYNC: "true"
-      VITE_SERVER_URL: http://localhost:3000
-      VITE_WEBSOCKET_URL: http://localhost:3000
+      VITE_API_SERVER_URL: http://localhost:3000
+      VITE_WEBSOCKET_SERVER_URL: http://localhost:3000
 
     steps:
       - uses: actions/checkout@v4
