@@ -1,18 +1,10 @@
 import type { ReactNode } from 'react'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
+import { queryClient } from '@/apis/queryClient'
 import { AppBootstrapProvider, useAppBootstrap } from '@/contexts'
 import { NotificationSseProvider } from '@/contexts/NotificationSseProvider'
 import { PushProvider } from '@/features/push'
 import { StackflowStack } from '@/navigation'
-
-const queryClient = new QueryClient({
-    defaultOptions: {
-        queries: {
-            retry: 1,
-            refetchOnWindowFocus: false
-        }
-    }
-})
 
 function AuthenticatedRuntime({ children }: { children: ReactNode }) {
     const { isAuthenticated } = useAppBootstrap()

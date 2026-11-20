@@ -15,6 +15,7 @@ import { contractClient } from './client'
 import { apiContract } from '@kimdaegyu/babmukdang-shared/domain'
 import type { MutationOptions, NoContent, TokenResponse } from './types'
 import { useAuthStore } from '@/store'
+import { clearUserSession } from './queryClient'
 
 import axios from 'axios'
 import { unwrapBaseResponse } from './client'
@@ -126,7 +127,7 @@ export const useKakaoLogin = () => {
  * })
  */
 export const useRefreshToken = (options?: MutationOptions<TokenResponse>) => {
-    const { setTokens, clearTokens, accessToken } = useAuthStore()
+    const { setTokens, accessToken } = useAuthStore()
 
     return useMutation({
         mutationFn: authApi.refresh,
@@ -136,7 +137,7 @@ export const useRefreshToken = (options?: MutationOptions<TokenResponse>) => {
             options?.onSuccess?.(data)
         },
         onError: error => {
-            clearTokens()
+            clearUserSession()
             console.log(error)
             options?.onError?.(
                 error instanceof Error
@@ -193,8 +194,6 @@ export const useEmailSignup = (options?: MutationOptions<TokenResponse>) => {
  * @param options - 성공/에러 콜백
  */
 export const useLogout = (options: MutationOptions<NoContent> = {}) => {
-    const { flushAuthStore } = useAuthStore()
-
     return useMutation({
         mutationFn: authApi.logout,
 
@@ -208,8 +207,8 @@ export const useLogout = (options: MutationOptions<NoContent> = {}) => {
             )
         },
 
-        onSettled: (...args) => {
-            flushAuthStore()
+        onSettled: () => {
+            clearUserSession()
             options.onSettled?.()
         }
     })

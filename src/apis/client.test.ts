@@ -11,15 +11,16 @@ const authState = {
     accessToken: 'expired-token' as string | null,
     setTokens: vi.fn(({ accessToken }: { accessToken: string }) => {
         authState.accessToken = accessToken
-    }),
-    flushAuthStore: vi.fn(() => {
-        authState.accessToken = null
     })
 }
+const clearUserSession = vi.fn(() => {
+    authState.accessToken = null
+})
 
 vi.mock('@/store', () => ({
     useAuthStore: { getState: () => authState }
 }))
+vi.mock('./queryClient', () => ({ clearUserSession }))
 
 const unauthorized = (config: InternalAxiosRequestConfig) =>
     new AxiosError('Unauthorized', 'ERR_BAD_REQUEST', config, undefined, {
@@ -38,7 +39,7 @@ describe('axios client token refresh queue', () => {
     beforeEach(() => {
         authState.accessToken = 'expired-token'
         authState.setTokens.mockClear()
-        authState.flushAuthStore.mockClear()
+        clearUserSession.mockClear()
     })
 
     it('rejects every request queued during a failed refresh', async () => {
@@ -74,7 +75,7 @@ describe('axios client token refresh queue', () => {
 
         await expect(firstSettled).resolves.toBe('rejected')
         await expect(secondSettled).resolves.toBe('rejected')
-        expect(authState.flushAuthStore).toHaveBeenCalledTimes(1)
+        expect(clearUserSession).toHaveBeenCalledTimes(1)
     })
 
     it('retries queued requests with the refreshed token', async () => {
@@ -119,6 +120,6 @@ describe('axios client token refresh queue', () => {
         await expect(first).resolves.toEqual({ ok: true })
         await expect(second).resolves.toEqual({ ok: true })
         expect(retriedAuthHeaders).toHaveLength(2)
-        expect(authState.flushAuthStore).not.toHaveBeenCalled()
+        expect(clearUserSession).not.toHaveBeenCalled()
     })
 })

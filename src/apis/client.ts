@@ -5,6 +5,7 @@ import axios, {
     InternalAxiosRequestConfig
 } from 'axios'
 import { toAppError } from './errors'
+import { clearUserSession } from './queryClient'
 import {
     apiContract,
     type ApiResponse,
@@ -87,7 +88,7 @@ axiosClient.interceptors.response.use(
 
         originalRequest._retry = true
 
-        const { setTokens, flushAuthStore } = useAuthStore.getState()
+        const { setTokens } = useAuthStore.getState()
 
         if (isRefreshing) {
             return new Promise((resolve, reject) => {
@@ -127,7 +128,7 @@ axiosClient.interceptors.response.use(
             return axiosClient(originalRequest)
         } catch {
             const appError = toAppError(error)
-            flushAuthStore()
+            clearUserSession()
             onRefreshFailed(appError)
             return Promise.reject(appError)
         } finally {
