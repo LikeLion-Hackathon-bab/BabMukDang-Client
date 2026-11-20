@@ -1,3 +1,5 @@
+import type { KakaoLoginErrorCode } from '@kimdaegyu/babmukdang-shared/domain'
+
 const hasControlCharacter = (value: string) =>
     Array.from(value).some(char => {
         const code = char.charCodeAt(0)
@@ -20,14 +22,12 @@ export const sanitizeRedirectPath = (
 }
 
 /** Backend `/auth/kakao/callback` 실패 시 `/login?error=<code>`로 전달되는 코드 */
-const KAKAO_LOGIN_ERROR_MESSAGES = {
+const KAKAO_LOGIN_ERROR_MESSAGES: Record<KakaoLoginErrorCode, string> = {
     kakao_denied: '카카오 로그인 동의가 취소되었어요. 다시 시도해주세요.',
     invalid_state:
         '로그인 요청이 만료되었거나 올바르지 않아요. 다시 로그인해주세요.',
     kakao_failed: '카카오 로그인 중 문제가 생겼어요. 잠시 후 다시 시도해주세요.'
-} as const
-
-export type KakaoLoginErrorCode = keyof typeof KAKAO_LOGIN_ERROR_MESSAGES
+}
 
 export const getKakaoLoginErrorMessage = (
     code: string | null | undefined
