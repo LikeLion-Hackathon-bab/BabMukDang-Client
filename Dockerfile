@@ -1,27 +1,23 @@
 # Build context: repository root containing BabMukDang-Client and BabMukDang-Shared.
 #   docker build -f BabMukDang-Client/Dockerfile .
-
-# FROM node:20-alpine AS shared-builder
-# WORKDIR /app/BabMukDang-Shared
-# COPY BabMukDang-Shared/package*.json ./
-# RUN npm ci
-# COPY BabMukDang-Shared/src ./src
-# COPY BabMukDang-Shared/tsconfig*.json ./
-# COPY BabMukDang-Shared/tsup.config.ts ./
-# RUN npm run build
+# Types come from the npm package (@kimdaegyu/babmukdang-shared), but vite.config.ts
+# aliases the runtime import to ../BabMukDang-Shared/src, so the Shared source is copied in.
 
 FROM node:20-alpine AS builder
-ARG VITE_SERVER_URL=http://localhost:3000
-ARG VITE_WEBSOCKET_URL=http://localhost:3000
-ARG VITE_BASE_API_URL=/api/v1
-ENV VITE_SERVER_URL=$VITE_SERVER_URL
-ENV VITE_WEBSOCKET_URL=$VITE_WEBSOCKET_URL
-ENV VITE_BASE_API_URL=$VITE_BASE_API_URL
+ARG VITE_API_SERVER_URL=http://localhost:3000
+ARG VITE_WEBSOCKET_SERVER_URL=http://localhost:3000
+ARG VITE_API_URL_PREFIX=/api/v1
+ARG VITE_CDN_URL=https://d1buecxls251mg.cloudfront.net
+ENV VITE_API_SERVER_URL=$VITE_API_SERVER_URL
+ENV VITE_WEBSOCKET_SERVER_URL=$VITE_WEBSOCKET_SERVER_URL
+ENV VITE_API_URL_PREFIX=$VITE_API_URL_PREFIX
+ENV VITE_CDN_URL=$VITE_CDN_URL
 
 WORKDIR /app
-COPY --from=shared-builder /app/BabMukDang-Shared ./BabMukDang-Shared
-COPY BabMukDang-Client/package*.json ./BabMukDang-Client/
+COPY BabMukDang-Shared/src ./BabMukDang-Shared/src
+
 WORKDIR /app/BabMukDang-Client
+COPY BabMukDang-Client/package*.json ./
 RUN npm ci
 COPY BabMukDang-Client/. .
 RUN npm run build
