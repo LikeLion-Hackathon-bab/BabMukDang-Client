@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { MealPlanNotificationList } from './MealPlanNotificationList'
 import type { MealPlanNotificationView } from '@/viewModels'
 import { domainId } from '@/domain/factories'

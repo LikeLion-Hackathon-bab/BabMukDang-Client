@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { PostCardContent } from './PostCardContent'
 
 const meta: Meta<typeof PostCardContent> = {

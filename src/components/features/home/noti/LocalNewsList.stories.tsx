@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { LocalNewsList } from './LocalNewsList'
 
 const meta: Meta<typeof LocalNewsList> = {
