@@ -9,7 +9,8 @@ export function CommentItem({
     comment,
     createdAt,
     authorId,
-    onClickReply
+    onClickReply,
+    onClickDelete
 }: {
     profileImageUrl?: string
     commentAuthorName: string
@@ -17,6 +18,7 @@ export function CommentItem({
     createdAt: string
     authorId: number
     onClickReply: () => void
+    onClickDelete?: () => void
 }) {
     const { userId } = useAuthStore()
     return (
@@ -51,7 +53,7 @@ export function CommentItem({
                     onClick={onClickReply}
                 />
                 {Number(userId) === authorId && (
-                    <KebabButton onClick={() => {}} />
+                    <KebabButton onClick={() => onClickDelete?.()} />
                 )}
             </div>
         </div>

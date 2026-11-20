@@ -5,16 +5,19 @@ export function MutalButton({
     text,
     className,
     onClick,
-    hasArrow = false
+    hasArrow = false,
+    disabled = false
 }: {
     text: string
     className?: string
     onClick?: () => void
     hasArrow?: boolean
+    disabled?: boolean
 }) {
     return (
         <button
-            className={`bg-gray-7 relative flex w-full cursor-pointer items-center justify-center rounded-full py-14 pr-16 pl-17 ${className} `}
+            className={`bg-gray-7 relative flex w-full cursor-pointer items-center justify-center rounded-full py-14 pr-16 pl-17 disabled:opacity-40 ${className} `}
+            disabled={disabled}
             onClick={onClick}
             onTouchEnd={onClick}>
             <span className="text-title2-semibold text-white">{text}</span>
@@ -31,15 +34,18 @@ export function MutalButton({
 export function MutalButtonSmall({
     text,
     className,
-    onClick
+    onClick,
+    disabled = false
 }: {
     text: string
     className?: string
     onClick?: () => void
+    disabled?: boolean
 }) {
     return (
         <button
-            className={`bg-gray-7 flex w-full cursor-pointer items-center justify-center rounded-full py-10 ${className} `}
+            className={`bg-gray-7 flex w-full cursor-pointer items-center justify-center rounded-full py-10 disabled:opacity-40 ${className} `}
+            disabled={disabled}
             onClick={onClick}
             onTouchEnd={onClick}>
             <span className="text-body1-semibold text-white">{text}</span>

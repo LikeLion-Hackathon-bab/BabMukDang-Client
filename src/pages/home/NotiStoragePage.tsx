@@ -1,29 +1,23 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from '@/navigation'
 
-import {
-    MockLocalNewsNotis,
-    MockMatchingInviteNotis
-} from '@/constants/mockData'
-
-import { useHeader } from '@/hooks'
 import {
     TabHeader,
     FilterList,
-    MatchingInviteList,
-    LocalNewsList
+    MealPlanNotificationList,
+    LocalNewsList,
+    PushPermissionCta
 } from '@/components'
 import { LOCAL_NEWS_FILTER_LIST } from '@/constants/filters'
+import { useNotificationStore } from '@/store'
+import {
+    notificationApi,
+    useDeleteNotification,
+    useGetNotifications
+} from '@/apis/notification.api'
+import type { MealPlanNotificationView } from '@/viewModels'
+import { formatRelativeKoreanTime } from '@/lib/dateTime'
 
-type MatchingInviteNoti = {
-    id: number
-    type: 'invitation' | 'announcement'
-    title: string
-    time: string
-    message: string
-    period: string
-    imageUrl: string
-}
 interface LocalNewsNoti {
     id: number
     type: 'school' | 'restaurant' | 'area'
@@ -33,54 +27,64 @@ interface LocalNewsNoti {
     period: string
     imageUrl?: string
 }
+
 export function NotiStoragePage() {
     const navigate = useNavigate()
+    const { notifications, addNotification } = useNotificationStore()
+    const removeNotification = useNotificationStore(
+        state => state.removeNotification
+    )
+    const markRead = useNotificationStore(state => state.markRead)
+    const { mutate: deleteNotification } = useDeleteNotification({
+        onSuccess: () => {},
+        onError: () => {}
+    })
+    const { data: fetchedNotifications } = useGetNotifications()
 
-    // 헤더 관련
-    const { resetHeader, setTitle, showCenterElement } = useHeader()
+    useEffect(() => {
+        if (fetchedNotifications) {
+            fetchedNotifications.forEach(notification => {
+                addNotification(notification)
+            })
+        }
+    }, [addNotification, fetchedNotifications])
+
     const [tab, setTab] = useState<'noti' | 'local'>('noti')
     const tabs = [
         { key: 'noti', label: '알림' },
         { key: 'local', label: '동네소식' }
     ]
-    useEffect(() => {
-        showCenterElement()
-        setTitle('알림')
-        return () => {
-            resetHeader()
-        }
-    }, [])
 
-    const [matchingNotis, setMatchingNotis] = useState<MatchingInviteNoti[]>(
-        MockMatchingInviteNotis as MatchingInviteNoti[]
-    )
-
-    const [localNewsNotis, setLocalNewsNotis] = useState<LocalNewsNoti[]>(
-        MockLocalNewsNotis as LocalNewsNoti[]
-    )
-
+    const [localNewsNotis, setLocalNewsNotis] = useState<LocalNewsNoti[]>([])
     const [activeFilter, setActiveFilter] = useState<{
         key: string
         label: string
     }>(LOCAL_NEWS_FILTER_LIST[0])
 
-    // 삭제 핸들러들
-    const handleDeleteMatchingNoti = (id: number) => {
-        setMatchingNotis(prev => prev.filter(noti => noti.id !== id))
+    const mealPlanNotifications: MealPlanNotificationView[] = notifications.map(
+        notification => ({
+            ...notification,
+            createdAtLabel: formatNotificationTime(notification.createdAt)
+        })
+    )
+
+    const handleDeleteMealPlanNotification = async (id: string) => {
+        await deleteNotification(id)
+        removeNotification(id)
     }
 
     const handleDeleteLocalNewsNoti = (id: number) => {
         setLocalNewsNotis(prev => prev.filter(noti => noti.id !== id))
     }
 
-    const handleMatchingInviteNotiClick = (
-        type: 'invitation' | 'announcement'
+    const handleMealPlanNotificationClick = async (
+        notification: MealPlanNotificationView
     ) => {
-        if (type === 'invitation') {
-            navigate(`/invitation/waiting/1`)
-        } else {
-            navigate(`/announcement/waiting/1`)
-        }
+        const readNotification = await notificationApi.markRead(
+            notification.notificationId
+        )
+        markRead(readNotification)
+        navigate(notification.deepLink)
     }
 
     return (
@@ -91,13 +95,14 @@ export function NotiStoragePage() {
                 onTabChange={tab => setTab(tab as 'noti' | 'local')}
             />
             {tab === 'noti' && (
-                <MatchingInviteList
-                    matchingNotis={matchingNotis}
-                    handleDeleteMatchingNoti={handleDeleteMatchingNoti}
-                    handleMatchingInviteNotiClick={
-                        handleMatchingInviteNotiClick
-                    }
-                />
+                <>
+                    <PushPermissionCta />
+                    <MealPlanNotificationList
+                        notifications={mealPlanNotifications}
+                        onDeleteNotification={handleDeleteMealPlanNotification}
+                        onNotificationClick={handleMealPlanNotificationClick}
+                    />
+                </>
             )}
             {tab === 'local' && (
                 <>
@@ -122,4 +127,8 @@ export function NotiStoragePage() {
             )}
         </div>
     )
+}
+
+const formatNotificationTime = (createdAt: string) => {
+    return formatRelativeKoreanTime(createdAt)
 }

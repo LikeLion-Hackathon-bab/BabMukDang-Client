@@ -1,34 +1,47 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PostCard, CommentList, ChatInput } from '@/components'
-import { useHeader, useBottomNav } from '@/hooks'
-import { useLocation, useParams } from 'react-router-dom'
-import { useCommentArticle, useGetArticleComments } from '@/query'
-import { CommentResponse } from '@/apis/dto'
+import { useNavigate, useParams } from '@/navigation'
+import {
+    useCommentArticle,
+    useDeleteArticle,
+    useDeleteArticleComment,
+    useGetArticleDetail,
+    useGetArticleComments,
+    CommentPostRequest
+} from '@/apis'
 import { buildCommentTree } from '@/lib'
+import { toPostCardView } from '@/viewModels'
 type TreeComment = ReturnType<typeof buildCommentTree>[number]
 export function CommentPage() {
-    const { resetHeader, setTitle } = useHeader()
-    const { hideBottomNav, resetBottomNav } = useBottomNav()
     const { postId } = useParams()
+    const navigate = useNavigate()
+    const articleId = Number(postId)
     const [newMessage, setNewMessage] = useState('')
     const [replyCommentId, setReplyCommentId] = useState<number | null>(null)
-    const { mutate: sendMessage } = useCommentArticle(
-        () => {
+    const { data: article, refetch: refetchArticle } =
+        useGetArticleDetail(articleId)
+    const { mutate: sendMessage } = useCommentArticle({
+        onSuccess: () => {
             refetch()
+            refetchArticle()
         },
-        e => {
+        onError: (e: Error) => {
             console.log('error', e)
         }
-    )
-    useEffect(() => {
-        setTitle('게시물')
-        hideBottomNav()
-        return () => {
-            resetHeader()
-            resetBottomNav()
-        }
-    }, [])
-
+    })
+    const { mutate: deleteArticle, isPending: isDeletingArticle } =
+        useDeleteArticle({
+            onSuccess: () => {
+                navigate('/', { replace: true })
+            }
+        })
+    const { mutate: deleteComment, isPending: isDeletingComment } =
+        useDeleteArticleComment({
+            onSuccess: () => {
+                refetch()
+                refetchArticle()
+            }
+        })
     const handleKeyPress = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
             handleSendMessage()
@@ -39,7 +52,7 @@ export function CommentPage() {
         data: commentsData,
         error,
         refetch
-    } = useGetArticleComments(Number(postId))
+    } = useGetArticleComments(articleId)
     const [comments, setComments] = useState<TreeComment[]>([])
     const [totalCommentCount, setTotalCommentCount] = useState(0)
     useEffect(() => {
@@ -49,11 +62,17 @@ export function CommentPage() {
         }
     }, [commentsData])
     const handleSendMessage = () => {
+        if (!Number.isFinite(articleId) || newMessage.trim().length === 0) {
+            return
+        }
         sendMessage({
-            articleId: Number(postId),
+            articleId,
             comment: {
                 content: newMessage,
-                parentCommentId: replyCommentId ?? undefined
+                parentCommentId:
+                    replyCommentId == null
+                        ? null
+                        : (replyCommentId as CommentPostRequest['parentCommentId'])
             }
         })
         setNewMessage('')
@@ -66,17 +85,39 @@ export function CommentPage() {
         setNewMessage(`@${authorUsername} `)
     }
 
+    const handleDeleteArticle = () => {
+        if (!Number.isFinite(articleId)) return
+        deleteArticle({ articleId })
+    }
+
+    const handleDeleteComment = (commentId: number) => {
+        if (!Number.isFinite(articleId) || isDeletingComment) return
+        deleteComment({ articleId, commentId })
+    }
+
     return (
         <div className="flex flex-col gap-48 pt-16">
-            {/* <PostCard
-                post={post}
-                isComment={true}
-            /> */}
+            {article && (
+                <div className="flex flex-col gap-12">
+                    <PostCard
+                        post={toPostCardView(article)}
+                        isComment={true}
+                    />
+                    <button
+                        type="button"
+                        disabled={isDeletingArticle}
+                        onClick={handleDeleteArticle}
+                        className="text-caption-medium self-end rounded-full border border-red-300 px-12 py-6 text-red-500 disabled:opacity-40">
+                        {isDeletingArticle ? '삭제 중' : '게시글 삭제'}
+                    </button>
+                </div>
+            )}
             {/* 댓글 영역 */}
             <CommentList
                 comments={comments}
                 totalCommentCount={totalCommentCount}
                 onClickReply={handleReply}
+                onClickDelete={handleDeleteComment}
             />
             <ChatInput
                 newMessage={newMessage}

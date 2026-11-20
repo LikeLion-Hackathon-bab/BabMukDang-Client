@@ -59,8 +59,11 @@ export function useCarousel({
 }: UseCarouselOptions): UseCarouselReturn {
     const containerRef = useRef<HTMLDivElement>(null)
     const cardRef = useRef<HTMLDivElement>(null)
-    const containerWidth = containerRef.current?.offsetWidth || 0
-    const cardWidth = cardRef?.current?.offsetWidth || 0
+
+    // containerWidth와 cardWidth를 state로 관리
+    const [containerWidth, setContainerWidth] = useState(0)
+    const [cardWidth, setCardWidth] = useState(0)
+
     const totalCardWidth = cardWidth + gap
     const totalWidth = totalCardWidth * itemCount
     const [translateX, setTranslateX] = useState(initialPosition)
@@ -240,12 +243,30 @@ export function useCarousel({
 
         const { drag$, drop$ } = streamFactory(container)
 
+        // containerWidth와 cardWidth 상태 업데이트
+        const currentContainerWidth = containerRef.current?.offsetWidth || 0
+        const currentCardWidth = cardRef.current?.offsetWidth || 0
+
+        if (currentContainerWidth !== containerWidth) {
+            setContainerWidth(currentContainerWidth)
+        }
+        if (currentCardWidth !== cardWidth) {
+            setCardWidth(currentCardWidth)
+        }
+
         // 컨테이너 너비 업데이트
         const updateContainerWidth = () => {
-            if (containerRef.current) {
+            if (containerRef.current && cardRef.current) {
+                const newContainerWidth = containerRef.current.offsetWidth
+                const newCardWidth = cardRef.current.offsetWidth
+                const newTotalCardWidth = newCardWidth + gap
+
+                setContainerWidth(newContainerWidth)
+                setCardWidth(newCardWidth)
+
                 const targetTranslateX =
-                    -(currentIndex * totalCardWidth) +
-                    (containerRef.current.offsetWidth / 2 - cardWidth / 2)
+                    -(currentIndex * newTotalCardWidth) +
+                    (newContainerWidth / 2 - newCardWidth / 2)
                 setTranslateX(targetTranslateX)
             }
         }

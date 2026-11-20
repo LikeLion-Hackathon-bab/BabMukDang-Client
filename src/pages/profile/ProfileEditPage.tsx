@@ -1,9 +1,32 @@
 import { ModifyIcon } from '@/assets/icons'
 import { GoodBadChip } from '@/components'
-import { useHeader } from '@/hooks'
-import { useEffect, useMemo, useState } from 'react'
+import {
+    useGetMemberProfile,
+    useGetMemberProfileDetail,
+    useGetMyPreference,
+    useUpdateMyProfile,
+    useUpdatePreference,
+    useUploadProfilePhoto
+} from '@/apis'
+import { domainFood } from '@/domain/factories'
+import { useAuthStore } from '@/store'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useNavigate } from '@/navigation'
+import { usePageChrome } from '@/hooks/usePageChrome'
 
 type ChipVariant = 'good' | 'bad'
+
+const splitBySpace = (str: string) =>
+    str
+        .split(' ')
+        .map(s => s.trim())
+        .filter(s => s.length > 0)
+
+const toFoodList = (value: string) =>
+    splitBySpace(value).map(label => domainFood(label, label))
+
+const labelsToInput = (items?: { label: string }[]) =>
+    (items ?? []).map(item => item.label).join(' ')
 
 function TagInput({
     id,
@@ -16,16 +39,7 @@ function TagInput({
     onChange: (val: string) => void
     variant: ChipVariant
 }) {
-    const splitBySpace = useMemo(
-        () => (str: string) =>
-            str
-                .split(' ')
-                .map(s => s.trim())
-                .filter(s => s.length > 0),
-        []
-    )
-
-    const chips = splitBySpace(value)
+    const chips = useMemo(() => splitBySpace(value), [value])
 
     return (
         <div
@@ -45,6 +59,7 @@ function TagInput({
             </div>
             <input
                 id={id}
+                data-testid={`profile-edit-tag-input-${id}`}
                 type="text"
                 value={value.endsWith(' ') ? '' : value.split(' ').pop() || ''}
                 onChange={e => {
@@ -85,38 +100,165 @@ function TagInput({
 }
 
 export function ProfileEditPage() {
+    const navigate = useNavigate()
+    const { userId } = useAuthStore()
+    const currentMemberId = Number(userId)
+    const canLoadMember =
+        Number.isFinite(currentMemberId) && currentMemberId > 0
+
+    const { data: profileSummary } = useGetMemberProfile(currentMemberId, {
+        enabled: canLoadMember
+    })
+    const { data: profileDetail } = useGetMemberProfileDetail(currentMemberId, {
+        enabled: canLoadMember
+    })
+    const { data: preference } = useGetMyPreference()
+    const { mutateAsync: updateProfile, isPending: isProfileUpdating } =
+        useUpdateMyProfile()
+    const { mutateAsync: updatePreference, isPending: isPreferenceUpdating } =
+        useUpdatePreference()
+    const { mutateAsync: uploadProfilePhoto, isPending: isPhotoUploading } =
+        useUploadProfilePhoto()
+
     const [name, setName] = useState('')
     const [bio, setBio] = useState('')
     const [favoriteFoods, setFavoriteFoods] = useState('')
     const [dislikedFoods, setDislikedFoods] = useState('')
     const [allergies, setAllergies] = useState('')
-    const { setTitle, resetHeader, setRightElement } = useHeader()
+    const [profileImageUrl, setProfileImageUrl] = useState('')
+    const [selectedFile, setSelectedFile] = useState<File | null>(null)
+    const [previewUrl, setPreviewUrl] = useState<string>('')
+    const isSaving =
+        isProfileUpdating || isPreferenceUpdating || isPhotoUploading
 
     useEffect(() => {
-        setTitle('내 정보 수정')
-        setRightElement(
-            <button className="text-body1-semibold text-gray-8">저장</button>
+        setName(profileSummary?.userName ?? profileDetail?.userName ?? '')
+        setBio(profileDetail?.bio ?? profileSummary?.bio ?? '')
+        setProfileImageUrl(
+            profileSummary?.profileImageUrl ??
+                profileDetail?.profileImageUrl ??
+                ''
         )
-        return () => {
-            resetHeader()
+    }, [profileDetail, profileSummary])
+
+    useEffect(() => {
+        setFavoriteFoods(labelsToInput(preference?.liked))
+        setDislikedFoods(labelsToInput(preference?.disliked))
+        setAllergies(labelsToInput(preference?.allergy))
+    }, [preference])
+
+    useEffect(() => {
+        if (!selectedFile) {
+            setPreviewUrl('')
+            return
         }
-    }, [])
+
+        const objectUrl = URL.createObjectURL(selectedFile)
+        setPreviewUrl(objectUrl)
+        return () => URL.revokeObjectURL(objectUrl)
+    }, [selectedFile])
+
+    const handleSave = useCallback(async () => {
+        if (!canLoadMember || isSaving || name.trim().length === 0) return
+
+        let nextProfileImageUrl = profileImageUrl
+
+        if (selectedFile) {
+            let result = await uploadProfilePhoto(selectedFile)
+            if (result) {
+                nextProfileImageUrl = result
+                setProfileImageUrl(nextProfileImageUrl)
+            }
+        }
+
+        await updateProfile({
+            username: name.trim(),
+            profileImageUrl: nextProfileImageUrl || null,
+            bio: bio.trim() || null
+        })
+
+        await updatePreference({
+            liked: toFoodList(favoriteFoods),
+            disliked: toFoodList(dislikedFoods),
+            allergy: toFoodList(allergies)
+        })
+
+        navigate('/profile', { replace: true })
+    }, [
+        allergies,
+        bio,
+        canLoadMember,
+        currentMemberId,
+        dislikedFoods,
+        favoriteFoods,
+        isSaving,
+        name,
+        navigate,
+        profileImageUrl,
+        selectedFile,
+        updatePreference,
+        updateProfile,
+        uploadProfilePhoto
+    ])
+
+    const headerRightElement = useMemo(
+        () => (
+            <button
+                type="button"
+                data-testid="profile-edit-save-button"
+                disabled={isSaving || name.trim().length === 0}
+                onClick={handleSave}
+                className="text-body1-semibold text-gray-8 disabled:opacity-40">
+                {isSaving ? '저장 중' : '저장'}
+            </button>
+        ),
+        [handleSave, isSaving, name]
+    )
+
+    const pageChromeConfig = useMemo(
+        () => ({
+            header: {
+                right: headerRightElement
+            }
+        }),
+        [headerRightElement]
+    )
+
+    usePageChrome(pageChromeConfig)
+
+    const imageSrc = previewUrl || profileImageUrl
 
     return (
         <div className="flex w-346 flex-col gap-30 pt-20">
             {/* 프로필 이미지 + 수정 아이콘 */}
             <div className="flex items-end justify-center">
-                <div className="relative size-86">
-                    <div className="bg-gray-2 size-86 overflow-hidden rounded-full shadow-[-2px_-2px_10px_rgba(153,153,153,0.1),_2px_2px_10px_rgba(153,153,153,0.1)]" />
+                <label className="relative size-86 cursor-pointer">
+                    <div className="bg-gray-2 size-86 overflow-hidden rounded-full shadow-[-2px_-2px_10px_rgba(153,153,153,0.1),_2px_2px_10px_rgba(153,153,153,0.1)]">
+                        {imageSrc && (
+                            <img
+                                src={imageSrc}
+                                alt="프로필 이미지"
+                                className="size-86 rounded-full object-cover"
+                            />
+                        )}
+                    </div>
                     <div
                         className="rounded-15 bg-gray-2 absolute top-66 left-66 flex size-20 items-center justify-center"
                         aria-label="프로필 사진 수정">
-                        {/* 간단한 펜 아이콘 형태 */}
                         <div className="relative size-10">
                             <ModifyIcon className="size-10" />
                         </div>
                     </div>
-                </div>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        data-testid="profile-edit-image-input"
+                        className="hidden"
+                        onChange={e => {
+                            setSelectedFile(e.target.files?.[0] ?? null)
+                        }}
+                    />
+                </label>
             </div>
 
             {/* 입력 영역 */}
@@ -129,9 +271,10 @@ export function ProfileEditPage() {
                     <div className="rounded-12 border-gray-2 flex w-full items-center gap-10 border bg-white p-12">
                         <input
                             type="text"
+                            data-testid="profile-edit-name-input"
                             value={name}
                             onChange={e => setName(e.target.value)}
-                            placeholder="서은우"
+                            placeholder="이름"
                             className="text-body2-medium flex-1 border-none bg-transparent outline-none"
                         />
                     </div>
@@ -145,9 +288,10 @@ export function ProfileEditPage() {
                     <div className="rounded-12 border-gray-2 flex w-full items-center gap-10 border bg-white p-12">
                         <input
                             type="text"
+                            data-testid="profile-edit-bio-input"
                             value={bio}
                             onChange={e => setBio(e.target.value)}
-                            placeholder="기억이 아닌 추억으로"
+                            placeholder="자기소개"
                             className="text-body2-medium flex-1 border-none bg-transparent outline-none"
                         />
                     </div>

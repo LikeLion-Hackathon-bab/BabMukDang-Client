@@ -1,0 +1,4920 @@
+{
+  "version": "food-manifest-v1",
+  "updatedAt": "2026-06-18T15:20:45.079Z",
+  "modelTaxonomyVersion": "kfood-300-v1",
+  "serviceTaxonomyVersion": "food-code-catalog-v1",
+  "classes": [
+    {
+      "classId": 0,
+      "aiLabel": "갈비구이",
+      "aiAliases": [
+        "aihub_kfood_000",
+        "갈비구이",
+        "Img_000"
+      ],
+      "representativeCode": "SVC_GALBI_GUI",
+      "candidateCodes": [
+        "SVC_GALBI_GUI",
+        "06012007",
+        "06012003",
+        "06012009"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "FoodAI 갈비구이 is broader than service grilled rib variants; service-managed general FoodCode is the default representative."
+    },
+    {
+      "classId": 1,
+      "aiLabel": "갈치구이",
+      "aiAliases": [
+        "aihub_kfood_001",
+        "갈치구이",
+        "Img_001"
+      ],
+      "representativeCode": "SVC_GALCHI_GUI",
+      "candidateCodes": [
+        "SVC_GALCHI_GUI",
+        "09011001"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed general grilled cutlassfish FoodCode was added; 갈치조림 is kept as a related candidate."
+    },
+    {
+      "classId": 2,
+      "aiLabel": "고등어구이",
+      "aiAliases": [
+        "aihub_kfood_002",
+        "고등어구이",
+        "Img_002"
+      ],
+      "representativeCode": "SVC_GODEUNGEO_GUI",
+      "candidateCodes": [
+        "SVC_GODEUNGEO_GUI",
+        "04015001",
+        "09011002"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed general grilled mackerel FoodCode was added; stew/braised variants are related candidates."
+    },
+    {
+      "classId": 3,
+      "aiLabel": "곱창구이",
+      "aiAliases": [
+        "aihub_kfood_003",
+        "곱창구이",
+        "Img_003"
+      ],
+      "representativeCode": "SVC_GOPCHANG_GUI",
+      "candidateCodes": [
+        "SVC_GOPCHANG_GUI",
+        "06012006"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed general FoodCode represents 곱창구이 while preserving 소곱창구이 as a candidate."
+    },
+    {
+      "classId": 4,
+      "aiLabel": "닭갈비",
+      "aiAliases": [
+        "aihub_kfood_004",
+        "닭갈비",
+        "Img_004"
+      ],
+      "representativeCode": "06012001",
+      "candidateCodes": [
+        "06012001"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 5,
+      "aiLabel": "더덕구이",
+      "aiAliases": [
+        "aihub_kfood_005",
+        "더덕구이",
+        "Img_005"
+      ],
+      "representativeCode": "06013001",
+      "candidateCodes": [
+        "06013001"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 6,
+      "aiLabel": "떡갈비",
+      "aiAliases": [
+        "aihub_kfood_006",
+        "떡갈비",
+        "Img_006"
+      ],
+      "representativeCode": "06012004",
+      "candidateCodes": [
+        "06012004"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 7,
+      "aiLabel": "불고기",
+      "aiAliases": [
+        "aihub_kfood_007",
+        "불고기",
+        "Img_007"
+      ],
+      "representativeCode": "06012005",
+      "candidateCodes": [
+        "06012005"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 8,
+      "aiLabel": "삼겹살",
+      "aiAliases": [
+        "aihub_kfood_008",
+        "삼겹살",
+        "Img_008"
+      ],
+      "representativeCode": "SVC_SAMGYEOPSAL",
+      "candidateCodes": [
+        "SVC_SAMGYEOPSAL"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed FoodCode was added because the legacy catalog had no general 삼겹살 code."
+    },
+    {
+      "classId": 9,
+      "aiLabel": "장어구이",
+      "aiAliases": [
+        "aihub_kfood_009",
+        "장어구이",
+        "Img_009"
+      ],
+      "representativeCode": "SVC_JANGEO_GUI",
+      "candidateCodes": [
+        "SVC_JANGEO_GUI",
+        "01015009",
+        "01016013"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed 장어구이 represents grilled eel while rice and sushi variants remain candidates."
+    },
+    {
+      "classId": 10,
+      "aiLabel": "조개구이",
+      "aiAliases": [
+        "aihub_kfood_010",
+        "조개구이",
+        "Img_010"
+      ],
+      "representativeCode": "SVC_JOGAE_GUI",
+      "candidateCodes": [
+        "SVC_JOGAE_GUI",
+        "04011006"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed 조개구이 represents grilled shellfish; 바지락조개국 is only a related fallback candidate."
+    },
+    {
+      "classId": 11,
+      "aiLabel": "조기구이",
+      "aiAliases": [
+        "aihub_kfood_011",
+        "조기구이",
+        "Img_011"
+      ],
+      "representativeCode": "SVC_JOGI_GUI",
+      "candidateCodes": [
+        "SVC_JOGI_GUI",
+        "05011010",
+        "09011007"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed 조기구이 represents grilled croaker while steamed/braised variants remain candidates."
+    },
+    {
+      "classId": 12,
+      "aiLabel": "황태구이",
+      "aiAliases": [
+        "aihub_kfood_012",
+        "황태구이",
+        "Img_012"
+      ],
+      "representativeCode": "SVC_HWANGTAE_GUI",
+      "candidateCodes": [
+        "SVC_HWANGTAE_GUI",
+        "04011016",
+        "09011006"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed 황태구이 represents grilled dried pollack while soup/braised variants remain candidates."
+    },
+    {
+      "classId": 13,
+      "aiLabel": "훈제오리",
+      "aiAliases": [
+        "aihub_kfood_013",
+        "훈제오리",
+        "Img_013"
+      ],
+      "representativeCode": "06012011",
+      "candidateCodes": [
+        "06012011"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 14,
+      "aiLabel": "계란국",
+      "aiAliases": [
+        "aihub_kfood_014",
+        "계란국",
+        "Img_014"
+      ],
+      "representativeCode": "04011003",
+      "candidateCodes": [
+        "04011003"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "계란국 is a synonym of the catalog 달걀국 FoodCode."
+    },
+    {
+      "classId": 15,
+      "aiLabel": "떡국_만두국",
+      "aiAliases": [
+        "aihub_kfood_015",
+        "떡국_만두국",
+        "Img_015"
+      ],
+      "representativeCode": "02011039",
+      "candidateCodes": [
+        "02011039",
+        "02011038",
+        "02012005"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "FoodAI combines 떡국 and 만두국-like labels; service keeps 떡국, 떡만둣국, 만둣국 separately."
+    },
+    {
+      "classId": 16,
+      "aiLabel": "무국",
+      "aiAliases": [
+        "aihub_kfood_016",
+        "무국",
+        "Img_016"
+      ],
+      "representativeCode": "04011007",
+      "candidateCodes": [
+        "04011007"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 17,
+      "aiLabel": "미역국",
+      "aiAliases": [
+        "aihub_kfood_017",
+        "미역국",
+        "Img_017"
+      ],
+      "representativeCode": "04011005",
+      "candidateCodes": [
+        "04011005",
+        "04011008",
+        "04011015"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "FoodAI 미역국 covers plain, beef, and mussel seaweed soup variants."
+    },
+    {
+      "classId": 18,
+      "aiLabel": "북엇국",
+      "aiAliases": [
+        "aihub_kfood_018",
+        "북엇국",
+        "Img_018"
+      ],
+      "representativeCode": "04011016",
+      "candidateCodes": [
+        "04011016"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "북엇국 is mapped to 황태해장국 as the closest service soup FoodCode until a general 북엇국 code is added."
+    },
+    {
+      "classId": 19,
+      "aiLabel": "시래기국",
+      "aiAliases": [
+        "aihub_kfood_019",
+        "시래기국",
+        "Img_019"
+      ],
+      "representativeCode": "04012008",
+      "candidateCodes": [
+        "04012008"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "시래기국 is mapped to 시래기된장국 as the closest service FoodCode."
+    },
+    {
+      "classId": 20,
+      "aiLabel": "육개장",
+      "aiAliases": [
+        "aihub_kfood_020",
+        "육개장",
+        "Img_020"
+      ],
+      "representativeCode": "04013023",
+      "candidateCodes": [
+        "04013023"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 21,
+      "aiLabel": "콩나물국",
+      "aiAliases": [
+        "aihub_kfood_021",
+        "콩나물국",
+        "Img_021"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 22,
+      "aiLabel": "과메기",
+      "aiAliases": [
+        "aihub_kfood_022",
+        "과메기",
+        "Img_022"
+      ],
+      "representativeCode": "SVC_GWAMAEGI",
+      "candidateCodes": [
+        "SVC_GWAMAEGI"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed FoodCode was added because the legacy catalog had no 과메기 code."
+    },
+    {
+      "classId": 23,
+      "aiLabel": "양념치킨",
+      "aiAliases": [
+        "aihub_kfood_023",
+        "양념치킨",
+        "Img_023"
+      ],
+      "representativeCode": "SVC_YANGNYEOM_CHICKEN",
+      "candidateCodes": [
+        "SVC_YANGNYEOM_CHICKEN"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed FoodCode was added because the legacy catalog had no 양념치킨 code."
+    },
+    {
+      "classId": 24,
+      "aiLabel": "젓갈",
+      "aiAliases": [
+        "aihub_kfood_024",
+        "젓갈",
+        "Img_024"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 25,
+      "aiLabel": "콩자반",
+      "aiAliases": [
+        "aihub_kfood_025",
+        "콩자반",
+        "Img_025"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 26,
+      "aiLabel": "편육",
+      "aiAliases": [
+        "aihub_kfood_026",
+        "편육",
+        "Img_026"
+      ],
+      "representativeCode": "SVC_PYEONYUK",
+      "candidateCodes": [
+        "SVC_PYEONYUK",
+        "SVC_SUYUK"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "편육 is kept as a service-managed candidate near 수육."
+    },
+    {
+      "classId": 27,
+      "aiLabel": "피자",
+      "aiAliases": [
+        "aihub_kfood_027",
+        "피자",
+        "Img_027"
+      ],
+      "representativeCode": "SVC_PIZZA",
+      "candidateCodes": [
+        "SVC_PIZZA"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed FoodCode was added because the legacy catalog had no 피자 code."
+    },
+    {
+      "classId": 28,
+      "aiLabel": "후라이드치킨",
+      "aiAliases": [
+        "aihub_kfood_028",
+        "후라이드치킨",
+        "Img_028"
+      ],
+      "representativeCode": "SVC_FRIED_CHICKEN",
+      "candidateCodes": [
+        "SVC_FRIED_CHICKEN"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed FoodCode was added because the legacy catalog had no 후라이드치킨 code."
+    },
+    {
+      "classId": 29,
+      "aiLabel": "갓김치",
+      "aiAliases": [
+        "aihub_kfood_029",
+        "갓김치",
+        "Img_029"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 30,
+      "aiLabel": "깍두기",
+      "aiAliases": [
+        "aihub_kfood_030",
+        "깍두기",
+        "Img_030"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 31,
+      "aiLabel": "나박김치",
+      "aiAliases": [
+        "aihub_kfood_031",
+        "나박김치",
+        "Img_031"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 32,
+      "aiLabel": "무생채",
+      "aiAliases": [
+        "aihub_kfood_032",
+        "무생채",
+        "Img_032"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 33,
+      "aiLabel": "배추김치",
+      "aiAliases": [
+        "aihub_kfood_033",
+        "배추김치",
+        "Img_033"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 34,
+      "aiLabel": "백김치",
+      "aiAliases": [
+        "aihub_kfood_034",
+        "백김치",
+        "Img_034"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 35,
+      "aiLabel": "부추김치",
+      "aiAliases": [
+        "aihub_kfood_035",
+        "부추김치",
+        "Img_035"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 36,
+      "aiLabel": "열무김치",
+      "aiAliases": [
+        "aihub_kfood_036",
+        "열무김치",
+        "Img_036"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 37,
+      "aiLabel": "오이소박이",
+      "aiAliases": [
+        "aihub_kfood_037",
+        "오이소박이",
+        "Img_037"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 38,
+      "aiLabel": "총각김치",
+      "aiAliases": [
+        "aihub_kfood_038",
+        "총각김치",
+        "Img_038"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 39,
+      "aiLabel": "파김치",
+      "aiAliases": [
+        "aihub_kfood_039",
+        "파김치",
+        "Img_039"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 40,
+      "aiLabel": "가지볶음",
+      "aiAliases": [
+        "aihub_kfood_040",
+        "가지볶음",
+        "Img_040"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 41,
+      "aiLabel": "고사리나물",
+      "aiAliases": [
+        "aihub_kfood_041",
+        "고사리나물",
+        "Img_041"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 42,
+      "aiLabel": "미역줄기볶음",
+      "aiAliases": [
+        "aihub_kfood_042",
+        "미역줄기볶음",
+        "Img_042"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 43,
+      "aiLabel": "숙주나물",
+      "aiAliases": [
+        "aihub_kfood_043",
+        "숙주나물",
+        "Img_043"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 44,
+      "aiLabel": "시금치나물",
+      "aiAliases": [
+        "aihub_kfood_044",
+        "시금치나물",
+        "Img_044"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 45,
+      "aiLabel": "애호박볶음",
+      "aiAliases": [
+        "aihub_kfood_045",
+        "애호박볶음",
+        "Img_045"
+      ],
+      "representativeCode": "08012010",
+      "candidateCodes": [
+        "08012010"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service catalog has 호박볶음 as the closest FoodCode."
+    },
+    {
+      "classId": 46,
+      "aiLabel": "경단",
+      "aiAliases": [
+        "aihub_kfood_046",
+        "경단",
+        "Img_046"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 47,
+      "aiLabel": "꿀떡",
+      "aiAliases": [
+        "aihub_kfood_047",
+        "꿀떡",
+        "Img_047"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 48,
+      "aiLabel": "송편",
+      "aiAliases": [
+        "aihub_kfood_048",
+        "송편",
+        "Img_048"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 49,
+      "aiLabel": "만두",
+      "aiAliases": [
+        "aihub_kfood_049",
+        "만두",
+        "Img_049"
+      ],
+      "representativeCode": "SVC_MANDU",
+      "candidateCodes": [
+        "SVC_MANDU",
+        "02012001",
+        "02012002",
+        "02012003",
+        "02012004",
+        "02012005"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "FoodAI 만두 class is broader than service dumpling FoodCodes; service-managed general FoodCode is the default representative."
+    },
+    {
+      "classId": 50,
+      "aiLabel": "라면",
+      "aiAliases": [
+        "aihub_kfood_050",
+        "라면",
+        "Img_050"
+      ],
+      "representativeCode": "02011010",
+      "candidateCodes": [
+        "02011010"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 51,
+      "aiLabel": "막국수",
+      "aiAliases": [
+        "aihub_kfood_051",
+        "막국수",
+        "Img_051"
+      ],
+      "representativeCode": "02011011",
+      "candidateCodes": [
+        "02011011"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 52,
+      "aiLabel": "물냉면",
+      "aiAliases": [
+        "aihub_kfood_052",
+        "물냉면",
+        "Img_052"
+      ],
+      "representativeCode": "02011013",
+      "candidateCodes": [
+        "02011013"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 53,
+      "aiLabel": "비빔냉면",
+      "aiAliases": [
+        "aihub_kfood_053",
+        "비빔냉면",
+        "Img_053"
+      ],
+      "representativeCode": "02011015",
+      "candidateCodes": [
+        "02011015"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 54,
+      "aiLabel": "수제비",
+      "aiAliases": [
+        "aihub_kfood_054",
+        "수제비",
+        "Img_054"
+      ],
+      "representativeCode": "02011019",
+      "candidateCodes": [
+        "02011019"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 55,
+      "aiLabel": "열무국수",
+      "aiAliases": [
+        "aihub_kfood_055",
+        "열무국수",
+        "Img_055"
+      ],
+      "representativeCode": "SVC_YEOLMU_GUKSU",
+      "candidateCodes": [
+        "SVC_YEOLMU_GUKSU",
+        "02011021"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed general 열무국수 FoodCode was added; 열무김치국수 remains a specific candidate."
+    },
+    {
+      "classId": 56,
+      "aiLabel": "잔치국수",
+      "aiAliases": [
+        "aihub_kfood_056",
+        "잔치국수",
+        "Img_056"
+      ],
+      "representativeCode": "02011028",
+      "candidateCodes": [
+        "02011028"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 57,
+      "aiLabel": "짜장면",
+      "aiAliases": [
+        "aihub_kfood_057",
+        "짜장면",
+        "Img_057"
+      ],
+      "representativeCode": "02011027",
+      "candidateCodes": [
+        "02011027",
+        "02011017"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "짜장면 is normalized to the catalog 자장면 FoodCode with 삼선자장면 as a candidate."
+    },
+    {
+      "classId": 58,
+      "aiLabel": "짬뽕",
+      "aiAliases": [
+        "aihub_kfood_058",
+        "짬뽕",
+        "Img_058"
+      ],
+      "representativeCode": "02011029",
+      "candidateCodes": [
+        "02011029"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 59,
+      "aiLabel": "쫄면",
+      "aiAliases": [
+        "aihub_kfood_059",
+        "쫄면",
+        "Img_059"
+      ],
+      "representativeCode": "02011031",
+      "candidateCodes": [
+        "02011031"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 60,
+      "aiLabel": "칼국수",
+      "aiAliases": [
+        "aihub_kfood_060",
+        "칼국수",
+        "Img_060"
+      ],
+      "representativeCode": "SVC_KALGUKSU",
+      "candidateCodes": [
+        "SVC_KALGUKSU",
+        "02011007",
+        "02011008",
+        "02011036"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "FoodAI 칼국수 is broader than service 닭/들깨/해물 칼국수 variants; service-managed general FoodCode is the default representative."
+    },
+    {
+      "classId": 61,
+      "aiLabel": "콩국수",
+      "aiAliases": [
+        "aihub_kfood_061",
+        "콩국수",
+        "Img_061"
+      ],
+      "representativeCode": "02011033",
+      "candidateCodes": [
+        "02011033"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 62,
+      "aiLabel": "꽈리고추무침",
+      "aiAliases": [
+        "aihub_kfood_062",
+        "꽈리고추무침",
+        "Img_062"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 63,
+      "aiLabel": "도라지무침",
+      "aiAliases": [
+        "aihub_kfood_063",
+        "도라지무침",
+        "Img_063"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 64,
+      "aiLabel": "도토리묵",
+      "aiAliases": [
+        "aihub_kfood_064",
+        "도토리묵",
+        "Img_064"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 65,
+      "aiLabel": "잡채",
+      "aiAliases": [
+        "aihub_kfood_065",
+        "잡채",
+        "Img_065"
+      ],
+      "representativeCode": "SVC_JAPCHAE",
+      "candidateCodes": [
+        "SVC_JAPCHAE",
+        "01015007"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed general 잡채 FoodCode was added; rice/chinese variants are related candidates."
+    },
+    {
+      "classId": 66,
+      "aiLabel": "콩나물무침",
+      "aiAliases": [
+        "aihub_kfood_066",
+        "콩나물무침",
+        "Img_066"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 67,
+      "aiLabel": "홍어무침",
+      "aiAliases": [
+        "aihub_kfood_067",
+        "홍어무침",
+        "Img_067"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 68,
+      "aiLabel": "회무침",
+      "aiAliases": [
+        "aihub_kfood_068",
+        "회무침",
+        "Img_068"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 69,
+      "aiLabel": "김밥",
+      "aiAliases": [
+        "aihub_kfood_069",
+        "김밥",
+        "Img_069"
+      ],
+      "representativeCode": "SVC_GIMBAP",
+      "candidateCodes": [
+        "SVC_GIMBAP",
+        "01016020",
+        "01016001",
+        "01016006",
+        "01016008",
+        "01016014",
+        "01016016",
+        "01016017"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "FoodAI 김밥 class covers multiple service 김밥 variants; service-managed general FoodCode is the default representative."
+    },
+    {
+      "classId": 70,
+      "aiLabel": "김치볶음밥",
+      "aiAliases": [
+        "aihub_kfood_070",
+        "김치볶음밥",
+        "Img_070"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 71,
+      "aiLabel": "누룽지",
+      "aiAliases": [
+        "aihub_kfood_071",
+        "누룽지",
+        "Img_071"
+      ],
+      "representativeCode": "SVC_NURUNGJI",
+      "candidateCodes": [
+        "SVC_NURUNGJI"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "side_dish",
+      "searchable": true,
+      "recommendable": false,
+      "reason": "Service-managed FoodCode was added for 누룽지, but it is not recommendable as a standalone meal."
+    },
+    {
+      "classId": 72,
+      "aiLabel": "비빔밥",
+      "aiAliases": [
+        "aihub_kfood_072",
+        "비빔밥",
+        "Img_072"
+      ],
+      "representativeCode": "01014004",
+      "candidateCodes": [
+        "01014004",
+        "01014005",
+        "01014009",
+        "01014011",
+        "01014013"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "FoodAI 비빔밥 class covers multiple service 비빔밥 variants."
+    },
+    {
+      "classId": 73,
+      "aiLabel": "새우볶음밥",
+      "aiAliases": [
+        "aihub_kfood_073",
+        "새우볶음밥",
+        "Img_073"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 74,
+      "aiLabel": "알밥",
+      "aiAliases": [
+        "aihub_kfood_074",
+        "알밥",
+        "Img_074"
+      ],
+      "representativeCode": "01014008",
+      "candidateCodes": [
+        "01014008"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 75,
+      "aiLabel": "유부초밥",
+      "aiAliases": [
+        "aihub_kfood_075",
+        "유부초밥",
+        "Img_075"
+      ],
+      "representativeCode": "01016012",
+      "candidateCodes": [
+        "01016012"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 76,
+      "aiLabel": "잡곡밥",
+      "aiAliases": [
+        "aihub_kfood_076",
+        "잡곡밥",
+        "Img_076"
+      ],
+      "representativeCode": "01012001",
+      "candidateCodes": [
+        "01012001"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 77,
+      "aiLabel": "주먹밥",
+      "aiAliases": [
+        "aihub_kfood_077",
+        "주먹밥",
+        "Img_077"
+      ],
+      "representativeCode": "01014002",
+      "candidateCodes": [
+        "01014002"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 78,
+      "aiLabel": "감자채볶음",
+      "aiAliases": [
+        "aihub_kfood_078",
+        "감자채볶음",
+        "Img_078"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 79,
+      "aiLabel": "건새우볶음",
+      "aiAliases": [
+        "aihub_kfood_079",
+        "건새우볶음",
+        "Img_079"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 80,
+      "aiLabel": "고추장진미채볶음",
+      "aiAliases": [
+        "aihub_kfood_080",
+        "고추장진미채볶음",
+        "Img_080"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "sauce",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 81,
+      "aiLabel": "두부김치",
+      "aiAliases": [
+        "aihub_kfood_081",
+        "두부김치",
+        "Img_081"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 82,
+      "aiLabel": "떡볶이",
+      "aiAliases": [
+        "aihub_kfood_082",
+        "떡볶이",
+        "Img_082"
+      ],
+      "representativeCode": "08014001",
+      "candidateCodes": [
+        "08014001"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 83,
+      "aiLabel": "라볶이",
+      "aiAliases": [
+        "aihub_kfood_083",
+        "라볶이",
+        "Img_083"
+      ],
+      "representativeCode": "08014002",
+      "candidateCodes": [
+        "08014002"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 84,
+      "aiLabel": "멸치볶음",
+      "aiAliases": [
+        "aihub_kfood_084",
+        "멸치볶음",
+        "Img_084"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 85,
+      "aiLabel": "소세지볶음",
+      "aiAliases": [
+        "aihub_kfood_085",
+        "소세지볶음",
+        "Img_085"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 86,
+      "aiLabel": "어묵볶음",
+      "aiAliases": [
+        "aihub_kfood_086",
+        "어묵볶음",
+        "Img_086"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 87,
+      "aiLabel": "오징어채볶음",
+      "aiAliases": [
+        "aihub_kfood_087",
+        "오징어채볶음",
+        "Img_087"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 88,
+      "aiLabel": "제육볶음",
+      "aiAliases": [
+        "aihub_kfood_088",
+        "제육볶음",
+        "Img_088"
+      ],
+      "representativeCode": "SVC_JEYUK_BOKKEUM",
+      "candidateCodes": [
+        "SVC_JEYUK_BOKKEUM",
+        "01015010"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed 제육볶음 FoodCode was added while 제육덮밥 remains a candidate."
+    },
+    {
+      "classId": 89,
+      "aiLabel": "주꾸미볶음",
+      "aiAliases": [
+        "aihub_kfood_089",
+        "주꾸미볶음",
+        "Img_089"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 90,
+      "aiLabel": "보쌈",
+      "aiAliases": [
+        "aihub_kfood_090",
+        "보쌈",
+        "Img_090"
+      ],
+      "representativeCode": "SVC_BOSSAM",
+      "candidateCodes": [
+        "SVC_BOSSAM",
+        "SVC_SUYUK",
+        "05012003"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "보쌈 is represented by a service-managed general FoodCode while preserving 수육-related candidates."
+    },
+    {
+      "classId": 91,
+      "aiLabel": "수정과",
+      "aiAliases": [
+        "aihub_kfood_091",
+        "수정과",
+        "Img_091"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "beverage",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 92,
+      "aiLabel": "식혜",
+      "aiAliases": [
+        "aihub_kfood_092",
+        "식혜",
+        "Img_092"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "beverage",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 93,
+      "aiLabel": "간장게장",
+      "aiAliases": [
+        "aihub_kfood_093",
+        "간장게장",
+        "Img_093"
+      ],
+      "representativeCode": "SVC_GANJANG_GEJANG",
+      "candidateCodes": [
+        "SVC_GANJANG_GEJANG"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed FoodCode was added because the legacy catalog had no 간장게장 code."
+    },
+    {
+      "classId": 94,
+      "aiLabel": "양념게장",
+      "aiAliases": [
+        "aihub_kfood_094",
+        "양념게장",
+        "Img_094"
+      ],
+      "representativeCode": "SVC_YANGNYEOM_GEJANG",
+      "candidateCodes": [
+        "SVC_YANGNYEOM_GEJANG"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed FoodCode was added because the legacy catalog had no 양념게장 code."
+    },
+    {
+      "classId": 95,
+      "aiLabel": "깻잎장아찌",
+      "aiAliases": [
+        "aihub_kfood_095",
+        "깻잎장아찌",
+        "Img_095"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 96,
+      "aiLabel": "떡꼬치",
+      "aiAliases": [
+        "aihub_kfood_096",
+        "떡꼬치",
+        "Img_096"
+      ],
+      "representativeCode": "SVC_TTEOK_KKOCHI",
+      "candidateCodes": [
+        "SVC_TTEOK_KKOCHI"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed FoodCode was added because the legacy catalog had no 떡꼬치 code."
+    },
+    {
+      "classId": 97,
+      "aiLabel": "감자전",
+      "aiAliases": [
+        "aihub_kfood_097",
+        "감자전",
+        "Img_097"
+      ],
+      "representativeCode": "07013001",
+      "candidateCodes": [
+        "07013001"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 98,
+      "aiLabel": "계란말이",
+      "aiAliases": [
+        "aihub_kfood_098",
+        "계란말이",
+        "Img_098"
+      ],
+      "representativeCode": "07014001",
+      "candidateCodes": [
+        "07014001"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "계란말이 is a synonym of the catalog 달걀말이 FoodCode."
+    },
+    {
+      "classId": 99,
+      "aiLabel": "계란후라이",
+      "aiAliases": [
+        "aihub_kfood_099",
+        "계란후라이",
+        "Img_099"
+      ],
+      "representativeCode": "SVC_GYERAN_FRIED",
+      "candidateCodes": [
+        "SVC_GYERAN_FRIED"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "side_dish",
+      "searchable": true,
+      "recommendable": false,
+      "reason": "Service-managed FoodCode was added for fried egg, but it is not recommendable as a standalone meal."
+    },
+    {
+      "classId": 100,
+      "aiLabel": "김치전",
+      "aiAliases": [
+        "aihub_kfood_100",
+        "김치전",
+        "Img_100"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 101,
+      "aiLabel": "동그랑땡",
+      "aiAliases": [
+        "aihub_kfood_101",
+        "동그랑땡",
+        "Img_101"
+      ],
+      "representativeCode": "07012001",
+      "candidateCodes": [
+        "07012001"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 102,
+      "aiLabel": "생선전",
+      "aiAliases": [
+        "aihub_kfood_102",
+        "생선전",
+        "Img_102"
+      ],
+      "representativeCode": "SVC_SAENGSEON_JEON",
+      "candidateCodes": [
+        "SVC_SAENGSEON_JEON",
+        "07011001",
+        "07011002"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed general 생선전 FoodCode was added while fish/seafood jeon variants remain candidates."
+    },
+    {
+      "classId": 103,
+      "aiLabel": "파전",
+      "aiAliases": [
+        "aihub_kfood_103",
+        "파전",
+        "Img_103"
+      ],
+      "representativeCode": "07013011",
+      "candidateCodes": [
+        "07013011"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 104,
+      "aiLabel": "호박전",
+      "aiAliases": [
+        "aihub_kfood_104",
+        "호박전",
+        "Img_104"
+      ],
+      "representativeCode": "07013013",
+      "candidateCodes": [
+        "07013013"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 105,
+      "aiLabel": "곱창전골",
+      "aiAliases": [
+        "aihub_kfood_105",
+        "곱창전골",
+        "Img_105"
+      ],
+      "representativeCode": "04018002",
+      "candidateCodes": [
+        "04018002"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 106,
+      "aiLabel": "갈치조림",
+      "aiAliases": [
+        "aihub_kfood_106",
+        "갈치조림",
+        "Img_106"
+      ],
+      "representativeCode": "09011002",
+      "candidateCodes": [
+        "09011002"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "side_dish",
+      "searchable": true,
+      "recommendable": false,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 107,
+      "aiLabel": "감자조림",
+      "aiAliases": [
+        "aihub_kfood_107",
+        "감자조림",
+        "Img_107"
+      ],
+      "representativeCode": "09014002",
+      "candidateCodes": [
+        "09014002"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "side_dish",
+      "searchable": true,
+      "recommendable": false,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 108,
+      "aiLabel": "고등어조림",
+      "aiAliases": [
+        "aihub_kfood_108",
+        "고등어조림",
+        "Img_108"
+      ],
+      "representativeCode": "09011003",
+      "candidateCodes": [
+        "09011003"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "side_dish",
+      "searchable": true,
+      "recommendable": false,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 109,
+      "aiLabel": "꽁치조림",
+      "aiAliases": [
+        "aihub_kfood_109",
+        "꽁치조림",
+        "Img_109"
+      ],
+      "representativeCode": "09011004",
+      "candidateCodes": [
+        "09011004"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "side_dish",
+      "searchable": true,
+      "recommendable": false,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 110,
+      "aiLabel": "두부조림",
+      "aiAliases": [
+        "aihub_kfood_110",
+        "두부조림",
+        "Img_110"
+      ],
+      "representativeCode": "SVC_DUBU_JORIM",
+      "candidateCodes": [
+        "SVC_DUBU_JORIM"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "side_dish",
+      "searchable": true,
+      "recommendable": false,
+      "reason": "Service-managed FoodCode was added for 두부조림, but it is treated as side_dish for recommendation filtering."
+    },
+    {
+      "classId": 111,
+      "aiLabel": "땅콩조림",
+      "aiAliases": [
+        "aihub_kfood_111",
+        "땅콩조림",
+        "Img_111"
+      ],
+      "representativeCode": "09016001",
+      "candidateCodes": [
+        "09016001"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "side_dish",
+      "searchable": true,
+      "recommendable": false,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 112,
+      "aiLabel": "메추리알장조림",
+      "aiAliases": [
+        "aihub_kfood_112",
+        "메추리알장조림",
+        "Img_112"
+      ],
+      "representativeCode": "09013002",
+      "candidateCodes": [
+        "09013002",
+        "09013001"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "side_dish",
+      "searchable": true,
+      "recommendable": false,
+      "reason": "Service taxonomy distinguishes 돼지고기 and 소고기 메추리알장조림."
+    },
+    {
+      "classId": 113,
+      "aiLabel": "연근조림",
+      "aiAliases": [
+        "aihub_kfood_113",
+        "연근조림",
+        "Img_113"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 114,
+      "aiLabel": "우엉조림",
+      "aiAliases": [
+        "aihub_kfood_114",
+        "우엉조림",
+        "Img_114"
+      ],
+      "representativeCode": "09014003",
+      "candidateCodes": [
+        "09014003"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "side_dish",
+      "searchable": true,
+      "recommendable": false,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 115,
+      "aiLabel": "장조림",
+      "aiAliases": [
+        "aihub_kfood_115",
+        "장조림",
+        "Img_115"
+      ],
+      "representativeCode": "09012001",
+      "candidateCodes": [
+        "09012001",
+        "09013001",
+        "09013002"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "side_dish",
+      "searchable": true,
+      "recommendable": false,
+      "reason": "FoodAI 장조림 class is broader than service meat and quail egg variants."
+    },
+    {
+      "classId": 116,
+      "aiLabel": "코다리조림",
+      "aiAliases": [
+        "aihub_kfood_116",
+        "코다리조림",
+        "Img_116"
+      ],
+      "representativeCode": "09011008",
+      "candidateCodes": [
+        "09011008"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "side_dish",
+      "searchable": true,
+      "recommendable": false,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 117,
+      "aiLabel": "전복죽",
+      "aiAliases": [
+        "aihub_kfood_117",
+        "전복죽",
+        "Img_117"
+      ],
+      "representativeCode": "03011007",
+      "candidateCodes": [
+        "03011007"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 118,
+      "aiLabel": "호박죽",
+      "aiAliases": [
+        "aihub_kfood_118",
+        "호박죽",
+        "Img_118"
+      ],
+      "representativeCode": "03011011",
+      "candidateCodes": [
+        "03011011"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 119,
+      "aiLabel": "김치찌개",
+      "aiAliases": [
+        "aihub_kfood_119",
+        "김치찌개",
+        "Img_119"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 120,
+      "aiLabel": "닭계장",
+      "aiAliases": [
+        "aihub_kfood_120",
+        "닭계장",
+        "Img_120"
+      ],
+      "representativeCode": "04013022",
+      "candidateCodes": [
+        "04013022"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "닭계장 is a spelling variant of the catalog 닭개장 FoodCode."
+    },
+    {
+      "classId": 121,
+      "aiLabel": "동태찌개",
+      "aiAliases": [
+        "aihub_kfood_121",
+        "동태찌개",
+        "Img_121"
+      ],
+      "representativeCode": "04015003",
+      "candidateCodes": [
+        "04015003"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 122,
+      "aiLabel": "된장찌개",
+      "aiAliases": [
+        "aihub_kfood_122",
+        "된장찌개",
+        "Img_122"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "sauce",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 123,
+      "aiLabel": "순두부찌개",
+      "aiAliases": [
+        "aihub_kfood_123",
+        "순두부찌개",
+        "Img_123"
+      ],
+      "representativeCode": "04019004",
+      "candidateCodes": [
+        "04019004"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 124,
+      "aiLabel": "갈비찜",
+      "aiAliases": [
+        "aihub_kfood_124",
+        "갈비찜",
+        "Img_124"
+      ],
+      "representativeCode": "05012002",
+      "candidateCodes": [
+        "05012002",
+        "05012001"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service taxonomy distinguishes 소갈비찜 and 돼지갈비찜; 돼지갈비찜 is the default representative."
+    },
+    {
+      "classId": 125,
+      "aiLabel": "계란찜",
+      "aiAliases": [
+        "aihub_kfood_125",
+        "계란찜",
+        "Img_125"
+      ],
+      "representativeCode": "05013001",
+      "candidateCodes": [
+        "05013001"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "계란찜 is a synonym of the catalog 달걀찜 FoodCode."
+    },
+    {
+      "classId": 126,
+      "aiLabel": "김치찜",
+      "aiAliases": [
+        "aihub_kfood_126",
+        "김치찜",
+        "Img_126"
+      ],
+      "representativeCode": "SVC_KIMCHI_JJIM",
+      "candidateCodes": [
+        "SVC_KIMCHI_JJIM",
+        "04019001",
+        "04019006"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed 김치찜 FoodCode was added while 김치찌개 variants remain related candidates."
+    },
+    {
+      "classId": 127,
+      "aiLabel": "꼬막찜",
+      "aiAliases": [
+        "aihub_kfood_127",
+        "꼬막찜",
+        "Img_127"
+      ],
+      "representativeCode": "SVC_KKOMAK_JJIM",
+      "candidateCodes": [
+        "SVC_KKOMAK_JJIM",
+        "05011011"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed 꼬막찜 FoodCode was added; 참꼬막 remains a related candidate."
+    },
+    {
+      "classId": 128,
+      "aiLabel": "닭볶음탕",
+      "aiAliases": [
+        "aihub_kfood_128",
+        "닭볶음탕",
+        "Img_128"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 129,
+      "aiLabel": "수육",
+      "aiAliases": [
+        "aihub_kfood_129",
+        "수육",
+        "Img_129"
+      ],
+      "representativeCode": "SVC_SUYUK",
+      "candidateCodes": [
+        "SVC_SUYUK",
+        "05012003",
+        "SVC_PYEONYUK",
+        "SVC_BOSSAM"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "FoodAI 수육 is broader than 돼지고기수육; service-managed general FoodCode is the default representative."
+    },
+    {
+      "classId": 130,
+      "aiLabel": "순대",
+      "aiAliases": [
+        "aihub_kfood_130",
+        "순대",
+        "Img_130"
+      ],
+      "representativeCode": "SVC_SUNDAE",
+      "candidateCodes": [
+        "SVC_SUNDAE",
+        "08013004",
+        "01015012",
+        "04011010"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "FoodAI 순대 can map to standalone 순대, 순대볶음, 순대국밥, or 순대국 service FoodCodes."
+    },
+    {
+      "classId": 131,
+      "aiLabel": "족발",
+      "aiAliases": [
+        "aihub_kfood_131",
+        "족발",
+        "Img_131"
+      ],
+      "representativeCode": "05012005",
+      "candidateCodes": [
+        "05012005"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 132,
+      "aiLabel": "찜닭",
+      "aiAliases": [
+        "aihub_kfood_132",
+        "찜닭",
+        "Img_132"
+      ],
+      "representativeCode": "05012004",
+      "candidateCodes": [
+        "05012004"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 133,
+      "aiLabel": "해물찜",
+      "aiAliases": [
+        "aihub_kfood_133",
+        "해물찜",
+        "Img_133"
+      ],
+      "representativeCode": "05011012",
+      "candidateCodes": [
+        "05011012"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 134,
+      "aiLabel": "갈비탕",
+      "aiAliases": [
+        "aihub_kfood_134",
+        "갈비탕",
+        "Img_134"
+      ],
+      "representativeCode": "04013002",
+      "candidateCodes": [
+        "04013002"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 135,
+      "aiLabel": "감자탕",
+      "aiAliases": [
+        "aihub_kfood_135",
+        "감자탕",
+        "Img_135"
+      ],
+      "representativeCode": "04013003",
+      "candidateCodes": [
+        "04013003"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 136,
+      "aiLabel": "곰탕_설렁탕",
+      "aiAliases": [
+        "aihub_kfood_136",
+        "곰탕_설렁탕",
+        "Img_136"
+      ],
+      "representativeCode": "04013004",
+      "candidateCodes": [
+        "04013004",
+        "04013015"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "FoodAI combines 곰탕 and 설렁탕; service keeps both as candidates."
+    },
+    {
+      "classId": 137,
+      "aiLabel": "매운탕",
+      "aiAliases": [
+        "aihub_kfood_137",
+        "매운탕",
+        "Img_137"
+      ],
+      "representativeCode": "04013005",
+      "candidateCodes": [
+        "04013005"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 138,
+      "aiLabel": "삼계탕",
+      "aiAliases": [
+        "aihub_kfood_138",
+        "삼계탕",
+        "Img_138"
+      ],
+      "representativeCode": "04013014",
+      "candidateCodes": [
+        "04013014"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 139,
+      "aiLabel": "추어탕",
+      "aiAliases": [
+        "aihub_kfood_139",
+        "추어탕",
+        "Img_139"
+      ],
+      "representativeCode": "04013020",
+      "candidateCodes": [
+        "04013020"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Matched by normalized label exact match against food-code-catalog.yaml."
+    },
+    {
+      "classId": 140,
+      "aiLabel": "고추튀김",
+      "aiAliases": [
+        "aihub_kfood_140",
+        "고추튀김",
+        "Img_140"
+      ],
+      "representativeCode": "SVC_GOCHU_TWIGIM",
+      "candidateCodes": [
+        "SVC_GOCHU_TWIGIM"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed FoodCode was added because the legacy catalog had no 고추튀김 code."
+    },
+    {
+      "classId": 141,
+      "aiLabel": "새우튀김",
+      "aiAliases": [
+        "aihub_kfood_141",
+        "새우튀김",
+        "Img_141"
+      ],
+      "representativeCode": "SVC_SAEU_TWIGIM",
+      "candidateCodes": [
+        "SVC_SAEU_TWIGIM",
+        "01016005"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed 새우튀김 FoodCode was added; 새우튀김롤 remains a related candidate but is no longer the representative."
+    },
+    {
+      "classId": 142,
+      "aiLabel": "오징어튀김",
+      "aiAliases": [
+        "aihub_kfood_142",
+        "오징어튀김",
+        "Img_142"
+      ],
+      "representativeCode": "SVC_OJINGEO_TWIGIM",
+      "candidateCodes": [
+        "SVC_OJINGEO_TWIGIM"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed FoodCode was added because the legacy catalog had no 오징어튀김 code."
+    },
+    {
+      "classId": 143,
+      "aiLabel": "약과",
+      "aiAliases": [
+        "aihub_kfood_143",
+        "약과",
+        "Img_143"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 144,
+      "aiLabel": "약식",
+      "aiAliases": [
+        "aihub_kfood_144",
+        "약식",
+        "Img_144"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 145,
+      "aiLabel": "한과",
+      "aiAliases": [
+        "aihub_kfood_145",
+        "한과",
+        "Img_145"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "side_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a low-priority side dish, beverage, dessert, or sauce class and is filtered out of the service taxonomy unless explicitly mapped."
+    },
+    {
+      "classId": 146,
+      "aiLabel": "멍게",
+      "aiAliases": [
+        "aihub_kfood_146",
+        "멍게",
+        "Img_146"
+      ],
+      "representativeCode": "SVC_MEONGGE",
+      "candidateCodes": [
+        "SVC_MEONGGE"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed FoodCode was added because the legacy catalog had no 멍게 code."
+    },
+    {
+      "classId": 147,
+      "aiLabel": "산낙지",
+      "aiAliases": [
+        "aihub_kfood_147",
+        "산낙지",
+        "Img_147"
+      ],
+      "representativeCode": "SVC_SANNAKJI",
+      "candidateCodes": [
+        "SVC_SANNAKJI"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed FoodCode was added because the legacy catalog had no 산낙지 code."
+    },
+    {
+      "classId": 148,
+      "aiLabel": "물회",
+      "aiAliases": [
+        "aihub_kfood_148",
+        "물회",
+        "Img_148"
+      ],
+      "representativeCode": "SVC_MULHOE",
+      "candidateCodes": [
+        "SVC_MULHOE"
+      ],
+      "mappingStatus": "exact",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed FoodCode was added because the legacy catalog had no 물회 code."
+    },
+    {
+      "classId": 149,
+      "aiLabel": "육회",
+      "aiAliases": [
+        "aihub_kfood_149",
+        "육회",
+        "Img_149"
+      ],
+      "representativeCode": "SVC_YUKHOE",
+      "candidateCodes": [
+        "SVC_YUKHOE",
+        "01014011"
+      ],
+      "mappingStatus": "broad",
+      "granularity": "main_dish",
+      "searchable": true,
+      "recommendable": true,
+      "reason": "Service-managed 육회 FoodCode was added; 육회비빔밥 remains a candidate."
+    },
+    {
+      "classId": 150,
+      "aiLabel": "한국음식_150",
+      "aiAliases": [
+        "korean_food_150",
+        "한국음식_150"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 151,
+      "aiLabel": "한국음식_151",
+      "aiAliases": [
+        "korean_food_151",
+        "한국음식_151"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 152,
+      "aiLabel": "한국음식_152",
+      "aiAliases": [
+        "korean_food_152",
+        "한국음식_152"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 153,
+      "aiLabel": "한국음식_153",
+      "aiAliases": [
+        "korean_food_153",
+        "한국음식_153"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 154,
+      "aiLabel": "한국음식_154",
+      "aiAliases": [
+        "korean_food_154",
+        "한국음식_154"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 155,
+      "aiLabel": "한국음식_155",
+      "aiAliases": [
+        "korean_food_155",
+        "한국음식_155"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 156,
+      "aiLabel": "한국음식_156",
+      "aiAliases": [
+        "korean_food_156",
+        "한국음식_156"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 157,
+      "aiLabel": "한국음식_157",
+      "aiAliases": [
+        "korean_food_157",
+        "한국음식_157"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 158,
+      "aiLabel": "한국음식_158",
+      "aiAliases": [
+        "korean_food_158",
+        "한국음식_158"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 159,
+      "aiLabel": "한국음식_159",
+      "aiAliases": [
+        "korean_food_159",
+        "한국음식_159"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 160,
+      "aiLabel": "한국음식_160",
+      "aiAliases": [
+        "korean_food_160",
+        "한국음식_160"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 161,
+      "aiLabel": "한국음식_161",
+      "aiAliases": [
+        "korean_food_161",
+        "한국음식_161"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 162,
+      "aiLabel": "한국음식_162",
+      "aiAliases": [
+        "korean_food_162",
+        "한국음식_162"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 163,
+      "aiLabel": "한국음식_163",
+      "aiAliases": [
+        "korean_food_163",
+        "한국음식_163"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 164,
+      "aiLabel": "한국음식_164",
+      "aiAliases": [
+        "korean_food_164",
+        "한국음식_164"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 165,
+      "aiLabel": "한국음식_165",
+      "aiAliases": [
+        "korean_food_165",
+        "한국음식_165"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 166,
+      "aiLabel": "한국음식_166",
+      "aiAliases": [
+        "korean_food_166",
+        "한국음식_166"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 167,
+      "aiLabel": "한국음식_167",
+      "aiAliases": [
+        "korean_food_167",
+        "한국음식_167"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 168,
+      "aiLabel": "한국음식_168",
+      "aiAliases": [
+        "korean_food_168",
+        "한국음식_168"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 169,
+      "aiLabel": "한국음식_169",
+      "aiAliases": [
+        "korean_food_169",
+        "한국음식_169"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 170,
+      "aiLabel": "한국음식_170",
+      "aiAliases": [
+        "korean_food_170",
+        "한국음식_170"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 171,
+      "aiLabel": "한국음식_171",
+      "aiAliases": [
+        "korean_food_171",
+        "한국음식_171"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 172,
+      "aiLabel": "한국음식_172",
+      "aiAliases": [
+        "korean_food_172",
+        "한국음식_172"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 173,
+      "aiLabel": "한국음식_173",
+      "aiAliases": [
+        "korean_food_173",
+        "한국음식_173"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 174,
+      "aiLabel": "한국음식_174",
+      "aiAliases": [
+        "korean_food_174",
+        "한국음식_174"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 175,
+      "aiLabel": "한국음식_175",
+      "aiAliases": [
+        "korean_food_175",
+        "한국음식_175"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 176,
+      "aiLabel": "한국음식_176",
+      "aiAliases": [
+        "korean_food_176",
+        "한국음식_176"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 177,
+      "aiLabel": "한국음식_177",
+      "aiAliases": [
+        "korean_food_177",
+        "한국음식_177"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 178,
+      "aiLabel": "한국음식_178",
+      "aiAliases": [
+        "korean_food_178",
+        "한국음식_178"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 179,
+      "aiLabel": "한국음식_179",
+      "aiAliases": [
+        "korean_food_179",
+        "한국음식_179"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 180,
+      "aiLabel": "한국음식_180",
+      "aiAliases": [
+        "korean_food_180",
+        "한국음식_180"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 181,
+      "aiLabel": "한국음식_181",
+      "aiAliases": [
+        "korean_food_181",
+        "한국음식_181"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 182,
+      "aiLabel": "한국음식_182",
+      "aiAliases": [
+        "korean_food_182",
+        "한국음식_182"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 183,
+      "aiLabel": "한국음식_183",
+      "aiAliases": [
+        "korean_food_183",
+        "한국음식_183"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 184,
+      "aiLabel": "한국음식_184",
+      "aiAliases": [
+        "korean_food_184",
+        "한국음식_184"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 185,
+      "aiLabel": "한국음식_185",
+      "aiAliases": [
+        "korean_food_185",
+        "한국음식_185"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 186,
+      "aiLabel": "한국음식_186",
+      "aiAliases": [
+        "korean_food_186",
+        "한국음식_186"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 187,
+      "aiLabel": "한국음식_187",
+      "aiAliases": [
+        "korean_food_187",
+        "한국음식_187"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 188,
+      "aiLabel": "한국음식_188",
+      "aiAliases": [
+        "korean_food_188",
+        "한국음식_188"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 189,
+      "aiLabel": "한국음식_189",
+      "aiAliases": [
+        "korean_food_189",
+        "한국음식_189"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 190,
+      "aiLabel": "한국음식_190",
+      "aiAliases": [
+        "korean_food_190",
+        "한국음식_190"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 191,
+      "aiLabel": "한국음식_191",
+      "aiAliases": [
+        "korean_food_191",
+        "한국음식_191"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 192,
+      "aiLabel": "한국음식_192",
+      "aiAliases": [
+        "korean_food_192",
+        "한국음식_192"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 193,
+      "aiLabel": "한국음식_193",
+      "aiAliases": [
+        "korean_food_193",
+        "한국음식_193"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 194,
+      "aiLabel": "한국음식_194",
+      "aiAliases": [
+        "korean_food_194",
+        "한국음식_194"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 195,
+      "aiLabel": "한국음식_195",
+      "aiAliases": [
+        "korean_food_195",
+        "한국음식_195"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 196,
+      "aiLabel": "한국음식_196",
+      "aiAliases": [
+        "korean_food_196",
+        "한국음식_196"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 197,
+      "aiLabel": "한국음식_197",
+      "aiAliases": [
+        "korean_food_197",
+        "한국음식_197"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 198,
+      "aiLabel": "한국음식_198",
+      "aiAliases": [
+        "korean_food_198",
+        "한국음식_198"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 199,
+      "aiLabel": "한국음식_199",
+      "aiAliases": [
+        "korean_food_199",
+        "한국음식_199"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 200,
+      "aiLabel": "한국음식_200",
+      "aiAliases": [
+        "korean_food_200",
+        "한국음식_200"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 201,
+      "aiLabel": "한국음식_201",
+      "aiAliases": [
+        "korean_food_201",
+        "한국음식_201"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 202,
+      "aiLabel": "한국음식_202",
+      "aiAliases": [
+        "korean_food_202",
+        "한국음식_202"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 203,
+      "aiLabel": "한국음식_203",
+      "aiAliases": [
+        "korean_food_203",
+        "한국음식_203"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 204,
+      "aiLabel": "한국음식_204",
+      "aiAliases": [
+        "korean_food_204",
+        "한국음식_204"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 205,
+      "aiLabel": "한국음식_205",
+      "aiAliases": [
+        "korean_food_205",
+        "한국음식_205"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 206,
+      "aiLabel": "한국음식_206",
+      "aiAliases": [
+        "korean_food_206",
+        "한국음식_206"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 207,
+      "aiLabel": "한국음식_207",
+      "aiAliases": [
+        "korean_food_207",
+        "한국음식_207"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 208,
+      "aiLabel": "한국음식_208",
+      "aiAliases": [
+        "korean_food_208",
+        "한국음식_208"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 209,
+      "aiLabel": "한국음식_209",
+      "aiAliases": [
+        "korean_food_209",
+        "한국음식_209"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 210,
+      "aiLabel": "한국음식_210",
+      "aiAliases": [
+        "korean_food_210",
+        "한국음식_210"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 211,
+      "aiLabel": "한국음식_211",
+      "aiAliases": [
+        "korean_food_211",
+        "한국음식_211"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 212,
+      "aiLabel": "한국음식_212",
+      "aiAliases": [
+        "korean_food_212",
+        "한국음식_212"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 213,
+      "aiLabel": "한국음식_213",
+      "aiAliases": [
+        "korean_food_213",
+        "한국음식_213"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 214,
+      "aiLabel": "한국음식_214",
+      "aiAliases": [
+        "korean_food_214",
+        "한국음식_214"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 215,
+      "aiLabel": "한국음식_215",
+      "aiAliases": [
+        "korean_food_215",
+        "한국음식_215"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 216,
+      "aiLabel": "한국음식_216",
+      "aiAliases": [
+        "korean_food_216",
+        "한국음식_216"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 217,
+      "aiLabel": "한국음식_217",
+      "aiAliases": [
+        "korean_food_217",
+        "한국음식_217"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 218,
+      "aiLabel": "한국음식_218",
+      "aiAliases": [
+        "korean_food_218",
+        "한국음식_218"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 219,
+      "aiLabel": "한국음식_219",
+      "aiAliases": [
+        "korean_food_219",
+        "한국음식_219"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 220,
+      "aiLabel": "한국음식_220",
+      "aiAliases": [
+        "korean_food_220",
+        "한국음식_220"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 221,
+      "aiLabel": "한국음식_221",
+      "aiAliases": [
+        "korean_food_221",
+        "한국음식_221"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 222,
+      "aiLabel": "한국음식_222",
+      "aiAliases": [
+        "korean_food_222",
+        "한국음식_222"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 223,
+      "aiLabel": "한국음식_223",
+      "aiAliases": [
+        "korean_food_223",
+        "한국음식_223"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 224,
+      "aiLabel": "한국음식_224",
+      "aiAliases": [
+        "korean_food_224",
+        "한국음식_224"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 225,
+      "aiLabel": "한국음식_225",
+      "aiAliases": [
+        "korean_food_225",
+        "한국음식_225"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 226,
+      "aiLabel": "한국음식_226",
+      "aiAliases": [
+        "korean_food_226",
+        "한국음식_226"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 227,
+      "aiLabel": "한국음식_227",
+      "aiAliases": [
+        "korean_food_227",
+        "한국음식_227"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 228,
+      "aiLabel": "한국음식_228",
+      "aiAliases": [
+        "korean_food_228",
+        "한국음식_228"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 229,
+      "aiLabel": "한국음식_229",
+      "aiAliases": [
+        "korean_food_229",
+        "한국음식_229"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 230,
+      "aiLabel": "한국음식_230",
+      "aiAliases": [
+        "korean_food_230",
+        "한국음식_230"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 231,
+      "aiLabel": "한국음식_231",
+      "aiAliases": [
+        "korean_food_231",
+        "한국음식_231"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 232,
+      "aiLabel": "한국음식_232",
+      "aiAliases": [
+        "korean_food_232",
+        "한국음식_232"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 233,
+      "aiLabel": "한국음식_233",
+      "aiAliases": [
+        "korean_food_233",
+        "한국음식_233"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 234,
+      "aiLabel": "한국음식_234",
+      "aiAliases": [
+        "korean_food_234",
+        "한국음식_234"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 235,
+      "aiLabel": "한국음식_235",
+      "aiAliases": [
+        "korean_food_235",
+        "한국음식_235"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 236,
+      "aiLabel": "한국음식_236",
+      "aiAliases": [
+        "korean_food_236",
+        "한국음식_236"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 237,
+      "aiLabel": "한국음식_237",
+      "aiAliases": [
+        "korean_food_237",
+        "한국음식_237"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 238,
+      "aiLabel": "한국음식_238",
+      "aiAliases": [
+        "korean_food_238",
+        "한국음식_238"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 239,
+      "aiLabel": "한국음식_239",
+      "aiAliases": [
+        "korean_food_239",
+        "한국음식_239"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 240,
+      "aiLabel": "한국음식_240",
+      "aiAliases": [
+        "korean_food_240",
+        "한국음식_240"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 241,
+      "aiLabel": "한국음식_241",
+      "aiAliases": [
+        "korean_food_241",
+        "한국음식_241"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 242,
+      "aiLabel": "한국음식_242",
+      "aiAliases": [
+        "korean_food_242",
+        "한국음식_242"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 243,
+      "aiLabel": "한국음식_243",
+      "aiAliases": [
+        "korean_food_243",
+        "한국음식_243"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 244,
+      "aiLabel": "한국음식_244",
+      "aiAliases": [
+        "korean_food_244",
+        "한국음식_244"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 245,
+      "aiLabel": "한국음식_245",
+      "aiAliases": [
+        "korean_food_245",
+        "한국음식_245"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 246,
+      "aiLabel": "한국음식_246",
+      "aiAliases": [
+        "korean_food_246",
+        "한국음식_246"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 247,
+      "aiLabel": "한국음식_247",
+      "aiAliases": [
+        "korean_food_247",
+        "한국음식_247"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 248,
+      "aiLabel": "한국음식_248",
+      "aiAliases": [
+        "korean_food_248",
+        "한국음식_248"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 249,
+      "aiLabel": "한국음식_249",
+      "aiAliases": [
+        "korean_food_249",
+        "한국음식_249"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 250,
+      "aiLabel": "한국음식_250",
+      "aiAliases": [
+        "korean_food_250",
+        "한국음식_250"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 251,
+      "aiLabel": "한국음식_251",
+      "aiAliases": [
+        "korean_food_251",
+        "한국음식_251"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 252,
+      "aiLabel": "한국음식_252",
+      "aiAliases": [
+        "korean_food_252",
+        "한국음식_252"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 253,
+      "aiLabel": "한국음식_253",
+      "aiAliases": [
+        "korean_food_253",
+        "한국음식_253"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 254,
+      "aiLabel": "한국음식_254",
+      "aiAliases": [
+        "korean_food_254",
+        "한국음식_254"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 255,
+      "aiLabel": "한국음식_255",
+      "aiAliases": [
+        "korean_food_255",
+        "한국음식_255"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 256,
+      "aiLabel": "한국음식_256",
+      "aiAliases": [
+        "korean_food_256",
+        "한국음식_256"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 257,
+      "aiLabel": "한국음식_257",
+      "aiAliases": [
+        "korean_food_257",
+        "한국음식_257"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 258,
+      "aiLabel": "한국음식_258",
+      "aiAliases": [
+        "korean_food_258",
+        "한국음식_258"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 259,
+      "aiLabel": "한국음식_259",
+      "aiAliases": [
+        "korean_food_259",
+        "한국음식_259"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 260,
+      "aiLabel": "한국음식_260",
+      "aiAliases": [
+        "korean_food_260",
+        "한국음식_260"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 261,
+      "aiLabel": "한국음식_261",
+      "aiAliases": [
+        "korean_food_261",
+        "한국음식_261"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 262,
+      "aiLabel": "한국음식_262",
+      "aiAliases": [
+        "korean_food_262",
+        "한국음식_262"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 263,
+      "aiLabel": "한국음식_263",
+      "aiAliases": [
+        "korean_food_263",
+        "한국음식_263"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 264,
+      "aiLabel": "한국음식_264",
+      "aiAliases": [
+        "korean_food_264",
+        "한국음식_264"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 265,
+      "aiLabel": "한국음식_265",
+      "aiAliases": [
+        "korean_food_265",
+        "한국음식_265"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 266,
+      "aiLabel": "한국음식_266",
+      "aiAliases": [
+        "korean_food_266",
+        "한국음식_266"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 267,
+      "aiLabel": "한국음식_267",
+      "aiAliases": [
+        "korean_food_267",
+        "한국음식_267"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 268,
+      "aiLabel": "한국음식_268",
+      "aiAliases": [
+        "korean_food_268",
+        "한국음식_268"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 269,
+      "aiLabel": "한국음식_269",
+      "aiAliases": [
+        "korean_food_269",
+        "한국음식_269"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 270,
+      "aiLabel": "한국음식_270",
+      "aiAliases": [
+        "korean_food_270",
+        "한국음식_270"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 271,
+      "aiLabel": "한국음식_271",
+      "aiAliases": [
+        "korean_food_271",
+        "한국음식_271"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 272,
+      "aiLabel": "한국음식_272",
+      "aiAliases": [
+        "korean_food_272",
+        "한국음식_272"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 273,
+      "aiLabel": "한국음식_273",
+      "aiAliases": [
+        "korean_food_273",
+        "한국음식_273"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 274,
+      "aiLabel": "한국음식_274",
+      "aiAliases": [
+        "korean_food_274",
+        "한국음식_274"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 275,
+      "aiLabel": "한국음식_275",
+      "aiAliases": [
+        "korean_food_275",
+        "한국음식_275"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 276,
+      "aiLabel": "한국음식_276",
+      "aiAliases": [
+        "korean_food_276",
+        "한국음식_276"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 277,
+      "aiLabel": "한국음식_277",
+      "aiAliases": [
+        "korean_food_277",
+        "한국음식_277"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 278,
+      "aiLabel": "한국음식_278",
+      "aiAliases": [
+        "korean_food_278",
+        "한국음식_278"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 279,
+      "aiLabel": "한국음식_279",
+      "aiAliases": [
+        "korean_food_279",
+        "한국음식_279"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 280,
+      "aiLabel": "한국음식_280",
+      "aiAliases": [
+        "korean_food_280",
+        "한국음식_280"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 281,
+      "aiLabel": "한국음식_281",
+      "aiAliases": [
+        "korean_food_281",
+        "한국음식_281"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 282,
+      "aiLabel": "한국음식_282",
+      "aiAliases": [
+        "korean_food_282",
+        "한국음식_282"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 283,
+      "aiLabel": "한국음식_283",
+      "aiAliases": [
+        "korean_food_283",
+        "한국음식_283"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 284,
+      "aiLabel": "한국음식_284",
+      "aiAliases": [
+        "korean_food_284",
+        "한국음식_284"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 285,
+      "aiLabel": "한국음식_285",
+      "aiAliases": [
+        "korean_food_285",
+        "한국음식_285"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 286,
+      "aiLabel": "한국음식_286",
+      "aiAliases": [
+        "korean_food_286",
+        "한국음식_286"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 287,
+      "aiLabel": "한국음식_287",
+      "aiAliases": [
+        "korean_food_287",
+        "한국음식_287"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 288,
+      "aiLabel": "한국음식_288",
+      "aiAliases": [
+        "korean_food_288",
+        "한국음식_288"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 289,
+      "aiLabel": "한국음식_289",
+      "aiAliases": [
+        "korean_food_289",
+        "한국음식_289"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 290,
+      "aiLabel": "한국음식_290",
+      "aiAliases": [
+        "korean_food_290",
+        "한국음식_290"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 291,
+      "aiLabel": "한국음식_291",
+      "aiAliases": [
+        "korean_food_291",
+        "한국음식_291"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 292,
+      "aiLabel": "한국음식_292",
+      "aiAliases": [
+        "korean_food_292",
+        "한국음식_292"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 293,
+      "aiLabel": "한국음식_293",
+      "aiAliases": [
+        "korean_food_293",
+        "한국음식_293"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 294,
+      "aiLabel": "한국음식_294",
+      "aiAliases": [
+        "korean_food_294",
+        "한국음식_294"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 295,
+      "aiLabel": "한국음식_295",
+      "aiAliases": [
+        "korean_food_295",
+        "한국음식_295"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 296,
+      "aiLabel": "한국음식_296",
+      "aiAliases": [
+        "korean_food_296",
+        "한국음식_296"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 297,
+      "aiLabel": "한국음식_297",
+      "aiAliases": [
+        "korean_food_297",
+        "한국음식_297"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 298,
+      "aiLabel": "한국음식_298",
+      "aiAliases": [
+        "korean_food_298",
+        "한국음식_298"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    },
+    {
+      "classId": 299,
+      "aiLabel": "한국음식_299",
+      "aiAliases": [
+        "korean_food_299",
+        "한국음식_299"
+      ],
+      "representativeCode": null,
+      "candidateCodes": [],
+      "mappingStatus": "ignored",
+      "granularity": "main_dish",
+      "searchable": false,
+      "recommendable": false,
+      "reason": "FoodAI label is a placeholder class and is not exposed to the service taxonomy."
+    }
+  ]
+}

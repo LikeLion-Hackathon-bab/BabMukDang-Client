@@ -1,0 +1,16 @@
+App/build
+App/Pods
+App/output
+App/App/public
+DerivedData
+xcuserdata
+
+# Cordova plugins for Capacitor
+capacitor-cordova-ios-plugins
+
+# Generated Config files
+App/App/capacitor.config.json
+App/App/config.xml
+
+# 카카오 네이티브 앱 키 등 로컬 비밀 빌드 설정 (ADR 0008)
+App/App/Config/*.local.xcconfig

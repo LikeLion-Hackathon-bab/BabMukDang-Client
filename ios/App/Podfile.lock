@@ -1,0 +1,57 @@
+PODS:
+  - Capacitor (8.4.0):
+    - CapacitorCordova
+  - CapacitorCamera (8.2.0):
+    - Capacitor
+    - IONCameraLib (~> 1.0.4)
+  - CapacitorCordova (8.4.0)
+  - CapacitorGeolocation (8.2.0):
+    - Capacitor
+    - IONGeolocationLib (= 2.1.0)
+  - CapacitorPushNotifications (8.1.1):
+    - Capacitor
+  - CapgoCapacitorLiveActivities (1.1.3):
+    - Capacitor
+  - IONCameraLib (1.0.4)
+  - IONGeolocationLib (2.1.0)
+
+DEPENDENCIES:
+  - "Capacitor (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorCamera (from `../../../node_modules/@capacitor/camera`)"
+  - "CapacitorCordova (from `../../node_modules/@capacitor/ios`)"
+  - "CapacitorGeolocation (from `../../../node_modules/@capacitor/geolocation`)"
+  - "CapacitorPushNotifications (from `../../node_modules/@capacitor/push-notifications`)"
+  - "CapgoCapacitorLiveActivities (from `../../node_modules/@capgo/capacitor-live-activities`)"
+
+SPEC REPOS:
+  trunk:
+    - IONCameraLib
+    - IONGeolocationLib
+
+EXTERNAL SOURCES:
+  Capacitor:
+    :path: "../../node_modules/@capacitor/ios"
+  CapacitorCamera:
+    :path: "../../../node_modules/@capacitor/camera"
+  CapacitorCordova:
+    :path: "../../node_modules/@capacitor/ios"
+  CapacitorGeolocation:
+    :path: "../../../node_modules/@capacitor/geolocation"
+  CapacitorPushNotifications:
+    :path: "../../node_modules/@capacitor/push-notifications"
+  CapgoCapacitorLiveActivities:
+    :path: "../../node_modules/@capgo/capacitor-live-activities"
+
+SPEC CHECKSUMS:
+  Capacitor: 75bd117ba037a51bb0f19ded32c67f4b3bc16600
+  CapacitorCamera: 8f6acf83664118321111e76acef86390211ccb08
+  CapacitorCordova: 71d81f350e6c30bf2a846593b5c480fbd68e9bac
+  CapacitorGeolocation: b36f6287bfc9f2eefa04dc900496f2c8ae666136
+  CapacitorPushNotifications: ec08d589c226a2c0db7c032ec1bf5b044ec85f8e
+  CapgoCapacitorLiveActivities: 70e74230c73343f21fd330b75331f0704125a79a
+  IONCameraLib: f2349804460bd9e3f892e42109b8d996ab3fa19d
+  IONGeolocationLib: 6a7b6f76063fb1b01cfb14fae7d0f526e3c9b271
+
+PODFILE CHECKSUM: b2362607e96d94f09801621702824072b8cb9a49
+
+COCOAPODS: 1.16.2

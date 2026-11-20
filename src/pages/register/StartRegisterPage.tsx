@@ -1,9 +1,89 @@
 import { CardBobGraphic } from '@/assets/graphics'
 import { KakaoIcon, LogoTextIcon } from '@/assets/icons'
 import SplashImg from '@/assets/images/SplashImg.png'
-import { Link } from 'react-router-dom'
+import {
+    resolvePathToActivity,
+    useNavigate,
+    useSearchParams
+} from '@/navigation'
+import { useState } from 'react'
+import { useKakaoLogin, useEmailLogin, useEmailSignup } from '@/apis/auth.api'
+import {
+    getKakaoLoginErrorMessage,
+    getKakaoNativeLoginErrorMessage,
+    sanitizeRedirectPath
+} from '@/features/auth'
 
 export function StartRegisterPage() {
+    const navigate = useNavigate()
+    const [searchParams] = useSearchParams()
+    const redirectTo = sanitizeRedirectPath(searchParams.get('redirect'))
+    const safeRedirectTo =
+        redirectTo && resolvePathToActivity(redirectTo) ? redirectTo : '/'
+
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    // 카카오 콜백 실패 시 Backend가 /login?error=<code>로 돌려보낸다. (ADR 0008)
+    const [authError, setAuthError] = useState<string | null>(() =>
+        getKakaoLoginErrorMessage(searchParams.get('error'))
+    )
+
+    const { mutate: emailLogin, isPending: isEmailLoginPending } =
+        useEmailLogin({
+            onSuccess: () => {
+                setAuthError(null)
+                navigate(safeRedirectTo, { replace: true })
+            },
+            onError: error => {
+                setAuthError(error.message)
+            }
+        })
+
+    const { mutate: emailSignup, isPending: isEmailSignupPending } =
+        useEmailSignup({
+            onSuccess: () => {
+                setAuthError(null)
+                navigate(safeRedirectTo, { replace: true })
+            },
+            onError: error => {
+                setAuthError(error.message)
+            }
+        })
+
+    const { mutate: kakaoLogin, isPending: isKakaoLoginPending } =
+        useKakaoLogin({
+            onSuccess: result => {
+                // 웹은 Backend로 이동하므로 결과가 없다.
+                if (!result) return
+                navigate(
+                    result.signupRequired ? '/onboarding' : safeRedirectTo,
+                    {
+                        replace: true
+                    }
+                )
+            },
+            onError: error => {
+                setAuthError(getKakaoNativeLoginErrorMessage(error))
+            }
+        })
+
+    const handleLogin = () => {
+        setAuthError(null)
+        kakaoLogin(safeRedirectTo)
+    }
+
+    const handleEmailLogin = () => {
+        setAuthError(null)
+        emailLogin({ email, password })
+    }
+
+    const handleEmailSignup = () => {
+        setAuthError(null)
+        emailSignup({ email, password })
+    }
+
+    const isEmailAuthPending = isEmailLoginPending || isEmailSignupPending
+
     return (
         <div className="fixed inset-0 z-2000 flex h-screen w-screen flex-col items-center justify-center">
             {/* 딤드 배경 */}
@@ -22,7 +102,49 @@ export function StartRegisterPage() {
                     <LogoTextIcon fillcolor="#fff" />
                 </div>
                 <div className="flex w-full flex-col items-center gap-20">
-                    <KakaoLoginButton />
+                    <div className="rounded-24 flex w-full flex-col gap-10 bg-white/90 p-16 backdrop-blur-sm">
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={event => setEmail(event.target.value)}
+                            placeholder="이메일"
+                            autoComplete="email"
+                            className="text-body2-medium text-gray-8 placeholder:text-gray-4 rounded-12 border-gray-2 focus:border-primary-500 border bg-white px-14 py-12 outline-none"
+                        />
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={event => setPassword(event.target.value)}
+                            placeholder="비밀번호"
+                            autoComplete="current-password"
+                            className="text-body2-medium text-gray-8 placeholder:text-gray-4 rounded-12 border-gray-2 focus:border-primary-500 border bg-white px-14 py-12 outline-none"
+                        />
+                        {authError && (
+                            <p className="text-caption-medium text-red-500">
+                                {authError}
+                            </p>
+                        )}
+                        <div className="grid grid-cols-2 gap-8">
+                            <button
+                                type="button"
+                                disabled={isEmailAuthPending}
+                                onClick={handleEmailLogin}
+                                className="bg-primary-500 text-body2-semibold rounded-full py-12 text-white disabled:opacity-50">
+                                이메일 로그인
+                            </button>
+                            <button
+                                type="button"
+                                disabled={isEmailAuthPending}
+                                onClick={handleEmailSignup}
+                                className="text-primary-500 border-primary-500 text-body2-semibold rounded-full border py-12 disabled:opacity-50">
+                                회원가입
+                            </button>
+                        </div>
+                    </div>
+                    <KakaoLoginButton
+                        disabled={isKakaoLoginPending}
+                        handleLogin={handleLogin}
+                    />
                     <span className="text-caption-medium text-primary-100">
                         로그인 후 식사 취향 테스트를 완료해주세요
                     </span>
@@ -32,15 +154,25 @@ export function StartRegisterPage() {
     )
 }
 
-function KakaoLoginButton({ className }: { className?: string }) {
+function KakaoLoginButton({
+    className,
+    disabled,
+    handleLogin
+}: {
+    className?: string
+    disabled?: boolean
+    handleLogin: () => void
+}) {
     return (
-        <Link
-            className={`flex w-full cursor-pointer items-center justify-center gap-12 rounded-full bg-[#FEDC2C] py-14 pr-16 pl-17 ${className} `}
-            to="https://babmuckdang.site/oauth2/authorization/kakao">
+        <button
+            type="button"
+            disabled={disabled}
+            onClick={handleLogin}
+            className={`flex w-full cursor-pointer items-center justify-center gap-12 rounded-full bg-[#FEDC2C] py-14 pr-16 pl-17 disabled:opacity-50 ${className ?? ''}`}>
             <KakaoIcon />
             <span className="text-body1-semibold text-gray-8">
                 카카오톡으로 시작하기
             </span>
-        </Link>
+        </button>
     )
 }

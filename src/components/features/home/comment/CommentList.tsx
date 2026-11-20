@@ -1,27 +1,17 @@
-import { CommentResponse } from '@/apis/dto'
 import { CommentItem, ReplyCommentItem } from '@/components'
-
-interface Comment {
-    commentId: number
-    authorId: number
-    authorUsername: string
-    parentCommentId: number | null
-    content: string
-    createdAt: string
-    profileImageUrl?: string
-    replies?: Comment[] // 트리 변환 후에만 생김
-}
+import { Comment } from '@/lib/buildCommentTree'
 
 export function CommentList({
     comments,
     totalCommentCount,
-    onClickReply
+    onClickReply,
+    onClickDelete
 }: {
     comments: Comment[]
     totalCommentCount: number
     onClickReply: (commentId: number, authorUsername: string) => void
+    onClickDelete?: (commentId: number) => void
 }) {
-    console.log(comments)
     return (
         <div className="flex flex-col gap-20">
             <div className="flex flex-row items-center gap-4">
@@ -35,7 +25,7 @@ export function CommentList({
                     <>
                         <CommentItem
                             key={comment.commentId}
-                            profileImageUrl={comment?.profileImageUrl}
+                            profileImageUrl={comment.profileImageUrl ?? undefined}
                             commentAuthorName={comment.authorUsername}
                             comment={comment.content}
                             createdAt={comment.createdAt}
@@ -46,13 +36,16 @@ export function CommentList({
                                     comment.authorUsername
                                 )
                             }
+                            onClickDelete={() =>
+                                onClickDelete?.(comment.commentId)
+                            }
                         />
                         {comment?.replies &&
                             comment.replies.length > 0 &&
                             comment.replies.map(reply => (
                                 <ReplyCommentItem
                                     key={reply.commentId}
-                                    profileImageUrl={reply?.profileImageUrl}
+                                    profileImageUrl={reply.profileImageUrl ?? undefined}
                                     commentAuthorName={reply.authorUsername}
                                     comment={reply.content}
                                     createdAt={reply.createdAt}
@@ -62,6 +55,9 @@ export function CommentList({
                                             reply.commentId,
                                             reply.authorUsername
                                         )
+                                    }
+                                    onClickDelete={() =>
+                                        onClickDelete?.(reply.commentId)
                                     }
                                 />
                             ))}

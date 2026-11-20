@@ -1,41 +1,19 @@
-export {
-    getAnnouncements,
-    postAnnouncement,
-    closeAnnouncement,
-    joinAnnouncement,
-    subscribeAnnouncement
-} from './announcement'
-export { client } from './client'
-export { login, logout, refresh } from './auth'
-export {
-    getArticle,
-    getArticleComments,
-    getHomeArticles,
-    getArticlesByAuthor,
-    postArticle,
-    getArticlesByMember,
-    getMyArticles,
-    deleteArticle,
-    deleteArticleComment,
-    likeArticle,
-    postArticleComment
-} from './article'
+/**
+ * @fileoverview API 모듈 통합 진입점 (Barrel File)
+ */
 
-export {
-    presignArticle,
-    presignProfile,
-    uploadArticleS3,
-    uploadProfileS3
-} from './upload'
-export {
-    getInvitations,
-    sendInvitation,
-    acceptInvitation,
-    rejectInvitation
-} from './invitation'
-export {
-    getPreferenceSummary,
-    getPreferenceMeta,
-    postOnboardingPreference
-} from './preference'
-export { getMeetings } from './meeting'
+export * from './client'
+export { queryKeys, type QueryKeyOf } from './keys'
+export type * from './types'
+
+export * from './article.api'
+export * from './auth.api'
+export * from './profile.api'
+export * from './mealPlan.api'
+export * from './mealGroup.api'
+export * from './notification.api'
+export * from './friends.api'
+export * from './preference.api'
+export * from './upload.api'
+export * from './pushToken.api'
+export * from './liveActivity.api'

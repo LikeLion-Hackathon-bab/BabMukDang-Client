@@ -1,77 +1,120 @@
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 
-import { BOTTOM_NAVIGATION_HEIGHT } from '@/constants/bottomNav'
-import { MockMyProfileData } from '@/constants/mockData'
-
-import { useHeader } from '@/hooks'
 import {
-    FriendInviteModal,
     ProfileModal,
     ProfileButtonSection,
     ProfileSection
 } from '@/components'
-import { useGetMyProfileDetail, useLogout } from '@/query'
-import { ProfileDetailResponse } from '@/apis/profile'
+import {
+    useGetMemberProfile,
+    useGetMemberProfileDetail,
+    useGetMyPreference,
+    useLogout,
+    useLogoutAll
+} from '@/apis'
+import { useAuthStore } from '@/store'
+import { useNavigate } from '@/navigation'
+import { BobCheckHistorySection } from '@/pages/profile/BobCheckHistoryPage'
 
 export function ProfilePage() {
-    const { hideHeader, resetHeader } = useHeader()
-    const { data: profileData } = useGetMyProfileDetail()
-    const { mutate: logout } = useLogout()
-    const [profile, setProfile] = useState<ProfileDetailResponse>(
-        profileData?.data ?? MockMyProfileData
-    )
-    useEffect(() => {
-        hideHeader()
-        return () => {
-            resetHeader()
+    const { userId } = useAuthStore()
+    const navigate = useNavigate()
+    const currentMemberId = Number(userId)
+    const canLoadMember =
+        Number.isFinite(currentMemberId) && currentMemberId > 0
+    const { data: profileSummary } = useGetMemberProfile(currentMemberId, {
+        enabled: canLoadMember
+    })
+    const { data: profileData } = useGetMemberProfileDetail(currentMemberId, {
+        enabled: canLoadMember
+    })
+    const { data: preferenceData } = useGetMyPreference()
+    const { mutate: logout, isPending: isLogoutPending } = useLogout({
+        onSuccess: () => {
+            navigate('/login', { replace: true })
         }
-    }, [])
-    useEffect(() => {
-        if (profileData) {
-            setProfile({
-                memberId: profileData.data.memberId,
-                profileImageUrl: profileData.data.profileImageUrl,
-                userName: profileData.data.userName,
-                bio: profileData.data.bio,
-                meetingCount: profileData.data.meetingCount,
-                likes: profileData.data.likes,
-                allergies: profileData.data.allergies,
-                dislikes: profileData.data.dislikes
-            })
+    })
+    const { mutate: logoutAll, isPending: isLogoutAllPending } = useLogoutAll({
+        onSuccess: () => {
+            navigate('/login', { replace: true })
         }
-    }, [profileData])
+    })
+    const profile = useMemo(() => {
+        if (!profileData) return null
+
+        return {
+            ...profileData,
+            userName: profileSummary?.userName ?? profileData.userName,
+            username: profileSummary?.username ?? profileData.username,
+            profileImageUrl:
+                profileSummary?.profileImageUrl ?? profileData.profileImageUrl,
+            likes: preferenceData?.liked ?? profileData.likes,
+            dislikes: preferenceData?.disliked ?? profileData.dislikes,
+            allergies: preferenceData?.allergy ?? profileData.allergies
+        }
+    }, [preferenceData, profileData, profileSummary])
+
     return (
         <main className="relative h-full min-h-full">
-            {/* 프로필 섹션 */}
-            <ProfileSection
-                profileImgUrl={profile.profileImageUrl}
-                name={profile.userName}
-                description={profile.bio}
-                likes={profile.likes.map(like => like.label)}
-                dislikes={profile.dislikes.map(dislike => dislike.label)}
-                allergies={profile.allergies.map(allergy => allergy.label)}
-                isFriend={false}
-            />
-            <ProfileButtonSection
-                friends={profile.meetingCount}
-                completedMeetings={profile.meetingCount}
-                uncompletedMeetings={profile.meetingCount}
-                challengeCount={profile.meetingCount}
-            />
             <button
-                className={`text-caption-regular text-gray-3 absolute bottom-${BOTTOM_NAVIGATION_HEIGHT} right-0 left-0`}
+                className={`text-caption-regular text-black`}
+                disabled={isLogoutPending}
                 onClick={() => {
                     logout()
                 }}>
-                로그아웃
+                {isLogoutPending ? '로그아웃 중입니다' : '로그아웃'}
             </button>
-            <FriendInviteModal id="friend-invite-notify-modal" />
-            <ProfileModal
-                id="profile-notify-modal"
-                likes={profile.likes.map(like => like.label)}
-                dislikes={profile.dislikes.map(dislike => dislike.label)}
-                allergies={profile.allergies.map(allergy => allergy.label)}
-            />
+            <button
+                className={`text-caption-regular text-black`}
+                disabled={isLogoutAllPending}
+                onClick={() => {
+                    logoutAll()
+                }}>
+                {isLogoutAllPending
+                    ? '모든 기기에서 로그아웃 중입니다'
+                    : '모든 기기에서 로그아웃'}
+            </button>
+            {profile ? (
+                <>
+                    {/* 프로필 섹션 */}
+                    <ProfileSection
+                        profileImgUrl={profile.profileImageUrl}
+                        name={profile.userName}
+                        description={profile.bio}
+                        likes={profile.likes.map(like => like.label)}
+                        dislikes={profile.dislikes.map(
+                            dislike => dislike.label
+                        )}
+                        allergies={profile.allergies.map(
+                            allergy => allergy.label
+                        )}
+                        isFriend={false}
+                    />
+                    <ProfileButtonSection
+                        friends={profile.friendConunt}
+                        completedMeetings={profile.completedPlans}
+                        uncompletedMeetings={profile.uncompletedPlans}
+                        challengeCount={profile.meetingCount}
+                    />
+                    <BobCheckHistorySection />
+                    <ProfileModal
+                        id="profile-notify-modal"
+                        likes={profile.likes.map(like => like.label)}
+                        dislikes={profile.dislikes.map(
+                            dislike => dislike.label
+                        )}
+                        allergies={profile.allergies.map(
+                            allergy => allergy.label
+                        )}
+                    />
+                </>
+            ) : (
+                <div className="flex h-full items-center justify-center">
+                    <span className="text-caption-regular text-gray-5">
+                        프로필을 불러오는 중입니다.
+                    </span>
+                </div>
+            )}
         </main>
     )
 }

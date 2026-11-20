@@ -68,7 +68,11 @@ export function PushNotificationPage() {
     const setupForegroundMessageHandler = () => {
         // 포그라운드 메시지 처리
         const unsubscribe = onForegroundMessage(payload => {
-            console.log('포그라운드 메시지 수신:', payload)
+            const message = payload as {
+                notification?: { title?: string; body?: string; icon?: string; badge?: string }
+                data?: { tag?: string; url?: string }
+            }
+            console.log('포그라운드 메시지 수신:', message)
 
             // 브라우저 알림 표시
             if (
@@ -76,15 +80,15 @@ export function PushNotificationPage() {
                 Notification.permission === 'granted'
             ) {
                 const notification = new Notification(
-                    payload.notification?.title || '새로운 알림',
+                    message.notification?.title || '새로운 알림',
                     {
                         body:
-                            payload.notification?.body ||
+                            message.notification?.body ||
                             '새로운 알림이 있습니다.',
-                        icon: payload.notification?.icon || '/icon-192.png',
-                        badge: payload.notification?.badge || '/icon-192.png',
-                        tag: payload.data?.tag || 'fcm-notification',
-                        data: payload.data || {}
+                        icon: message.notification?.icon || '/icon-192.png',
+                        badge: message.notification?.badge || '/icon-192.png',
+                        tag: message.data?.tag || 'fcm-notification',
+                        data: message.data || {}
                     }
                 )
 
@@ -93,8 +97,8 @@ export function PushNotificationPage() {
                     window.focus()
                     notification.close()
 
-                    if (payload.data?.url) {
-                        window.location.href = payload.data.url
+                    if (message.data?.url) {
+                        window.location.href = message.data.url
                     }
                 }
             }
@@ -163,7 +167,7 @@ export function PushNotificationPage() {
             }
 
             // Firebase 초기화
-            initializeFirebase(firebaseConfig)
+            await initializeFirebase(firebaseConfig)
 
             // Service Worker 등록
             if (!('serviceWorker' in navigator)) {

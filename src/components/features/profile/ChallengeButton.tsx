@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from '@/navigation'
 import { ArrowForwardIcon } from '@/assets/icons'
 import { ChallengeIcon } from '@/assets/icons'
 import { COLORS } from '@/constants/colors'
