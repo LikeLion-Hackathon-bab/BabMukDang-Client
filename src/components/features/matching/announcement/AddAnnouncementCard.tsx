@@ -66,9 +66,18 @@ export function AddAnnouncementCard({
                 </div>
             </div>
 
-            <label className="mb-16 flex w-full flex-col gap-6">만날 날짜와 시간
-                <input type="datetime-local" value={announcementAddData.meetingAt}
-                    onChange={e => setAnnouncementAddData({...announcementAddData, meetingAt:e.target.value})}/>
+            <label className="mb-16 flex w-full flex-col gap-6">
+                만날 날짜와 시간
+                <input
+                    type="datetime-local"
+                    value={announcementAddData.meetingAt}
+                    onChange={e =>
+                        setAnnouncementAddData({
+                            ...announcementAddData,
+                            meetingAt: e.target.value
+                        })
+                    }
+                />
             </label>
             {/* 만날 장소 */}
             <div className="mb-16 flex w-full flex-col gap-6">
@@ -84,7 +93,8 @@ export function AddAnnouncementCard({
                         })
                     }}
                     ref={placeRef}
-                    aria-label="만날 장소" placeholder="만날 장소"
+                    aria-label="만날 장소"
+                    placeholder="만날 장소"
                     className="rounded-6 text-body2-medium px-12"
                     style={{ height: 36, border: '1px solid #E4E4E4' }}
                 />

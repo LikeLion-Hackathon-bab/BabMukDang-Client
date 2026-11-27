@@ -4,7 +4,7 @@ import {
     useGetAnnouncements,
     usePostAnnouncement
 } from '@/query'
-import {useState} from 'react'
+import { useState } from 'react'
 import { Post } from '@/apis/dto'
 import { useNavigate } from 'react-router-dom'
 
@@ -16,13 +16,27 @@ export function AddAnnouncementButton({
     const [error, setError] = useState('')
     const { refetch } = useGetAnnouncements()
     const { mutate, isPending } = usePostAnnouncement(
-        () => { setError(''); refetch() },
+        () => {
+            setError('')
+            refetch()
+        },
         () => setError('공고를 등록하지 못했어요. 다시 시도해 주세요.')
     )
-    const valid = announcementAddData.location.trim() && announcementAddData.meetingAt && announcementAddData.targetCount > 0
-    return <div><button className="rounded-full bg-black px-16 py-8 text-white disabled:opacity-50"
-        disabled={!valid || isPending} onClick={() => mutate(announcementAddData)}>공고 등록하기</button>
-        {error && <p role="alert">{error}</p>}</div>
+    const valid =
+        announcementAddData.location.trim() &&
+        announcementAddData.meetingAt &&
+        announcementAddData.targetCount > 0
+    return (
+        <div>
+            <button
+                className="rounded-full bg-black px-16 py-8 text-white disabled:opacity-50"
+                disabled={!valid || isPending}
+                onClick={() => mutate(announcementAddData)}>
+                공고 등록하기
+            </button>
+            {error && <p role="alert">{error}</p>}
+        </div>
+    )
 }
 export function CloseAnnouncementButton({
     announcementId

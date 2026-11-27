@@ -1,4 +1,6 @@
 import js from '@eslint/js'
+import prettier from 'eslint-plugin-prettier/recommended'
+import query from '@tanstack/eslint-plugin-query'
 import globals from 'globals'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
@@ -10,8 +12,8 @@ export default tseslint.config(
     extends: [
       js.configs.recommended,
       ...tseslint.configs.recommended,
-      'plugin:prettier/recommended',
-      'plugin:@tanstack/eslint-plugin-query/recommended'
+      prettier,
+      ...query.configs['flat/recommended']
     ],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {

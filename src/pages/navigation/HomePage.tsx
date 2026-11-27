@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 import { LogoTextIcon } from '@/assets/icons'
 import { useHeader } from '@/hooks'
@@ -27,7 +27,7 @@ export function HomePage() {
                     {postList.map((post, index) => (
                         <PostCard
                             key={index}
-                            post={post as any}
+                            post={{ ...post, mealTime: String(post.mealTime) }}
                             isComment={false}
                         />
                     ))}

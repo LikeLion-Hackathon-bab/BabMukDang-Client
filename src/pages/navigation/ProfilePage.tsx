@@ -12,7 +12,8 @@ import {
 } from '@/components'
 import { useGetMyProfileDetail } from '@/query'
 import { logout as logoutAccount } from '@/apis/auth'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/store'
 import { ProfileDetailResponse } from '@/apis/profile'
 
@@ -20,7 +21,18 @@ export function ProfilePage() {
     const { hideHeader, resetHeader } = useHeader()
     const { data: profileData } = useGetMyProfileDetail()
     const clearSession = useAuthStore(state => state.logout)
-    const { mutate: logout } = useMutation({ mutationFn: logoutAccount, onSettled: clearSession })
+    const cache = useQueryClient()
+    const navigate = useNavigate()
+    const { mutate: logout } = useMutation({
+        mutationFn: logoutAccount,
+        onSuccess: () => {
+            clearSession()
+            cache.clear()
+            navigate('/login', { replace: true })
+        },
+        onError: () =>
+            window.alert('로그아웃하지 못했어요. 다시 시도해 주세요.')
+    })
     const [profile, setProfile] = useState<ProfileDetailResponse>(
         profileData?.data ?? MockMyProfileData
     )

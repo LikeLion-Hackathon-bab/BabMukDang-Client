@@ -23,23 +23,36 @@ client.interceptors.request.use(
 
 export function restoreSession(): Promise<string> {
     if (!refreshPromise) {
-        refreshPromise = axios.post(`${import.meta.env.VITE_BASE_API_URL}/auth/refresh`, null, {
-            withCredentials: true
-        }).then(({ data }) => {
-            const { accessToken, refreshToken } = data.data
-            useAuthStore.getState().setTokens({ accessToken, refreshToken })
-            return accessToken as string
-        }).finally(() => { refreshPromise = null })
+        refreshPromise = axios
+            .post(`${import.meta.env.VITE_BASE_API_URL}/auth/refresh`, null, {
+                withCredentials: true
+            })
+            .then(({ data }) => {
+                const { accessToken, refreshToken } = data.data
+                useAuthStore.getState().setTokens({ accessToken, refreshToken })
+                return accessToken as string
+            })
+            .finally(() => {
+                refreshPromise = null
+            })
     }
     return refreshPromise
 }
 
-client.interceptors.response.use(response => response, async error => {
-    const request = error.config
-    if (error.response?.status !== 401 || !request || request._retry || request.url?.endsWith('/auth/refresh')) {
-        throw error
+client.interceptors.response.use(
+    response => response,
+    async error => {
+        const request = error.config
+        if (
+            error.response?.status !== 401 ||
+            !request ||
+            request._retry ||
+            request.url?.endsWith('/auth/refresh')
+        ) {
+            throw error
+        }
+        request._retry = true
+        await restoreSession()
+        return client(request)
     }
-    request._retry = true
-    await restoreSession()
-    return client(request)
-})
+)

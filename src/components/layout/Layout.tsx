@@ -1,16 +1,15 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 
 import { restoreSession } from '@/apis/client'
 import { Header, BottomNavigation } from '@/components'
-import { useAuthStore, useBottomNavStore } from '@/store'
+import { useAuthStore } from '@/store'
 import { useGetMyProfile } from '@/query'
 
 export function Layout() {
-    const { userId, username, setUserId, setUsername, setProfile, logout } =
+    const { userId, username, setUserId, setUsername, setProfile } =
         useAuthStore()
     const { data: myProfile, refetch } = useGetMyProfile()
-    const { accessToken, refreshToken } = useAuthStore()
     const navigate = useNavigate()
     useEffect(() => {
         console.log('myProfile', myProfile, userId, username)
@@ -37,7 +36,9 @@ export function Layout() {
         restoreSession().catch(() => {
             if (active) navigate('/login', { replace: true })
         })
-        return () => { active = false }
+        return () => {
+            active = false
+        }
     }, [])
     return (
         <div className="bg-gray-1 flex h-screen min-h-screen w-screen min-w-screen flex-col">

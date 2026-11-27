@@ -1,6 +1,4 @@
-import { PostCardContent, PostCardHeader, PostCardFooter } from '@/components'
-import { useLikeArticle } from '@/query'
-import { useNavigate } from 'react-router-dom'
+import { PostCardContent, PostCardHeader } from '@/components'
 import { MealTimeText } from '@/constants/post'
 type Post = {
     articleId: number
@@ -16,21 +14,6 @@ type Post = {
     createdAt: string
     expiresAt: string
     taggedMemberIds: number[]
-}
-
-type RestaurantInfo = {
-    placeId: string
-    placeName: string
-    addressName: string
-    roadAddressName: string
-    phoneNumber: string
-    placeUrl: string
-    distance?: string
-    categoryGroupCode: string
-    categoryGroupName: string
-    categoryName: string
-    x: number
-    y: number
 }
 
 export function PostCard({
@@ -57,7 +40,11 @@ export function PostCard({
                 mealTime={post.mealTime as MealTimeText}
                 isComment={isComment}
             />
-            {post.restaurantName && <p className="px-16 py-8 text-body2-semibold">{post.restaurantName}</p>}
+            {post.restaurantName && (
+                <p className="text-body2-semibold px-16 py-8">
+                    {post.restaurantName}
+                </p>
+            )}
         </div>
     )
 }

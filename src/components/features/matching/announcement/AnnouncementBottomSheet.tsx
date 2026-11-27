@@ -8,7 +8,6 @@ import { CloseAnnouncementCard } from './CloseAnnouncementCard'
 import { KebabButton } from '@/components'
 import { Post, PostResponse } from '@/apis/dto'
 import { useState } from 'react'
-import { MockAnnouncements } from '@/constants/mockData'
 
 export function AnnouncementBottomSheet({
     isAdd,

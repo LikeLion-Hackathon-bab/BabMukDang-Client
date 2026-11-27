@@ -53,7 +53,7 @@ export function ProfileButtonSection({
                 </span>
                 <div className="flex items-center gap-4">
                     <span className="text-caption-10 text-gray-4">
-                        초대 받은 친구가 가입시, 랜덤 쿠폰 증정!
+                        밥먹댕 링크 공유
                     </span>
                     <ArrowForwardIcon />
                 </div>

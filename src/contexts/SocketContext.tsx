@@ -1,20 +1,9 @@
 // SocketContext.tsx
-import React, {
-    createContext,
-    useContext,
-    useEffect,
-    useRef,
-    useState
-} from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 import type { Socket } from 'socket.io-client'
 import { io } from 'socket.io-client'
 import { useAuthStore } from '@/store/authStore'
-import {
-    useLocation,
-    useNavigate,
-    useParams,
-    useSearchParams
-} from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { refresh } from '@/apis'
 
 interface ChatMessageDto {
@@ -43,11 +32,11 @@ const SocketContext = createContext<{
     socket: Socket | null
     roomId: string | undefined
     chatMessages: ChatMessageDto[]
-    initialState: any
-    setInitialState: (initialState: any) => void
+    initialState: StageData | null
+    setInitialState: (initialState: StageData | null) => void
     categories: Category[]
-    participants: any[]
-    setParticipants: (participants: any[]) => void
+    participants: Participant[]
+    setParticipants: (participants: Participant[]) => void
     readyCount: number
     participantCount: number
     stage: string
@@ -57,13 +46,13 @@ const SocketContext = createContext<{
     setParticipantCount: (participantCount: number) => void
     isSelfReady: boolean
     setIsSelfReady: (isSelfReady: boolean) => void
-    finalState: any
-    setFinalState: (finalState: any) => void
+    finalState: FinalState | null
+    setFinalState: (finalState: FinalState | null) => void
     finalStateMessage: {
-        location: string | undefined
-        'exclude-menu': string[] | undefined
-        menu: string | undefined
-        restaurant: string | undefined
+        location?: string
+        'exclude-menu'?: string[]
+        menu?: string
+        restaurant?: string
     }
     dateSelections: { userId: string; dates: string[] }[]
     timeSelections: { userId: string; times: string[] }[]
@@ -81,14 +70,67 @@ interface Participant {
     userProfileImageURL: string
     ready: boolean
 }
-interface WaitingInitialState {
-    participants: Participant[]
-    locationInitial: string | undefined
-    meetingAt: string | undefined
+type DateSelection = { userId: string; dates: string[] }
+type TimeSelection = { userId: string; times: string[] }
+type Candidate = {
+    id: string
+    placeName: string
+    lat: number
+    lng: number
+    address?: string
+    isSelected: boolean
+}
+type Place = {
+    id: string
+    place_name: string
+    category_name: string
+    category_group_name: string
+    distance: string
+    road_address_name: string
+    address_name: string
+    phone: string
+    selectUsers: string[]
+}
+type StageData =
+    | { stage: 'date'; initialState: DateSelection[] }
+    | { stage: 'time'; initialState: TimeSelection[] }
+    | {
+          stage: 'location' | 'location-vote'
+          initialState: { candidates: Candidate[] }
+      }
+    | {
+          stage: 'exclude-menu'
+          initialState: {
+              userId: string
+              menuList: { code: string; label: string }[]
+          }[]
+      }
+    | {
+          stage: 'menu'
+          initialState: {
+              availableMenus: { code: number; label: string }[]
+              menuPerUserSelections: {
+                  menuId: string
+                  selectedUsers: string[]
+              }[]
+          }
+      }
+    | {
+          stage: 'restaurant'
+          initialState: {
+              initialRestaurants: Place[]
+              restaurantUserList: { userId: string; restaurantId: string }[]
+          }
+      }
+type FinalState = {
+    time?: string
+    location?: { address?: string; placeName?: string }
+    menu?: { label: string }
+    excludeMenu?: { label: string }[]
+    restaurant?: { place_name: string; name?: string }
 }
 export function SocketProvider({ children }: { children: React.ReactNode }) {
     const [socket, setSocket] = useState<Socket | null>(null)
-    const mounted = useRef(false)
     const { accessToken, refreshToken, setTokens } = useAuthStore()
     const navigate = useNavigate()
     const { roomId } = useParams<{ roomId: string }>()
@@ -96,16 +138,20 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
         matchType: 'announcement' | 'invitation'
     }>()
     const [chatMessages, setChatMessages] = useState<ChatMessageDto[]>([])
-    const [initialState, setInitialState] =
-        useState<WaitingInitialState | null>(null)
+    const [initialState, setInitialState] = useState<StageData | null>(null)
     const [categories, setCategories] = useState<Category[]>([])
     const [participants, setParticipants] = useState<Participant[]>([])
     const [readyCount, setReadyCount] = useState(0)
     const [participantCount, setParticipantCount] = useState(0)
     const [stage, setStage] = useState('waiting')
     const [isSelfReady, setIsSelfReady] = useState(false)
-    const [finalState, setFinalState] = useState<any>(null)
-    const [finalStateMessage, setFinalStateMessage] = useState({
+    const [finalState, setFinalState] = useState<FinalState | null>(null)
+    const [finalStateMessage, setFinalStateMessage] = useState<{
+        location?: string
+        menu?: string
+        restaurant?: string
+        'exclude-menu'?: string[]
+    }>({
         'exclude-menu': undefined,
         location: undefined,
         menu: undefined,
@@ -164,20 +210,22 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
             s.close()
         }
     }, [accessToken, roomId, matchType]) // token과 roomId가 변경될 때마다 재생성
-    const location = useLocation()
     useEffect(() => {
         if (!socket) return
-        socket.onAny((event, ...args) => {
-            console.log(event, args)
-        })
-        socket?.on('ready-state-changed', (data: any) => {
-            setReadyCount(data.readyCount)
-            setParticipantCount(data.participantCount)
-        })
+        socket.on('chat-messages', setChatMessages)
+        socket?.on(
+            'ready-state-changed',
+            (data: { readyCount: number; participantCount: number }) => {
+                setReadyCount(data.readyCount)
+                setParticipantCount(data.participantCount)
+            }
+        )
         socket.on('meeting-save-failed', () => {
             setIsSelfReady(false)
             setReadyCount(0)
-            window.alert('밥약을 저장하지 못했어요. 식당을 확인하고 다시 준비해 주세요.')
+            window.alert(
+                '밥약을 저장하지 못했어요. 식당을 확인하고 다시 준비해 주세요.'
+            )
         })
         socket?.on('stage-changed', data => {
             setStage(data.stage)
@@ -188,8 +236,8 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
         })
 
         socket?.on('initial-state-response', data => {
-            setInitialState(data)
-            if (stage === 'waiting') {
+            if (data?.stage) setInitialState(data)
+            if (Array.isArray(data?.participants)) {
                 console.log('initial-state-participants', data)
 
                 setParticipants(data.participants)
@@ -197,10 +245,10 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
                 setMeetingAtInitial(data.meetingAt)
             }
             if (data?.stage === 'date' && Array.isArray(data?.initialState)) {
-                setDateSelections(data.initialState as any)
+                setDateSelections(data.initialState)
             }
             if (data?.stage === 'time' && Array.isArray(data?.initialState)) {
-                setTimeSelections(data.initialState as any)
+                setTimeSelections(data.initialState)
             }
         })
         // 방이 자동 할당되었을 때, URL을 갱신하여 roomId를 반영
@@ -214,17 +262,15 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
         socket?.on('join-room', data => {
             setParticipants(data)
         })
-        socket?.on('date-updated', (data: any) => {
+        socket?.on('date-updated', (data: DateSelection[]) => {
             if (Array.isArray(data)) setDateSelections(data)
         })
-        socket?.on('time-updated', (data: any) => {
+        socket?.on('time-updated', (data: TimeSelection[]) => {
             if (Array.isArray(data)) setTimeSelections(data)
         })
-        socket?.on('final-state-response', data => {
+        socket?.on('final-state-response', (data: FinalState | null) => {
             setFinalState(data)
-            const excludeMenu = data?.excludeMenu?.map(
-                (menu: any) => menu.label
-            )
+            const excludeMenu = data?.excludeMenu?.map(menu => menu.label)
             const location = data?.location?.address
             const menu = data?.menu?.label
             const restaurant = data?.restaurant?.place_name
@@ -243,7 +289,7 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     // useEffect(() => {
     //     if (finalState) {
     //         const excludeMenu = finalState.finalState?.excludeMenu?.map(
-    //             (menu: any) => menu.label
+    //             menu => menu.label
     //         )
     //         const location = finalState.finalState?.location?.address
     //         const menu = finalState.finalState?.menu?.label

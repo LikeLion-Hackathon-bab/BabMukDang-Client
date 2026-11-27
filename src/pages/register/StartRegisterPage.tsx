@@ -2,7 +2,6 @@ import { CardBobGraphic } from '@/assets/graphics'
 import { KakaoIcon, LogoTextIcon } from '@/assets/icons'
 import SplashImg from '@/assets/images/SplashImg.png'
 
-
 export function StartRegisterPage() {
     return (
         <div className="fixed inset-0 z-2000 flex h-screen w-screen flex-col items-center justify-center">
@@ -36,7 +35,12 @@ function KakaoLoginButton({ className }: { className?: string }) {
     return (
         <a
             className={`flex w-full cursor-pointer items-center justify-center gap-12 rounded-full bg-[#FEDC2C] py-14 pr-16 pl-17 ${className} `}
-            href={new URL('/oauth2/authorization/kakao', import.meta.env.VITE_SERVER_URL || window.location.origin).href}>
+            href={
+                new URL(
+                    '/oauth2/authorization/kakao',
+                    import.meta.env.VITE_SERVER_URL || window.location.origin
+                ).href
+            }>
             <KakaoIcon />
             <span className="text-body1-semibold text-gray-8">
                 카카오톡으로 시작하기
