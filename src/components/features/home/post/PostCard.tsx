@@ -9,7 +9,7 @@ type Post = {
     imageUrl: string
     mealDate: string
     mealTime: string
-    restaurantName: RestaurantInfo
+    restaurantName: string | null
     likeCount: number
     commentCount: number
     likedByMe: boolean
@@ -57,7 +57,7 @@ export function PostCard({
                 mealTime={post.mealTime as MealTimeText}
                 isComment={isComment}
             />
-            {/* <PostCardFooter restaurantInfo={post.restaurantName} /> */}
+            {post.restaurantName && <p className="px-16 py-8 text-body2-semibold">{post.restaurantName}</p>}
         </div>
     )
 }

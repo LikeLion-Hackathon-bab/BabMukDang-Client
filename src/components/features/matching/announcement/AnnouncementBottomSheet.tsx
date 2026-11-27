@@ -20,7 +20,7 @@ export function AnnouncementBottomSheet({
     const [announcementAddData, setAnnouncementAddData] = useState<Post>({
         location: '',
         message: '',
-        targetCount: 0,
+        targetCount: 2,
         meetingAt: ''
     })
     return (

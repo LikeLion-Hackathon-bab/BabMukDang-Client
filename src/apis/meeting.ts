@@ -24,3 +24,10 @@ export const getMeetings = async (): Promise<
     )
     return res.data
 }
+
+export const getMeeting = async (id: number): Promise<MeetingResponse> => {
+    const response = await client.get<BaseResponse<MeetingResponse>>(
+        `${import.meta.env.VITE_BASE_API_URL}/meetings/${id}`
+    )
+    return response.data.data
+}

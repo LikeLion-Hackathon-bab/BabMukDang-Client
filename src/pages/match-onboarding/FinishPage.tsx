@@ -23,6 +23,7 @@ export function FinishPage() {
                         약속이 확정되었어요! 맛있는 하루되세요🎉
                     </h1>
 
+                    {matchType === 'announcement' && <button onClick={() => navigate('/meeting')}>내 밥약에서 확인하기</button>}
                     {/* 프로필 이미지 */}
                     {/* <div className="ml-10 flex items-center justify-center">
                         {participants?.map(participant => (

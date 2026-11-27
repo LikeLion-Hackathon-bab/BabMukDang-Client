@@ -1,7 +1,7 @@
 import { CardBobGraphic } from '@/assets/graphics'
 import { KakaoIcon, LogoTextIcon } from '@/assets/icons'
 import SplashImg from '@/assets/images/SplashImg.png'
-import { Link } from 'react-router-dom'
+
 
 export function StartRegisterPage() {
     return (
@@ -34,13 +34,13 @@ export function StartRegisterPage() {
 
 function KakaoLoginButton({ className }: { className?: string }) {
     return (
-        <Link
+        <a
             className={`flex w-full cursor-pointer items-center justify-center gap-12 rounded-full bg-[#FEDC2C] py-14 pr-16 pl-17 ${className} `}
-            to="https://babmuckdang.site/oauth2/authorization/kakao">
+            href={new URL('/oauth2/authorization/kakao', import.meta.env.VITE_SERVER_URL || window.location.origin).href}>
             <KakaoIcon />
             <span className="text-body1-semibold text-gray-8">
                 카카오톡으로 시작하기
             </span>
-        </Link>
+        </a>
     )
 }

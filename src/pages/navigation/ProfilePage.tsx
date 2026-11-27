@@ -10,13 +10,17 @@ import {
     ProfileButtonSection,
     ProfileSection
 } from '@/components'
-import { useGetMyProfileDetail, useLogout } from '@/query'
+import { useGetMyProfileDetail } from '@/query'
+import { logout as logoutAccount } from '@/apis/auth'
+import { useMutation } from '@tanstack/react-query'
+import { useAuthStore } from '@/store'
 import { ProfileDetailResponse } from '@/apis/profile'
 
 export function ProfilePage() {
     const { hideHeader, resetHeader } = useHeader()
     const { data: profileData } = useGetMyProfileDetail()
-    const { mutate: logout } = useLogout()
+    const clearSession = useAuthStore(state => state.logout)
+    const { mutate: logout } = useMutation({ mutationFn: logoutAccount, onSettled: clearSession })
     const [profile, setProfile] = useState<ProfileDetailResponse>(
         profileData?.data ?? MockMyProfileData
     )

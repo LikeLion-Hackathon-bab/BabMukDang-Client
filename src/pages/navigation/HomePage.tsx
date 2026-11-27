@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
 import { LogoTextIcon } from '@/assets/icons'
-import { MockPostList } from '@/constants/mockData'
 import { useHeader } from '@/hooks'
 import { PostCard, PostEmptyView, UploadButton } from '@/components'
 import { useGetHomeArticles } from '@/query'
@@ -10,7 +9,7 @@ export function HomePage() {
     const { setLeftElement, hideCenterElement, resetHeader, showRightButton } =
         useHeader()
     const { data: postListData } = useGetHomeArticles()
-    const postList = postListData?.content ?? MockPostList ?? []
+    const postList = postListData?.content ?? []
     useEffect(() => {
         setLeftElement(<LogoTextIcon fillcolor="black" />)
         hideCenterElement()
@@ -28,7 +27,6 @@ export function HomePage() {
                     {postList.map((post, index) => (
                         <PostCard
                             key={index}
-                            // @ts-ignore: MockPostList may not strictly match Post type; safe for UI mock rendering
                             post={post as any}
                             isComment={false}
                         />

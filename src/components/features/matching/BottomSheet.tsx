@@ -31,7 +31,7 @@ export function BottomSheet({
     height = HEIGHT
 }: BottomSheetProps) {
     const {
-        isOpen,
+        isOpen, open, close,
         translateY,
         containerRef,
         backdropRef,
@@ -69,9 +69,9 @@ export function BottomSheet({
                     height: `${height}px`
                 }}>
                 {/* 드래그 핸들 */}
-                <div className="flex justify-center pt-14 pb-2">
+                <button type="button" aria-expanded={isOpen} aria-label={isOpen ? "공고 패널 닫기" : "공고 패널 열기"} onClick={isOpen ? close : open} className="flex w-full justify-center pt-14 pb-2">
                     <div className="bg-gray-5 h-3 w-76 rounded-full" />
-                </div>
+                </button>
 
                 {/* 컨텐츠 */}
                 <div className="h-full w-full flex-1 overflow-y-auto">

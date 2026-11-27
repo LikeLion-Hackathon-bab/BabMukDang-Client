@@ -10,9 +10,6 @@ export function AddAnnouncementCard({
     setAnnouncementAddData: (data: Post) => void
 }) {
     const [message, setMessage] = useState(announcementAddData.message)
-    const [period, setPeriod] = useState<'오전' | '오후'>('오전')
-    const [hour, setHour] = useState<number>(12)
-    const [minute, setMinute] = useState<number>(0)
     const [place, setPlace] = useState(announcementAddData.location)
     const [participants, setParticipants] = useState<number>(
         announcementAddData.targetCount
@@ -20,20 +17,6 @@ export function AddAnnouncementCard({
     const [unlimited, setUnlimited] = useState<boolean>(false)
     const placeRef = useRef<HTMLInputElement>(null)
     const messageRef = useRef<HTMLTextAreaElement>(null)
-    const updateMeetingAt = (
-        nextHour: number = hour,
-        nextMinute: number = minute
-    ) => {
-        const datePart = (
-            announcementAddData.meetingAt || new Date().toISOString()
-        ).split('T')[0]
-        const hh = String(nextHour).padStart(2, '0')
-        const mm = String(nextMinute).padStart(2, '0')
-        setAnnouncementAddData({
-            ...announcementAddData,
-            meetingAt: `${datePart}T${hh}:${mm}`
-        })
-    }
     const decParticipants = () =>
         setParticipants(prev => {
             const next = prev > 0 ? prev - 1 : 0
@@ -83,51 +66,10 @@ export function AddAnnouncementCard({
                 </div>
             </div>
 
-            {/* 시간 */}
-            <div className="mb-16 flex w-full flex-col gap-6">
-                <span className="text-body2-medium text-gray-6">시간</span>
-                <div
-                    className="rounded-6 flex items-center justify-center"
-                    style={{
-                        background: '#F4F5F7',
-                        padding: '8px 27px',
-                        gap: 69
-                    }}>
-                    <button
-                        type="button"
-                        className="text-body2-medium text-nowrap"
-                        onClick={() =>
-                            setPeriod(p => (p === '오전' ? '오후' : '오전'))
-                        }>
-                        {period}
-                    </button>
-                    <button
-                        type="button"
-                        className="text-body2-medium"
-                        onClick={() =>
-                            setHour(h => {
-                                const next = h === 23 ? 0 : h + 1
-                                updateMeetingAt(next, minute)
-                                return next
-                            })
-                        }>
-                        {hour.toString().padStart(2, '0')}
-                    </button>
-                    <button
-                        type="button"
-                        className="text-body2-medium"
-                        onClick={() =>
-                            setMinute(m => {
-                                const next = m >= 45 ? 0 : m + 15
-                                updateMeetingAt(hour, next)
-                                return next
-                            })
-                        }>
-                        {minute.toString().padStart(2, '0')}
-                    </button>
-                </div>
-            </div>
-
+            <label className="mb-16 flex w-full flex-col gap-6">만날 날짜와 시간
+                <input type="datetime-local" value={announcementAddData.meetingAt}
+                    onChange={e => setAnnouncementAddData({...announcementAddData, meetingAt:e.target.value})}/>
+            </label>
             {/* 만날 장소 */}
             <div className="mb-16 flex w-full flex-col gap-6">
                 <span className="text-body2-medium text-gray-6">만날 장소</span>
@@ -142,7 +84,7 @@ export function AddAnnouncementCard({
                         })
                     }}
                     ref={placeRef}
-                    placeholder=""
+                    aria-label="만날 장소" placeholder="만날 장소"
                     className="rounded-6 text-body2-medium px-12"
                     style={{ height: 36, border: '1px solid #E4E4E4' }}
                 />

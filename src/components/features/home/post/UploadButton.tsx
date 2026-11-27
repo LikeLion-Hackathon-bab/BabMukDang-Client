@@ -21,7 +21,7 @@ export function UploadButton() {
         input.click()
     }
     return (
-        <div
+        <button type="button" aria-label="음식 사진 올리기"
             className="border-primary-400 fixed right-20 bottom-110 z-51 flex size-60 flex-row items-center justify-center rounded-full border-1 bg-white"
             onClick={selectFromGallery}>
             {/* + 아이콘 */}
@@ -46,6 +46,6 @@ export function UploadButton() {
                     strokeLinejoin="round"
                 />
             </svg>
-        </div>
+        </button>
     )
 }

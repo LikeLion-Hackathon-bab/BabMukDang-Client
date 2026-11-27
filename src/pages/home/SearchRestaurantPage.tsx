@@ -1,6 +1,7 @@
 import exifr from 'exifr'
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 
 import { useArticleStore } from '@/store'
 import { RestaurantCard, MutalButton, SearchInput } from '@/components'
@@ -126,39 +127,31 @@ export function SearchRestaurantPage() {
                 ))}
             </div>
             <div className="fixed bottom-40 left-0 w-full px-20">
-                <UploadButton />
+                <UploadButton hasRestaurant={Boolean(selectedRestaurant)} />
             </div>
         </div>
     )
 }
 
-function UploadButton() {
+function UploadButton({ hasRestaurant }: { hasRestaurant: boolean }) {
     const { image, buildRequest } = useArticleStore()
     const { userId } = useAuthStore()
+    const navigate = useNavigate()
+    const cache = useQueryClient()
+    const [message, setMessage] = useState('')
     const { mutate: uploadAndPost, isPending } = useUploadArticle(
-        () => console.log('업로드 완료'),
-        e => console.error(e.message)
+        () => { cache.invalidateQueries(); navigate('/', {replace:true}) },
+        () => setMessage('사진을 게시하지 못했어요. 다시 시도해 주세요.')
     )
-    const onClickUpload = () => {
-        if (buildRequest) {
-            uploadAndPost({
-                currentUserId: userId!,
-                file: image as File,
-                buildRequest: buildRequest
-            })
-        }
+    const submit = () => {
+        if (!image || !userId || !buildRequest || !hasRestaurant || isPending) return
+        setMessage('')
+        uploadAndPost({currentUserId:userId, file:image, buildRequest})
     }
-
-    return (
-        <Link
-            className="w-full"
-            replace
-            to="/">
-            <MutalButton
-                text="게시물 업로드 하기"
-                onClick={onClickUpload}
-                hasArrow={true}
-            />
-        </Link>
-    )
+    return <div>{message && <p role="alert">{message}</p>}
+        <button disabled={!image || !userId || !buildRequest || !hasRestaurant || isPending} onClick={submit}
+            className="w-full rounded-full bg-black p-16 text-white">
+            {isPending ? '게시 중…' : '게시물 업로드 하기'}
+        </button>
+    </div>
 }

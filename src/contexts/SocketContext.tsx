@@ -174,6 +174,11 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
             setReadyCount(data.readyCount)
             setParticipantCount(data.participantCount)
         })
+        socket.on('meeting-save-failed', () => {
+            setIsSelfReady(false)
+            setReadyCount(0)
+            window.alert('밥약을 저장하지 못했어요. 식당을 확인하고 다시 준비해 주세요.')
+        })
         socket?.on('stage-changed', data => {
             setStage(data.stage)
             navigate(`/${matchType}/${data.stage}/${roomId}`, {

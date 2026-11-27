@@ -43,12 +43,12 @@ export const useJoinAnnouncement = (
     onSuccess: () => void,
     onError: (error: Error) => void
 ) => {
-    const { mutate, isPending, error } = useMutation({
+    const { mutate, isPending, isSuccess, error } = useMutation({
         mutationFn: joinAnnouncement,
         onSuccess,
         onError
     })
-    return { mutate, isPending, error }
+    return { mutate, isPending, isSuccess, error }
 }
 
 export const useSubscribeAnnouncement = ({

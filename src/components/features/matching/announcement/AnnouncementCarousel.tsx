@@ -57,7 +57,7 @@ export function AnnouncementCarousel({
                         .filter(
                             //todo 임시 코드
                             announcement =>
-                                (announcement as any).authorId !== userId
+                                announcement.author.authorId !== Number(userId)
                         )
                         .map((announcement, index) => {
                             const isActive = index === currentIndex
