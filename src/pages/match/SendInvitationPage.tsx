@@ -1,9 +1,4 @@
-import {
-    InvitationCard,
-    JoinCompleteModal,
-    ModalTrigger,
-    MutalButton
-} from '@/components'
+import { InvitationCard } from '@/components'
 import {
     CardBobGraphic,
     CardGiftboxGraphic,
@@ -28,12 +23,20 @@ export function SendInvitationPage() {
     const [selectedCard, setSelectedCard] = useState<number>(0)
     const [editText, setEditText] = useState<string>('같이 밥 먹을래?')
     const [isEditing, setIsEditing] = useState<boolean>(false)
-    const { mutate: sendInvitation } = useSendInvitation({
-        onSuccess: () => {},
-        onError: () => {}
+    const [notice, setNotice] = useState('')
+    const {
+        mutate: sendInvitation,
+        isPending,
+        isSuccess
+    } = useSendInvitation({
+        onSuccess: () =>
+            setNotice(
+                '초대장을 보냈어요. 친구가 수락하면 알림에서 대기실을 열 수 있어요.'
+            ),
+        onError: () =>
+            setNotice('초대장을 보내지 못했어요. 다시 시도해 주세요.')
     })
     const { userId } = useParams()
-    console.log('userId', userId)
     const handleSendInvitation = () => {
         sendInvitation({
             inviteeId: { id: Number(userId) },
@@ -69,22 +72,20 @@ export function SendInvitationPage() {
                 setIsEditing={setIsEditing}
             />
             {/* 보내기 버튼 */}
-            <ModalTrigger forId="send-invitation-modal">
-                <MutalButton
-                    text="초대장 보내기"
-                    onClick={handleSendInvitation}
-                />
-            </ModalTrigger>
-            <JoinCompleteModal
-                title="가은님에게 발송됩니다."
-                description="친구가 초대장을 수락하면 알려드릴게요!"
-                acceptText="알림 받기"
-                id="send-invitation-modal"
-                onClose={() => {}}
-                onAccept={() => {
-                    navigate('/matching')
-                }}
-            />
+            <div className="flex flex-col gap-8">
+                {notice && <p role="status">{notice}</p>}
+                <button
+                    type="button"
+                    disabled={isPending}
+                    className="rounded-12 bg-black p-12 text-white"
+                    onClick={
+                        isSuccess
+                            ? () => navigate('/noti')
+                            : handleSendInvitation
+                    }>
+                    {isSuccess ? '알림 확인하기' : '초대장 보내기'}
+                </button>
+            </div>
         </div>
     )
 }

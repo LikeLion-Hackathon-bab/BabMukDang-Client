@@ -131,6 +131,7 @@ type FinalState = {
     restaurant?: { place_name: string; name?: string }
 }
 export function SocketProvider({ children }: { children: React.ReactNode }) {
+    const [connectionFailed, setConnectionFailed] = useState(false)
     const [socket, setSocket] = useState<Socket | null>(null)
     const { accessToken, refreshToken, setTokens } = useAuthStore()
     const navigate = useNavigate()
@@ -213,6 +214,8 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
     }, [accessToken, roomId, matchType]) // token과 roomId가 변경될 때마다 재생성
     useEffect(() => {
         if (!socket) return
+        socket.on('connect_error', () => setConnectionFailed(true))
+        socket.on('connect', () => setConnectionFailed(false))
         socket.on('chat-messages', setChatMessages)
         socket?.on(
             'ready-state-changed',
@@ -346,6 +349,14 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
                         한국 시간 {finalState.time.split('–')[0]}
                     </p>
                 )}
+            {connectionFailed && (
+                <p role="alert">
+                    대기실에 연결하지 못했어요.{' '}
+                    <button onClick={() => socket?.connect()}>
+                        다시 연결하기
+                    </button>
+                </p>
+            )}
             {children}
         </SocketContext.Provider>
     )
