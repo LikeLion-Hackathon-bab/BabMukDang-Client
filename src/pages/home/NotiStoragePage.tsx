@@ -2,7 +2,7 @@ import { useQuery, useMutation } from '@tanstack/react-query'
 import { client } from '@/apis/client'
 import type { BaseResponse } from '@/apis/dto'
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { useHeader } from '@/hooks'
 import { TabHeader, FilterList } from '@/components'
@@ -34,6 +34,15 @@ export function NotiStoragePage() {
             return id
         },
         onSuccess: id => navigate('/announcement/waiting/' + id)
+    })
+    const enterInvite = useMutation({
+        mutationFn: async (id: number) => {
+            await client.post(
+                `${import.meta.env.VITE_BASE_API_URL}/invitations/${id}/enter`
+            )
+            return id
+        },
+        onSuccess: id => navigate('/invitation/waiting/' + id)
     })
     const rooms = useQuery({
         queryKey: ['waiting-rooms'],
@@ -74,13 +83,19 @@ export function NotiStoragePage() {
                             초대 알림 다시 불러오기
                         </button>
                     )}
+                    {enterInvite.isError && (
+                        <p role="alert">
+                            초대 대기실을 열지 못했어요. 다시 눌러 주세요.
+                        </p>
+                    )}
                     {invitations.data?.map(id => (
-                        <Link
+                        <button
                             key={id}
                             className="rounded-12 bg-white p-16"
-                            to={'/invitation/waiting/' + id}>
+                            disabled={enterInvite.isPending}
+                            onClick={() => enterInvite.mutate(id)}>
                             초대 대기실 입장 · {id}
-                        </Link>
+                        </button>
                     ))}
                     {rooms.isLoading && <p>알림을 불러오는 중…</p>}
                     {rooms.isError && (
