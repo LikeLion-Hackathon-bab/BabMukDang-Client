@@ -16,14 +16,10 @@ export function FriendListSection({ friendList }: { friendList: Friend[] }) {
         key: string
         label: string
     }>(INVITATION_FILTER_LIST[0])
-    const [filteredFriendList, setFilteredFriendList] =
-        useState<Friend[]>(friendList)
-    const handleSearch = (search: string) => {
-        setFilteredFriendList(
-            friendList.filter(friend => friend.userName.includes(search))
-        )
-    }
-    console.log('filteredFriendList', filteredFriendList)
+    const [search, handleSearch] = useState('')
+    const filteredFriendList = friendList.filter(friend =>
+        friend.userName.includes(search)
+    )
     return (
         <div className="flex w-full flex-col gap-16">
             <div className="flex flex-col gap-16">

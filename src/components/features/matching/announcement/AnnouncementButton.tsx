@@ -4,6 +4,7 @@ import {
     useGetAnnouncements,
     usePostAnnouncement
 } from '@/query'
+import { useState } from 'react'
 import { Post } from '@/apis/dto'
 import { useNavigate } from 'react-router-dom'
 
@@ -12,23 +13,29 @@ export function AddAnnouncementButton({
 }: {
     announcementAddData: Post
 }) {
-    const { mutate: postAnnouncement } = usePostAnnouncement(
+    const [error, setError] = useState('')
+    const { refetch } = useGetAnnouncements()
+    const { mutate, isPending } = usePostAnnouncement(
         () => {
-            console.log('Add announcement button clicked')
-            refetchAnnouncements()
+            setError('')
+            refetch()
         },
-        error => {
-            console.log(error)
-        }
+        () => setError('공고를 등록하지 못했어요. 다시 시도해 주세요.')
     )
-    const { refetch: refetchAnnouncements } = useGetAnnouncements()
-    const handleAddAnnouncement = () => {
-        postAnnouncement(announcementAddData)
-    }
+    const valid =
+        announcementAddData.location.trim() &&
+        announcementAddData.meetingAt &&
+        announcementAddData.targetCount > 0
     return (
-        <MutalButtonSmall
-            text="공고 등록하기"
-            onClick={handleAddAnnouncement}></MutalButtonSmall>
+        <div>
+            <button
+                className="rounded-full bg-black px-16 py-8 text-white disabled:opacity-50"
+                disabled={!valid || isPending}
+                onClick={() => mutate(announcementAddData)}>
+                공고 등록하기
+            </button>
+            {error && <p role="alert">{error}</p>}
+        </div>
     )
 }
 export function CloseAnnouncementButton({
@@ -39,7 +46,7 @@ export function CloseAnnouncementButton({
     const navigate = useNavigate()
     const { mutate: closeAnnouncement } = useCloseAnnouncement(
         () => {
-            console.log('Close announcement button clicked')
+            navigate('/noti')
         },
         error => {
             console.log(error)
@@ -48,7 +55,6 @@ export function CloseAnnouncementButton({
     const handleCloseAnnouncement = () => {
         if (announcementId) {
             closeAnnouncement(announcementId)
-            navigate('/announcement/waiting')
         }
     }
 

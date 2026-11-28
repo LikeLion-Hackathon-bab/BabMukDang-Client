@@ -11,19 +11,19 @@ import {
 export function ReadInvitationPage() {
     const { setTitle, resetHeader } = useHeader()
     const { invitationId } = useParams()
-    const [invitationText, setInvitationText] = useState('')
+    const [error, setError] = useState('')
     const navigate = useNavigate()
     const { mutate: acceptInvitation } = useAcceptInvitation({
         onSuccess: () => {
-            navigate('/matching')
+            navigate('/noti')
         },
-        onError: () => {}
+        onError: () => setError('처리하지 못했어요. 다시 시도해 주세요.')
     })
     const { mutate: rejectInvitation } = useRejectInvitation({
         onSuccess: () => {
             navigate('/matching')
         },
-        onError: () => {}
+        onError: () => setError('처리하지 못했어요. 다시 시도해 주세요.')
     })
     useEffect(() => {
         setTitle('초대장')
@@ -33,9 +33,10 @@ export function ReadInvitationPage() {
     }, [])
     return (
         <div className="flex h-full w-full flex-col justify-center gap-18">
+            {error && <p role="alert">{error}</p>}
             <InvitationCard
                 Graphic={<CardBobGraphic />}
-                editText={invitationText}
+                editText=""
                 bgColor="bg-gradient-to-b to-[#FF5E27] from-[#FFA484]"
                 from="초대장"
             />

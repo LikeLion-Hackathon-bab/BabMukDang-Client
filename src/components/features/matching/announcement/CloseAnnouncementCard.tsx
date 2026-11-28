@@ -52,6 +52,7 @@ export function CloseAnnouncementCard({
                     <div className="flex items-center gap-4">
                         <PeopleWhiteIcon />
                         <span className="text-body2-semibold text-white">
+                            {announcement.participants.length}/
                             {announcement.targetCount}명
                         </span>
                     </div>

@@ -36,6 +36,7 @@ export function OnboardingButton() {
     }, [readyCount, participantCount, isSelfReady])
 
     const onClickReady = () => {
+        if (!socket?.connected) return
         const next = !isSelfReady
         // 새로운 상태 값으로 소켓 이벤트 발생
         socket?.emit('ready-state', { isReady: next })
@@ -47,6 +48,7 @@ export function OnboardingButton() {
     }
     return (
         <button
+            disabled={!socket?.connected}
             onClick={onClickReady}
             className="relative h-full w-full overflow-hidden rounded-full border-0 p-0"
             style={{ backgroundColor: COLORS.gray2 }}>

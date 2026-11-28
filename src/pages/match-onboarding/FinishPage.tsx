@@ -1,17 +1,10 @@
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { useMatchStore } from '@/store/matchStore'
+import { useNavigate } from 'react-router-dom'
 import { useSocket } from '@/contexts/SocketContext'
-import {
-    LocationGrayIcon,
-    PeopleGrayIcon,
-    ProfileDefaultIcon,
-    TimeGrayIcon
-} from '@/assets/icons'
-import { useMemo } from 'react'
+import { LocationGrayIcon, PeopleGrayIcon, TimeGrayIcon } from '@/assets/icons'
 
 export function FinishPage() {
     const navigate = useNavigate()
-    const { matchType, participants, stage, finalState } = useSocket()
+    const { matchType, participants, finalState } = useSocket()
 
     return (
         <>
@@ -23,6 +16,11 @@ export function FinishPage() {
                         약속이 확정되었어요! 맛있는 하루되세요🎉
                     </h1>
 
+                    {matchType === 'announcement' && (
+                        <button onClick={() => navigate('/meeting')}>
+                            내 밥약에서 확인하기
+                        </button>
+                    )}
                     {/* 프로필 이미지 */}
                     {/* <div className="ml-10 flex items-center justify-center">
                         {participants?.map(participant => (
@@ -63,7 +61,8 @@ export function FinishPage() {
                             <div className="flex items-center gap-4">
                                 <LocationGrayIcon />
                                 <span className="text-body2-semibold text-black">
-                                    {finalState?.location}
+                                    {finalState?.restaurant?.place_name ??
+                                        finalState?.location?.address}
                                 </span>
                             </div>
                             <div className="flex items-center gap-4">
@@ -80,6 +79,9 @@ export function FinishPage() {
     )
 }
 function formatTime(meetingAt: string) {
+    const range = /^(\d{2}):(\d{2})–\d{2}:\d{2}$/.exec(meetingAt)
+    if (range)
+        return `한국 시간 ${Number(range[1])}시${range[2] === '00' ? '' : ' ' + Number(range[2]) + '분'}`
     // 2025-08-08T22:30 -> 8월 7일 오후 7시 30분
     const date = new Date(meetingAt)
     const month = date.getMonth() + 1

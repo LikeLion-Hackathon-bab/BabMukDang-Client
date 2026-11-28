@@ -1,19 +1,47 @@
 import exifr from 'exifr'
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { useQueryClient } from '@tanstack/react-query'
 
 import { useArticleStore } from '@/store'
-import { RestaurantCard, MutalButton, SearchInput } from '@/components'
+import { RestaurantCard, SearchInput } from '@/components'
 import { useBottomNav, useKakaoMap } from '@/hooks'
 import { useUploadArticle } from '@/query'
 import { useAuthStore } from '@/store'
-import { RestaurantInfo } from '@/apis/dto'
 
+interface Place {
+    id: string
+    place_name: string
+    category_name: string
+    category_group_code: string
+    category_group_name: string
+    address_name: string
+    road_address_name: string
+    phone: string
+    place_url: string
+    x: string
+    y: string
+    distance: string
+}
+interface PlaceSearch {
+    keywordSearch: (
+        keyword: string,
+        callback: (data: Place[], status: string) => void,
+        options: object
+    ) => void
+    categorySearch: (
+        category: string,
+        callback: (data: Place[]) => void,
+        options: object
+    ) => void
+}
 export function SearchRestaurantPage() {
     const { image, setRestaurant } = useArticleStore()
-    const gps = useRef<any>(null)
-    const [restaurants, setRestaurants] = useState<any[]>([])
-    const [selectedRestaurant, setSelectedRestaurant] = useState<any>(null)
+    const gps = useRef<{ longitude?: number; latitude?: number } | null>(null)
+    const [restaurants, setRestaurants] = useState<Place[]>([])
+    const [selectedRestaurant, setSelectedRestaurant] = useState<Place | null>(
+        null
+    )
     const { isLoaded, kakao, createPlaces } = useKakaoMap()
     const getGps = async () => {
         try {
@@ -21,9 +49,9 @@ export function SearchRestaurantPage() {
             gps.current = result
             if (result.latitude && result.longitude && isLoaded) {
                 places.current = createPlaces()
-                places.current.categorySearch(
+                places.current?.categorySearch(
                     'FD6',
-                    (data: any, status: any, pagination: any) => {
+                    data => {
                         setRestaurants(data)
                     },
                     {
@@ -39,7 +67,7 @@ export function SearchRestaurantPage() {
         }
     }
 
-    const places = useRef<any>(null)
+    const places = useRef<PlaceSearch | null>(null)
     useEffect(() => {
         if (!image || !isLoaded) return
         getGps()
@@ -56,9 +84,9 @@ export function SearchRestaurantPage() {
         }
         if (!isLoaded) return
         places.current = createPlaces()
-        places.current.keywordSearch(
+        places.current?.keywordSearch(
             searchKeyword,
-            (data: any, status: any, pagination: any) => {
+            (data, status) => {
                 if (status === kakao.maps.services.Status.OK) {
                     setRestaurants(data)
                 } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
@@ -76,7 +104,7 @@ export function SearchRestaurantPage() {
             }
         )
     }
-    const handleSelectRestaurant = (restaurant: any) => {
+    const handleSelectRestaurant = (restaurant: Place) => {
         setSelectedRestaurant(restaurant)
         console.log(restaurant)
         setRestaurant({
@@ -89,8 +117,8 @@ export function SearchRestaurantPage() {
             categoryGroupName: restaurant.category_group_name,
             placeId: restaurant.id,
             placeName: restaurant.place_name,
-            x: restaurant.x,
-            y: restaurant.y
+            x: Number(restaurant.x),
+            y: Number(restaurant.y)
         })
     }
 
@@ -114,7 +142,7 @@ export function SearchRestaurantPage() {
                 {restaurants.map(restaurant => (
                     <RestaurantCard
                         key={restaurant.id}
-                        restaurant={restaurant}
+                        restaurant={{ ...restaurant, selectUsers: [] }}
                         gps={gps}
                         onClick={() => handleSelectRestaurant(restaurant)}
                         className={`${
@@ -126,39 +154,46 @@ export function SearchRestaurantPage() {
                 ))}
             </div>
             <div className="fixed bottom-40 left-0 w-full px-20">
-                <UploadButton />
+                <UploadButton hasRestaurant={Boolean(selectedRestaurant)} />
             </div>
         </div>
     )
 }
 
-function UploadButton() {
+function UploadButton({ hasRestaurant }: { hasRestaurant: boolean }) {
     const { image, buildRequest } = useArticleStore()
     const { userId } = useAuthStore()
+    const navigate = useNavigate()
+    const cache = useQueryClient()
+    const [message, setMessage] = useState('')
     const { mutate: uploadAndPost, isPending } = useUploadArticle(
-        () => console.log('업로드 완료'),
-        e => console.error(e.message)
+        () => {
+            cache.invalidateQueries()
+            navigate('/', { replace: true })
+        },
+        () => setMessage('사진을 게시하지 못했어요. 다시 시도해 주세요.')
     )
-    const onClickUpload = () => {
-        if (buildRequest) {
-            uploadAndPost({
-                currentUserId: userId!,
-                file: image as File,
-                buildRequest: buildRequest
-            })
-        }
+    const submit = () => {
+        if (!image || !userId || !buildRequest || !hasRestaurant || isPending)
+            return
+        setMessage('')
+        uploadAndPost({ currentUserId: userId, file: image, buildRequest })
     }
-
     return (
-        <Link
-            className="w-full"
-            replace
-            to="/">
-            <MutalButton
-                text="게시물 업로드 하기"
-                onClick={onClickUpload}
-                hasArrow={true}
-            />
-        </Link>
+        <div>
+            {message && <p role="alert">{message}</p>}
+            <button
+                disabled={
+                    !image ||
+                    !userId ||
+                    !buildRequest ||
+                    !hasRestaurant ||
+                    isPending
+                }
+                onClick={submit}
+                className="w-full rounded-full bg-black p-16 text-white">
+                {isPending ? '게시 중…' : '게시물 업로드 하기'}
+            </button>
+        </div>
     )
 }

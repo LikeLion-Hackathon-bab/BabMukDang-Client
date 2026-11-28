@@ -1,12 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { MockAnnouncements, MockFriendList } from '@/constants/mockData'
-import { Post, PostResponse } from '@/apis/dto'
-
 import { useHeader } from '@/hooks'
 import {
     TabHeader,
-    JoinCompleteModal,
     AnnouncementCarousel,
     InvitationToggleButton,
     RecieveInvitationList,
@@ -14,7 +10,7 @@ import {
     FriendListSection
 } from '@/components'
 import { BOTTOM_NAVIGATION_HEIGHT } from '@/constants/bottomNav'
-import { useGetAnnouncements, useSubscribeAnnouncement } from '@/query'
+import { useGetAnnouncements } from '@/query'
 import { useAuthStore } from '@/store'
 import { useGetInvitations } from '@/query/invitationQuery'
 import { useFriendMeals } from '@/query/friendsQuery'
@@ -58,22 +54,19 @@ export function MatchingPage() {
 }
 
 function AnnouncementTab() {
-    const [announcements, setAnnouncements] = useState<PostResponse[]>([])
-    const { userId } = useAuthStore()
-    const [myAnnouncements, setMyAnnouncements] = useState<PostResponse | null>(
+    const userId = useAuthStore(state => state.userId)
+    const {
+        data: announcements = [],
+        isLoading,
+        error,
+        refetch
+    } = useGetAnnouncements()
+    const myAnnouncements =
+        announcements.find(post => post.author.authorId === Number(userId)) ??
         null
-    )
-    const { data: announcementsData } = useGetAnnouncements()
-    useEffect(() => {
-        console.log('announcementsData', announcementsData)
-        setMyAnnouncements(
-            announcementsData?.find(
-                announcement => announcement.author.authorId === Number(userId)
-            ) || null
-        )
-        console.log('myAnnouncements', myAnnouncements, userId)
-        setAnnouncements(announcementsData || [])
-    }, [])
+    if (isLoading) return <p>공고를 불러오는 중…</p>
+    if (error)
+        return <button onClick={() => refetch()}>공고 다시 불러오기</button>
     return (
         <div className="bg-primary-100 flex h-full flex-col justify-center pb-90">
             <div className="flex flex-1 flex-col justify-center pb-90">
