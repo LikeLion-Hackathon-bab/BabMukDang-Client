@@ -2,7 +2,7 @@ import { useQuery, useMutation } from '@tanstack/react-query'
 import { client } from '@/apis/client'
 import type { BaseResponse } from '@/apis/dto'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { useHeader } from '@/hooks'
 import { TabHeader, FilterList } from '@/components'
@@ -45,6 +45,16 @@ export function NotiStoragePage() {
             ).data.data,
         refetchInterval: 5000
     })
+    const invitations = useQuery({
+        queryKey: ['accepted-invitation-rooms'],
+        queryFn: async () =>
+            (
+                await client.get<BaseResponse<number[]>>(
+                    `${import.meta.env.VITE_BASE_API_URL}/invitations/accepted`
+                )
+            ).data.data,
+        refetchInterval: 5000
+    })
     const [activeFilter, setActiveFilter] = useState<{
         key: string
         label: string
@@ -59,6 +69,19 @@ export function NotiStoragePage() {
             />
             {tab === 'noti' && (
                 <div className="flex flex-col gap-12 px-20">
+                    {invitations.isError && (
+                        <button onClick={() => invitations.refetch()}>
+                            초대 알림 다시 불러오기
+                        </button>
+                    )}
+                    {invitations.data?.map(id => (
+                        <Link
+                            key={id}
+                            className="rounded-12 bg-white p-16"
+                            to={'/invitation/waiting/' + id}>
+                            초대 대기실 입장 · {id}
+                        </Link>
+                    ))}
                     {rooms.isLoading && <p>알림을 불러오는 중…</p>}
                     {rooms.isError && (
                         <button onClick={() => rooms.refetch()}>

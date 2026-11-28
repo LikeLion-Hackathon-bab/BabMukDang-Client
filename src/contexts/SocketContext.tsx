@@ -123,6 +123,7 @@ type StageData =
           }
       }
 type FinalState = {
+    date?: string
     time?: string
     location?: { address?: string; placeName?: string }
     menu?: { label: string }
@@ -268,19 +269,24 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
         socket?.on('time-updated', (data: TimeSelection[]) => {
             if (Array.isArray(data)) setTimeSelections(data)
         })
-        socket?.on('final-state-response', (data: FinalState | null) => {
-            setFinalState(data)
-            const excludeMenu = data?.excludeMenu?.map(menu => menu.label)
-            const location = data?.location?.address
-            const menu = data?.menu?.label
-            const restaurant = data?.restaurant?.place_name
-            setFinalStateMessage({
-                'exclude-menu': excludeMenu,
-                location,
-                menu,
-                restaurant
-            })
-        })
+        socket?.on(
+            'final-state-response',
+            (event: FinalState | { finalState: FinalState } | null) => {
+                const data =
+                    event && 'finalState' in event ? event.finalState : event
+                setFinalState(data)
+                const excludeMenu = data?.excludeMenu?.map(menu => menu.label)
+                const location = data?.location?.address
+                const menu = data?.menu?.label
+                const restaurant = data?.restaurant?.place_name
+                setFinalStateMessage({
+                    'exclude-menu': excludeMenu,
+                    location,
+                    menu,
+                    restaurant
+                })
+            }
+        )
         return () => {
             socket?.removeAllListeners()
         }
@@ -331,6 +337,15 @@ export function SocketProvider({ children }: { children: React.ReactNode }) {
                 locationInitial,
                 meetingAtInitial
             }}>
+            {matchType === 'invitation' &&
+                finalState?.time &&
+                stage !== 'finish' && (
+                    <p
+                        role="status"
+                        className="text-center">
+                        한국 시간 {finalState.time.split('–')[0]}
+                    </p>
+                )}
             {children}
         </SocketContext.Provider>
     )
